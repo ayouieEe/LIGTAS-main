@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIGTAS — Admin Login</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg2: #161b22;
+      --bg3: #1c2330;
+      --bg4: #21262d;
+      --border: rgba(255, 255, 255, 0.08);
+      --border2: rgba(255, 255, 255, 0.14);
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --text3: #484f58;
+      --primary: #2f81f7;
+      --primary-dim: rgba(47, 129, 247, 0.12);
+      --red: #f85149;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background Aesthetics */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(47, 129, 247, 0.15) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Login Container */
+    .login-wrap {
+      width: 380px;
+      background: rgba(22, 27, 34, 0.7);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 40px 36px;
+      z-index: 10;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      animation: fade-in-up 0.5s ease-out forwards;
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .brand svg {
+      color: var(--red);
+      width: 28px;
+      height: 28px;
+    }
+
+    .brand span {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text2);
+      margin-bottom: 36px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 8px;
+    }
+
+    .input-text {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(13, 17, 23, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .input-text:focus {
+      border-color: var(--primary);
+      background: rgba(28, 35, 48, 0.8);
+      box-shadow: 0 0 0 3px var(--primary-dim);
+    }
+
+    .input-text::placeholder {
+      color: var(--text3);
+    }
+
+    .options-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .checkbox-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .checkbox-wrap input {
+      cursor: pointer;
+      accent-color: var(--primary);
+      width: 14px;
+      height: 14px;
+    }
+
+    .checkbox-wrap span {
+      font-size: 13px;
+      color: var(--text2);
+      user-select: none;
+    }
+
+    .forgot-link {
+      font-size: 13px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .forgot-link:hover {
+      color: #58a6ff;
+      text-decoration: underline;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(47, 129, 247, 0.2);
+    }
+
+    .btn-submit:hover {
+      background: #388bfd;
+      box-shadow: 0 6px 16px rgba(47, 129, 247, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    /* Footer Status */
+    .sys-status {
+      position: absolute;
+      bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text3);
+      z-index: 10;
+      font-family: 'DM Mono', monospace;
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3fb950;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 4px rgba(63, 185, 80, 0);
+      }
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Elements -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <!-- Login Card -->
+  <div class="login-wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7l-9-5z" />
+      </svg>
+      <span>LIGTAS</span>
+    </div>
+    <div class="subtitle">Admin Command Center</div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label>Admin ID / Email</label>
+        <input type="text" class="input-text" placeholder="Enter your ID or email" value="cmd.reyes" required
+          autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label>Passcode</label>
+        <input type="password" class="input-text" placeholder="••••••••" value="password123" required
+          autocomplete="current-password">
+      </div>
+
+      <div class="options-row">
+        <label class="checkbox-wrap">
+          <input type="checkbox" checked>
+          <span>Remember session</span>
+        </label>
+        <a href="#" class="forgot-link">Forgot passcode?</a>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submit-btn">
+        <span id="btn-text">Secure Login</span>
+        <svg id="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+        <div class="loading-spinner" id="spinner"></div>
+      </button>
+    </form>
+  </div>
+
+  <div class="sys-status">
+    <div class="pulse"></div>
+    <span>Secure Node Active v2.4</span>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      const text = document.getElementById('btn-text');
+      const icon = document.getElementById('btn-icon');
+      const spinner = document.getElementById('spinner');
+
+      // Show loading state
+      btn.style.pointerEvents = 'none';
+      text.textContent = 'Authenticating...';
+      icon.style.display = 'none';
+      spinner.style.display = 'block';
+
+      // Simulate network request delay then redirect
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 800);
+    });
+  </script>
+</body>
+
+</html>

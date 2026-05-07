@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIGTAS — Admin Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2330;
+  --bg4: #21262d;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #484f58;
+  --primary: #2f81f7;
+  --primary-dim: rgba(47,129,247,0.12);
+  --red: #f85149;
+  --red-dim: rgba(248,81,73,0.12);
+  --orange: #f0883e;
+  --orange-dim: rgba(240,136,62,0.12);
+  --yellow: #d29922;
+  --yellow-dim: rgba(210,153,34,0.12);
+  --green: #3fb950;
+  --green-dim: rgba(63,185,80,0.12);
+  --teal: #39c5cf;
+  --teal-dim: rgba(57,197,207,0.12);
+  --purple: #bc8cff;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --sidebar-w: 220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+
+/* LAYOUT */
+.app{display:flex;width:100%;min-height:100vh}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
+.main-wrap{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.sidebar-logo svg{color:var(--red)}
+.sidebar-logo span{font-size:16px;font-weight:600;letter-spacing:-0.3px}
+.sidebar-logo .version{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:4px;margin-left:auto}
+.nav{flex:1;padding:12px 8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius);color:var(--text2);font-size:13.5px;font-weight:400;margin-bottom:2px;transition:all .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--primary-dim);color:var(--primary);font-weight:500}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.8}
+.nav-item.active svg{opacity:1}
+.nav-divider{height:1px;background:var(--border);margin:8px 4px}
+.sidebar-foot{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(63,185,80,.4)}50%{box-shadow:0 0 0 5px rgba(63,185,80,0)}}
+.sidebar-foot span{font-size:12px;color:var(--text2)}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar h1{font-size:15px;font-weight:500;letter-spacing:-0.2px}
+.breadcrumb{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:var(--radius);background:none;border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s}
+.icon-btn:hover{border-color:var(--border2);color:var(--text);background:var(--bg3)}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg)}
+.admin-chip{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:all .15s}
+.admin-chip:hover{border-color:var(--border2);background:var(--bg3)}
+.admin-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#bc8cff);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff}
+.admin-name{font-size:12.5px;font-weight:500}
+.admin-role{font-size:10.5px;color:var(--text2)}
+
+/* CONTENT */
+.content{flex:1;padding:24px}
+.page{display:none}
+.page.active{display:block}
+
+/* METRIC CARDS */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.m-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;position:relative;overflow:hidden}
+.m-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.m-card.c-red::before{background:var(--red)}
+.m-card.c-orange::before{background:var(--orange)}
+.m-card.c-blue::before{background:var(--primary)}
+.m-card.c-green::before{background:var(--green)}
+.m-card.c-teal::before{background:var(--teal)}
+.m-card.c-yellow::before{background:var(--yellow)}
+.m-card-label{font-size:11.5px;color:var(--text2);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.m-card-value{font-size:28px;font-weight:600;letter-spacing:-1px;line-height:1}
+.m-card-value.red{color:var(--red)}
+.m-card-value.orange{color:var(--orange)}
+.m-card-value.green{color:var(--green)}
+.m-card-value.yellow{color:var(--yellow)}
+.m-card-value.blue{color:var(--primary)}
+.m-card-sub{font-size:11.5px;color:var(--text3);margin-top:6px}
+
+/* PANELS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-left-heavy{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+.grid-right-heavy{display:grid;grid-template-columns:1fr 1.6fr;gap:16px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.panel-head{padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.panel-head h2{font-size:14px;font-weight:500;letter-spacing:-0.2px}
+.panel-body{padding:0 18px 18px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;border:none;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+.btn svg{width:14px;height:14px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#388bfd}
+.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,81,73,.2)}
+.btn-danger:hover{background:rgba(248,81,73,.2)}
+.btn-ghost{background:var(--bg4);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2);background:var(--bg3)}
+.btn-outline{background:none;color:var(--text2);border:1px solid var(--border)}
+.btn-outline:hover{color:var(--text);border-color:var(--border2);background:var(--bg3)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-success{background:var(--green-dim);color:var(--green);border:1px solid rgba(63,185,80,.2)}
+.btn-success:hover{background:rgba(63,185,80,.2)}
+.btn-warning{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(210,153,34,.2)}
+.btn-warning:hover{background:rgba(210,153,34,.2)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge-critical{background:var(--red-dim);color:var(--red)}
+.badge-urgent{background:var(--orange-dim);color:var(--orange)}
+.badge-warning{background:var(--yellow-dim);color:var(--yellow)}
+.badge-stable{background:var(--green-dim);color:var(--green)}
+.badge-info{background:var(--primary-dim);color:var(--primary)}
+.badge-teal{background:var(--teal-dim);color:var(--teal)}
+.badge-gray{background:var(--bg4);color:var(--text2)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--border)}
+th{font-size:11.5px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left}
+td{padding:11px 12px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.td-title{font-weight:500;color:var(--text);margin-bottom:2px}
+.td-sub{font-size:12px;color:var(--text3)}
+
+/* SEARCH & FILTERS */
+.controls-row{display:flex;align-items:center;gap:10px;padding:0 18px;margin-bottom:2px}
+.search-wrap{position:relative;flex:1;max-width:280px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);width:14px;height:14px}
+.search-input{width:100%;padding:7px 12px 7px 32px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;outline:none}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{border-color:var(--primary);background:var(--bg4)}
+.filter-select{padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+.filter-select:focus{border-color:var(--primary)}
+
+/* STATUS FEED */
+.feed-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+.feed-item:hover{background:rgba(255,255,255,.02)}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.feed-dot.red{background:var(--red)}
+.feed-dot.orange{background:var(--orange)}
+.feed-dot.green{background:var(--green)}
+.feed-dot.blue{background:var(--primary)}
+.feed-dot.yellow{background:var(--yellow)}
+.feed-title{font-size:13px;font-weight:500;color:var(--text)}
+.feed-desc{font-size:12px;color:var(--text3)}
+
+/* CENTER CARDS */
+.center-scroll{padding:12px 18px;display:flex;flex-direction:column;gap:10px;max-height:660px;overflow-y:auto}
+.center-scroll::-webkit-scrollbar{width:4px}
+.center-scroll::-webkit-scrollbar-track{background:transparent}
+.center-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.center-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .15s}
+.center-card:hover{border-color:var(--border2);background:var(--bg4)}
+.center-card.selected{border-color:var(--primary);background:var(--primary-dim)}
+.center-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.center-card-name{font-size:13.5px;font-weight:500;color:var(--text)}
+.center-pct{font-size:18px;font-weight:600;font-family:'DM Mono',monospace}
+.center-pct.critical{color:var(--red)}
+.center-pct.urgent{color:var(--orange)}
+.center-pct.ok{color:var(--primary)}
+.center-pct.low{color:var(--green)}
+.center-card-loc{font-size:12px;color:var(--text3);margin-bottom:8px}
+.cap-bar{height:4px;background:var(--bg);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.cap-fill{height:100%;border-radius:2px;transition:width .4s}
+.cap-fill.red{background:var(--red)}
+.cap-fill.orange{background:var(--orange)}
+.cap-fill.blue{background:var(--primary)}
+.cap-fill.green{background:var(--green)}
+.center-card-footer{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text3)}
+
+/* REQ CARDS */
+.req-list{padding:12px 18px;display:flex;flex-direction:column;gap:8px;max-height:800px;overflow-y:auto}
+.req-list::-webkit-scrollbar{width:4px}
+.req-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.req-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;border-left-width:3px}
+.req-card.bc-red{border-left-color:var(--red)}
+.req-card.bc-orange{border-left-color:var(--orange)}
+.req-card.bc-yellow{border-left-color:var(--yellow)}
+.req-card.bc-blue{border-left-color:var(--primary)}
+.req-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.req-card-meta{font-size:11px;color:var(--text3)}
+.req-card-title{font-size:13.5px;font-weight:500;margin-bottom:3px}
+.req-card-desc{font-size:12.5px;color:var(--text2);margin-bottom:10px}
+.req-card-foot{display:flex;align-items:center;justify-content:space-between}
+
+/* VOL LIST */
+.vol-list{padding:0 18px}
+.vol-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.vol-item:last-child{border-bottom:none}
+.vol-left{display:flex;align-items:center;gap:10px}
+.vol-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.vol-name{font-size:13px;font-weight:500}
+.vol-role{font-size:11.5px;color:var(--text3)}
+.status-dot{width:8px;height:8px;border-radius:50%}
+.status-dot.active{background:var(--green)}
+.status-dot.busy{background:var(--orange)}
+.status-dot.offline{background:var(--text3)}
+.status-dot.critical{background:var(--red)}
+
+/* STAT BOXES */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 14px}
+.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.stat-box-label{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-box-val{font-size:22px;font-weight:600;letter-spacing:-0.5px}
+.stat-box-trend{font-size:12px;font-weight:500;margin-left:6px}
+.trend-up{color:var(--green)}
+.trend-down{color:var(--red)}
+
+/* MAP PLACEHOLDER */
+.map-ph{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin:0 18px 14px}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);background-size:32px 32px;opacity:.6}
+.map-truck{position:absolute;background:var(--bg2);border:1px solid var(--primary);border-radius:var(--radius);padding:4px 10px;font-size:11.5px;color:var(--primary);font-weight:500;display:flex;align-items:center;gap:6px}
+
+/* CIRCLE CHART */
+.vol-stats{display:flex;align-items:center;gap:20px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.circle-wrap{width:64px;height:64px;flex-shrink:0}
+.circle-wrap svg{width:100%;height:100%}
+.circle-bg{fill:none;stroke:var(--bg4);stroke-width:3}
+.circle-prog{fill:none;stroke:var(--primary);stroke-width:3;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray .5s}
+.circ-label{font-size:13px;font-weight:600;fill:var(--text)}
+.vol-stat-text .big{font-size:22px;font-weight:600;line-height:1}
+.vol-stat-text .small{font-size:11.5px;color:var(--text3);margin-top:2px}
+
+/* MODALS */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:520px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-in .18s ease}
+.modal.modal-sm{width:400px}
+.modal.modal-lg{width:620px}
+@keyframes modal-in{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{font-size:15px;font-weight:500}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.close-btn{width:28px;height:28px;border-radius:6px;background:none;border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.close-btn:hover{background:var(--red-dim);border-color:rgba(248,81,73,.3);color:var(--red)}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.input-text,.input-select,.input-textarea{width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13.5px;font-family:inherit;outline:none;transition:border .15s}
+.input-text:focus,.input-select:focus,.input-textarea:focus{border-color:var(--primary);background:var(--bg4)}
+.input-text::placeholder,.input-textarea::placeholder{color:var(--text3)}
+.input-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 8px center;background-size:16px;padding-right:30px}
+.input-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:11.5px;color:var(--text3);margin-top:4px}
+.form-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin:16px 0 10px}
+
+/* PROFILE */
+.profile-hero{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:16px}
+.profile-avatar-lg{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:#fff;flex-shrink:0}
+.profile-name{font-size:20px;font-weight:600;letter-spacing:-0.4px;margin-bottom:4px}
+.profile-role{font-size:13px;color:var(--text2)}
+.profile-badges{display:flex;gap:6px;margin-top:10px}
+.profile-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.profile-stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center}
+.profile-stat .val{font-size:22px;font-weight:600;letter-spacing:-0.5px;margin-bottom:4px}
+.profile-stat .lbl{font-size:11.5px;color:var(--text3)}
+
+/* BROADCAST */
+.channel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.channel-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.channel-card:hover{border-color:var(--border2)}
+.channel-card.selected{border-color:var(--primary);background:var(--primary-dim)}
+.channel-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:16px}
+.channel-name{font-size:13.5px;font-weight:500}
+.channel-sub{font-size:11.5px;color:var(--text3)}
+.broadcast-log{padding:0 18px}
+.log-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.log-item:last-child{border-bottom:none}
+.log-time{font-size:11.5px;color:var(--text3);font-family:'DM Mono',monospace;min-width:70px;padding-top:1px}
+.log-msg{font-size:13px;color:var(--text2);line-height:1.5}
+.log-tag{font-size:11px;font-weight:500;padding:1px 7px;border-radius:4px;display:inline-block;margin-top:4px}
+
+/* DASHBOARD WIDGETS */
+.dash-incident-mini{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.dash-incident-mini:hover{background:rgba(255,255,255,.02)}
+.dash-incident-mini:last-child{border-bottom:none}
+.dim-icon{width:32px;height:32px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.dim-info{flex:1}
+.dim-title{font-size:13px;font-weight:500;line-height:1.2}
+.dim-loc{font-size:11.5px;color:var(--text3)}
+.dim-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.zone-bar{display:flex;align-items:center;gap:10px;padding:8px 18px}
+.zone-label{font-size:12px;color:var(--text2);min-width:100px}
+.zone-track{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.zone-fill{height:100%;border-radius:3px}
+.zone-val{font-size:12px;color:var(--text3);min-width:32px;text-align:right;font-family:'DM Mono',monospace}
+
+/* TOAST */
+#toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{padding:10px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:400;display:flex;align-items:center;gap:8px;min-width:200px;animation:toast-in .2s ease;border:1px solid}
+.toast.success{background:var(--bg2);border-color:rgba(63,185,80,.4);color:var(--green)}
+.toast.info{background:var(--bg2);border-color:rgba(47,129,247,.4);color:var(--primary)}
+.toast.error{background:var(--bg2);border-color:rgba(248,81,73,.4);color:var(--red)}
+.toast.warning{background:var(--bg2);border-color:rgba(210,153,34,.4);color:var(--yellow)}
+@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* UTILS */
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-2{gap:8px}.gap-3{gap:12px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mb-2{margin-bottom:8px}.text-secondary{color:var(--text2)}.text-sm{font-size:12.5px}.fw-500{font-weight:500}.mono{font-family:'DM Mono',monospace}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:var(--text3);font-size:13px;gap:8px}
+.scroll-y{overflow-y:auto;max-height:420px}
+.scroll-y::-webkit-scrollbar{width:3px}
+.scroll-y::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.w-full{width:100%}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7l-9-5z"/></svg>
+    <span>LIGTAS</span>
+    <span class="version">v2.4</span>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="nav-item active" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a href="incidents.html" class="nav-item" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Incidents
+    </a>
+    <a href="centers.html" class="nav-item" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Centers
+    </a>
+    <a href="relief-ops.html" class="nav-item" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      Relief Ops
+    </a>
+    <a href="broadcast.html" class="nav-item" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 8.01c0-6.39-14-6.39-14 0S1.55 22 8 22c2.04 0 4.01-.64 5.56-1.84L19 22l-1.3-5.45C21.07 14.56 22 11.37 22 8.01z"/></svg>
+      Broadcast
+    </a>
+    <div class="nav-divider"></div>
+    <a href="profile.html" class="nav-item" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Admin Profile
+    </a>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="pulse"></div>
+    <span>System Online</span>
+  </div>
+</aside>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrap">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 id="page-title">Dashboard Overview</h1>
+      <span class="breadcrumb" id="live-time"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" onclick="openModal('notif-modal')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="admin-chip" onclick="window.location.href='profile.html'">
+        <div class="admin-avatar">CR</div>
+        <div>
+          <div class="admin-name">Cmdr. Reyes</div>
+          <div class="admin-role">Chief Admin</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- DASHBOARD PAGE -->
+    <div class="page active" id="page-dashboard">
+      <div class="metrics-row">
+        <div class="m-card c-red">
+          <div class="m-card-label">Active Emergencies</div>
+          <div class="m-card-value red">8</div>
+          <div class="m-card-sub">Within 5km radius</div>
+        </div>
+        <div class="m-card c-orange">
+          <div class="m-card-label">Civilians Affected</div>
+          <div class="m-card-value orange">1,503</div>
+          <div class="m-card-sub">Estimated displacement</div>
+        </div>
+        <div class="m-card c-blue">
+          <div class="m-card-label">Units Deployed</div>
+          <div class="m-card-value blue">14</div>
+          <div class="m-card-sub">Across all zones</div>
+        </div>
+        <div class="m-card c-green">
+          <div class="m-card-label">Centers Available</div>
+          <div class="m-card-value green">3,530</div>
+          <div class="m-card-sub">Open beds remaining</div>
+        </div>
+      </div>
+      <div class="grid-left-heavy" style="gap:16px;margin-bottom:16px">
+        <div class="panel">
+          <div class="panel-head"><h2>Live Incidents Feed</h2><button class="btn btn-sm btn-primary" onclick="navigate('incidents')">View All</button></div>
+          <div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--red-dim)">🔥</div><div class="dim-info"><div class="dim-title">Structural Fire: Brgy 402</div><div class="dim-loc">Sampaloc, Manila</div></div><span class="badge badge-critical">Critical</span><div class="dim-time">2m</div></div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--primary-dim)">🌊</div><div class="dim-info"><div class="dim-title">Flash Flood Risk: Sector 12</div><div class="dim-loc">Marikina River</div></div><span class="badge badge-info">Hydro</span><div class="dim-time">2m</div></div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--yellow-dim)">🚑</div><div class="dim-info"><div class="dim-title">Mass Casualty: Taft Ave</div><div class="dim-loc">Manila</div></div><span class="badge badge-warning">Medical</span><div class="dim-time">5m</div></div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--orange-dim)">⛰️</div><div class="dim-info"><div class="dim-title">Landslide Warning: Antipolo</div><div class="dim-loc">Sumulong Highway</div></div><span class="badge badge-urgent">Urgent</span><div class="dim-time">10m</div></div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--red-dim)">⚡</div><div class="dim-info"><div class="dim-title">Power Outage: CBD</div><div class="dim-loc">Makati City</div></div><span class="badge badge-critical">Critical</span><div class="dim-time">12m</div></div>
+            <div class="dash-incident-mini"><div class="dim-icon" style="background:var(--red-dim)">🕳️</div><div class="dim-info"><div class="dim-title">Road Collapse: EDSA</div><div class="dim-loc">Quezon City</div></div><span class="badge badge-critical">Critical</span><div class="dim-time">15m</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Zone Capacity Load</h2></div>
+          <div style="padding:10px 0">
+            <div class="zone-bar"><span class="zone-label">Quezon City</span><div class="zone-track"><div class="zone-fill" style="width:98%;background:var(--red)"></div></div><span class="zone-val mono">98%</span></div>
+            <div class="zone-bar"><span class="zone-label">Manila</span><div class="zone-track"><div class="zone-fill" style="width:75%;background:var(--orange)"></div></div><span class="zone-val mono">75%</span></div>
+            <div class="zone-bar"><span class="zone-label">Pasig</span><div class="zone-track"><div class="zone-fill" style="width:42%;background:var(--primary)"></div></div><span class="zone-val mono">42%</span></div>
+            <div class="zone-bar"><span class="zone-label">Marikina</span><div class="zone-track"><div class="zone-fill" style="width:15%;background:var(--green)"></div></div><span class="zone-val mono">15%</span></div>
+            <div class="zone-bar"><span class="zone-label">Navotas</span><div class="zone-track"><div class="zone-fill" style="width:85%;background:var(--orange)"></div></div><span class="zone-val mono">85%</span></div>
+            <div class="zone-bar"><span class="zone-label">Paranaque</span><div class="zone-track"><div class="zone-fill" style="width:95%;background:var(--red)"></div></div><span class="zone-val mono">95%</span></div>
+            <div class="zone-bar"><span class="zone-label">Valenzuela</span><div class="zone-track"><div class="zone-fill" style="width:30%;background:var(--green)"></div></div><span class="zone-val mono">30%</span></div>
+            <div class="zone-bar"><span class="zone-label">Taguig</span><div class="zone-track"><div class="zone-fill" style="width:50%;background:var(--primary)"></div></div><span class="zone-val mono">50%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h2>Relief Requests</h2><span class="badge badge-warning">10 Pending</span></div>
+          <div style="padding:0 18px 14px">
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+              <div style="background:var(--bg3);border-radius:var(--radius);padding:10px 12px;border-left:3px solid var(--red)"><div style="font-size:13px;font-weight:500">Food Pack Depletion</div><div style="font-size:12px;color:var(--text3)">QC Multi-Purpose Hall · 20m ago</div></div>
+              <div style="background:var(--bg3);border-radius:var(--radius);padding:10px 12px;border-left:3px solid var(--red)"><div style="font-size:13px;font-weight:500">Oxygen Tanks Needed</div><div style="font-size:12px;color:var(--text3)">Paranaque Center · 50m ago</div></div>
+              <div style="background:var(--bg3);border-radius:var(--radius);padding:10px 12px;border-left:3px solid var(--orange)"><div style="font-size:13px;font-weight:500">Clean Water Shortage</div><div style="font-size:12px;color:var(--text3)">Taguig Civic Center · 30m ago</div></div>
+            </div>
+            <button class="btn btn-ghost w-full mt-2" style="justify-content:center" onclick="navigate('relief')">View All Requests</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>Quick Actions</h2></div>
+          <div style="padding:0 18px 18px;display:flex;flex-direction:column;gap:8px;margin-top:4px">
+            <button class="btn btn-ghost w-full" style="justify-content:flex-start" onclick="openModal('add-incident-modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Report New Incident
+            </button>
+            <button class="btn btn-ghost w-full" style="justify-content:flex-start" onclick="openModal('add-evacuee-modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              Add Evacuee Profile
+            </button>
+            <button class="btn btn-ghost w-full" style="justify-content:flex-start" onclick="openModal('broadcast-modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 8.01c0-6.39-14-6.39-14 0S1.55 22 8 22c2.04 0 4.01-.64 5.56-1.84L19 22l-1.3-5.45C21.07 14.56 22 11.37 22 8.01z"/></svg>
+              Send Emergency Broadcast
+            </button>
+            <button class="btn btn-ghost w-full" style="justify-content:flex-start" onclick="openModal('dispatch-modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+              Dispatch Relief Unit
+            </button>
+            <button class="btn btn-ghost w-full" style="justify-content:flex-start" onclick="openModal('register-center-modal')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Register New Center
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== MODALS ====== -->
+
+<!-- Add Incident -->
+<div class="modal-backdrop" id="add-incident-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Incident Title</label><input class="input-text" placeholder="e.g. Fire in Residential Area"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Severity</label><select class="input-select"><option>Critical (Red)</option><option>Urgent (Orange)</option><option>Warning (Yellow)</option><option>Stable (Green)</option></select></div>
+        <div class="form-group"><label>Incident Type</label><select class="input-select"><option>Fire</option><option>Flood</option><option>Landslide</option><option>Medical</option><option>Chemical</option><option>Infrastructure</option><option>Other</option></select></div>
+      </div>
+      <div class="form-group"><label>Location</label><input class="input-text" placeholder="City, Barangay, or Landmark"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Reporter Name</label><input class="input-text" placeholder="Full name"></div>
+        <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea class="input-textarea" rows="3" placeholder="Describe the incident in detail..."></textarea></div>
+      <div class="form-group"><label>Estimated Civilians Affected</label><input class="input-text" type="number" placeholder="e.g. 150"><div class="form-hint">Approximate count; can be updated later.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('add-incident-modal');showToast('Incident created and logged','success')">Create Incident</button></div>
+  </div>
+</div>
+
+<!-- Add Evacuee -->
+<div class="modal-backdrop" id="add-evacuee-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Add Evacuee Profile</h2><button class="close-btn" onclick="closeModal('add-evacuee-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input class="input-text" placeholder="Juan"></div>
+        <div class="form-group"><label>Last Name</label><input class="input-text" placeholder="Dela Cruz"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Age</label><input class="input-text" type="number" placeholder="45"></div>
+        <div class="form-group"><label>Gender</label><select class="input-select"><option>Male</option><option>Female</option><option>Other</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
+        <div class="form-group"><label>Assigned Center</label><select class="input-select"><option>QC Multi-Purpose Hall</option><option>Pasig Elementary Complex</option><option>Marikina Sports Center</option><option>Makati Coliseum</option></select></div>
+      </div>
+      <div class="form-group"><label>Health Status</label><select class="input-select"><option>Stable</option><option>Needs Medical Attention</option><option>Urgent — Requires Immediate Care</option><option>Critical Condition</option></select></div>
+      <div class="form-group"><label>Special Needs / Notes</label><input class="input-text" placeholder="e.g. Insulin, Wheelchair access, Infant, Elderly"><div class="form-hint">List all medical requirements and access needs.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('add-evacuee-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('add-evacuee-modal');showToast('Evacuee profile saved','success')">Save Profile</button></div>
+  </div>
+</div>
+
+<!-- Edit Evacuee -->
+<div class="modal-backdrop" id="edit-evacuee-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Edit Evacuee Profile</h2><button class="close-btn" onclick="closeModal('edit-evacuee-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Full Name</label><input class="input-text" id="edit-name" value="Antonio Reyes"></div>
+        <div class="form-group"><label>Age</label><input class="input-text" type="number" id="edit-age" value="65"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Gender</label><select class="input-select" id="edit-gender"><option>Male</option><option>Female</option><option>Other</option></select></div>
+        <div class="form-group"><label>Health Status</label><select class="input-select" id="edit-health"><option>Stable</option><option>Needs Medical Attention</option><option>Urgent</option><option>Critical Condition</option></select></div>
+      </div>
+      <div class="form-group"><label>Special Needs</label><input class="input-text" id="edit-needs" value="Insulin, Blanket"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" onclick="closeModal('edit-evacuee-modal');showToast('Profile removed','error')">Remove</button>
+      <button class="btn btn-ghost" onclick="closeModal('edit-evacuee-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('edit-evacuee-modal');showToast('Profile updated successfully','success')">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Incident Detail -->
+<div class="modal-backdrop" id="incident-detail-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h2 id="modal-inc-title">Incident Detail</h2><button class="close-btn" onclick="closeModal('incident-detail-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span id="modal-inc-badge" class="badge badge-critical">Critical</span>
+        <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">Sampaloc, Manila</span>
+        <span id="modal-inc-time" style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">2m ago</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)" id="modal-inc-desc">Incident description loading...</div>
+      <div class="form-section">Response Actions</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="form-row">
+          <div class="form-group"><label>Assign Unit</label><select class="input-select"><option>Fire Unit Alpha</option><option>Rescue Team Bravo</option><option>Medical Team Charlie</option><option>Hazmat Delta</option></select></div>
+          <div class="form-group"><label>Priority Override</label><select class="input-select"><option>Keep Current</option><option>Escalate to Critical</option><option>Downgrade to Urgent</option><option>Mark Resolved</option></select></div>
+        </div>
+        <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" rows="2" placeholder="Add field update or notes..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-success" onclick="closeModal('incident-detail-modal');showToast('Incident marked resolved','success')">Mark Resolved</button>
+      <button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>
+      <button class="btn btn-primary" onclick="closeModal('incident-detail-modal');showToast('Unit dispatched and logged','success')">Dispatch Unit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Register Center -->
+<div class="modal-backdrop" id="register-center-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Register New Center</h2><button class="close-btn" onclick="closeModal('register-center-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Facility Name</label><input class="input-text" placeholder="e.g. Taguig Covered Court"></div>
+      <div class="form-group"><label>Address / Location</label><input class="input-text" placeholder="Street, Barangay, City"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Total Bed Capacity</label><input class="input-text" type="number" placeholder="500"></div>
+        <div class="form-group"><label>Zone</label><select class="input-select"><option>Zone 1 — Manila</option><option>Zone 2 — Marikina</option><option>Zone 4 — Pasay/Pasig</option><option>Zone 5 — QC</option><option>Zone 7 — Navotas</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Lead Officer Name</label><input class="input-text" placeholder="Full name"></div>
+        <div class="form-group"><label>Lead Contact</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
+      </div>
+      <div class="form-group"><label>Facility Type</label><select class="input-select"><option>School / University</option><option>Sports Complex</option><option>Government Building</option><option>Barangay Hall</option><option>Church / Chapel</option><option>Other</option></select></div>
+      <div class="form-group"><label>Available Resources</label><input class="input-text" placeholder="e.g. Generator, Medical Bay, Kitchen"><div class="form-hint">Comma-separated list of available facilities.</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('register-center-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('register-center-modal');showToast('Center registered successfully','success')">Register Center</button></div>
+  </div>
+</div>
+
+<!-- Dispatch Modal -->
+<div class="modal-backdrop" id="dispatch-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Dispatch Relief Unit</h2><button class="close-btn" onclick="closeModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Unit / Vehicle</label><select class="input-select"><option>TRUCK-01 (5-ton, Available)</option><option>TRUCK-02 (3-ton, En Route)</option><option>VAN-03 (Medical Van, Available)</option><option>BOAT-04 (Rescue Boat, Available)</option></select></div>
+      <div class="form-group"><label>Destination</label><select class="input-select"><option>QC Multi-Purpose Hall</option><option>Pasig Elementary Complex</option><option>Navotas Sports Complex</option><option>Paranaque Evacuation Center</option><option>Custom Address</option></select></div>
+      <div class="form-group"><label>Cargo / Mission Type</label><select class="input-select"><option>Food Packs</option><option>Medical Supplies</option><option>Water Supply</option><option>Rescue Operation</option><option>Personnel Transport</option><option>Mixed Relief Goods</option></select></div>
+      <div class="form-row">
+        <div class="form-group"><label>Quantity / Load</label><input class="input-text" placeholder="e.g. 500 packs / 3 tons"></div>
+        <div class="form-group"><label>Priority</label><select class="input-select"><option>Critical — Immediate</option><option>High — Within 1 hour</option><option>Normal</option></select></div>
+      </div>
+      <div class="form-group"><label>Driver / Team Lead</label><input class="input-text" placeholder="Name of assigned personnel"></div>
+      <div class="form-group"><label>Notes</label><textarea class="input-textarea" rows="2" placeholder="Additional instructions for the team..."></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('dispatch-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('dispatch-modal');showToast('Unit dispatched successfully','success')">Confirm Dispatch</button></div>
+  </div>
+</div>
+
+<!-- Broadcast Modal -->
+<div class="modal-backdrop" id="broadcast-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h2>Send Emergency Broadcast</h2><button class="close-btn" onclick="closeModal('broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Alert Level</label><select class="input-select"><option>🔴 Red — Immediate Evacuation</option><option>🟠 Orange — High Threat</option><option>🟡 Yellow — Precautionary</option><option>🔵 Blue — Informational</option></select></div>
+      <div class="form-group"><label>Target Zone</label><select class="input-select"><option>All Zones</option><option>Zone 1 — Manila</option><option>Zone 2 — Marikina</option><option>Zone 5 — QC</option><option>Zone 7 — Navotas</option></select></div>
+      <div class="form-group"><label>Message</label><textarea class="input-textarea" rows="4" placeholder="Type emergency message..."></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="closeModal('broadcast-modal');showToast('Broadcast sent to all zones','success')">Send Now</button></div>
+  </div>
+</div>
+
+<!-- Confirm Broadcast -->
+<div class="modal-backdrop" id="confirm-broadcast-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h2>Confirm Broadcast</h2><button class="close-btn" onclick="closeModal('confirm-broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div style="background:var(--red-dim);border:1px solid rgba(248,81,73,.2);border-radius:var(--radius);padding:14px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--red);margin-bottom:4px">⚠️ This will send to 14,203 recipients</div>
+        <div style="font-size:12.5px;color:var(--text2)">This action will immediately broadcast to all selected channels and zones. This cannot be undone.</div>
+      </div>
+      <div style="font-size:13px;color:var(--text2)">Are you sure you want to send this emergency broadcast?</div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('confirm-broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="closeModal('confirm-broadcast-modal');showToast('Emergency broadcast sent to 14,203 recipients','success')">Confirm & Send</button></div>
+  </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal-backdrop" id="notif-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h2>Notifications</h2><button class="close-btn" onclick="closeModal('notif-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" style="padding:0">
+      <div class="feed-item"><div class="feed-dot red"></div><div class="feed-info"><div class="feed-title">New Critical Incident</div><div class="feed-desc">Chemical spill reported at Manila Bay port area</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">30m</div></div>
+      <div class="feed-item"><div class="feed-dot orange"></div><div class="feed-info"><div class="feed-title">Center Near Capacity</div><div class="feed-desc">QC Multi-Purpose Hall at 98% occupancy</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">1h</div></div>
+      <div class="feed-item"><div class="feed-dot yellow"></div><div class="feed-info"><div class="feed-title">Supply Alert</div><div class="feed-desc">Medical kits down 8% — restock recommended</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">2h</div></div>
+      <div class="feed-item"><div class="feed-dot green"></div><div class="feed-info"><div class="feed-title">Incident Resolved</div><div class="feed-desc">Bridge damage at Pasig River — DPWH cleared</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">3h</div></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost w-full" style="justify-content:center" onclick="closeModal('notif-modal');showToast('All notifications marked as read','info')">Mark All as Read</button></div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-backdrop" id="edit-profile-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Edit Profile</h2><button class="close-btn" onclick="closeModal('edit-profile-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input class="input-text" value="Elena"></div>
+        <div class="form-group"><label>Last Name</label><input class="input-text" value="Reyes"></div>
+      </div>
+      <div class="form-group"><label>Rank / Title</label><input class="input-text" value="Commander"></div>
+      <div class="form-group"><label>Email Address</label><input class="input-text" type="email" value="e.reyes@ndrrmc.gov.ph"></div>
+      <div class="form-group"><label>Contact Number</label><input class="input-text" value="+63 917 555 0001"></div>
+      <div class="form-group"><label>Assigned Region</label><select class="input-select"><option selected>NCR — National Capital Region</option><option>Region III</option><option>Region IV-A</option></select></div>
+      <div class="form-section">Change Password</div>
+      <div class="form-row">
+        <div class="form-group"><label>New Password</label><input class="input-text" type="password" placeholder="••••••••"></div>
+        <div class="form-group"><label>Confirm Password</label><input class="input-text" type="password" placeholder="••••••••"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('edit-profile-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('edit-profile-modal');showToast('Profile updated successfully','success')">Save Changes</button></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-wrap"></div>
+
+<script>
+const pages = {dashboard:'Dashboard Overview',incidents:'Incident Management',centers:'Evacuation Centers',relief:'Relief Operations',broadcast:'Emergency Broadcast',profile:'Admin Profile'};
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
+function showToast(msg,type='info'){
+  const t=document.createElement('div');
+  const icons={success:'✓',info:'ℹ',error:'✕',warning:'⚠'};
+  t.className=`toast ${type}`;t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  document.getElementById('toast-wrap').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='.2s';setTimeout(()=>t.remove(),200)},3200);
+}
+function filterIncidents(q){
+  const rows=document.querySelectorAll('#incidents-tbody tr');
+  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none'});
+}
+function filterByStatus(s){
+  const rows=document.querySelectorAll('#incidents-tbody tr');
+  rows.forEach(r=>{r.style.display=(s==='all'||r.dataset.status===s)?'':'none'});
+}
+function selectCenter(el,name){
+  document.querySelectorAll('.center-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selected-center-name').textContent=name;
+}
+function setIncidentDetail(title,status,loc,time,desc){
+  document.getElementById('modal-inc-title').textContent=title;
+  document.getElementById('modal-inc-loc').textContent=loc;
+  document.getElementById('modal-inc-time').textContent=time;
+  document.getElementById('modal-inc-desc').textContent=desc;
+  const b=document.getElementById('modal-inc-badge');
+  b.textContent=status;
+  b.className='badge '+(status==='Critical'?'badge-critical':status==='Urgent'?'badge-urgent':status.includes('Medical')?'badge-warning':status==='Hydrological'?'badge-info':'badge-gray');
+}
+function setEditEvacuee(name,age,gender,health,needs){
+  document.getElementById('edit-name').value=name;
+  document.getElementById('edit-age').value=age;
+  document.getElementById('edit-gender').value=gender==='M'?'Male':gender==='F'?'Female':'Other';
+  const hs=document.getElementById('edit-health');
+  const map={'Stable':'Stable','Medical Attention':'Needs Medical Attention','Urgent':'Urgent','Critical':'Critical Condition'};
+  for(let o of hs.options){if(o.value===map[health]||o.text.includes(health)){o.selected=true;break}}
+  document.getElementById('edit-needs').value=needs;
+}
+function updateTime(){
+  const now=new Date();
+  const d=now.toLocaleDateString('en-PH',{weekday:'short',month:'short',day:'numeric'});
+  const t=now.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('live-time').textContent=d+' · '+t;
+}
+setInterval(updateTime,1000);updateTime();
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'))});
+</script>
+</body>
+</html>
