@@ -5,24 +5,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LIGTAS — Admin Login</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117;
-      --bg2: #161b22;
-      --bg3: #1c2330;
-      --bg4: #21262d;
-      --border: rgba(255, 255, 255, 0.08);
-      --border2: rgba(255, 255, 255, 0.14);
-      --text: #e6edf3;
-      --text2: #8b949e;
-      --text3: #484f58;
-      --primary: #2f81f7;
-      --primary-dim: rgba(47, 129, 247, 0.12);
-      --red: #f85149;
-    }
+  --bg: #0D0F1A;
+  --bg-card: #141720;
+  --bg-elevated: #1C1F2E;
+  --border: #252837;
+  --text-primary: #F1F5F9;
+  --text-muted: #64748B;
+  --text-micro: #4B5563;
+
+  --critical: #EF4444;
+  --warning: #F59E0B;
+  --nominal: #3B82F6;
+  --success: #22C55E;
+
+  --radius: 4px;
+  --radius-lg: 6px;
+}
 
     * {
       box-sizing: border-box;
@@ -31,15 +32,16 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
-      color: var(--text);
+      color: var(--text-primary);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
+      letter-spacing: -0.01em;
     }
 
     /* Background Aesthetics */
@@ -47,16 +49,16 @@
       position: absolute;
       inset: 0;
       background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.4;
+      background-size: 64px 64px;
+      opacity: 0.2;
       z-index: 0;
     }
 
     .bg-glow {
       position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(47, 129, 247, 0.15) 0%, transparent 70%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
@@ -66,16 +68,14 @@
 
     /* Login Container */
     .login-wrap {
-      width: 380px;
-      background: rgba(22, 27, 34, 0.7);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--border2);
-      border-radius: 16px;
-      padding: 40px 36px;
+      width: 400px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px;
       z-index: 10;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      animation: fade-in-up 0.5s ease-out forwards;
+      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.4);
+      animation: fade-in-up 0.4s ease-out forwards;
     }
 
     @keyframes fade-in-up {
@@ -95,29 +95,30 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .brand svg {
-      color: var(--red);
-      width: 28px;
-      height: 28px;
+      color: var(--critical);
+      width: 24px;
+      height: 24px;
     }
 
     .brand span {
-      font-size: 24px;
+      font-size: 20px;
       font-weight: 600;
-      letter-spacing: -0.5px;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
     }
 
     .subtitle {
       text-align: center;
-      font-size: 12.5px;
-      color: var(--text2);
-      margin-bottom: 36px;
-      letter-spacing: 0.8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     /* Forms */
@@ -127,33 +128,34 @@
 
     .form-group label {
       display: block;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
-      color: var(--text2);
+      color: var(--text-muted);
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .input-text {
       width: 100%;
-      padding: 12px 14px;
-      background: rgba(13, 17, 23, 0.6);
+      padding: 12px 16px;
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 14px;
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 13px;
       font-family: inherit;
       outline: none;
-      transition: all 0.2s;
+      transition: all 0.1s;
     }
 
     .input-text:focus {
-      border-color: var(--primary);
-      background: rgba(28, 35, 48, 0.8);
-      box-shadow: 0 0 0 3px var(--primary-dim);
+      border-color: var(--nominal);
+      background: var(--bg-elevated);
     }
 
     .input-text::placeholder {
-      color: var(--text3);
+      color: var(--text-micro);
     }
 
     .options-row {
@@ -172,52 +174,48 @@
 
     .checkbox-wrap input {
       cursor: pointer;
-      accent-color: var(--primary);
+      accent-color: var(--nominal);
       width: 14px;
       height: 14px;
     }
 
     .checkbox-wrap span {
-      font-size: 13px;
-      color: var(--text2);
+      font-size: 12px;
+      color: var(--text-muted);
       user-select: none;
     }
 
     .forgot-link {
-      font-size: 13px;
-      color: var(--primary);
+      font-size: 12px;
+      color: var(--nominal);
       text-decoration: none;
-      transition: color 0.15s;
+      transition: opacity 0.1s;
     }
 
     .forgot-link:hover {
-      color: #58a6ff;
-      text-decoration: underline;
+      opacity: 0.8;
     }
 
     .btn-submit {
       width: 100%;
-      padding: 12px;
-      background: var(--primary);
+      padding: 14px;
+      background: var(--nominal);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 14.5px;
+      border-radius: var(--radius);
+      font-size: 13px;
       font-weight: 600;
       font-family: inherit;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.1s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(47, 129, 247, 0.2);
+      gap: 10px;
     }
 
     .btn-submit:hover {
-      background: #388bfd;
-      box-shadow: 0 6px 16px rgba(47, 129, 247, 0.3);
-      transform: translateY(-1px);
+      background: #2563EB;
     }
 
     .btn-submit:active {
@@ -230,19 +228,20 @@
       bottom: 24px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text3);
+      gap: 10px;
+      font-size: 10px;
+      color: var(--text-micro);
       z-index: 10;
-      font-family: 'DM Mono', monospace;
+      font-family: 'IBM Plex Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
 
     .pulse {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #3fb950;
-      animation: pulse 2s infinite;
+      background: var(--success);
     }
 
     @keyframes pulse {
@@ -272,7 +271,90 @@
         transform: rotate(360deg);
       }
     }
-  </style>
+    .input-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.1s;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+    .input-select:focus {
+      border-color: var(--nominal);
+      background: var(--bg-elevated);
+    }
+    .input-select option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+    .demo-hint {
+      background: rgba(59, 130, 246, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .demo-hint strong {
+      color: var(--text-primary);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .demo-hint .mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--nominal);
+    }
+  
+/* NEARBY VOLUNTEERS PANEL */
+.vol-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+.vol-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.vol-header h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 0; }
+.vol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vol-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; transition: all 0.2s; position: relative; }
+.vol-card:hover { border-color: var(--primary); }
+.vol-card.selected { border-color: var(--primary); background: var(--primary-dim); }
+.vol-card-checkbox { position: absolute; top: 10px; right: 10px; width: 14px; height: 14px; }
+.vol-avatar-mini { width: 32px; height: 32px; border-radius: 50%; background: var(--bg4); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text2); flex-shrink: 0; }
+.vol-info { flex: 1; }
+.vol-name { font-size: 12.5px; font-weight: 500; margin-bottom: 2px; }
+.vol-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.vol-skill-badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; background: var(--bg4); color: var(--text2); margin-right: 4px; }
+.rec-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; background: var(--primary); color: white; font-weight: 600; text-transform: uppercase; display: inline-block; margin-bottom: 4px; }
+
+/* BROADCAST TOGGLE & PANEL */
+.broadcast-section { background: rgba(47, 129, 247, 0.05); border: 1px solid rgba(47, 129, 247, 0.2); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; }
+.toggle-info h3 { font-size: 13.5px; font-weight: 600; margin: 0; }
+.toggle-info p { font-size: 11.5px; color: var(--text3); margin: 2px 0 0; }
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg4); transition: .4s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(16px); }
+.broadcast-options { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: none; }
+.broadcast-options.active { display: block; }
+.channel-grid-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 12px; }
+.channel-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+
+/* SECTION HEADERS */
+.form-section-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
+.form-section-head::after { content: ""; height: 1px; background: var(--border); flex: 1; }
+</style>
 </head>
 
 <body>
@@ -302,6 +384,19 @@
         <input type="password" class="input-text" placeholder="••••••••" value="password123" required
           autocomplete="current-password">
       </div>
+      <div class="form-group">
+        <label>Login Role</label>
+        <select class="input-select" id="role-select">
+          <option value="Super Admin">Super Admin — Full System Access</option>
+          <option value="Admin">Admin — Standard Operations</option>
+        </select>
+      </div>
+
+      <div class="demo-hint">
+        <strong>Demo Credentials</strong><br>
+        <span class="mono">Super Admin:</span> cmd.reyes / password123<br>
+        <span class="mono">Admin:</span> admin.pasig / password123
+      </div>
 
       <div class="options-row">
         <label class="checkbox-wrap">
@@ -328,25 +423,80 @@
   </div>
 
   <script>
-    document.getElementById('login-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const btn = document.getElementById('submit-btn');
-      const text = document.getElementById('btn-text');
-      const icon = document.getElementById('btn-icon');
-      const spinner = document.getElementById('spinner');
+    function logAction(action, target, detail) {
+      const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      log.unshift({
+        id: 'LOG-' + Date.now(),
+        timestamp: new Date().toLocaleString('en-PH'),
+        admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+        action,
+        target: target || '—',
+        detail: detail || '—',
+        ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
+      });
+      localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
+    }
+  </script>
+  <script>
+    document.getElementById('login-form')
+      .addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submit-btn');
+        const text = document.getElementById('btn-text');
+        const icon = document.getElementById('btn-icon');
+        const spinner = document.getElementById('spinner');
+        const role = document.getElementById(
+          'role-select'
+        ).value;
+        const userInput = document.querySelector(
+          '.input-text[autocomplete="username"]'
+        ).value;
+        const userName = role === 'Super Admin' 
+          ? 'Cmdr. Reyes' 
+          : 'Admin Pasig';
 
-      // Show loading state
-      btn.style.pointerEvents = 'none';
-      text.textContent = 'Authenticating...';
-      icon.style.display = 'none';
-      spinner.style.display = 'block';
+        // Store role, user, and session start
+        localStorage.setItem('ligtas_role', role);
+        localStorage.setItem('ligtas_user', userName);
+        sessionStorage.setItem(
+          'ligtas_session_start', 
+          Date.now().toString()
+        );
 
-      // Simulate network request delay then redirect
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 800);
-    });
+        // Reset audit log on fresh login 
+        // (keep last 50 entries for continuity)
+        const existing = JSON.parse(
+          localStorage.getItem('ligtas_audit') || '[]'
+        );
+        localStorage.setItem(
+          'ligtas_audit', 
+          JSON.stringify(existing.slice(0, 50))
+        );
+
+        // Log the login event
+        logAction(
+          'Login', 
+          userInput, 
+          'Logged in as ' + role + 
+          ' from 192.168.1.' + 
+          Math.floor(Math.random() * 50 + 10)
+        );
+
+        // Loading state
+        btn.style.pointerEvents = 'none';
+        text.textContent = 'Authenticating...';
+        icon.style.display = 'none';
+        spinner.style.display = 'block';
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 800);
+      });
+  </script>
+
   </script>
 </body>
+</html>
 
 </html>

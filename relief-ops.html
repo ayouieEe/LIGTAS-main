@@ -4,76 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIGTAS — Admin Command Center</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d1117;
-  --bg2: #161b22;
-  --bg3: #1c2330;
-  --bg4: #21262d;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.14);
-  --text: #e6edf3;
-  --text2: #8b949e;
-  --text3: #484f58;
-  --primary: #2f81f7;
-  --primary-dim: rgba(47,129,247,0.12);
-  --red: #f85149;
-  --red-dim: rgba(248,81,73,0.12);
-  --orange: #f0883e;
-  --orange-dim: rgba(240,136,62,0.12);
-  --yellow: #d29922;
-  --yellow-dim: rgba(210,153,34,0.12);
-  --green: #3fb950;
-  --green-dim: rgba(63,185,80,0.12);
-  --teal: #39c5cf;
-  --teal-dim: rgba(57,197,207,0.12);
-  --purple: #bc8cff;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --sidebar-w: 220px;
+  --bg: #0D0F1A;
+  --bg-card: #141720;
+  --bg-elevated: #1C1F2E;
+  --border: #252837;
+  --text-primary: #F1F5F9;
+  --text-muted: #64748B;
+  --text-micro: #4B5563;
+
+  --critical: #EF4444;
+  --warning: #F59E0B;
+  --nominal: #3B82F6;
+  --success: #22C55E;
+
+  --radius: 4px;
+  --radius-lg: 6px;
+  --sidebar-w: 240px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;display:flex;font-size:13px;letter-spacing:-0.01em}
 a{text-decoration:none;color:inherit}
-button{font-family:inherit;cursor:pointer}
+button{font-family:inherit;cursor:pointer;outline:none}
+label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
 
 /* LAYOUT */
 .app{display:flex;width:100%;min-height:100vh}
-.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100}
 .main-wrap{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
 
 /* SIDEBAR */
-.sidebar-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
-.sidebar-logo svg{color:var(--red)}
-.sidebar-logo span{font-size:16px;font-weight:600;letter-spacing:-0.3px}
-.sidebar-logo .version{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:4px;margin-left:auto}
-.nav{flex:1;padding:12px 8px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius);color:var(--text2);font-size:13.5px;font-weight:400;margin-bottom:2px;transition:all .15s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--primary-dim);color:var(--primary);font-weight:500}
-.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:.8}
-.nav-item.active svg{opacity:1}
-.nav-divider{height:1px;background:var(--border);margin:8px 4px}
-.sidebar-foot{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(63,185,80,.4)}50%{box-shadow:0 0 0 5px rgba(63,185,80,0)}}
-.sidebar-foot span{font-size:12px;color:var(--text2)}
+.sidebar-logo{padding:24px 20px 20px;display:flex;align-items:center;gap:10px}
+.sidebar-logo svg{color:var(--critical);width:18px;height:18px}
+.sidebar-logo span{font-size:14px;font-weight:600;letter-spacing:0.05em;color:var(--text-primary)}
+.sidebar-logo .version{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-micro);margin-left:auto}
+.nav{flex:1;padding:12px 10px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-weight:400;margin-bottom:2px;transition:all .1s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg-card);color:var(--text-primary)}
+.nav-item.active{background:var(--bg-elevated);color:var(--text-primary);border-left:2px solid var(--nominal);border-radius:0 4px 4px 0;padding-left:10px}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;color:var(--text-muted)}
+.nav-item.active svg{color:var(--text-primary)}
+.nav-divider{height:1px;background:var(--border);margin:16px 8px}
+.sidebar-foot{padding:16px 20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--success)}
+.sidebar-foot span{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted)}
 
 /* TOPBAR */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
-.topbar-left{display:flex;align-items:center;gap:12px}
-.topbar h1{font-size:15px;font-weight:500;letter-spacing:-0.2px}
-.breadcrumb{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
-.topbar-right{display:flex;align-items:center;gap:8px}
-.icon-btn{width:34px;height:34px;border-radius:var(--radius);background:none;border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .15s}
-.icon-btn:hover{border-color:var(--border2);color:var(--text);background:var(--bg3)}
-.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg)}
-.admin-chip{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:all .15s}
-.admin-chip:hover{border-color:var(--border2);background:var(--bg3)}
-.admin-avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2f81f7,#bc8cff);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff}
-.admin-name{font-size:12.5px;font-weight:500}
-.admin-role{font-size:10.5px;color:var(--text2)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(13,15,26,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:16px}
+.topbar h1{font-size:14px;font-weight:500;color:var(--text-primary)}
+.breadcrumb{font-size:12px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.icon-btn{width:32px;height:32px;border-radius:var(--radius);background:none;border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .1s}
+.icon-btn:hover{border-color:var(--text-micro);color:var(--text-primary);background:var(--bg-elevated)}
+.notif-dot{position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;background:var(--critical)}
+.admin-chip{display:flex;align-items:center;gap:12px;cursor:pointer}
+.admin-avatar{width:24px;height:24px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text-muted)}
+.admin-name{font-size:13px;font-weight:500;color:var(--text-primary)}
+.admin-role{font-size:11px;color:var(--text-muted)}
 
 /* CONTENT */
 .content{flex:1;padding:24px}
@@ -81,60 +71,49 @@ button{font-family:inherit;cursor:pointer}
 .page.active{display:block}
 
 /* METRIC CARDS */
-.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.m-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px;position:relative;overflow:hidden}
-.m-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.m-card.c-red::before{background:var(--red)}
-.m-card.c-orange::before{background:var(--orange)}
-.m-card.c-blue::before{background:var(--primary)}
-.m-card.c-green::before{background:var(--green)}
-.m-card.c-teal::before{background:var(--teal)}
-.m-card.c-yellow::before{background:var(--yellow)}
-.m-card-label{font-size:11.5px;color:var(--text2);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.m-card-value{font-size:28px;font-weight:600;letter-spacing:-1px;line-height:1}
-.m-card-value.red{color:var(--red)}
-.m-card-value.orange{color:var(--orange)}
-.m-card-value.green{color:var(--green)}
-.m-card-value.yellow{color:var(--yellow)}
-.m-card-value.blue{color:var(--primary)}
-.m-card-sub{font-size:11.5px;color:var(--text3);margin-top:6px}
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.m-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative}
+.m-card.c-red{border-left:2px solid var(--critical)}
+.m-card.c-orange{border-left:2px solid var(--warning)}
+.m-card.c-blue{border-left:2px solid var(--nominal)}
+.m-card.c-green{border-left:2px solid var(--success)}
+.m-card.c-yellow{border-left:2px solid var(--warning)}
+.m-card-label{font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em}
+.m-card-value{font-size:28px;font-weight:600;line-height:1;color:var(--text-primary);font-family:'IBM Plex Mono',monospace}
+.m-card-value.blue{color:var(--nominal)}
+.m-card-value.orange{color:var(--warning)}
+.m-card-value.green{color:var(--success)}
+.m-card-value.red{color:var(--critical)}
+.m-card-sub{font-size:12px;color:var(--text-micro);margin-top:8px}
 
 /* PANELS */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .grid-left-heavy{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
 .grid-right-heavy{display:grid;grid-template-columns:1fr 1.6fr;gap:16px}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.panel-head{padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.panel-head h2{font-size:14px;font-weight:500;letter-spacing:-0.2px}
-.panel-body{padding:0 18px 18px}
+.panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)}
+.panel-head{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.panel-head h2{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-primary)}
+.panel-body{padding:0 20px 20px}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;border:none;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
-.btn svg{width:14px;height:14px}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:hover{background:#388bfd}
-.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(248,81,73,.2)}
-.btn-danger:hover{background:rgba(248,81,73,.2)}
-.btn-ghost{background:var(--bg4);color:var(--text2);border:1px solid var(--border)}
-.btn-ghost:hover{color:var(--text);border-color:var(--border2);background:var(--bg3)}
-.btn-outline{background:none;color:var(--text2);border:1px solid var(--border)}
-.btn-outline:hover{color:var(--text);border-color:var(--border2);background:var(--bg3)}
-.btn-sm{padding:5px 10px;font-size:12px}
-.btn-success{background:var(--green-dim);color:var(--green);border:1px solid rgba(63,185,80,.2)}
-.btn-success:hover{background:rgba(63,185,80,.2)}
-.btn-warning{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(210,153,34,.2)}
-.btn-warning:hover{background:rgba(210,153,34,.2)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius);font-size:12px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:all .1s;font-family:inherit}
+.btn-primary{background:var(--nominal);color:#fff}
+.btn-primary:hover{background:#2563EB}
+.btn-danger-ghost{background:none;color:var(--critical);border:1px solid var(--border);border-left:2px solid var(--critical)}
+.btn-danger-ghost:hover{background:rgba(239, 68, 68, 0.05);border-color:var(--critical)}
+.btn-ghost{background:none;color:var(--text-muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text-primary);background:var(--bg-elevated);border-color:var(--text-micro)}
+.btn-sm{padding:6px 12px;font-size:11px}
 
 /* BADGES */
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
-.badge-critical{background:var(--red-dim);color:var(--red)}
-.badge-urgent{background:var(--orange-dim);color:var(--orange)}
-.badge-warning{background:var(--yellow-dim);color:var(--yellow)}
-.badge-stable{background:var(--green-dim);color:var(--green)}
-.badge-info{background:var(--primary-dim);color:var(--primary)}
-.badge-teal{background:var(--teal-dim);color:var(--teal)}
-.badge-gray{background:var(--bg4);color:var(--text2)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;border:1px solid var(--border);color:var(--text-muted);background:var(--bg-elevated)}
+.badge .dot{width:6px;height:6px;border-radius:50%;margin-right:6px}
+.badge.critical .dot{background:var(--critical)}
+.badge.warning .dot{background:var(--warning)}
+.badge.nominal .dot{background:var(--nominal)}
+.badge.success .dot{background:var(--success)}
+.badge-pill-muted{background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);padding:2px 8px;border-radius:10px;font-size:11px}
 
 /* TABLE */
 .table-wrap{overflow-x:auto}
@@ -149,11 +128,10 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 
 /* SEARCH & FILTERS */
 .controls-row{display:flex;align-items:center;gap:10px;padding:0 18px;margin-bottom:2px}
-.search-wrap{position:relative;flex:1;max-width:280px}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);width:14px;height:14px}
-.search-input{width:100%;padding:7px 12px 7px 32px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;outline:none}
-.search-input::placeholder{color:var(--text3)}
-.search-input:focus{border-color:var(--primary);background:var(--bg4)}
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-micro);width:14px;height:14px}
+.search-input{width:100%;padding:8px 12px 8px 32px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:inherit;outline:none}
+.search-input:focus{border-color:var(--nominal);background:var(--bg-elevated)}
 .filter-select{padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
 .filter-select:focus{border-color:var(--primary)}
 
@@ -199,15 +177,16 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .req-list::-webkit-scrollbar{width:4px}
 .req-list::-webkit-scrollbar-track{background:transparent}
 .req-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
-.req-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;border-left-width:3px}
-.req-card.bc-red{border-left-color:var(--red)}
-.req-card.bc-orange{border-left-color:var(--orange)}
-.req-card.bc-yellow{border-left-color:var(--yellow)}
-.req-card.bc-blue{border-left-color:var(--primary)}
-.req-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.req-card-meta{font-size:11px;color:var(--text3)}
-.req-card-title{font-size:13.5px;font-weight:500;margin-bottom:3px}
-.req-card-desc{font-size:12.5px;color:var(--text2);margin-bottom:10px}
+.req-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:16px;border-left:3px solid var(--border);transition:all .1s;cursor:pointer}
+.req-card:hover{border-color:var(--text-micro)}
+.req-card.bc-red{border-left-color:var(--critical)}
+.req-card.bc-orange{border-left-color:var(--warning)}
+.req-card.bc-yellow{border-left-color:var(--warning)}
+.req-card.bc-blue{border-left-color:var(--nominal)}
+.req-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.req-card-meta{font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace}
+.req-card-title{font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px}
+.req-card-desc{font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.4}
 .req-card-foot{display:flex;align-items:center;justify-content:space-between}
 
 /* VOL LIST */
@@ -257,14 +236,25 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .role-chip{display:inline-flex;align-items:center;padding:4px 10px;font-size:11.5px;border-radius:20px;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:all .15s;background:transparent}
 .role-chip.active{background:var(--primary-dim);border-color:var(--primary);color:var(--primary)}
 
-/* STAT BOXES */
-.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 14px}
-.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
-.stat-box-label{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.stat-box-val{font-size:22px;font-weight:600;letter-spacing:-0.5px}
-.stat-box-trend{font-size:12px;font-weight:500;margin-left:6px}
-.trend-up{color:var(--green)}
-.trend-down{color:var(--red)}
+/* METRIC CARDS */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.m-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative}
+.m-card.c-red{border-left:2px solid var(--critical)}
+.m-card.c-orange{border-left:2px solid var(--warning)}
+.m-card.c-blue{border-left:2px solid var(--nominal)}
+.m-card.c-green{border-left:2px solid var(--success)}
+.m-card.c-yellow{border-left:2px solid var(--warning)}
+.m-card.c-teal{border-left:2px solid var(--success)}
+.m-card.c-purple{border-left:2px solid var(--nominal)}
+.m-card-label{font-size:11px;color:var(--text-muted);margin-bottom:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em}
+.m-card-value{font-size:28px;font-weight:600;line-height:1;color:var(--text-primary);font-family:'IBM Plex Mono',monospace}
+.m-card-value.blue{color:var(--nominal)}
+.m-card-value.orange{color:var(--warning)}
+.m-card-value.green{color:var(--success)}
+.m-card-value.red{color:var(--critical)}
+.m-card-sub{font-size:12px;color:var(--text-micro);margin-top:8px}
+.trend-up{color:var(--success)}
+.trend-down{color:var(--critical)}
 
 /* MAP PLACEHOLDER */
 .map-ph{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin:0 18px 14px}
@@ -278,27 +268,224 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .circle-bg{fill:none;stroke:var(--bg4);stroke-width:3}
 .circle-prog{fill:none;stroke:var(--primary);stroke-width:3;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray .5s}
 .circ-label{font-size:13px;font-weight:600;fill:var(--text)}
-.vol-stat-text .big{font-size:22px;font-weight:600;line-height:1}
-.vol-stat-text .small{font-size:11.5px;color:var(--text3);margin-top:2px}
+.vol-stat-text .big{font-size:24px;font-weight:600;color:var(--text-primary);font-family:'IBM Plex Mono',monospace;line-height:1}
+.vol-stat-text .small{font-size:11px;color:var(--text-muted);margin-top:4px}
 
 /* MODALS */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:520px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-in .18s ease}
-.modal.modal-sm{width:400px}
-.modal.modal-lg{width:620px}
-@keyframes modal-in{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
-.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-head h2{font-size:15px;font-weight:500}
-.modal-body{padding:20px;overflow-y:auto;flex:1}
-.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
-.close-btn{width:28px;height:28px;border-radius:6px;background:none;border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
-.close-btn:hover{background:var(--red-dim);border-color:rgba(248,81,73,.3);color:var(--red)}
+.modal{background:#1A1D27;border:1px solid #2E3247;border-radius:12px;width:520px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.6);animation:modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)}
+.modal.modal-sm{width:420px}
+.modal.modal-lg{width:760px}
+@keyframes modal-in{from{opacity:0;transform:scale(.97) translateY(12px)}to{opacity:1;transform:none}}
+@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.modal-head{padding:18px 24px;background:#0F1117;border-bottom:1px solid #2E3247;display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{font-size:16px;font-weight:600;color:#F9FAFB;letter-spacing:-0.2px}
+.modal-body{padding:24px;overflow-y:auto;flex:1;background:#1A1D27}
+.modal-foot{padding:16px 24px;background:#0F1117;border-top:1px solid #2E3247;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.close-btn{width:32px;height:32px;border-radius:8px;background:#242736;border:1px solid #2E3247;color:#6B7280;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.close-btn:hover{background:rgba(239, 68, 68, 0.1);border-color:#EF4444;color:#EF4444}
 
 /* FORMS */
 .form-group{margin-bottom:14px}
 .form-group:last-child{margin-bottom:0}
-label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-bottom:6px}
+
+/* MISSION CONTROL WIZARD - NASA x STRIPE AESTHETIC */
+#mobilize-modal .modal.modal-full {
+  width: 860px; /* Focused width */
+  height: auto;
+  max-height: 90vh;
+  background: #1A1D27;
+  border: 1px solid #2E3247;
+  color: #F9FAFB;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+#mobilize-modal .modal-head {
+  background: #0F1117;
+  border-bottom: 1px solid #2E3247;
+  padding: 18px 24px;
+}
+#mobilize-modal .modal-head h2 { color: #F9FAFB; }
+#mobilize-modal .modal-head .sub { color: #6B7280; }
+#mobilize-modal .close-btn { border-color: #2E3247; color: #6B7280; }
+#mobilize-modal .close-btn:hover { background: rgba(239, 68, 68, 0.1); border-color: #EF4444; color: #EF4444; }
+
+.wizard-body {
+  display: flex;
+  height: 65vh;
+  min-height: 500px;
+  position: relative;
+  background: #1A1D27;
+  overflow: hidden;
+}
+
+.wizard-step {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: none;
+}
+.wizard-step.active {
+  display: block;
+}
+.wizard-step::-webkit-scrollbar { width: 6px; }
+.wizard-step::-webkit-scrollbar-thumb { background: #2E3247; border-radius: 6px; }
+
+/* Typography & Forms */
+.mc-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #6B7280;
+  margin-bottom: 16px;
+  margin-top: 24px;
+}
+.mc-section-title:first-child { margin-top: 0; }
+.mc-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #E5E7EB;
+  margin-bottom: 8px;
+}
+.mc-input, .mc-select, .mc-textarea {
+  width: 100%;
+  background: #242736;
+  border: 1px solid #2E3247;
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: #F9FAFB;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.mc-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px;
+}
+.mc-input:focus, .mc-select:focus, .mc-textarea:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+.mc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.mc-form-group { margin-bottom: 16px; }
+
+/* Polished Controls */
+.mc-segmented {
+  display: flex;
+  background: #0F1117;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid #2E3247;
+  gap: 4px;
+}
+.mc-seg-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mc-seg-btn.active {
+  background: #242736;
+  color: #F9FAFB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* Priority Pills */
+.priority-pills { display: flex; gap: 8px; }
+.p-pill {
+  flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #2E3247;
+  background: #0F1117; color: #6B7280; font-weight: 600; font-size: 13px;
+  cursor: pointer; text-align: center; transition: all 0.2s;
+}
+.p-pill.active.critical { background: #EF4444; border-color: #EF4444; color: #fff; }
+.p-pill.active.high { background: #F59E0B; border-color: #F59E0B; color: #fff; }
+.p-pill.active.medium { background: #EAB308; border-color: #EAB308; color: #111; }
+.p-pill.active.low { background: #22C55E; border-color: #22C55E; color: #fff; }
+
+/* Chips */
+.mc-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.mc-chip {
+  padding: 6px 14px; font-size: 12px; font-weight: 500; border-radius: 20px;
+  border: 1px solid #2E3247; background: #0F1117; color: #E5E7EB; cursor: pointer; transition: 0.2s;
+}
+.mc-chip.active { background: #3B82F6; border-color: #3B82F6; color: #fff; }
+
+/* Delivery Channels */
+.channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.channel-toggle {
+  display: flex; align-items: center; gap: 10px; padding: 12px 16px; border: 1px solid #2E3247;
+  border-radius: 8px; background: #0F1117; cursor: pointer; transition: 0.2s;
+}
+.channel-toggle.active { border-color: #3B82F6; background: rgba(59, 130, 246, 0.1); }
+.channel-toggle svg { color: #6B7280; transition: 0.2s; }
+.channel-toggle.active svg { color: #3B82F6; }
+.channel-toggle span { font-size: 13px; font-weight: 500; color: #E5E7EB; }
+
+/* Footer */
+.wizard-footer {
+  padding: 16px 24px; background: #0F1117; border-top: 1px solid #2E3247;
+  display: flex; justify-content: space-between; align-items: center; z-index: 5;
+}
+.step-indicator { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #6B7280; font-weight: 500; }
+.step-status { color: #22C55E; font-weight: 600; display: none; align-items: center; gap: 6px; }
+.step-status.ready { display: flex; }
+.wizard-actions { display: flex; gap: 12px; }
+.mc-btn { padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
+.mc-btn.ghost { background: none; color: #6B7280; border: 1px solid transparent; }
+.mc-btn.ghost:hover { color: #E5E7EB; }
+.mc-btn.outline { background: transparent; border: 1px solid #2E3247; color: #E5E7EB; }
+.mc-btn.outline:hover { background: #242736; border-color: #6B7280; }
+.mc-btn.primary { background: #3B82F6; color: #fff; }
+.mc-btn.primary:hover { background: #2563EB; }
+.mc-btn.danger { background: #EF4444; color: #fff; }
+.mc-btn.danger:hover { background: #DC2626; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+
+/* Preview Drawer */
+.preview-drawer {
+  position: absolute; top: 0; right: -400px; width: 360px; height: 100%;
+  background: #0F1117; border-left: 1px solid #2E3247; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+}
+.preview-drawer.open { right: 0; }
+.preview-head { padding: 16px 20px; border-bottom: 1px solid #2E3247; display: flex; justify-content: space-between; align-items: center; }
+.preview-head h3 { font-size: 12px; font-weight: 600; color: #F9FAFB; text-transform: uppercase; letter-spacing: 0.5px; }
+.preview-body { padding: 20px; overflow-y: auto; flex: 1; }
+.preview-card{background:#1A1D27;border:1px solid #2E3247;border-radius:12px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,0.4);position:relative}
+.preview-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:14px;letter-spacing:0.5px}
+
+.mc-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #0F1117; border: 1px solid #2E3247; border-radius: 8px; cursor: pointer; margin-bottom: 12px; }
+.mc-toggle-row span { font-size: 13px; font-weight: 500; color: #E5E7EB; }
+
+/* CHECKBOX TOGGLE SWITCH */
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #2E3247; transition: .2s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: #F9FAFB; transition: .2s; border-radius: 50%; }
+input:checked + .slider { background-color: #3B82F6; }
+input:checked + .slider:before { transform: translateX(16px); }
+
+/* FORMS */
+.form-group{margin-bottom:16px}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:11px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px}
 .input-text,.input-select,.input-textarea{width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13.5px;font-family:inherit;outline:none;transition:border .15s}
 .input-text:focus,.input-select:focus,.input-textarea:focus{border-color:var(--primary);background:var(--bg4)}
 .input-text::placeholder,.input-textarea::placeholder{color:var(--text3)}
@@ -366,6 +553,47 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
 .scroll-y::-webkit-scrollbar{width:3px}
 .scroll-y::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .w-full{width:100%}
+.super-admin-only{}
+
+/* NEARBY VOLUNTEERS PANEL */
+.vol-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+.vol-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.vol-header h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 0; }
+.vol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.vol-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px; display: flex; gap: 10px; align-items: flex-start; cursor: pointer; transition: all 0.2s; position: relative; }
+.vol-card:hover { border-color: var(--primary); }
+.vol-card.selected { border-color: var(--primary); background: var(--primary-dim); }
+.vol-card-checkbox { position: absolute; top: 10px; right: 10px; width: 14px; height: 14px; }
+.vol-avatar-mini { width: 32px; height: 32px; border-radius: 50%; background: var(--bg4); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text2); flex-shrink: 0; }
+.vol-info { flex: 1; }
+.vol-name { font-size: 12.5px; font-weight: 500; margin-bottom: 2px; }
+.vol-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.vol-skill-badge { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 4px; background: var(--bg4); color: var(--text2); margin-right: 4px; }
+.rec-badge { font-size: 9px; padding: 2px 5px; border-radius: 4px; background: var(--primary); color: white; font-weight: 600; text-transform: uppercase; display: inline-block; margin-bottom: 4px; }
+
+/* BROADCAST TOGGLE & PANEL */
+.broadcast-section { background: rgba(47, 129, 247, 0.05); border: 1px solid rgba(47, 129, 247, 0.2); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+.toggle-row { display: flex; justify-content: space-between; align-items: center; }
+.toggle-info h3 { font-size: 13.5px; font-weight: 600; margin: 0; }
+.toggle-info p { font-size: 11.5px; color: var(--text3); margin: 2px 0 0; }
+.switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg4); transition: .4s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--primary); }
+input:checked + .slider:before { transform: translateX(16px); }
+.broadcast-options { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: none; }
+.broadcast-options.active { display: block; }
+.channel-grid-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 12px; }
+.channel-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
+
+/* SECTION HEADERS */
+.form-section-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
+.form-section-head::after { content: ""; height: 1px; background: var(--border); flex: 1; }
+  .super-admin-only { display: none !important; }
+  body.role-super .super-admin-only { display: flex !important; }
+  nav .super-admin-only { display: none !important; }
+  body.role-super nav .super-admin-only { display: flex !important; }
 </style>
 </head>
 <body>
@@ -404,6 +632,10 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Admin Profile
     </a>
+    <a href="audit-logs.html" class="nav-item super-admin-only" >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Audit Logs
+    </a>
   </nav>
   <div class="sidebar-foot">
     <div class="pulse"></div>
@@ -419,7 +651,11 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
       <span class="breadcrumb" id="live-time"></span>
     </div>
     <div class="topbar-right">
-      <button class="icon-btn" id="notif-btn" onclick="openNotifModal()">
+      <button class="btn btn-sm btn-danger-ghost" style="margin-right:8px" onclick="openModal('add-incident-modal')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Report Incident
+      </button>
+      <button class="icon-btn" id="notif-btn" onclick="renderNotifications(); openModal('notif-modal')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
         <span class="notif-dot" id="notif-dot"></span>
       </button>
@@ -427,7 +663,7 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
         <div class="admin-avatar">CR</div>
         <div>
           <div class="admin-name">Cmdr. Reyes</div>
-          <div class="admin-role">Chief Admin</div>
+          <div class="admin-role">Super Admin</div>
         </div>
       </div>
     </div>
@@ -441,29 +677,45 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
         <div class="panel" style="display:flex;flex-direction:column;overflow:hidden">
           <div class="panel-head"><h2>Aid Request Queue</h2><span class="badge badge-warning">10 Pending</span></div>
           <div class="req-list" style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px">
-            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 4 (Pasay) · 2m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Structural Fire: Brgy 402</div><div class="req-card-desc">Level 2 alarm reported. 2 units dispatched. Est. 100 civilians in vicinity.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openModal('dispatch-modal');showToast('Opening dispatch panel...','info')">Dispatch Now</button></div></div>
-            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 2 (Marikina) · 11m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Medical Supply Shortage</div><div class="req-card-desc">Taft Ave Evacuation Center reporting low stock on first aid kits.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Aid dispatched to Taft Ave','success')">Dispatch Now</button></div></div>
-            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 5 (QC) · 20m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Food Pack Depletion</div><div class="req-card-desc">QC Multi-Purpose Hall requires 500 food packs immediately.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Food packs dispatched','success')">Dispatch Now</button></div></div>
-            <div class="req-card bc-blue"><div class="req-card-head"><div class="req-card-meta">Zone 3 (San Juan) · 25m ago</div><span class="badge badge-info" style="font-size:10px">Low</span></div><div class="req-card-title">Blanket Request</div><div class="req-card-desc">100 blankets requested for new evacuees at San Juan High School.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-outline" onclick="showToast('Request reviewed','info')">Review</button></div></div>
-            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 6 (Taguig) · 30m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Clean Water Shortage</div><div class="req-card-desc">Taguig Civic Center water supply contaminated. Need 200 gallons.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Water dispatch initiated','success')">Dispatch Now</button></div></div>
-            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 7 (Navotas) · 35m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Rescue Boat Fuel</div><div class="req-card-desc">Rescue ops halted. Need 50 liters of diesel immediately.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Fuel delivery dispatched','success')">Dispatch Now</button></div></div>
-            <div class="req-card bc-blue"><div class="req-card-head"><div class="req-card-meta">Zone 8 (Mandaluyong) · 40m ago</div><span class="badge badge-info" style="font-size:10px">Medium</span></div><div class="req-card-title">Flashlight Batteries</div><div class="req-card-desc">Power outage expected to last. Need 500 AA batteries.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-outline" onclick="showToast('Request reviewed','info')">Review</button></div></div>
-            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 9 (Valenzuela) · 45m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Portable Toilets</div><div class="req-card-desc">Sanitation issue at Astrodome. Requesting 5 portable toilets.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Sanitation dispatched','success')">Dispatch Now</button></div></div>
-            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 10 (Paranaque) · 50m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Oxygen Tanks Needed</div><div class="req-card-desc">Medical tent running low on oxygen. Need 5 tanks.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="showToast('Oxygen tanks dispatched','success')">Dispatch Now</button></div></div>
+            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 4 (Pinagbuhatan) · 2m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Structural Fire: Brgy Pinagbuhatan</div><div class="req-card-desc">Level 2 alarm reported. 2 units dispatched. Est. 100 civilians in vicinity.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('Pinagbuhatan', 'Rescue Operation', 'Zone 4 — Pinagbuhatan', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 2 (Maybunga) · 11m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Medical Supply Shortage</div><div class="req-card-desc">Maybunga Barangay Hall Evacuation Center reporting low stock on first aid kits.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('Maybunga Barangay Hall', 'Medical Supplies', 'Zone 2 — Maybunga', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 5 (Santolan) · 20m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Food Pack Depletion</div><div class="req-card-desc">Santolan Multi-Purpose Hall requires 500 food packs immediately.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('Rizal High School', 'Food Packs', 'Zone 5 — Santolan', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-blue"><div class="req-card-head"><div class="req-card-meta">Zone 3 (Oranbo) · 25m ago</div><span class="badge badge-info" style="font-size:10px">Low</span></div><div class="req-card-title">Blanket Request</div><div class="req-card-desc">100 blankets requested for new evacuees at Oranbo Elementary School.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-outline" onclick="showToast('Request reviewed','info')">Review</button></div></div>
+            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 6 (San Antonio) · 30m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Clean Water Shortage</div><div class="req-card-desc">San Antonio Village Court water supply contaminated. Need 200 gallons.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('San Antonio Village Court', 'Water Supply', 'Zone 6 — San Antonio', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 7 (Palatiw) · 35m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Rescue Boat Fuel</div><div class="req-card-desc">Rescue ops halted. Need 50 liters of diesel immediately.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('San Joaquin Evacuation Center', 'Rescue Operation', 'Zone 7 — Palatiw', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-blue"><div class="req-card-head"><div class="req-card-meta">Zone 8 (Ugong) · 40m ago</div><span class="badge badge-info" style="font-size:10px">Medium</span></div><div class="req-card-title">Flashlight Batteries</div><div class="req-card-desc">Power outage expected to last. Need 500 AA batteries.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-outline" onclick="showToast('Request reviewed','info')">Review</button></div></div>
+            <div class="req-card bc-orange"><div class="req-card-head"><div class="req-card-meta">Zone 9 (Manggahan) · 45m ago</div><span class="badge badge-warning" style="font-size:10px">High</span></div><div class="req-card-title">Portable Toilets</div><div class="req-card-desc">Sanitation issue at Manggahan Residences. Requesting 5 portable toilets.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('Manggahan Residences', 'Mixed Relief Goods', 'Zone 9 — Manggahan', this)">Dispatch Now</button></div></div>
+            <div class="req-card bc-red"><div class="req-card-head"><div class="req-card-meta">Zone 10 (Kapitolyo) · 50m ago</div><span class="badge badge-critical" style="font-size:10px">Critical</span></div><div class="req-card-title">Oxygen Tanks Needed</div><div class="req-card-desc">Medical tent at Kapitolyo running low on oxygen. Need 5 tanks.</div><div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button class="btn btn-sm btn-primary" onclick="openDispatchForRequest('Kapitolyo Center', 'Medical Supplies', 'Zone 10 — Kapitolyo', this)">Dispatch Now</button></div></div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:16px;height:100%">
           <div class="panel">
-            <div class="panel-head"><h2>Distribution Manager</h2><span class="badge badge-info">24 Active Deployments</span></div>
-            <div class="stat-row">
-              <div class="stat-box"><div class="stat-box-label">Rice & Grains</div><div class="flex items-center"><span class="stat-box-val">4.2</span><span style="font-size:12px;color:var(--text3);margin-left:4px">tons</span><span class="stat-box-trend trend-up">↑12%</span></div></div>
-              <div class="stat-box"><div class="stat-box-label">Medical Kits</div><div class="flex items-center"><span class="stat-box-val">112</span><span style="font-size:12px;color:var(--text3);margin-left:4px">units</span><span class="stat-box-trend trend-down">↓8%</span></div></div>
-              <div class="stat-box"><div class="stat-box-label">Water Supply</div><div class="flex items-center"><span class="stat-box-val">850</span><span style="font-size:12px;color:var(--text3);margin-left:4px">gal</span><span class="stat-box-trend trend-down">↓15%</span></div></div>
-              <div class="stat-box"><div class="stat-box-label">Hygiene Kits</div><div class="flex items-center"><span class="stat-box-val">340</span><span style="font-size:12px;color:var(--text3);margin-left:4px">packs</span><span class="stat-box-trend trend-up">↑5%</span></div></div>
+            <div class="panel-head"><h2>Distribution Manager</h2><span class="badge nominal"><div class="dot"></div>24 Active Deployments</span></div>
+            <div class="metrics-row" style="padding:0 18px 14px; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+              <div class="m-card c-blue">
+                <div class="m-card-label">Rice & Grains</div>
+                <div class="m-card-value blue">4.2<span style="font-size:12px;color:var(--text-micro);margin-left:4px">tons</span></div>
+                <div class="m-card-sub"><span class="trend-up">↑12%</span> from yesterday</div>
+              </div>
+              <div class="m-card c-orange">
+                <div class="m-card-label">Medical Kits</div>
+                <div class="m-card-value orange">112</div>
+                <div class="m-card-sub"><span class="trend-down">↓8%</span> low stock</div>
+              </div>
+              <div class="m-card c-blue">
+                <div class="m-card-label">Water Supply</div>
+                <div class="m-card-value blue">850<span style="font-size:12px;color:var(--text-micro);margin-left:4px">gal</span></div>
+                <div class="m-card-sub"><span class="trend-down">↓15%</span> usage spike</div>
+              </div>
+              <div class="m-card c-green">
+                <div class="m-card-label">Hygiene Kits</div>
+                <div class="m-card-value green">340</div>
+                <div class="m-card-sub"><span class="trend-up">↑5%</span> replenished</div>
+              </div>
             </div>
             <div class="map-ph">
               <div class="map-grid"></div>
-              <div class="map-truck">🚛 TRUCK-02 EN ROUTE → QC HALL</div>
+              <div class="map-truck">🚛 TRUCK-02 EN ROUTE → RIZAL HIGH</div>
             </div>
             <div style="padding:0 18px 14px">
               <button class="btn btn-primary w-full" style="justify-content:center" onclick="openModal('dispatch-modal')">
@@ -476,8 +728,8 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
             <div class="panel-head">
               <h2>Volunteer Tracker</h2>
               <div style="display:flex;gap:8px">
-                <button class="btn btn-sm btn-ghost" onclick="openModal('alert-team-modal')">Alert Team</button>
-                <button class="btn btn-sm btn-primary" onclick="openModal('add-volunteer-modal')">+ Add Vol.</button>
+                <button class="btn btn-sm btn-ghost" onclick="openModal('mobilize-modal')" id="message-vols-btn">Message Volunteers</button>
+                <button class="btn btn-sm btn-primary" onclick="openModal('add-volunteer-modal')" id="add-vol-btn">+ Add Volunteer</button>
               </div>
             </div>
             <div class="vol-stats">
@@ -505,33 +757,33 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
               </select>
             </div>
             <div class="vol-list" id="vol-list" style="flex:1;overflow-y:auto;min-height:0;padding-bottom:12px">
-              <div class="vol-item" data-role="logistics" onclick="openVolunteerProfile('Sarah Jenkins', 'Logistics Specialist', 'SJ', '#2f81f7', 'Active', 'En route to QC Hall')">
-                <div class="vol-left"><div class="vol-avatar" style="background:#2f81f7">SJ</div><div><div class="vol-name">Sarah Jenkins</div><div class="vol-role">Logistics Specialist</div><div class="vol-loc">📍 En route to QC Hall</div></div></div><div class="status-dot active"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Sarah Jenkins')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+              <div class="vol-item" data-role="logistics" onclick="openVolunteerProfile('Sarah Jenkins', 'Logistics Specialist', 'SJ', '#2f81f7', 'Active', 'En route to Rizal High')">
+                <div class="vol-left"><div class="vol-avatar" style="background:#2f81f7">SJ</div><div><div class="vol-name">Sarah Jenkins</div><div class="vol-role">Logistics Specialist</div><div class="vol-loc">📍 En route to Rizal High</div></div></div><div class="status-dot active"></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Sarah Jenkins')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('Sarah Jenkins', 'En route to Rizal High')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
               <div class="vol-item" data-role="driver" onclick="openVolunteerProfile('Mark Rivera', 'Heavy Vehicle Op', 'MR', '#3fb950', 'Active', 'Driving TRUCK-02')">
                 <div class="vol-left"><div class="vol-avatar" style="background:#3fb950">MR</div><div><div class="vol-name">Mark Rivera</div><div class="vol-role">Heavy Vehicle Op</div><div class="vol-loc">🚛 Driving TRUCK-02</div></div></div><div class="status-dot active"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Mark Rivera')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Mark Rivera')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('Mark Rivera', 'Driving TRUCK-02')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
               <div class="vol-item" data-role="medical" onclick="openVolunteerProfile('Elena Santos', 'Medical Team Lead', 'ES', '#f0883e', 'Busy', 'Tending patients (Pasig)')">
                 <div class="vol-left"><div class="vol-avatar" style="background:#f0883e">ES</div><div><div class="vol-name">Elena Santos</div><div class="vol-role">Medical Team Lead</div><div class="vol-loc">⚕️ Tending patients (Pasig)</div></div></div><div class="status-dot busy"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Elena Santos')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Elena Santos')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('Elena Santos', 'Tending patients (Pasig)')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
               <div class="vol-item" data-role="comms" onclick="openVolunteerProfile('David Lee', 'Comms Officer', 'DL', '#bc8cff', 'Active', 'Command Center Base')">
                 <div class="vol-left"><div class="vol-avatar" style="background:#bc8cff">DL</div><div><div class="vol-name">David Lee</div><div class="vol-role">Comms Officer</div><div class="vol-loc">📻 Command Center Base</div></div></div><div class="status-dot active"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('David Lee')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('David Lee')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('David Lee', 'Command Center Base')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
-              <div class="vol-item" data-role="rescue" onclick="openVolunteerProfile('Maria Garcia', 'Search & Rescue', 'MG', '#f85149', 'Critical', 'Emergency in Navotas')">
-                <div class="vol-left"><div class="vol-avatar" style="background:#f85149">MG</div><div><div class="vol-name">Maria Garcia</div><div class="vol-role">Search & Rescue</div><div class="vol-loc">🚨 Emergency in Navotas</div></div></div><div class="status-dot critical"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Maria Garcia')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+              <div class="vol-item" data-role="rescue" onclick="openVolunteerProfile('Maria Garcia', 'Search & Rescue', 'MG', '#f85149', 'Critical', 'Emergency in Palatiw')">
+                <div class="vol-left"><div class="vol-avatar" style="background:#f85149">MG</div><div><div class="vol-name">Maria Garcia</div><div class="vol-role">Search & Rescue</div><div class="vol-loc">🚨 Emergency in Palatiw</div></div></div><div class="status-dot critical"></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Maria Garcia')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('Maria Garcia', 'Emergency in Palatiw')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
               <div class="vol-item" data-role="all" onclick="openVolunteerProfile('John Doe', 'General Volunteer', 'JD', '#39c5cf', 'Active', 'Packing relief goods')">
                 <div class="vol-left"><div class="vol-avatar" style="background:#39c5cf">JD</div><div><div class="vol-name">John Doe</div><div class="vol-role">General Volunteer</div><div class="vol-loc">📦 Packing relief goods</div></div></div><div class="status-dot active"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('John Doe')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('John Doe')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('John Doe', 'Packing relief goods')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
               <div class="vol-item" data-role="medical" onclick="openVolunteerProfile('Anna Smith', 'First Aid Responder', 'AS', '#d29922', 'Offline', 'Off shift')">
                 <div class="vol-left"><div class="vol-avatar" style="background:#d29922">AS</div><div><div class="vol-name">Anna Smith</div><div class="vol-role">First Aid Responder</div><div class="vol-loc">💤 Off shift</div></div></div><div class="status-dot offline"></div>
-                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Anna Smith')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
+                <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn" onclick="openMessageModal('Anna Smith')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></button><button class="icon-btn" onclick="openVolunteerLocation('Anna Smith', 'Off shift')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></button></div>
               </div>
             </div>
           </div>
@@ -546,25 +798,133 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
 
 <!-- Add Incident -->
 <div class="modal-backdrop" id="add-incident-modal">
-  <div class="modal">
+  <div class="modal modal-lg">
     <div class="modal-head"><h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Incident Title</label><input class="input-text" placeholder="e.g. Fire in Residential Area"></div>
+      <div class="form-section-head">Incident Information</div>
+      <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title" placeholder="e.g. Fire in Residential Area"></div>
       <div class="form-row">
-        <div class="form-group"><label>Severity</label><select class="input-select"><option>Critical (Red)</option><option>Urgent (Orange)</option><option>Warning (Yellow)</option><option>Stable (Green)</option></select></div>
-        <div class="form-group"><label>Incident Type</label><select class="input-select"><option>Fire</option><option>Flood</option><option>Landslide</option><option>Medical</option><option>Chemical</option><option>Infrastructure</option><option>Other</option></select></div>
+        <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity"><option>Critical (Red)</option><option>Urgent (Orange)</option><option>Warning (Yellow)</option><option>Stable (Green)</option></select></div>
+        <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type"><option>Fire</option><option>Flood</option><option>Landslide</option><option>Medical</option><option>Chemical</option><option>Infrastructure</option><option>Other</option></select></div>
       </div>
-      <div class="form-group"><label>Location</label><input class="input-text" placeholder="City, Barangay, or Landmark"></div>
-      <div class="form-row">
-        <div class="form-group"><label>Reporter Name</label><input class="input-text" placeholder="Full name"></div>
-        <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
+      <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc" onchange="recommendVolunteers()"><option value="">Select Barangay...</option><option>Caniogan</option><option>Kapitolyo</option><option>Manggahan</option><option>Pinagbuhatan</option><option>Rosario</option><option>San Joaquin</option><option>Santolan</option><option>Ugong</option></select></div>
+      <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3" placeholder="Describe the incident in detail..."></textarea></div>
+
+      <!-- VOLUNTEER ASSIGNMENT PANEL -->
+      <div class="vol-panel" id="nearby-vol-panel" style="display:none">
+        <div class="vol-header">
+          <h3>Nearby Volunteers Recommended</h3>
+          <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
+        </div>
+        <div class="vol-grid" id="nearby-vol-grid">
+          <!-- Populated by recommendVolunteers() -->
+        </div>
       </div>
-      <div class="form-group"><label>Description</label><textarea class="input-textarea" rows="3" placeholder="Describe the incident in detail..."></textarea></div>
-      <div class="form-group"><label>Estimated Civilians Affected</label><input class="input-text" type="number" placeholder="e.g. 150"><div class="form-hint">Approximate count; can be updated later.</div></div>
+
+      <!-- PUBLIC BROADCAST TOGGLE -->
+      <div class="broadcast-section">
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <h3>Broadcast to Public</h3>
+            <p>Publish as official advisory for residents</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="broadcast-toggle" onchange="toggleBroadcastPanel()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="broadcast-options" id="broadcast-panel">
+          <div class="form-group"><label>Public Headline</label><input class="input-text" placeholder="Official Advisory Headline"></div>
+          <div class="form-group"><label>Safety Message</label><textarea class="input-textarea" placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Alert Level</label><select class="input-select"><option>High Alert</option><option>Caution</option><option>Information Only</option></select></div>
+            <div class="form-group"><label>Target Scope</label><select class="input-select"><option>City-Wide</option><option>Affected Barangay Only</option><option>Affected + Adjacent</option></select></div>
+          </div>
+          <label>Distribution Channels</label>
+          <div class="channel-grid-mini">
+            <div class="channel-item"><input type="checkbox" checked> App</div>
+            <div class="channel-item"><input type="checkbox" checked> SMS</div>
+            <div class="channel-item"><input type="checkbox" checked> Facebook</div>
+            <div class="channel-item"><input type="checkbox"> X (Twitter)</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('add-incident-modal');showToast('Incident created and logged','success')">Create Incident</button></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewIncident()">Create Incident</button>
+    </div>
   </div>
 </div>
+
+<script>
+function toggleBroadcastPanel() {
+  const panel = document.getElementById('broadcast-panel');
+  const toggle = document.getElementById('broadcast-toggle');
+  panel.classList.toggle('active', toggle.checked);
+}
+
+function recommendVolunteers() {
+  const loc = document.getElementById('add-inc-loc').value;
+  const panel = document.getElementById('nearby-vol-panel');
+  const grid = document.getElementById('nearby-vol-grid');
+  
+  if(!loc) { panel.style.display = 'none'; return; }
+  
+  panel.style.display = 'block';
+  // Mock volunteer data based on location
+  const volunteers = [
+    { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
+    { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
+  ];
+  
+  grid.innerHTML = volunteers.map(v => `
+    <div class="vol-card selected" onclick="this.classList.toggle('selected')">
+      <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
+      <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n=>n[0]).join('')}</div>
+      <div class="vol-info">
+        ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
+        <div class="vol-name">${v.name}</div>
+        <div class="vol-meta">📍 ${v.dist} away • ${v.time} ETA</div>
+        <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function submitNewIncident() {
+  const title = document.getElementById('add-inc-title').value;
+  const broadcast = document.getElementById('broadcast-toggle').checked;
+
+  // Read selected volunteer cards
+  const selected = [
+    ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected .vol-name')
+  ].map(el => el.textContent.trim());
+
+  // Save to incident store
+  const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+  incidents.unshift({
+    id: 'INC-' + Date.now(),
+    title,
+    status: 'Reported',
+    assignedVolunteers: selected,
+    broadcastSent: broadcast,
+    createdAt: new Date().toLocaleString('en-PH')
+  });
+  localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+
+  closeModal('add-incident-modal');
+
+  const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
+  showToast('Incident created' + volMsg, 'success');
+
+  logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
+
+  if (broadcast) {
+    logAction('Broadcast', title, 'Public safety advisory published');
+  }
+}
+</script>
 
 <!-- Add Evacuee -->
 <div class="modal-backdrop" id="add-evacuee-modal">
@@ -581,7 +941,7 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
       </div>
       <div class="form-row">
         <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
-        <div class="form-group"><label>Assigned Center</label><select class="input-select"><option>QC Multi-Purpose Hall</option><option>Pasig Elementary Complex</option><option>Marikina Sports Center</option><option>Makati Coliseum</option></select></div>
+        <div class="form-group"><label>Assigned Center</label><select class="input-select"><option>Rizal High School</option><option>Pasig Elementary Complex</option><option>Rainforest Park (RAVE)</option><option>Mutya ng Pasig Market</option></select></div>
       </div>
       <div class="form-group"><label>Health Status</label><select class="input-select"><option>Stable</option><option>Needs Medical Attention</option><option>Urgent — Requires Immediate Care</option><option>Critical Condition</option></select></div>
       <div class="form-group"><label>Special Needs / Notes</label><input class="input-text" placeholder="e.g. Insulin, Wheelchair access, Infant, Elderly"><div class="form-hint">List all medical requirements and access needs.</div></div>
@@ -620,11 +980,56 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
     <div class="modal-body">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
         <span id="modal-inc-badge" class="badge badge-critical">Critical</span>
-        <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">Sampaloc, Manila</span>
+        <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">San Joaquin, Pasig</span>
         <span id="modal-inc-time" style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">2m ago</span>
       </div>
       <div style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)" id="modal-inc-desc">Incident description loading...</div>
-      <div class="form-section">Response Actions</div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;margin-bottom:16px">
+        <div>
+          <div class="form-section-head" style="margin-top:0">Assigned Volunteers</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+              <div class="vol-avatar-mini" style="background:var(--primary)">RD</div>
+              <div style="flex:1">
+                <div style="font-size:12px;font-weight:500">Ricardo Dalisay</div>
+                <div style="font-size:10px;color:var(--text3)">📍 0.4km away • En Route</div>
+              </div>
+              <div class="status-dot active"></div>
+            </div>
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+              <div class="vol-avatar-mini" style="background:var(--purple)">EG</div>
+              <div style="flex:1">
+                <div style="font-size:12px;font-weight:500">Elena Gomez</div>
+                <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Dispatched</div>
+              </div>
+              <div class="status-dot busy"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="form-section-head" style="margin-top:0">Public Broadcast Status</div>
+          <div style="background:rgba(57,197,207,0.05);border:1px solid rgba(57,197,207,0.2);border-radius:var(--radius);padding:12px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <span class="badge badge-teal">Live Advisory</span>
+              <span style="font-size:11px;color:var(--text3);font-family:'DM Mono'">14:24 PM</span>
+            </div>
+            <div style="font-size:12.5px;font-weight:500;margin-bottom:4px">⚠️ Major Road Closure: Ortigas Ave</div>
+            <div style="font-size:11.5px;color:var(--text2);margin-bottom:10px">Traffic rerouted via Meralco Ave. Avoid area.</div>
+            <div style="display:flex;gap:4px">
+              <span class="badge badge-gray" style="font-size:9px">App</span>
+              <span class="badge badge-gray" style="font-size:9px">SMS</span>
+              <span class="badge badge-gray" style="font-size:9px">FB</span>
+            </div>
+            <div style="margin-top:10px;font-size:10.5px;color:var(--text3);display:flex;justify-content:space-between">
+              <span>Reach: 14,203 citizens</span>
+              <span style="color:var(--teal)">85% Sent</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section-head">Response Actions</div>
       <div style="display:flex;flex-direction:column;gap:8px">
         <div class="form-row">
           <div class="form-group"><label>Assign Unit</label><select class="input-select"><option>Fire Unit Alpha</option><option>Rescue Team Bravo</option><option>Medical Team Charlie</option><option>Hazmat Delta</option></select></div>
@@ -633,10 +1038,11 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
         <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" rows="2" placeholder="Add field update or notes..."></textarea></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-success" onclick="closeModal('incident-detail-modal');showToast('Incident marked resolved','success')">Mark Resolved</button>
+    <div class="modal-foot" style="justify-content:flex-start;gap:8px">
+      <button class="btn btn-ghost" onclick="verifyIncident()">Verify</button>
+      <button class="btn btn-primary" onclick="dispatchFromModal()">Dispatch Rescue Team</button>
+      <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>
-      <button class="btn btn-primary" onclick="closeModal('incident-detail-modal');showToast('Unit dispatched and logged','success')">Dispatch Unit</button>
     </div>
   </div>
 </div>
@@ -646,11 +1052,11 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
   <div class="modal">
     <div class="modal-head"><h2>Register New Center</h2><button class="close-btn" onclick="closeModal('register-center-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Facility Name</label><input class="input-text" placeholder="e.g. Taguig Covered Court"></div>
+      <div class="form-group"><label>Facility Name</label><input class="input-text" placeholder="e.g. Caniogan Covered Court"></div>
       <div class="form-group"><label>Address / Location</label><input class="input-text" placeholder="Street, Barangay, City"></div>
       <div class="form-row">
         <div class="form-group"><label>Total Bed Capacity</label><input class="input-text" type="number" placeholder="500"></div>
-        <div class="form-group"><label>Zone</label><select class="input-select"><option>Zone 1 — Manila</option><option>Zone 2 — Marikina</option><option>Zone 4 — Pasay/Pasig</option><option>Zone 5 — QC</option><option>Zone 7 — Navotas</option></select></div>
+        <div class="form-group"><label>Zone</label><select class="input-select"><option>Zone 1 — Kapitolyo</option><option>Zone 2 — Rosario</option><option>Zone 4 — Pinagbuhatan</option><option>Zone 5 — Santolan</option><option>Zone 7 — Manggahan</option></select></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Lead Officer Name</label><input class="input-text" placeholder="Full name"></div>
@@ -669,7 +1075,7 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
     <div class="modal-head"><h2>Dispatch Relief Unit</h2><button class="close-btn" onclick="closeModal('dispatch-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
       <div class="form-group"><label>Unit / Vehicle</label><select class="input-select"><option>TRUCK-01 (5-ton, Available)</option><option>TRUCK-02 (3-ton, En Route)</option><option>VAN-03 (Medical Van, Available)</option><option>BOAT-04 (Rescue Boat, Available)</option></select></div>
-      <div class="form-group"><label>Destination</label><select class="input-select"><option>QC Multi-Purpose Hall</option><option>Pasig Elementary Complex</option><option>Navotas Sports Complex</option><option>Paranaque Evacuation Center</option><option>Custom Address</option></select></div>
+      <div class="form-group"><label>Destination</label><select class="input-select"><option>Rizal High School</option><option>Pasig Elementary Complex</option><option>Rainforest Park (RAVE)</option><option>San Joaquin Evacuation Center</option><option>Custom Address</option></select></div>
       <div class="form-group"><label>Cargo / Mission Type</label><select class="input-select"><option>Food Packs</option><option>Medical Supplies</option><option>Water Supply</option><option>Rescue Operation</option><option>Personnel Transport</option><option>Mixed Relief Goods</option></select></div>
       <div class="form-row">
         <div class="form-group"><label>Quantity / Load</label><input class="input-text" placeholder="e.g. 500 packs / 3 tons"></div>
@@ -678,7 +1084,7 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
       <div class="form-group"><label>Driver / Team Lead</label><input class="input-text" placeholder="Name of assigned personnel"></div>
       <div class="form-group"><label>Notes</label><textarea class="input-textarea" rows="2" placeholder="Additional instructions for the team..."></textarea></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('dispatch-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('dispatch-modal');showToast('Unit dispatched successfully','success')">Confirm Dispatch</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('dispatch-modal')">Cancel</button><button class="btn btn-primary" onclick="confirmDispatch()">Confirm Dispatch</button></div>
   </div>
 </div>
 
@@ -687,11 +1093,11 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
   <div class="modal modal-sm">
     <div class="modal-head"><h2>Send Emergency Broadcast</h2><button class="close-btn" onclick="closeModal('broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Alert Level</label><select class="input-select"><option>🔴 Red — Immediate Evacuation</option><option>🟠 Orange — High Threat</option><option>🟡 Yellow — Precautionary</option><option>🔵 Blue — Informational</option></select></div>
-      <div class="form-group"><label>Target Zone</label><select class="input-select"><option>All Zones</option><option>Zone 1 — Manila</option><option>Zone 2 — Marikina</option><option>Zone 5 — QC</option><option>Zone 7 — Navotas</option></select></div>
-      <div class="form-group"><label>Message</label><textarea class="input-textarea" rows="4" placeholder="Type emergency message..."></textarea></div>
+      <div class="form-group"><label>Alert Level</label><select class="input-select" id="bm-level-rel"><option>🔴 Red — Immediate Evacuation</option><option>🟠 Orange — High Threat</option><option>🟡 Yellow — Precautionary</option><option>🔵 Blue — Informational</option></select></div>
+      <div class="form-group"><label>Target Zone</label><select class="input-select" id="bm-zone-rel"><option value="all">All Zones</option><option value="Kapitolyo">Zone 1 — Kapitolyo</option><option value="Rosario">Zone 2 — Rosario</option><option value="Santolan">Zone 5 — Santolan</option><option value="Manggahan">Zone 7 — Manggahan</option></select></div>
+      <div class="form-group"><label>Message</label><textarea class="input-textarea" id="bm-msg-rel" rows="4" placeholder="Type emergency message..."></textarea></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="closeModal('broadcast-modal');showToast('Broadcast sent to all zones','success')">Send Now</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="openBroadcastConfirm(document.getElementById('bm-level-rel').value,document.getElementById('bm-zone-rel').value,document.getElementById('bm-msg-rel').value)">Send Now</button></div>
   </div>
 </div>
 
@@ -700,13 +1106,315 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
   <div class="modal modal-sm">
     <div class="modal-head"><h2>Confirm Broadcast</h2><button class="close-btn" onclick="closeModal('confirm-broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div style="background:var(--red-dim);border:1px solid rgba(248,81,73,.2);border-radius:var(--radius);padding:14px;margin-bottom:14px">
-        <div style="font-size:13px;font-weight:500;color:var(--red);margin-bottom:4px">⚠️ This will send to 14,203 recipients</div>
-        <div style="font-size:12.5px;color:var(--text2)">This action will immediately broadcast to all selected channels and zones. This cannot be undone.</div>
-      </div>
-      <div style="font-size:13px;color:var(--text2)">Are you sure you want to send this emergency broadcast?</div>
+      <div style="background:rgba(239,68,68,0.05);border-left:2px solid var(--critical);padding:16px;margin-bottom:16px;border-radius:var(--radius)"><div id="conf-b-count" style="font-size:13px;font-weight:600;color:var(--critical);margin-bottom:6px"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">This will immediately broadcast to all selected channels. This cannot be undone.</div></div>
+      <div style="margin-bottom:10px"><div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Alert level</div><div id="conf-b-level" style="font-size:13px;font-weight:500;color:var(--text-primary)"></div></div>
+      <div><div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Message</div><div id="conf-b-msg" style="font-size:13px;color:var(--text-primary);background:var(--bg-elevated);padding:12px;border-radius:var(--radius);border:1px solid var(--border);line-height:1.5"></div></div>
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('confirm-broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="closeModal('confirm-broadcast-modal');showToast('Emergency broadcast sent to 14,203 recipients','success')">Confirm & Send</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('confirm-broadcast-modal')">Cancel</button><button class="btn btn-primary" style="background:var(--critical)" onclick="confirmBroadcastSend()">Confirm &amp; Send</button></div>
+  </div>
+</div>
+
+<!-- Mobilize Volunteers Center (Mission Control Wizard) -->
+<div class="modal-backdrop" id="mobilize-modal">
+  <div class="modal modal-full">
+    <!-- Preview Drawer (Absolute) -->
+    <div class="preview-drawer" id="preview-drawer">
+      <div class="preview-head">
+        <h3>Live Volunteer Preview</h3>
+        <button class="close-btn" style="width:24px;height:24px" onclick="document.getElementById('preview-drawer').classList.remove('open')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="preview-body">
+        <div class="preview-card">
+          <div id="prev-badge" class="preview-badge" style="background:rgba(245,158,11,0.1);color:#F59E0B">HIGH PRIORITY</div>
+          <h3 id="prev-title" style="font-size:16px;font-weight:600;margin-bottom:8px;color:#F9FAFB">Emergency Mobilization</h3>
+          <div id="prev-incident" style="font-size:12px;color:#3B82F6;margin-bottom:12px;font-weight:600">🔗 Flooding in Pinagbuhatan</div>
+          <p id="prev-body" style="font-size:13px;color:#E5E7EB;line-height:1.5;margin-bottom:16px;min-height:60px">All available volunteers: Please report to your assigned centers. Heavy rainfall warning in effect.</p>
+          
+          <div style="background:#0F1117;padding:12px;border-radius:8px;font-size:12px;color:#E5E7EB;margin-bottom:16px;border:1px solid #2E3247">
+            <div style="margin-bottom:6px;display:flex;align-items:center;gap:6px">📍 <strong>Assembly:</strong> <span id="prev-dest">Pasig City Hall</span></div>
+            <div style="display:flex;align-items:center;gap:6px">⏰ <strong>Deadline:</strong> <span id="prev-deadline">Today, 18:00</span></div>
+          </div>
+
+          <div id="prev-ops" style="margin-bottom:16px;display:flex;gap:12px">
+            <div id="prev-ack-ui" style="flex:1;font-size:10px;color:#6B7280;text-transform:uppercase;font-weight:600;text-align:center;padding:6px;border:1px dashed #2E3247;border-radius:4px">ACK Required</div>
+            <div id="prev-eta-ui" style="flex:1;font-size:10px;color:#6B7280;text-transform:uppercase;font-weight:600;text-align:center;padding:6px;border:1px dashed #2E3247;border-radius:4px">ETA Required</div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="mc-btn primary" style="flex:1">Accept</button>
+            <button class="mc-btn outline" style="flex:1">Decline</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Modal Header -->
+    <div class="modal-head">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:32px;height:32px;background:rgba(59,130,246,0.1);color:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <h2 style="font-size:16px;font-weight:600">Volunteer Mobilization Center</h2>
+          <div class="sub" style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px">Emergency Dispatch Node</div>
+        </div>
+      </div>
+      <button class="close-btn" onclick="closeModal('mobilize-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    
+    <div class="wizard-body">
+      <!-- STEP 1: TARGET & PRIORITY -->
+      <div class="wizard-step active" id="mob-step-1">
+        <div class="mc-row">
+          <div class="mc-form-group">
+            <label class="mc-label">Alert Type</label>
+            <select class="mc-select" id="mob-type" onchange="updateMobState()">
+              <option>Emergency Mobilization</option>
+              <option>Standby Alert</option>
+              <option>Weather Advisory</option>
+              <option>Resource Request</option>
+            </select>
+          </div>
+          <div class="mc-form-group">
+            <label class="mc-label">Linked Incident</label>
+            <select class="mc-select" id="mob-incident" onchange="updateMobState()">
+              <option value="">No linked incident</option>
+            </select>
+            <div id="mob-inc-card" style="display:none; margin-top:12px; padding:12px; background:#0F1117; border-left:3px solid #3B82F6; border-radius:4px">
+              <div style="font-size:10px; font-weight:700; color:#6B7280; text-transform:uppercase; margin-bottom:4px">Active Incident Context</div>
+              <div id="inc-card-name" style="font-size:13px; font-weight:600; color:#F9FAFB">...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mc-form-group">
+          <label class="mc-label">Priority Level</label>
+          <div class="priority-pills" id="mob-priority">
+            <button class="p-pill critical" onclick="setMobPriority(this, 'Critical')">Critical</button>
+            <button class="p-pill high active" onclick="setMobPriority(this, 'High')">High</button>
+            <button class="p-pill medium" onclick="setMobPriority(this, 'Medium')">Medium</button>
+            <button class="p-pill low" onclick="setMobPriority(this, 'Low')">Low</button>
+          </div>
+        </div>
+
+        <div class="mc-section-title" style="margin-top:32px">Recipient Scope</div>
+        <div class="mc-row">
+          <div class="mc-form-group">
+            <label class="mc-label">Target Group</label>
+            <div class="mc-segmented">
+              <button class="mc-seg-btn active" onclick="setMobScope(this, 'All')">All Volunteers</button>
+              <button class="mc-seg-btn" onclick="setMobScope(this, 'Available')">Available Only</button>
+              <button class="mc-seg-btn" onclick="setMobScope(this, 'Nearby')">Nearby</button>
+            </div>
+          </div>
+          <div class="mc-form-group" style="display:flex;flex-direction:column;justify-content:center">
+             <div class="targeting-summary-box" style="margin:0;background:#0F1117;border-color:#2E3247;box-shadow:none;padding:12px">
+              <div class="target-metric" style="color:#6B7280"><span class="lbl">Total Selected</span><span class="val" style="color:#3B82F6" id="sum-total">182</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mc-form-group">
+          <label class="mc-label">Skills Required</label>
+          <div class="mc-chip-group">
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Medical</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Rescue</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Logistics</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Communications</button>
+          </div>
+        </div>
+
+        <div class="mc-form-group">
+          <label class="mc-label">Target Barangays</label>
+          <div class="mc-chip-group">
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Pinagbuhatan</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">San Joaquin</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Kapitolyo</button>
+            <button class="mc-chip" onclick="this.classList.toggle('active');updateMobSummary()">Rosario</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: MESSAGE & DISPATCH -->
+      <div class="wizard-step" id="mob-step-2">
+        <div class="mc-row">
+          <div class="mc-form-group">
+            <label class="mc-label">Assembly Point</label>
+            <input type="text" class="mc-input" id="mob-dest" oninput="updateMobState()" placeholder="e.g. Pasig City Hall" value="Pasig City Hall Command Center">
+          </div>
+          <div class="mc-form-group">
+            <label class="mc-label">Report Before</label>
+            <input type="datetime-local" class="mc-input" id="mob-deadline" onchange="updateMobState()">
+          </div>
+        </div>
+
+        <div class="mc-row">
+          <label class="mc-toggle-row" style="margin:0">
+            <span>Require Acknowledgment</span>
+            <label class="switch"><input type="checkbox" id="req-ack" checked onchange="updateMobState()"><span class="slider"></span></label>
+          </label>
+          <label class="mc-toggle-row" style="margin:0">
+            <span>Require Arrival ETA</span>
+            <label class="switch"><input type="checkbox" id="req-eta" checked onchange="updateMobState()"><span class="slider"></span></label>
+          </label>
+        </div>
+
+        <div class="mc-section-title" style="display:flex;justify-content:space-between;align-items:center;margin-top:24px">
+          <span>Alert Message</span>
+          <button class="mc-btn outline" style="padding:4px 10px;font-size:10px" onclick="document.getElementById('preview-drawer').classList.add('open')">Show Preview</button>
+        </div>
+        
+        <div class="mc-form-group">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="mc-btn ghost" style="padding:4px 8px;font-size:11px" onclick="applyMobTemplate('Flood Mobilization')">Flood Template</button>
+            <button class="mc-btn ghost" style="padding:4px 8px;font-size:11px" onclick="applyMobTemplate('Fire Response')">Fire Template</button>
+            <button class="mc-btn ghost" style="padding:4px 8px;font-size:11px" onclick="applyMobTemplate('Relief Operations')">Relief Template</button>
+          </div>
+          <textarea class="mc-textarea" id="mob-message" rows="5" oninput="updateMobState()" placeholder="Compose instructions for volunteers..."></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="mc-btn outline" style="padding:4px 10px;font-size:10px" onclick="insertMsgTag('{incident}')">+ Incident</button>
+            <button class="mc-btn outline" style="padding:4px 10px;font-size:10px" onclick="insertMsgTag('{destination}')">+ Dest</button>
+            <button class="mc-btn outline" style="padding:4px 10px;font-size:10px" onclick="insertMsgTag('{deadline}')">+ Deadline</button>
+          </div>
+        </div>
+
+        <div class="mc-section-title" style="margin-top:24px">Delivery Channels</div>
+        <div class="channel-grid">
+          <label class="channel-toggle active" onclick="this.classList.toggle('active')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>In-App Notification</span>
+          </label>
+          <label class="channel-toggle active" onclick="this.classList.toggle('active')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>SMS Message</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-footer">
+      <div class="step-indicator">
+        Step <span id="mob-step-indicator">1</span> of 2
+        <div class="step-status ready" id="mob-ready-status">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Ready
+        </div>
+      </div>
+      <div class="wizard-actions">
+        <button class="mc-btn ghost" onclick="closeModal('mobilize-modal')">Cancel</button>
+        <button class="mc-btn outline" onclick="showToast('Draft saved','success')">Save Draft</button>
+        <button class="mc-btn outline" id="mob-prev-btn" style="display:none" onclick="goToMobStep(1)">Back</button>
+        <button class="mc-btn primary" id="mob-next-btn" onclick="goToMobStep(2)">Next Step</button>
+        <button class="mc-btn danger" id="mob-send-btn" style="display:none" onclick="sendMobilization()">Send Mobilization</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Volunteer Modal -->
+<div class="modal-backdrop" id="add-volunteer-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Register New Volunteer</h2><button class="close-btn" onclick="closeModal('add-volunteer-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Full Name</label><input class="input-text" placeholder="e.g. John Doe"></div>
+        <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Primary Role</label><select class="input-select"><option>Medical</option><option>Logistics</option><option>Driver</option><option>Comms</option><option>Rescue</option></select></div>
+        <div class="form-group"><label>Assigned Barangay</label><select class="input-select"><option>Caniogan</option><option>Kapitolyo</option><option>Manggahan</option><option>Pinagbuhatan</option><option>Rosario</option></select></div>
+      </div>
+      <div class="form-group"><label>Skills / Certifications</label><input class="input-text" placeholder="e.g. First Aid, BLS, Heavy Truck License"></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('add-volunteer-modal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('add-volunteer-modal');showToast('Volunteer registered','success')">Save Volunteer</button></div>
+  </div>
+</div>
+
+<!-- Volunteer Profile Modal -->
+<div class="modal-backdrop" id="volunteer-profile-modal">
+  <div class="modal">
+    <div class="modal-head"><h2>Volunteer Profile</h2><button class="close-btn" onclick="closeModal('volunteer-profile-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div id="prof-avatar" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#fff"></div>
+        <div>
+          <h2 id="prof-name" style="font-size:18px;font-weight:600"></h2>
+          <div id="prof-role" style="font-size:13px;color:var(--text2)"></div>
+        </div>
+        <div style="margin-left:auto"><span id="prof-status" class="badge"></span></div>
+      </div>
+      <div class="stat-row" style="padding:0;margin-bottom:20px">
+        <div class="stat-box"><div class="stat-box-label">Missions</div><div class="stat-box-val">42</div></div>
+        <div class="stat-box"><div class="stat-box-label">Hours</div><div class="stat-box-val">156</div></div>
+      </div>
+      <div class="form-group"><label>Current Assignment</label><div id="prof-loc" style="font-size:13.5px;color:var(--text2);background:var(--bg3);padding:10px;border-radius:var(--radius);border:1px solid var(--border)"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('volunteer-profile-modal')">Close</button>
+      <button class="btn btn-primary" onclick="openMessageModal(document.getElementById('prof-name').textContent)">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- Direct Message Modal -->
+<div class="modal-backdrop" id="direct-message-modal">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h2>Send Direct Message</h2><button class="close-btn" onclick="closeModal('direct-message-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;background:var(--bg3);padding:10px;border-radius:var(--radius);border:1px solid var(--border)">
+        <div class="vol-avatar-mini" id="dm-avatar" style="background:var(--primary)">?</div>
+        <div>
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600">Recipient</div>
+          <div id="dm-recipient-name" style="font-size:13px;font-weight:500">Sarah Jenkins</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Message Body</label>
+        <textarea class="input-textarea" id="dm-textarea" rows="5" placeholder="Type your message here..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <span class="badge badge-gray" style="font-size:9px">Channels: App, SMS</span>
+      </div>
+      <div style="margin-top:16px">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;font-weight:600;margin-bottom:8px">Quick Recommendations</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Status check. Please report current location and ETA.'">Status Check</div>
+          <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Mission complete. Please return to Command Center for debriefing.'">Return to Base</div>
+          <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Urgent: New incident reported in your vicinity. Awaiting dispatch.'">Vicinity Alert</div>
+          <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Resource request received. Logistics team is processing your request.'">Request Update</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('direct-message-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal('direct-message-modal');showToast('Message sent successfully', 'success')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> 
+        <span style="margin-left:4px">Send Message</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Volunteer Location Modal -->
+<div class="modal-backdrop" id="volunteer-location-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head"><h2>Volunteer Live Location</h2><button class="close-btn" onclick="closeModal('volunteer-location-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body" style="padding:0">
+      <div class="map-ph" style="height:400px;margin:0;border:none;border-radius:0">
+        <div class="map-grid"></div>
+        <div id="map-vol-marker" class="map-truck" style="top:50%;left:50%;transform:translate(-50%,-50%)">📍 <span id="map-vol-name"></span></div>
+        <div style="position:absolute;bottom:16px;left:16px;background:var(--bg2);padding:10px;border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text2)">
+          <strong>Last Ping:</strong> <span id="map-vol-ping">2 mins ago</span><br>
+          <strong>Status:</strong> <span id="map-vol-status">Moving</span><br>
+          <strong>Area:</strong> Pasig City District 1
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <div style="flex:1;font-size:12px;color:var(--text3)" id="map-vol-loc-str"></div>
+      <button class="btn btn-ghost" onclick="closeModal('volunteer-location-modal')">Close</button>
+      <button class="btn btn-primary" onclick="closeModal('volunteer-location-modal');openModal('dispatch-modal')">Re-assign</button>
+    </div>
   </div>
 </div>
 
@@ -714,13 +1422,9 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
 <div class="modal-backdrop" id="notif-modal">
   <div class="modal modal-sm">
     <div class="modal-head"><h2>Notifications</h2><button class="close-btn" onclick="closeModal('notif-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body" style="padding:0">
-      <div class="feed-item" data-read="false"><div class="feed-dot red"></div><div class="feed-info"><div class="feed-title">New Critical Incident</div><div class="feed-desc">Chemical spill reported at Manila Bay port area</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">30m</div></div>
-      <div class="feed-item" data-read="false"><div class="feed-dot orange"></div><div class="feed-info"><div class="feed-title">Center Near Capacity</div><div class="feed-desc">QC Multi-Purpose Hall at 98% occupancy</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">1h</div></div>
-      <div class="feed-item" data-read="false"><div class="feed-dot yellow"></div><div class="feed-info"><div class="feed-title">Supply Alert</div><div class="feed-desc">Medical kits down 8% — restock recommended</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">2h</div></div>
-      <div class="feed-item" data-read="true"><div class="feed-dot green"></div><div class="feed-info"><div class="feed-title">Incident Resolved</div><div class="feed-desc">Bridge damage at Pasig River — DPWH cleared</div></div><div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">3h</div></div>
+    <div class="modal-body" style="padding:0" id="notif-list">
     </div>
-    <div class="modal-foot"><button class="btn btn-ghost w-full" style="justify-content:center" onclick="markAllRead()">Mark All as Read</button></div>
+    <div class="modal-foot"><button class="btn btn-ghost w-full" style="justify-content:center" onclick="sessionStorage.setItem('ligtas_last_read', JSON.parse(localStorage.getItem('ligtas_audit')||'[]').length); updateNotifDot(); closeModal('notif-modal');showToast('All notifications marked as read','info')">Mark All as Read</button></div>
   </div>
 </div>
 
@@ -747,195 +1451,47 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
   </div>
 </div>
 
-<!-- Volunteer Profile Modal -->
-<div class="modal-backdrop" id="volunteer-profile-modal">
+<!-- Mobilization Confirmation Modal -->
+<div class="modal-backdrop" id="mobilize-confirm-modal">
   <div class="modal modal-sm">
-    <div class="modal-head"><h2>Volunteer Profile</h2><button class="close-btn" onclick="closeModal('volunteer-profile-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body" style="text-align:center">
-      <div class="vol-avatar" id="modal-vol-avatar" style="width:64px;height:64px;font-size:24px;margin:0 auto 12px;background:var(--primary)">SJ</div>
-      <h3 id="modal-vol-name" style="font-size:18px;margin-bottom:4px">Sarah Jenkins</h3>
-      <div id="modal-vol-role" style="font-size:13px;color:var(--text2);margin-bottom:12px">Logistics Specialist</div>
-      <span id="modal-vol-status-badge" class="badge badge-stable" style="margin-bottom:20px">Active</span>
+    <div class="modal-head">
+      <h2>Confirm Dispatch</h2>
+      <button class="close-btn" onclick="closeModal('mobilize-confirm-modal')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.2); border-radius:8px; padding:16px; margin-bottom:20px">
+        <div style="font-size:11px; color:#3B82F6; text-transform:uppercase; font-weight:700; margin-bottom:12px; letter-spacing:0.05em">Mobilization Summary</div>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+          <div>
+            <div style="font-size:10px; color:#6B7280; text-transform:uppercase; margin-bottom:2px">Recipients</div>
+            <div id="conf-total" style="font-size:14px; font-weight:600; color:#F9FAFB">0</div>
+          </div>
+          <div>
+            <div style="font-size:10px; color:#6B7280; text-transform:uppercase; margin-bottom:2px">Priority</div>
+            <div id="conf-priority" style="font-size:14px; font-weight:600; color:#F9FAFB">Normal</div>
+          </div>
+          <div style="grid-column: span 2">
+            <div style="font-size:10px; color:#6B7280; text-transform:uppercase; margin-bottom:2px">Destination</div>
+            <div id="conf-dest" style="font-size:13px; font-weight:500; color:#F9FAFB">Not specified</div>
+          </div>
+        </div>
+      </div>
       
-      <div style="text-align:left;background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:16px">
-        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Current Status</div>
-        <div id="modal-vol-loc" style="font-size:13px;color:var(--text);display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> En route to QC Hall</div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px; color:#6B7280; text-transform:uppercase; margin-bottom:6px">Message Preview</div>
+        <div id="conf-msg" style="font-size:13px; color:#F9FAFB; background:#0F1117; padding:12px; border-radius:6px; border:1px solid #2E3247; line-height:1.5"></div>
       </div>
       
-      <div style="text-align:left;background:var(--bg3);border-radius:var(--radius);padding:14px">
-        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Contact & Equipment</div>
-        <div class="flex items-center gap-2 mb-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg> <span style="font-size:13px">+63 917 123 4567</span></div>
-        <div class="flex items-center gap-2 mb-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16M4 18h.01"/></svg> <span style="font-size:13px">UHF Channel 4</span></div>
-        <div class="flex items-center gap-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><path d="M20 7h-3V4c0-1.1-.9-2-2-2h-6c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM9 4h6v3H9V4zm11 17H4V9h16v12z"/><path d="M12 11v6M9 14h6"/></svg> <span style="font-size:13px">Issued: Walkie-Talkie, Med Kit B</span></div>
+      <div style="font-size:12px; color:#9CA3AF; margin-top:20px">
+        Are you sure you want to broadcast this mobilization alert? All selected volunteers will receive immediate notifications.
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('volunteer-profile-modal')">Close</button>
-      <button class="btn btn-primary" onclick="closeModal('volunteer-profile-modal');openModal('dispatch-modal')">Assign Task</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add Volunteer Modal -->
-<div class="modal-backdrop" id="add-volunteer-modal">
-  <div class="modal">
-    <div class="modal-head"><h2>Register Volunteer</h2><button class="close-btn" onclick="closeModal('add-volunteer-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group"><label>First Name</label><input class="input-text" placeholder="e.g. Jane"></div>
-        <div class="form-group"><label>Last Name</label><input class="input-text" placeholder="e.g. Doe"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Role / Specialization</label><select class="input-select"><option>General Volunteer</option><option>Medical Personnel</option><option>Heavy Vehicle Operator</option><option>Logistics Specialist</option><option>Search & Rescue</option><option>Comms Officer</option></select></div>
-        <div class="form-group"><label>Contact Number</label><input class="input-text" placeholder="+63 9XX XXX XXXX"></div>
-      </div>
-      <div class="form-group"><label>Issued Equipment</label><input class="input-text" placeholder="e.g. Walkie-Talkie, Reflector Vest"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('add-volunteer-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="closeModal('add-volunteer-modal');showToast('Volunteer registered successfully', 'success')">Register</button>
-    </div>
-  </div>
-</div>
-
-<!-- Direct Message Modal -->
-<div class="modal-backdrop" id="direct-message-modal">
-  <div class="modal modal-sm">
-    <div class="modal-head"><h2>Direct Message</h2><button class="close-btn" onclick="closeModal('direct-message-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body">
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px">To: <strong id="dm-recipient-name" style="color:var(--text)">Volunteer</strong></div>
-      <div class="form-group">
-        <textarea class="input-text" id="dm-textarea" rows="3" style="resize:vertical" placeholder="Type message..."></textarea>
-      </div>
-      <div class="form-section" style="margin-top:0">Quick Replies</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Status check. Do you need backup?'">Status Check</div>
-        <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Return to Base immediately.'">Return to Base</div>
-        <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Proceed to next assignment location.'">Next Assignment</div>
-        <div class="reply-chip" onclick="document.getElementById('dm-textarea').value='Emergency alert: Clear the area.'">Evacuate Area</div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('direct-message-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="closeModal('direct-message-modal');showToast('Message sent successfully', 'success')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> <span style="margin-left:4px">Send</span></button>
-    </div>
-  </div>
-</div>
-
-<!-- Alert Team Modal -->
-<div class="modal-backdrop" id="alert-team-modal">
-  <div class="modal">
-    <div class="modal-head"><h2>Alert Volunteer Team</h2><button class="close-btn" onclick="closeModal('alert-team-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-    <div class="modal-body">
-
-      <!-- Row 1: Alert config -->
-      <div class="form-row">
-        <div class="form-group">
-          <label>Alert Type</label>
-          <select class="input-select" onchange="document.getElementById('deploy-loc-group').style.display=this.value==='Deployment Instruction'?'block':'none'">
-            <option>Deployment Instruction</option>
-            <option>Standby Notice</option>
-            <option>Emergency Evacuation</option>
-            <option>General Update</option>
-          </select>
-        </div>
-        <div class="form-group" id="deploy-loc-group">
-          <label>Deployment Location</label>
-          <select class="input-select">
-            <option>Zone 1 (Manila)</option>
-            <option>Zone 2 (Marikina)</option>
-            <option>Zone 3 (San Juan)</option>
-            <option>Zone 4 (Pasay)</option>
-            <option>Zone 5 (QC)</option>
-            <option>Custom (See Message)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Priority</label>
-          <select class="input-select">
-            <option>🔴 Critical</option>
-            <option>🟠 Urgent</option>
-            <option>🟡 High</option>
-            <option>🟢 Normal</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Row 2: Role grid -->
-      <div class="form-group">
-        <label>Role Requirements <span style="font-size:11px;color:var(--text3);font-weight:400">— click to include, adjust count</span></label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
-          <div class="role-row active" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>⚕️ Medical</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">4</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-          <div class="role-row" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>🚛 Drivers</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">2</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-          <div class="role-row" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>📦 Logistics</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">2</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-          <div class="role-row" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>🚨 Rescue</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">3</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-          <div class="role-row" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>📻 Comms</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">1</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-          <div class="role-row" onclick="toggleRoleRow(this)">
-            <div class="role-row-label"><div class="role-row-dot"></div>👤 General</div>
-            <div class="role-stepper" onclick="event.stopPropagation()">
-              <button class="stepper-btn" onclick="stepRole(this,-1)">−</button>
-              <div class="stepper-val">2</div>
-              <button class="stepper-btn" onclick="stepRole(this,1)">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Row 3: Status + Message -->
-      <div class="form-row">
-        <div class="form-group" style="flex:0 0 180px">
-          <label>Target Status</label>
-          <select class="input-select">
-            <option>Active Only</option>
-            <option>All Registered</option>
-            <option>Standby</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Message <span style="font-size:11px;color:var(--text3);font-weight:400">(optional)</span></label>
-          <textarea class="input-text" rows="2" style="resize:none" placeholder="Additional instructions..."></textarea>
-        </div>
-      </div>
-
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('alert-team-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="closeModal('alert-team-modal');showToast('Team Alert broadcasted successfully', 'success')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> <span style="margin-left:4px">Send Alert</span></button>
+      <button class="btn btn-ghost" onclick="closeModal('mobilize-confirm-modal')">Review Again</button>
+      <button class="btn btn-primary" onclick="confirmMobilization()">Confirm & Dispatch</button>
     </div>
   </div>
 </div>
@@ -944,116 +1500,524 @@ label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-b
 <div id="toast-wrap"></div>
 
 <script>
-function openMessageModal(name) {
-  document.getElementById('dm-recipient-name').textContent = name;
-  document.getElementById('dm-textarea').value = '';
-  openModal('direct-message-modal');
+function logAction(action, target, detail) {
+  const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+  log.unshift({
+    id: 'LOG-' + Date.now(),
+    timestamp: new Date().toLocaleString('en-PH'),
+    admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+    action,
+    target: target || '—',
+    detail: detail || '—',
+    ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
+  });
+  localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
 }
 
-function toggleRoleRow(row) {
-  row.classList.toggle('active');
+(function applyRole() {
+  const role = localStorage.getItem('ligtas_role') || 'Admin';
+  if (role === 'Super Admin') {
+    document.body.classList.add('role-super');
+  }
+  const nameEl = document.querySelector('.admin-name');
+  if (nameEl) {
+    nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
+  }
+})();
+
+function renderNotifications() {
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+
+  const logs = JSON.parse(
+    localStorage.getItem('ligtas_audit') || '[]'
+  );
+  const recent = logs.slice(0, 5);
+
+  const dotColor = {
+    'Login': 'blue', 'Incident': 'red',
+    'Dispatch': 'orange', 'Broadcast': 'yellow',
+    'Verify': 'green', 'Status Update': 'blue',
+    'Supply Update': 'green'
+  };
+
+  if (recent.length === 0) {
+    list.innerHTML = 
+      '<div class="empty-state">' +
+      'No recent activity</div>';
+    return;
+  }
+
+  list.innerHTML = recent.map(log => {
+    const color = dotColor[log.action] || 'green';
+    return '<div class="feed-item">' +
+      '<div class="feed-dot ' + color + '"></div>' +
+      '<div style="flex:1">' +
+      '<div class="feed-title">' + 
+        log.action + '</div>' +
+      '<div class="feed-desc">' + 
+        log.target + ' — ' + log.detail + 
+      '</div></div>' +
+      '<div style="font-size:10px;' +
+        'color:var(--text-micro);' +
+        'font-family:IBM Plex Mono,monospace">' +
+        log.timestamp.split(',')[1]?.trim() || '' +
+      '</div></div>';
+  }).join('');
 }
 
-function stepRole(btn, delta) {
-  const valEl = btn.parentElement.querySelector('.stepper-val');
-  let current = parseInt(valEl.textContent) || 1;
-  current = Math.max(1, Math.min(99, current + delta));
-  valEl.textContent = current;
+function updateNotifDot() {
+  const logs = JSON.parse(
+    localStorage.getItem('ligtas_audit') || '[]'
+  );
+  const lastRead = parseInt(
+    sessionStorage.getItem('ligtas_last_read') || '0'
+  );
+  const dot = document.querySelector('.notif-dot');
+  if (dot) {
+    dot.style.display = 
+      logs.length > lastRead ? 'block' : 'none';
+  }
+}
+updateNotifDot();
+</script>
+<script>
+const pages = {dashboard:'Dashboard Overview',incidents:'Incident Management',centers:'Evacuation Centers',relief:'Relief Operations',broadcast:'Emergency Broadcast',profile:'Admin Profile'};
+
+function openModal(id){
+  const el = document.getElementById(id);
+  if(el) {
+    el.classList.add('open');
+  } else {
+    console.error('Modal with ID ' + id + ' not found');
+  }
+}
+function closeModal(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.remove('open');
+}
+document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
+
+
+function showToast(msg,type='info'){
+  const wrap = document.getElementById('toast-wrap');
+  if(!wrap) return;
+  const t=document.createElement('div');
+  const icons={success:'✓',info:'ℹ',error:'✕',warning:'⚠'};
+  t.className=`toast ${type}`;
+  t.style.cssText = "display:flex;align-items:center;gap:12px;padding:12px 18px;background:#1A1D27;border:1px solid #2E3247;border-radius:8px;color:#F9FAFB;font-size:13px;font-weight:500;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);margin-top:10px;animation:toast-in .3s ease forwards;cursor:pointer";
+  
+  if(type === 'success') {
+    t.style.borderColor = "#22C55E";
+    t.style.background = "rgba(34, 197, 94, 0.1)";
+    t.style.color = "#22C55E";
+  } else if(type === 'error') {
+    t.style.borderColor = "#EF4444";
+    t.style.background = "rgba(239, 68, 68, 0.1)";
+    t.style.color = "#EF4444";
+  }
+
+  t.innerHTML=`<span style="font-size:16px">${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{
+    t.style.opacity='0';
+    t.style.transform='translateX(20px)';
+    t.style.transition='.3s ease';
+    setTimeout(()=>t.remove(),300);
+  },4000);
 }
 
-function openNotifModal() {
-  openModal('notif-modal');
-  // Mark all as read when opened, hide dot
-  document.querySelectorAll('#notif-modal .feed-item').forEach(i => i.dataset.read = 'true');
-  document.getElementById('notif-dot').style.display = 'none';
+function populateMobIncidents() {
+  const sel = document.getElementById('mob-incident');
+  if (!sel) return;
+
+  const incidents = JSON.parse(
+    localStorage.getItem('ligtas_incidents') || '[]'
+  );
+
+  // Remove all options except the first
+  while (sel.options.length > 1) {
+    sel.remove(1);
+  }
+
+  // Add fallback demo incidents if store is empty
+  const data = incidents.length ? incidents : [
+    { title: 'Flooding in Pinagbuhatan', 
+      barangay: 'Pinagbuhatan', type: 'Flood' },
+    { title: 'Fire in Kapitolyo', 
+      barangay: 'Kapitolyo', type: 'Fire' },
+    { title: 'Road Closure in Rosario', 
+      barangay: 'Rosario', type: 'Infrastructure' }
+  ];
+
+  data.forEach(inc => {
+    const opt = document.createElement('option');
+    opt.value = inc.title;
+    opt.textContent = inc.title;
+    opt.dataset.barangay = inc.barangay || '';
+    opt.dataset.type = inc.type || '';
+    sel.appendChild(opt);
+  });
 }
 
-function markAllRead() {
-  document.querySelectorAll('#notif-modal .feed-item').forEach(i => i.dataset.read = 'true');
-  document.getElementById('notif-dot').style.display = 'none';
-  closeModal('notif-modal');
-  showToast('All notifications marked as read', 'info');
+// MOBILIZATION MISSION CONTROL LOGIC
+function openMobilizeModal() {
+  populateMobIncidents(); // Add this line first
+  goToMobStep(1);
+  document.getElementById('preview-drawer')
+    .classList.remove('open');
+  const now = new Date();
+  now.setHours(now.getHours() + 2);
+  document.getElementById('mob-deadline').value = 
+    now.toISOString().slice(0, 16);
+  updateMobState();
+  openModal('mobilize-modal');
+}
+
+function goToMobStep(step) {
+  document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+  const stepEl = document.getElementById('mob-step-' + step);
+  if (stepEl) stepEl.classList.add('active');
+  
+  document.getElementById('mob-step-indicator').textContent = step;
+  
+  const prevBtn = document.getElementById('mob-prev-btn');
+  const nextBtn = document.getElementById('mob-next-btn');
+  const sendBtn = document.getElementById('mob-send-btn');
+  const readyStatus = document.getElementById('mob-ready-status');
+
+  if (step === 1) {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'block';
+    sendBtn.style.display = 'none';
+    readyStatus.classList.remove('ready');
+  } else {
+    prevBtn.style.display = 'block';
+    nextBtn.style.display = 'none';
+    sendBtn.style.display = 'block';
+    readyStatus.classList.add('ready');
+  }
+}
+
+function setMobPriority(btn, priority) {
+  document.querySelectorAll('#mob-priority .p-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateMobState();
+}
+
+function setMobScope(btn, scope) {
+  btn.parentNode.querySelectorAll('.mc-seg-btn').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  updateMobSummary();
+}
+
+function updateMobSummary() {
+  const scopeBtn = document.querySelector('.mc-seg-btn.active');
+  const scope = scopeBtn ? scopeBtn.textContent : 'All';
+  
+  // Base count
+  let total = 182;
+  
+  // Apply scope logic
+  if (scope.includes('Available')) {
+    total = 142;
+  } else if (scope.includes('Nearby')) {
+    total = 31;
+  } else {
+    total = 182;
+  }
+
+  // Factor in active chips (Skills & Barangays)
+  const activeChips = document.querySelectorAll('.mc-chip.active');
+  if (activeChips.length > 0) {
+    activeChips.forEach(chip => {
+      const text = chip.textContent.toLowerCase();
+      if (text.includes('medical')) total = Math.floor(total * 0.25);
+      else if (text.includes('s&r')) total = Math.floor(total * 0.15);
+      else if (text.includes('logistics')) total = Math.floor(total * 0.35);
+      else total = Math.max(5, Math.floor(total * 0.4)); // Barangays or others
+    });
+  }
+
+  // Ensure minimum 1 if filters are active
+  if (total < 1 && (activeChips.length > 0 || scope !== 'All Volunteers')) total = 2;
+
+  const el = document.getElementById('sum-total');
+  if (el) {
+    el.style.transform = "scale(1.15)";
+    el.style.transition = "transform 0.1s ease";
+    setTimeout(() => {
+      el.textContent = total;
+      el.style.transform = "scale(1)";
+    }, 100);
+  }
+}
+
+function insertMsgTag(tag) {
+  const area = document.getElementById('mob-message');
+  area.value += " " + tag + " ";
+  updateMobState();
+}
+
+function applyMobTemplate(tpl) {
+  const area = document.getElementById('mob-message');
+  const type = document.getElementById('mob-type');
+  const templates = {
+    'Flood Mobilization': "CRITICAL: Flooding in Pasig. All S&R personnel report to {destination} by {deadline}.",
+    'Fire Response': "FIRE ALERT: Structural fire reported. Logistics and First Aid teams needed at {destination}.",
+    'Relief Operations': "RELIEF OPS: Volunteers needed for packing/distribution at {destination}.",
+    'Evacuation Support': "EVACUATION: Support needed for pre-emptive evacuation at {destination}."
+  };
+  if(templates[tpl]) {
+    area.value = templates[tpl];
+    type.value = tpl.includes('Relief') ? "Resource Request" : "Emergency Mobilization";
+  }
+  updateMobState();
+}
+
+function updateMobState() {
+  // Sync Preview
+  const type = document.getElementById('mob-type').value;
+  const msg = document.getElementById('mob-message').value;
+  const dest = document.getElementById('mob-dest').value;
+  const deadline = document.getElementById('mob-deadline').value;
+  const incident = document.getElementById('mob-incident').value;
+  
+  const incSel = document.getElementById('mob-incident');
+  const selectedOpt = incSel?.options[incSel.selectedIndex];
+  const barangay = selectedOpt?.dataset.barangay || '';
+  const incType = selectedOpt?.dataset.type || '';
+  const msgArea = document.getElementById('mob-message');
+
+  if (incident && msgArea && msgArea.value.trim() === '') {
+    const templates = {
+      'Flood': 'FLOOD ALERT: All available rescue and ' +
+        'medical volunteers report to {destination}. ' +
+        'Flooding in ' + barangay + '. Bring life vests.',
+      'Fire': 'FIRE RESPONSE: First aid and logistics ' +
+        'volunteers needed at {destination}. ' +
+        'Active fire in ' + barangay + '.',
+      'default': 'EMERGENCY MOBILIZATION: All available ' +
+        'volunteers report to {destination} by ' +
+        '{deadline}. Incident: ' + incident
+    };
+    msgArea.value = 
+      templates[incType] || templates['default'];
+  }
+  
+  document.getElementById('prev-title').textContent = type;
+  document.getElementById('prev-dest').textContent = dest || "Not specified";
+  document.getElementById('prev-deadline').textContent = deadline ? new Date(deadline).toLocaleString() : "ASAP";
+  
+  // Incident Card Sync
+  const incCard = document.getElementById('mob-inc-card');
+  const prevInc = document.getElementById('prev-incident');
+  if(incident) {
+    incCard.style.display = 'block';
+    document.getElementById('inc-card-name').textContent = incident;
+    prevInc.style.display = 'block';
+    prevInc.textContent = "🔗 " + incident;
+  } else {
+    incCard.style.display = 'none';
+    prevInc.style.display = 'none';
+  }
+
+  // Priority Sync
+  const priorityBtn = document.querySelector('#mob-priority .p-pill.active');
+  const priority = priorityBtn ? priorityBtn.textContent : 'High';
+  const badge = document.getElementById('prev-badge');
+  badge.textContent = priority.toUpperCase() + ' PRIORITY';
+  
+  const colors = {Critical: '#EF4444', High: '#F59E0B', Medium: '#EAB308', Low: '#22C55E'};
+  const dims = {Critical: 'rgba(239, 68, 68, 0.1)', High: 'rgba(245, 158, 11, 0.1)', Medium: 'rgba(234, 179, 8, 0.1)', Low: 'rgba(34, 197, 94, 0.1)'};
+  
+  badge.style.color = colors[priority] || colors.High;
+  badge.style.background = dims[priority] || dims.High;
+
+  // Process Tags in Message
+  let processedMsg = msg || "Enter a message to see preview...";
+  processedMsg = processedMsg.replace(/{destination}/g, dest || "[Destination]");
+  processedMsg = processedMsg.replace(/{deadline}/g, deadline ? new Date(deadline).toLocaleTimeString() : "[Deadline]");
+  processedMsg = processedMsg.replace(/{incident}/g, incident || "[Incident]");
+  document.getElementById('prev-body').textContent = processedMsg;
+
+  // Toggle Visibility
+  document.getElementById('prev-ack-ui').style.opacity = document.getElementById('req-ack').checked ? "1" : "0.3";
+  document.getElementById('prev-eta-ui').style.opacity = document.getElementById('req-eta').checked ? "1" : "0.3";
+}
+
+function sendMobilization() {
+  const priorityBtn = document.querySelector('#mob-priority .p-pill.active');
+  const priority = priorityBtn ? priorityBtn.textContent : 'High';
+  const count = document.getElementById('sum-total').textContent;
+  const dest = document.getElementById('mob-dest').value || "Pasig Command Center";
+  const msg = document.getElementById('prev-body').textContent;
+
+  // Populate Confirmation Modal
+  document.getElementById('conf-total').textContent = count + " Volunteers";
+  document.getElementById('conf-priority').textContent = priority.toUpperCase();
+  document.getElementById('conf-priority').style.color = (priority === 'Critical') ? '#EF4444' : '#3B82F6';
+  document.getElementById('conf-dest').textContent = dest;
+  document.getElementById('conf-msg').textContent = msg;
+
+  openModal('mobilize-confirm-modal');
+}
+
+function confirmMobilization() {
+  closeModal('mobilize-confirm-modal');
+  closeModal('mobilize-modal');
+  showToast('Mobilization Alert Dispatched Successfully', 'success');
+}
+
+function togglePreviewDrawer() {
+  const drawer = document.getElementById('preview-drawer');
+  drawer.classList.toggle('open');
 }
 
 function filterVolunteers() {
-  const query = document.getElementById('vol-search-input').value.toLowerCase();
-  const roleFilter = document.getElementById('vol-filter-select').value.toLowerCase();
-  const items = document.querySelectorAll('#vol-list .vol-item');
-  
+  const q = document.getElementById('vol-search-input').value.toLowerCase();
+  const role = document.getElementById('vol-filter-select').value;
+  const items = document.querySelectorAll('.vol-item');
   items.forEach(item => {
-    const text = item.textContent.toLowerCase();
-    const role = item.dataset.role || '';
-    const matchesSearch = text.includes(query);
-    const matchesRole = roleFilter === 'all' || role.includes(roleFilter);
-    
-    if (matchesSearch && matchesRole) {
-      item.style.display = 'flex';
-    } else {
-      item.style.display = 'none';
-    }
+    const name = item.querySelector('.vol-name').textContent.toLowerCase();
+    const itemRole = item.dataset.role;
+    const matchesQ = name.includes(q);
+    const matchesRole = role === 'all' || itemRole === role;
+    item.style.display = matchesQ && matchesRole ? 'flex' : 'none';
   });
 }
 
 function openVolunteerProfile(name, role, initials, color, status, loc) {
-  document.getElementById('modal-vol-name').textContent = name;
-  document.getElementById('modal-vol-role').textContent = role;
-  document.getElementById('modal-vol-avatar').textContent = initials;
-  document.getElementById('modal-vol-avatar').style.background = color;
-  document.getElementById('modal-vol-loc').innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>' + loc;
-  
-  const badge = document.getElementById('modal-vol-status-badge');
-  badge.textContent = status;
-  if (status === 'Active') badge.className = 'badge badge-stable';
-  else if (status === 'Busy') badge.className = 'badge badge-warning';
-  else if (status === 'Critical') badge.className = 'badge badge-critical';
-  else badge.className = 'badge badge-gray';
-  
+  document.getElementById('prof-name').textContent = name;
+  document.getElementById('prof-role').textContent = role;
+  document.getElementById('prof-loc').textContent = loc;
+  const avatar = document.getElementById('prof-avatar');
+  avatar.textContent = initials;
+  avatar.style.background = color;
+  const s = document.getElementById('prof-status');
+  s.textContent = status;
+  s.className = 'badge ' + (status === 'Active' ? 'badge-stable' : status === 'Busy' ? 'badge-urgent' : status === 'Critical' ? 'badge-critical' : 'badge-gray');
   openModal('volunteer-profile-modal');
 }
 
-const pages = {dashboard:'Dashboard Overview',incidents:'Incident Management',centers:'Evacuation Centers',relief:'Relief Operations',broadcast:'Emergency Broadcast',profile:'Admin Profile'};
+function setIncidentDetail(title, status, barangay, timeAgo, description) {
+  document.getElementById('modal-inc-title').textContent = title;
+  document.getElementById('modal-inc-loc').textContent = barangay;
+  document.getElementById('modal-inc-time').textContent = timeAgo;
+  document.getElementById('modal-inc-desc').textContent = description;
 
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
-function showToast(msg,type='info'){
-  const t=document.createElement('div');
-  const icons={success:'✓',info:'ℹ',error:'✕',warning:'⚠'};
-  t.className=`toast ${type}`;t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${msg}</span>`;
-  document.getElementById('toast-wrap').appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='.2s';setTimeout(()=>t.remove(),200)},3200);
+  const b = document.getElementById('modal-inc-badge');
+  const map = {
+    'Critical':   ['critical', 'Critical'],
+    'Reported':   ['', 'Reported'],
+    'Verified':   ['nominal', 'Verified'],
+    'Dispatched': ['warning', 'Dispatched'],
+    'Resolved':   ['success', 'Resolved'],
+    'Urgent':     ['warning', 'Urgent'],
+    'Hydrological': ['nominal', 'Hydrological'],
+    'Medical/Rescue': ['warning', 'Medical']
+  };
+  const [cls, label] = map[status] || ['', status];
+  b.className = 'badge' + (cls ? ' ' + cls : '');
+  b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
 }
-function filterIncidents(q){
-  const rows=document.querySelectorAll('#incidents-tbody tr');
-  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none'});
+
+function openMessageModal(name) {
+  document.getElementById('dm-recipient-name').textContent = name;
+  const area = document.getElementById('dm-textarea');
+  if(area) area.value = '';
+  // Set initials for avatar
+  const initials = name.split(' ').map(n => n[0]).join('');
+  const av = document.getElementById('dm-avatar');
+  if(av) av.textContent = initials;
+  openModal('direct-message-modal');
 }
-function filterByStatus(s){
-  const rows=document.querySelectorAll('#incidents-tbody tr');
-  rows.forEach(r=>{r.style.display=(s==='all'||r.dataset.status===s)?'':'none'});
+
+function openVolunteerLocation(name, loc) {
+  document.getElementById('map-vol-name').textContent = name;
+  document.getElementById('map-vol-loc-str').textContent = "Current: " + loc;
+  openModal('volunteer-location-modal');
 }
-function selectCenter(el,name){
-  document.querySelectorAll('.center-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('selected-center-name').textContent=name;
+
+const ZONE_RECIPIENTS = {
+  'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
+  'Manggahan': 4120, 'Pinagbuhatan': 2216,
+  'Rosario': 3842, 'San Joaquin': 1680,
+  'Santolan': 1920, 'Ugong': 480
+};
+function openBroadcastConfirm(level, zone, message) {
+  const count = ZONE_RECIPIENTS[zone] || 14203;
+  document.getElementById('conf-b-count').textContent = '\u26a0\ufe0f This will send to ' + count.toLocaleString() + ' recipients';
+  document.getElementById('conf-b-level').textContent = level || '\u2014';
+  document.getElementById('conf-b-msg').textContent = message || '(No message entered)';
+  openModal('confirm-broadcast-modal');
 }
-function setIncidentDetail(title,status,loc,time,desc){
-  document.getElementById('modal-inc-title').textContent=title;
-  document.getElementById('modal-inc-loc').textContent=loc;
-  document.getElementById('modal-inc-time').textContent=time;
-  document.getElementById('modal-inc-desc').textContent=desc;
-  const b=document.getElementById('modal-inc-badge');
-  b.textContent=status;
-  b.className='badge '+(status==='Critical'?'badge-critical':status==='Urgent'?'badge-urgent':status.includes('Medical')?'badge-warning':status==='Hydrological'?'badge-info':'badge-gray');
+function confirmBroadcastSend() {
+  closeModal('confirm-broadcast-modal');
+  closeModal('broadcast-modal');
+  showToast('Broadcast sent successfully', 'success');
+  logAction('Broadcast', document.getElementById('conf-b-level').textContent, document.getElementById('conf-b-msg').textContent.slice(0, 60));
 }
-function setEditEvacuee(name,age,gender,health,needs){
-  document.getElementById('edit-name').value=name;
-  document.getElementById('edit-age').value=age;
-  document.getElementById('edit-gender').value=gender==='M'?'Male':gender==='F'?'Female':'Other';
-  const hs=document.getElementById('edit-health');
-  const map={'Stable':'Stable','Medical Attention':'Needs Medical Attention','Urgent':'Urgent','Critical':'Critical Condition'};
-  for(let o of hs.options){if(o.value===map[health]||o.text.includes(health)){o.selected=true;break}}
-  document.getElementById('edit-needs').value=needs;
+function verifyIncident() {
+  const title = document.getElementById('modal-inc-title').textContent;
+  logAction('Verify', title, 'Status set to Verified');
+  showToast('Incident verified', 'success');
+  closeModal('incident-detail-modal');
 }
+
+function dispatchFromModal() {
+  const title = document.getElementById('modal-inc-title').textContent;
+  logAction('Dispatch', title, 'Rescue team assigned');
+  showToast('Rescue team dispatched', 'success');
+  closeModal('incident-detail-modal');
+}
+
+function openDispatchForRequest(destination, cargo, zone, btn) {
+  // Pre-fill dispatch modal
+  const destSel = document.querySelector(
+    '#dispatch-modal .input-select:nth-child(1)'
+  );
+  const cargoSel = document.querySelector(
+    '#dispatch-modal select:nth-of-type(3)'
+  );
+
+  // Set matching option by text
+  [...document.querySelectorAll(
+    '#dispatch-modal select'
+  )].forEach(sel => {
+    [...sel.options].forEach(opt => {
+      if (opt.text.includes(destination)) 
+        sel.value = opt.value;
+      if (opt.text.includes(cargo)) 
+        sel.value = opt.value;
+    });
+  });
+
+  // Store reference to mark after confirm
+  window._pendingDispatchBtn = btn;
+  openModal('dispatch-modal');
+  logAction('Dispatch Initiated', destination, 
+    cargo + ' — ' + zone);
+}
+
+function confirmDispatch() {
+  closeModal('dispatch-modal');
+  showToast('Unit dispatched successfully', 'success');
+
+  if (window._pendingDispatchBtn) {
+    const card = window._pendingDispatchBtn
+      .closest('.req-card');
+    if (card) {
+      card.style.opacity = '0.45';
+      window._pendingDispatchBtn.outerHTML = 
+        '<span class="badge success" ' +
+        'style="font-size:11px">' +
+        '<div class="dot"></div>Dispatched</span>';
+    }
+    window._pendingDispatchBtn = null;
+  }
+}
+
 function updateTime(){
   const now=new Date();
   const d=now.toLocaleDateString('en-PH',{weekday:'short',month:'short',day:'numeric'});

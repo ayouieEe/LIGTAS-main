@@ -109,34 +109,33 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-
 .btn-sm{padding:6px 12px;font-size:11px}
 
 /* BADGES */
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;border:1px solid var(--border);color:var(--text-muted);background:var(--bg-elevated)}
-.badge .dot{width:6px;height:6px;border-radius:50%;margin-right:6px}
-.badge.critical .dot{background:var(--critical)}
-.badge.warning .dot{background:var(--warning)}
-.badge.nominal .dot{background:var(--nominal)}
-.badge.success .dot{background:var(--success)}
-.badge-pill-muted{background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted);padding:2px 8px;border-radius:10px;font-size:11px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.badge-critical{background:var(--red-dim);color:var(--red)}
+.badge-urgent{background:var(--orange-dim);color:var(--orange)}
+.badge-warning{background:var(--yellow-dim);color:var(--yellow)}
+.badge-stable{background:var(--green-dim);color:var(--green)}
+.badge-info{background:var(--primary-dim);color:var(--primary)}
+.badge-teal{background:var(--teal-dim);color:var(--teal)}
+.badge-gray{background:var(--bg4);color:var(--text2)}
 
 /* TABLE */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse}
 thead tr{border-bottom:1px solid var(--border)}
-th{font-size:11.5px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left}
-td{padding:11px 12px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle}
+th{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;padding:12px 20px;text-align:left}
+td{padding:12px 20px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text-muted)}
 tbody tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:rgba(255,255,255,.02)}
-.td-title{font-weight:500;color:var(--text);margin-bottom:2px}
-.td-sub{font-size:12px;color:var(--text3)}
+tbody tr:hover td{background:rgba(255,255,255,0.01);color:var(--text-primary)}
+.td-title{font-weight:500;color:var(--text-primary);margin-bottom:2px}
+.td-sub{font-size:12px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace}
 
-/* SEARCH & FILTERS */
-.controls-row{display:flex;align-items:center;gap:10px;padding:0 18px;margin-bottom:2px}
-.search-wrap{position:relative;flex:1;max-width:280px}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);width:14px;height:14px}
-.search-input{width:100%;padding:7px 12px 7px 32px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;outline:none}
-.search-input::placeholder{color:var(--text3)}
-.search-input:focus{border-color:var(--primary);background:var(--bg4)}
-.filter-select{padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text2);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
-.filter-select:focus{border-color:var(--primary)}
+.audit-filters{display:flex;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg-elevated)}
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-micro);width:14px;height:14px}
+.search-input{width:100%;padding:8px 12px 8px 32px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:inherit;outline:none}
+.search-input:focus{border-color:var(--nominal);background:var(--bg-elevated)}
+.filter-select{padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:13px;font-family:inherit;outline:none;cursor:pointer}
+.filter-select:focus{border-color:var(--nominal)}
 
 /* STATUS FEED */
 .feed-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
@@ -229,28 +228,31 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
 .vol-stat-text .small{font-size:11.5px;color:var(--text3);margin-top:2px}
 
 /* MODALS */
-.modal-backdrop{position:fixed;inset:0;background:rgba(13,15,26,0.85);backdrop-filter:blur(12px);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center}
 .modal-backdrop.open{display:flex}
-.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);width:520px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-in .1s ease}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:520px;max-width:95vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:modal-in .18s ease}
 .modal.modal-sm{width:400px}
-.modal.modal-lg{width:800px}
-@keyframes modal-in{from{opacity:0;transform:scale(.98) translateY(4px)}to{opacity:1;transform:none}}
-.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-head h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-primary)}
-.modal-body{padding:24px;overflow-y:auto;flex:1}
-.modal-foot{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px}
-.close-btn{width:24px;height:24px;border-radius:var(--radius);background:none;border:1px solid var(--border);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .1s}
-.close-btn:hover{background:var(--bg-elevated);border-color:var(--text-micro);color:var(--text-primary)}
+.modal.modal-lg{width:620px}
+@keyframes modal-in{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{font-size:15px;font-weight:500}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.close-btn{width:28px;height:28px;border-radius:6px;background:none;border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.close-btn:hover{background:var(--red-dim);border-color:rgba(248,81,73,.3);color:var(--red)}
 
 /* FORMS */
-.form-group{margin-bottom:20px}
-label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
-.input-text,.input-select,.input-textarea{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:inherit;outline:none;transition:all .1s}
-.input-text:focus,.input-select:focus,.input-textarea:focus{border-color:var(--nominal);background:var(--bg-elevated)}
-.input-text::placeholder,.input-textarea::placeholder{color:var(--text-micro)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.form-hint{font-size:11px;color:var(--text-micro);margin-top:6px}
-.form-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin:24px 0 12px}
+.form-group{margin-bottom:14px}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:12.5px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.input-text,.input-select,.input-textarea{width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13.5px;font-family:inherit;outline:none;transition:border .15s}
+.input-text:focus,.input-select:focus,.input-textarea:focus{border-color:var(--primary);background:var(--bg4)}
+.input-text::placeholder,.input-textarea::placeholder{color:var(--text3)}
+.input-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-repeat:no-repeat;background-position:right 8px center;background-size:16px;padding-right:30px}
+.input-textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:11.5px;color:var(--text3);margin-top:4px}
+.form-section{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text3);margin:16px 0 10px}
 
 /* PROFILE */
 .profile-hero{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;display:flex;align-items:center;gap:20px;margin-bottom:16px}
@@ -263,24 +265,34 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-
 .profile-stat .val{font-size:22px;font-weight:600;letter-spacing:-0.5px;margin-bottom:4px}
 .profile-stat .lbl{font-size:11.5px;color:var(--text3)}
 
+/* SESSION STRIP */
+.session-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.session-label{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:500}
+.session-val{font-size:18px;font-weight:600;letter-spacing:-0.5px;margin-bottom:2px}
+.session-sub{font-size:11.5px;color:var(--text3)}
+
+/* ACTIVITY LOG */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;min-width:58px;padding-top:2px}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.activity-body{flex:1}
+.activity-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.activity-sub{font-size:12px;color:var(--text3)}
+
 /* BROADCAST */
-.channel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
-.channel-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .1s;display:flex;align-items:center;gap:12px}
-.channel-card:hover{border-color:var(--text-micro)}
-.channel-card.selected{border-color:var(--nominal);background:rgba(59,130,246,0.03)}
-.channel-icon{width:32px;height:32px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:14px;background:var(--bg-card);border:1px solid var(--border)}
-.channel-name{font-size:13px;font-weight:500;color:var(--text-primary)}
-.channel-sub{font-size:11px;color:var(--text-muted)}
-.broadcast-log{padding:0 20px}
-.log-item{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+.channel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.channel-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.channel-card:hover{border-color:var(--border2)}
+.channel-card.selected{border-color:var(--primary);background:var(--primary-dim)}
+.channel-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:16px}
+.channel-name{font-size:13.5px;font-weight:500}
+.channel-sub{font-size:11.5px;color:var(--text3)}
+.broadcast-log{padding:0 18px}
+.log-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
 .log-item:last-child{border-bottom:none}
-.log-time{font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;min-width:70px;padding-top:2px}
-.log-msg{font-size:13px;color:var(--text-primary);line-height:1.5}
-.log-tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:6px}
-.log-tag::before{content:'';width:6px;height:6px;border-radius:50%}
-.log-tag.red{color:var(--critical)}\n.log-tag.red::before{background:var(--critical)}
-.log-tag.orange{color:var(--warning)}\n.log-tag.orange::before{background:var(--warning)}
-.log-tag.blue{color:var(--nominal)}\n.log-tag.blue::before{background:var(--nominal)}
+.log-time{font-size:11.5px;color:var(--text3);font-family:'DM Mono',monospace;min-width:70px;padding-top:1px}
+.log-msg{font-size:13px;color:var(--text2);line-height:1.5}
+.log-tag{font-size:11px;font-weight:500;padding:1px 7px;border-radius:4px;display:inline-block;margin-top:4px}
 
 /* DASHBOARD WIDGETS */
 .dash-incident-mini{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s}
@@ -299,11 +311,11 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-
 
 /* TOAST */
 #toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{padding:12px 20px;border-radius:var(--radius);font-size:13px;font-weight:400;display:flex;align-items:center;gap:10px;min-width:240px;animation:toast-in .2s ease;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary)}
-.toast.success{border-left:3px solid var(--success)}
-.toast.info{border-left:3px solid var(--nominal)}
-.toast.error{border-left:3px solid var(--critical)}
-.toast.warning{border-left:3px solid var(--warning)}
+.toast{padding:10px 16px;border-radius:var(--radius);font-size:13.5px;font-weight:400;display:flex;align-items:center;gap:8px;min-width:200px;animation:toast-in .2s ease;border:1px solid}
+.toast.success{background:var(--bg2);border-color:rgba(63,185,80,.4);color:var(--green)}
+.toast.info{background:var(--bg2);border-color:rgba(47,129,247,.4);color:var(--primary)}
+.toast.error{background:var(--bg2);border-color:rgba(248,81,73,.4);color:var(--red)}
+.toast.warning{background:var(--bg2);border-color:rgba(210,153,34,.4);color:var(--yellow)}
 @keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 
 /* UTILS */
@@ -315,9 +327,16 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-
 .scroll-y::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .w-full{width:100%}
 .super-admin-only{}
-.social-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-top:12px}
-.social-platform-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500;margin-right:4px;margin-bottom:4px}
-.char-counter{font-size:11px;color:var(--text3);text-align:right;margin-top:4px;font-family:'DM Mono',monospace}
+.audit-filters{display:flex;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.audit-action-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:500;white-space:nowrap;border:1px solid}
+.audit-action-badge.login{background:var(--blue-dim);color:var(--blue);border-color:rgba(88,166,255,.2)}
+.audit-action-badge.dispatch{background:var(--purple-dim);color:var(--purple);border-color:rgba(188,140,255,.2)}
+.audit-action-badge.broadcast{background:var(--orange-dim);color:var(--orange);border-color:rgba(210,153,34,.2)}
+.audit-action-badge.incident{background:var(--red-dim);color:var(--red);border-color:rgba(248,81,73,.2)}
+.audit-action-badge.default{background:var(--bg4);color:var(--text2);border-color:var(--border2)}
+.role-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-left:6px}
+.role-badge.super{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(188,140,255,.3)}
+.role-badge.admin{background:var(--primary-dim);color:var(--primary);border:1px solid rgba(47,129,247,.3)}
 
 /* NEARBY VOLUNTEERS PANEL */
 .vol-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
@@ -387,7 +406,7 @@ input:checked + .slider:before { transform: translateX(16px); }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
       Relief Ops
     </a>
-    <a href="broadcast.html" class="nav-item active" >
+    <a href="broadcast.html" class="nav-item" >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 8.01c0-6.39-14-6.39-14 0S1.55 22 8 22c2.04 0 4.01-.64 5.56-1.84L19 22l-1.3-5.45C21.07 14.56 22 11.37 22 8.01z"/></svg>
       Broadcast
     </a>
@@ -396,7 +415,7 @@ input:checked + .slider:before { transform: translateX(16px); }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Admin Profile
     </a>
-    <a href="audit-logs.html" class="nav-item super-admin-only" >
+    <a href="audit-logs.html" class="nav-item active super-admin-only" >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Audit Logs
     </a>
@@ -409,9 +428,9 @@ input:checked + .slider:before { transform: translateX(16px); }
 
 <!-- MAIN WRAPPER -->
 <div class="main-wrap">
-  <header class="topbar">
+<header class="topbar">
     <div class="topbar-left">
-      <h1 id="page-title">Emergency Broadcast</h1>
+      <h1 id="page-title">Audit Logs (Super Admin)</h1>
       <span class="breadcrumb" id="live-time"></span>
     </div>
     <div class="topbar-right">
@@ -419,9 +438,9 @@ input:checked + .slider:before { transform: translateX(16px); }
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         Report Incident
       </button>
-      <button class="icon-btn" id="notif-btn" onclick="renderNotifications(); openModal('notif-modal')">
+      <button class="icon-btn" onclick="renderNotifications(); openModal('notif-modal')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <span class="notif-dot" id="notif-dot"></span>
+        <span class="notif-dot"></span>
       </button>
       <div class="admin-chip" onclick="window.location.href='profile.html'">
         <div class="admin-avatar">CR</div>
@@ -432,81 +451,58 @@ input:checked + .slider:before { transform: translateX(16px); }
 
   <div class="content">
 
-    <!-- BROADCAST PAGE -->
-    <div class="page active" id="page-broadcast">
-      <div class="metrics-row">
-        <div class="m-card c-blue"><div class="m-card-label">SMS Recipients Reach</div><div class="m-card-value blue">14,203</div><div class="m-card-sub">Current active database</div></div>
-        <div class="m-card c-teal"><div class="m-card-label">App Users Online</div><div class="m-card-value green">8,502</div><div class="m-card-sub">Active last 24h</div></div>
-        <div class="m-card c-yellow"><div class="m-card-label">Broadcasts Today</div><div class="m-card-value orange">7</div><div class="m-card-sub">All channels</div></div>
-        <div class="m-card c-green"><div class="m-card-label">Success Rate</div><div class="m-card-value green">98.5%</div><div class="m-card-sub">Delivery confirmation</div></div>
-      </div>
-      <div class="grid-2">
-        <div class="panel">
-          <div class="panel-head"><h2>Compose Broadcast</h2></div>
-          <div style="padding:0 18px 18px;margin-top:8px">
-            <div class="form-group">
-              <label>Alert Level</label>
-              <select class="input-select">
-                <option>🔴 Red Alert — Immediate Evacuation</option>
-                <option>🟠 Orange Alert — High Threat</option>
-                <option>🟡 Yellow Alert — Precautionary</option>
-                <option>🔵 Blue — Informational</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Target Barangay</label>
-              <select class="input-select" id="broadcast-barangay" onchange="updateBroadcastRecipients()">
-                <option value="all">All Barangays (Pasig City)</option>
-                <option value="Caniogan">Caniogan</option>
-                <option value="Kapitolyo">Kapitolyo</option>
-                <option value="Manggahan">Manggahan</option>
-                <option value="Pinagbuhatan">Pinagbuhatan</option>
-                <option value="Rosario">Rosario</option>
-                <option value="San Joaquin">San Joaquin</option>
-                <option value="Santolan">Santolan</option>
-                <option value="Ugong">Ugong</option>
-              </select>
-              <div class="form-hint" id="recipient-count-hint" style="color:var(--nominal)">Estimated reach: 14,203 residents</div>
-            </div>
-            <div class="form-section">Channels</div>
-            <div class="channel-grid">
-              <div class="channel-card selected" onclick="this.classList.toggle('selected')"><div class="channel-icon">📱</div><div><div class="channel-name">SMS Blast</div><div class="channel-sub">14,203 recipients</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">📡</div><div><div class="channel-name">Radio Broadcast</div><div class="channel-sub">DZBB, DZMM, DWRR</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">🔔</div><div><div class="channel-name">App Push Notif</div><div class="channel-sub">8,502 app users</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">📢</div><div><div class="channel-name">Barangay PA</div><div class="channel-sub">30 PA systems</div></div></div>
-            </div>
-            <div class="form-section">Social Media</div>
-            <div class="channel-grid">
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">FB</div><div><div class="channel-name">Facebook</div><div class="channel-sub">Pasig City PIO</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">X</div><div><div class="channel-name">X (Twitter)</div><div class="channel-sub">@PasigCityGov</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">IG</div><div><div class="channel-name">Instagram</div><div class="channel-sub">@pasigcitygov</div></div></div>
-              <div class="channel-card" onclick="this.classList.toggle('selected')"><div class="channel-icon">VB</div><div><div class="channel-name">Viber Community</div><div class="channel-sub">12,450 members</div></div></div>
-            </div>
-            <div class="form-group">
-              <label>Message</label>
-              <textarea class="input-textarea" rows="4" placeholder="Type your emergency broadcast message here...">NDRRMC ALERT: Mandatory evacuation issued for riverside communities in San Joaquin and Pinagbuhatan. Proceed to nearest evacuation center immediately. Bring essential documents and medications.</textarea>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <button class="btn btn-ghost" onclick="showToast('Draft saved','info')">Save Draft</button>
-              <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="openBroadcastConfirm(document.querySelector('#page-broadcast .input-select').value, document.getElementById('broadcast-barangay').value, document.querySelector('.input-textarea').value)">
-                Send Broadcast Advisory
-              </button>
-            </div>
+    <!-- AUDIT LOGS PAGE -->
+    <div class="page active" id="page-audit-logs">
+      <div class="panel">
+      <div class="audit-filters">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="audit-search" placeholder="Search logs (Admin, Action, Target...)" onkeyup="filterAuditLogs()">
+          </div>
+          <select class="filter-select" id="audit-action-filter" onchange="filterAuditLogs()">
+            <option value="all">All Actions</option>
+            <option value="Login">Logins</option>
+            <option value="Logout">Logouts</option>
+            <option value="Dispatch">Dispatches</option>
+            <option value="Broadcast">Broadcasts</option>
+            <option value="Incident">Incidents</option>
+            <option value="Verify">Verifications</option>
+            <option value="Status Update">Status Updates</option>
+          </select>
+          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+            <span id="audit-count" style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace">0 entries</span>
+            <button class="btn btn-sm btn-ghost" onclick="loadAuditLogs()">Refresh Logs</button>
+            <button class="btn btn-sm btn-ghost" onclick="exportAuditCSV()">Export CSV</button>
           </div>
         </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Broadcast Log</h2><span class="badge-pill-muted">Last 24h</span></div>
-          <div class="broadcast-log mt-3">
-            <div class="log-item"><div class="log-time">09:14:22</div><div><div class="log-msg">Flash flood advisory issued for Pasig River basin communities.</div><div class="log-tag orange">Orange Alert</div></div></div>
-            <div class="log-item"><div class="log-time">08:52:10</div><div><div class="log-msg">Hazmat exclusion zone established at Manggahan Floodway Area, 300m radius.</div><div class="log-tag red">Red Alert</div></div></div>
-            <div class="log-item"><div class="log-time">08:15:45</div><div><div class="log-msg">Evacuation centers in District 2 are now open.</div><div class="log-tag blue">Blue Info</div></div></div>
-            <div class="log-item"><div class="log-time">07:40:02</div><div><div class="log-msg">Heavy rainfall warning raised to Orange. Monitor updates.</div><div class="log-tag orange">Orange Alert</div></div></div>
-            <div class="log-item"><div class="log-time">06:30:11</div><div><div class="log-msg">Power restoration underway in Ortigas Center. Estimated completion: 2 hours.</div><div class="log-tag blue">Blue Info</div></div></div>
-            <div class="log-item"><div class="log-time">05:55:00</div><div><div class="log-msg">Rescue operations ongoing in Rosario. Do not attempt to use flooded roads.</div><div class="log-tag red">Red Alert</div></div></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Timestamp</th>
+                <th>Admin User</th>
+                <th>Action Taken</th>
+                <th>Target</th>
+                <th>Detail</th>
+                <th>IP Address</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+          <div class="empty-state" id="audit-empty" style="display:none">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <div>No audit logs found matching your filters.</div>
           </div>
         </div>
       </div>
     </div>
+
+  </div>
+</div>
 
   </div>
 </div>
@@ -747,13 +743,17 @@ function submitNewIncident() {
       </div>
 
       <div class="form-section-head">Response Actions</div>
-          <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" rows="2" placeholder="Add field update or notes..."></textarea></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div class="form-row">
+          <div class="form-group"><label>Assign Unit</label><select class="input-select"><option>Fire Unit Alpha</option><option>Rescue Team Bravo</option><option>Medical Team Charlie</option><option>Hazmat Delta</option></select></div>
+          <div class="form-group"><label>Priority Override</label><select class="input-select"><option>Keep Current</option><option>Escalate to Critical</option><option>Downgrade to Urgent</option><option>Mark Resolved</option></select></div>
+        </div>
+        <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" rows="2" placeholder="Add field update or notes..."></textarea></div>
       </div>
     </div>
     <div class="modal-foot" style="justify-content:flex-start;gap:8px">
       <button class="btn btn-ghost" onclick="verifyIncident()">Verify</button>
       <button class="btn btn-primary" onclick="dispatchFromModal()">Dispatch Rescue Team</button>
-      <button class="btn btn-ghost" onclick="showToast('Published to configured channels','info')">Post Social Advisory</button>
       <div style="flex:1"></div>
       <button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>
     </div>
@@ -806,42 +806,24 @@ function submitNewIncident() {
   <div class="modal modal-sm">
     <div class="modal-head"><h2>Send Emergency Broadcast</h2><button class="close-btn" onclick="closeModal('broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div class="form-group"><label>Alert Level</label><select class="input-select"><option>🔴 Red — Immediate Evacuation</option><option>🟠 Orange — High Threat</option><option>🟡 Yellow — Precautionary</option><option>🔵 Blue — Informational</option></select></div>
-      <div class="form-group"><label>Target Zone</label><select class="input-select" id="broadcast-zone" onchange="updateBroadcastTarget()"><option>All Zones</option><option>Zone 1 — Kapitolyo</option><option>Zone 2 — Rosario</option><option>Zone 5 — Santolan</option><option>Zone 7 — Manggahan</option></select></div>
-      <div class="form-group"><label>Message</label><textarea class="input-textarea" rows="4" placeholder="Type emergency message..."></textarea></div>
+      <div class="form-group"><label>Alert Level</label><select class="input-select" id="bm-level-aud"><option>🔴 Red — Immediate Evacuation</option><option>🟠 Orange — High Threat</option><option>🟡 Yellow — Precautionary</option><option>🔵 Blue — Informational</option></select></div>
+      <div class="form-group"><label>Target Zone</label><select class="input-select" id="bm-zone-aud"><option value="all">All Zones</option><option value="Kapitolyo">Zone 1 — Kapitolyo</option><option value="Rosario">Zone 2 — Rosario</option><option value="Santolan">Zone 5 — Santolan</option><option value="Manggahan">Zone 7 — Manggahan</option></select></div>
+      <div class="form-group"><label>Message</label><textarea class="input-textarea" id="bm-msg-aud" rows="4" placeholder="Type emergency message..."></textarea></div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('broadcast-modal')">Cancel</button>
-      <button class="btn btn-danger" onclick="openBroadcastConfirm(document.querySelector('#broadcast-modal .input-select').value, document.getElementById('broadcast-zone').value, document.querySelector('#broadcast-modal .input-textarea').value)">Send Now</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('broadcast-modal')">Cancel</button><button class="btn btn-danger" onclick="openBroadcastConfirm(document.getElementById('bm-level-aud').value,document.getElementById('bm-zone-aud').value,document.getElementById('bm-msg-aud').value)">Send Now</button></div>
   </div>
 </div>
 
 <!-- Confirm Broadcast -->
 <div class="modal-backdrop" id="confirm-broadcast-modal">
   <div class="modal modal-sm">
-    <div class="modal-head">
-      <h2>Confirm Broadcast</h2>
-      <button class="close-btn" onclick="closeModal('confirm-broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-    </div>
+    <div class="modal-head"><h2>Confirm Broadcast</h2><button class="close-btn" onclick="closeModal('confirm-broadcast-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
-      <div style="background:rgba(239,68,68,0.05);border-left:2px solid var(--critical);padding:16px;margin-bottom:16px;border-radius:var(--radius)">
-        <div id="conf-b-count" style="font-size:13px;font-weight:600;color:var(--critical);margin-bottom:6px"></div>
-        <div style="font-size:12px;color:var(--text-muted);line-height:1.5">This will immediately broadcast to all selected channels. This cannot be undone.</div>
-      </div>
-      <div style="margin-bottom:10px">
-        <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Alert level</div>
-        <div id="conf-b-level" style="font-size:13px;font-weight:500;color:var(--text-primary)"></div>
-      </div>
-      <div>
-        <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Message</div>
-        <div id="conf-b-msg" style="font-size:13px;color:var(--text-primary);background:var(--bg-elevated);padding:12px;border-radius:var(--radius);border:1px solid var(--border);line-height:1.5"></div>
-      </div>
+      <div style="background:rgba(239,68,68,0.05);border-left:2px solid var(--critical);padding:16px;margin-bottom:16px;border-radius:var(--radius)"><div id="conf-b-count" style="font-size:13px;font-weight:600;color:var(--critical);margin-bottom:6px"></div><div style="font-size:12px;color:var(--text-muted);line-height:1.5">This will immediately broadcast to all selected channels. This cannot be undone.</div></div>
+      <div style="margin-bottom:10px"><div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Alert level</div><div id="conf-b-level" style="font-size:13px;font-weight:500;color:var(--text-primary)"></div></div>
+      <div><div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Message</div><div id="conf-b-msg" style="font-size:13px;color:var(--text-primary);background:var(--bg-elevated);padding:12px;border-radius:var(--radius);border:1px solid var(--border);line-height:1.5"></div></div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('confirm-broadcast-modal')">Cancel</button>
-      <button class="btn btn-primary" style="background:var(--critical)" onclick="confirmBroadcastSend()">Confirm &amp; Send</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal('confirm-broadcast-modal')">Cancel</button><button class="btn btn-primary" style="background:var(--critical)" onclick="confirmBroadcastSend()">Confirm &amp; Send</button></div>
   </div>
 </div>
 
@@ -906,6 +888,10 @@ function logAction(action, target, detail) {
     nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
   }
 })();
+
+if (!document.body.classList.contains('role-super')) {
+  window.location.href = 'index.html';
+}
 
 function renderNotifications() {
   const list = document.getElementById('notif-list');
@@ -981,32 +967,100 @@ function closeModal(id){
 document.querySelectorAll('.modal-backdrop').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
 
 function showToast(msg,type='info'){
-
-  const wrap = document.getElementById('toast-wrap');
-  if(!wrap) return;
   const t=document.createElement('div');
   const icons={success:'✓',info:'ℹ',error:'✕',warning:'⚠'};
-  t.className=`toast ${type}`;
-  t.style.cssText = "display:flex;align-items:center;gap:12px;padding:12px 18px;background:#1A1D27;border:1px solid #2E3247;border-radius:8px;color:#F9FAFB;font-size:13px;font-weight:500;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);margin-top:10px;animation:toast-in .3s ease forwards;cursor:pointer";
-  
-  if(type === 'success') {
-    t.style.borderColor = "#22C55E";
-    t.style.background = "rgba(34, 197, 94, 0.1)";
-    t.style.color = "#22C55E";
-  } else if(type === 'error') {
-    t.style.borderColor = "#EF4444";
-    t.style.background = "rgba(239, 68, 68, 0.1)";
-    t.style.color = "#EF4444";
-  }
+  t.className=`toast ${type}`;t.innerHTML=`<span>${icons[type]||'ℹ'}</span><span>${msg}</span>`;
+  document.getElementById('toast-wrap').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(20px)';t.style.transition='.2s';setTimeout(()=>t.remove(),200)},3200);
+}
 
-  t.innerHTML=`<span style="font-size:16px">${icons[type]||'ℹ'}</span><span>${msg}</span>`;
-  wrap.appendChild(t);
-  setTimeout(()=>{
-    t.style.opacity='0';
-    t.style.transform='translateX(20px)';
-    t.style.transition='.3s ease';
-    setTimeout(()=>t.remove(),300);
-  },4000);
+// ── AUDIT LOG PAGE LOGIC ──────────────────────────────────────────────────────
+
+let _auditAll = [];
+
+function loadAuditLogs() {
+  _auditAll = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+  renderAuditTable(_auditAll);
+  document.getElementById('audit-count').textContent = _auditAll.length + ' entries';
+}
+
+function renderAuditTable(logs) {
+  const tbody = document.getElementById('audit-tbody');
+  if (!tbody) return;
+  if (logs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No audit entries found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = logs.map(e => {
+    const actionColor = {
+      'Login': 'nominal', 'Logout': 'nominal',
+      'Incident': 'warning', 'Dispatch': 'warning',
+      'Broadcast': 'critical', 'Verify': 'success',
+      'Status Update': 'success'
+    }[e.action] || '';
+    return `<tr>
+      <td class="mono" style="font-size:11px;color:var(--text-muted)">${e.id}</td>
+      <td class="mono" style="font-size:11px">${e.timestamp}</td>
+      <td style="font-weight:500">${e.admin}</td>
+      <td><span class="badge ${actionColor}">${e.action}</span></td>
+      <td>${e.target}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${e.detail}</td>
+      <td class="mono" style="font-size:11px;color:var(--text-muted)">${e.ip}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterAuditLogs() {
+  const q = (document.getElementById('audit-search') ? document.getElementById('audit-search').value : '').toLowerCase();
+  const action = document.getElementById('audit-action-filter') ? document.getElementById('audit-action-filter').value : 'all';
+  const filtered = _auditAll.filter(e => {
+    const matchAction = action === 'all' || e.action === action;
+    const matchSearch = !q ||
+      e.id.toLowerCase().includes(q) ||
+      e.admin.toLowerCase().includes(q) ||
+      e.action.toLowerCase().includes(q) ||
+      e.target.toLowerCase().includes(q) ||
+      e.detail.toLowerCase().includes(q) ||
+      (e.ip && e.ip.includes(q));
+    return matchAction && matchSearch;
+  });
+  renderAuditTable(filtered);
+  document.getElementById('audit-count').textContent = filtered.length + ' entries';
+}
+
+function exportAuditCSV() {
+  const q = (document.getElementById('audit-search') ? document.getElementById('audit-search').value : '').toLowerCase();
+  const action = document.getElementById('audit-action-filter') ? document.getElementById('audit-action-filter').value : 'all';
+  const filtered = _auditAll.filter(e => {
+    const matchAction = action === 'all' || e.action === action;
+    const matchSearch = !q ||
+      e.id.toLowerCase().includes(q) ||
+      e.admin.toLowerCase().includes(q) ||
+      e.action.toLowerCase().includes(q) ||
+      e.target.toLowerCase().includes(q) ||
+      e.detail.toLowerCase().includes(q) ||
+      (e.ip && e.ip.includes(q));
+    return matchAction && matchSearch;
+  });
+  const header = ['Log ID', 'Timestamp', 'Admin', 'Action', 'Target', 'Detail', 'IP Address'];
+  const rows = filtered.map(e => [
+    e.id, e.timestamp, e.admin, e.action, e.target, e.detail, e.ip
+  ].map(v => '"' + String(v || '').replace(/"/g, '""') + '"'));
+  const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ligtas-audit-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Audit log exported as CSV', 'success');
+}
+
+function selectCenter(el,name){
+  document.querySelectorAll('.center-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  if(document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent=name;
 }
 const ZONE_RECIPIENTS = {
   'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
@@ -1014,45 +1068,33 @@ const ZONE_RECIPIENTS = {
   'Rosario': 3842, 'San Joaquin': 1680,
   'Santolan': 1920, 'Ugong': 480
 };
-
 function openBroadcastConfirm(level, zone, message) {
   const count = ZONE_RECIPIENTS[zone] || 14203;
-  document.getElementById('conf-b-count').textContent = '⚠️ This will send to ' + count.toLocaleString() + ' recipients';
-  document.getElementById('conf-b-level').textContent = level || '—';
+  document.getElementById('conf-b-count').textContent = '\u26a0\ufe0f This will send to ' + count.toLocaleString() + ' recipients';
+  document.getElementById('conf-b-level').textContent = level || '\u2014';
   document.getElementById('conf-b-msg').textContent = message || '(No message entered)';
   openModal('confirm-broadcast-modal');
 }
-
 function confirmBroadcastSend() {
   closeModal('confirm-broadcast-modal');
   closeModal('broadcast-modal');
   showToast('Broadcast sent successfully', 'success');
   logAction('Broadcast', document.getElementById('conf-b-level').textContent, document.getElementById('conf-b-msg').textContent.slice(0, 60));
 }
-
-function updateBroadcastRecipients() {
-  const zone = document.getElementById('broadcast-barangay').value;
-  const count = ZONE_RECIPIENTS[zone] || 14203;
-  document.getElementById('recipient-count-hint').textContent = 'Estimated reach: ' + count.toLocaleString() + ' residents';
+function verifyIncident() {
+  const title = document.getElementById('modal-inc-title').textContent;
+  logAction('Verify', title, 'Status set to Verified');
+  showToast('Incident verified', 'success');
+  closeModal('incident-detail-modal');
 }
 
-function updateBroadcastTarget() {
-  updateBroadcastRecipients();
+function dispatchFromModal() {
+  const title = document.getElementById('modal-inc-title').textContent;
+  logAction('Dispatch', title, 'Rescue team assigned');
+  showToast('Rescue team dispatched', 'success');
+  closeModal('incident-detail-modal');
 }
 
-function filterIncidents(q){
-  const rows=document.querySelectorAll('#incidents-tbody tr');
-  rows.forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none'});
-}
-function filterByStatus(s){
-  const rows=document.querySelectorAll('#incidents-tbody tr');
-  rows.forEach(r=>{r.style.display=(s==='all'||r.dataset.status===s)?'':'none'});
-}
-function selectCenter(el,name){
-  document.querySelectorAll('.center-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  if(document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent=name;
-}
 function setIncidentDetail(title, status, barangay, timeAgo, description) {
   document.getElementById('modal-inc-title').textContent = title;
   document.getElementById('modal-inc-loc').textContent = barangay;
@@ -1074,28 +1116,6 @@ function setIncidentDetail(title, status, barangay, timeAgo, description) {
   b.className = 'badge' + (cls ? ' ' + cls : '');
   b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
 }
-function setEditEvacuee(name,age,gender,health,needs){
-  document.getElementById('edit-name').value=name;
-  document.getElementById('edit-age').value=age;
-  document.getElementById('edit-gender').value=gender==='M'?'Male':gender==='F'?'Female':'Other';
-  const hs=document.getElementById('edit-health');
-  const map={'Stable':'Stable','Medical Attention':'Needs Medical Attention','Urgent':'Urgent','Critical':'Critical Condition'};
-  for(let o of hs.options){if(o.value===map[health]||o.text.includes(health)){o.selected=true;break}}
-  document.getElementById('edit-needs').value=needs;
-}
-function verifyIncident() {
-  const title = document.getElementById('modal-inc-title').textContent;
-  logAction('Verify', title, 'Status set to Verified');
-  showToast('Incident verified', 'success');
-  closeModal('incident-detail-modal');
-}
-
-function dispatchFromModal() {
-  const title = document.getElementById('modal-inc-title').textContent;
-  logAction('Dispatch', title, 'Rescue team assigned');
-  showToast('Rescue team dispatched', 'success');
-  closeModal('incident-detail-modal');
-}
 
 function updateTime(){
   const now=new Date();
@@ -1105,6 +1125,9 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'))});
+
+// Auto-load on page ready
+document.addEventListener('DOMContentLoaded', loadAuditLogs);
 </script>
 </body>
 </html>
