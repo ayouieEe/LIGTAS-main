@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIGTAS — System Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0D0F1A;
+      --bg-card: #141720;
+      --bg-elevated: #1C1F2E;
+      --border: #252837;
+      --text-primary: #F1F5F9;
+      --text-muted: #64748B;
+      --text-micro: #4B5563;
+      --critical: #EF4444;
+      --warning: #F59E0B;
+      --nominal: #3B82F6;
+      --success: #22C55E;
+      --radius: 4px;
+      --sidebar-w: 240px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; font-size: 13px; }
+    
+    .app { display: flex; width: 100%; }
+    .sidebar { width: var(--sidebar-w); min-height: 100vh; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+    .main-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar-logo { padding: 24px 20px 20px; display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo svg { color: var(--critical); width: 18px; height: 18px; }
+    .sidebar-logo span { font-size: 14px; font-weight: 600; letter-spacing: 0.05em; }
+    .nav { flex: 1; padding: 12px 10px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius); color: var(--text-muted); transition: all .1s; text-decoration: none; margin-bottom: 2px; }
+    .nav-item:hover { background: var(--bg-card); color: var(--text-primary); }
+    .nav-item.active { background: var(--bg-elevated); color: var(--text-primary); border-left: 2px solid var(--nominal); border-radius: 0 4px 4px 0; padding-left: 10px; }
+    .nav-divider { height: 1px; background: var(--border); margin: 16px 8px; }
+
+    /* TOPBAR */
+    .topbar { position: sticky; top: 0; z-index: 50; background: rgba(13,15,26,.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar h1 { font-size: 14px; font-weight: 500; }
+
+    /* CONTENT */
+    .content { padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
+    .settings-grid { display: grid; grid-template-columns: 240px 1fr; gap: 32px; align-items: start; }
+    
+    .settings-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 88px; }
+    .s-nav-item { padding: 10px 16px; border-radius: var(--radius); color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; }
+    .s-nav-item:hover { background: var(--bg-card); color: var(--text-primary); }
+    .s-nav-item.active { background: var(--bg-elevated); color: var(--nominal); }
+
+    .settings-section { margin-bottom: 40px; scroll-margin-top: 100px; }
+    .section-head { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .section-head h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .section-head p { font-size: 12px; color: var(--text-muted); }
+
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+    .input-text, .input-select, .input-textarea { width: 100%; padding: 10px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-primary); font-family: inherit; font-size: 13px; outline: none; }
+    .input-text:focus { border-color: var(--nominal); }
+
+    .threshold-row { display: flex; align-items: center; gap: 16px; background: var(--bg); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 8px; }
+    .threshold-val { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600; color: var(--nominal); min-width: 50px; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+    .btn-primary { background: var(--nominal); color: white; }
+    .btn-primary:hover { background: #2563EB; }
+    .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-muted); }
+    .btn-ghost:hover { background: var(--bg-elevated); color: var(--text-primary); }
+
+    .unit-list { display: flex; flex-direction: column; gap: 8px; }
+    .unit-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-elevated); padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+    .unit-info { display: flex; align-items: center; gap: 12px; }
+    .unit-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+    .role-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.1); color: var(--nominal); margin-left: 8px; }
+    
+    #toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--success); border-left: 4px solid var(--success); color: var(--text-primary); border-radius: var(--radius); font-weight: 500; animation: toast-in 0.3s ease-out; }
+    @keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* SOS Alert System styles for topbar compatibility */
+    #sos-banner-container { display: flex; gap: 8px; margin-right: 16px; }
+    .sos-banner { display: flex; align-items: center; gap: 10px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 12px; border-radius: var(--radius); cursor: pointer; animation: sos-pulse 2s infinite; }
+    .sos-icon-pulse { width: 8px; height: 8px; background: var(--critical); border-radius: 50%; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: sos-dot-pulse 1.5s infinite; }
+    @keyframes sos-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); } }
+    @keyframes sos-dot-pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>LIGTAS</span>
+        <div class="role-badge">Admin</div>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-item">Dashboard</a>
+        <a href="incidents.html" class="nav-item">Incidents</a>
+        <a href="centers.html" class="nav-item">Centers</a>
+        <a href="relief-ops.html" class="nav-item">Relief Ops</a>
+        <a href="broadcast.html" class="nav-item">Broadcast</a>
+        <div class="nav-divider"></div>
+        <a href="profile.html" class="nav-item">Admin Profile</a>
+        <a href="settings.html" class="nav-item active">System Settings</a>
+        <a href="audit-logs.html" class="nav-item">Audit Logs</a>
+      </nav>
+    </aside>
+
+    <div class="main-wrap">
+      <header class="topbar">
+        <h1>System Configuration</h1>
+        <div style="display: flex; align-items: center;">
+          <div id="sos-banner-container"></div>
+          <div class="admin-chip" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="window.location.href='profile.html'">
+            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 10px;">CR</div>
+            <span style="font-size: 13px;">Cmdr. Reyes</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="settings-grid">
+          <nav class="settings-nav">
+            <div class="s-nav-item active" onclick="scrollToSection('general')">General</div>
+            <div class="s-nav-item" onclick="scrollToSection('thresholds')">Thresholds & Alerts</div>
+            <div class="s-nav-item" onclick="scrollToSection('resources')">Response Resources</div>
+            <div class="s-nav-item" onclick="scrollToSection('territory')">Barangay & Zones</div>
+            <div class="s-nav-item" onclick="scrollToSection('security')">Security</div>
+          </nav>
+
+          <div class="settings-form">
+            
+            <section id="general" class="settings-section">
+              <div class="section-head">
+                <h2>General Settings</h2>
+                <p>Configure basic system identity and global behaviors.</p>
+              </div>
+              <div class="panel">
+                <div class="form-group">
+                  <label>System Name</label>
+                  <input type="text" class="input-text" id="set-sys-name" value="LIGTAS">
+                </div>
+                <div class="form-group">
+                  <label>Organization / City</label>
+                  <input type="text" class="input-text" id="set-org-name" value="Pasig City Command Center">
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                  <div class="form-group">
+                    <label>System Version</label>
+                    <input type="text" class="input-text" id="set-version" value="v2.4" readonly style="opacity: 0.6">
+                  </div>
+                  <div class="form-group">
+                    <label>Maintenance Mode</label>
+                    <select class="input-select" id="set-maint">
+                      <option value="off">Off (Online)</option>
+                      <option value="on">On (Restricted Access)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="thresholds" class="settings-section">
+              <div class="section-head">
+                <h2>Thresholds & Alerts</h2>
+                <p>Define automated status transitions and alert priorities.</p>
+              </div>
+              <div class="panel">
+                <div class="form-group">
+                  <label>Center Critical Threshold (%)</label>
+                  <div class="threshold-row">
+                    <input type="range" style="flex:1" min="1" max="100" value="90" oninput="updateVal('crit-val', this.value)">
+                    <span class="threshold-val" id="crit-val">90%</span>
+                  </div>
+                  <p style="font-size:11px; color:var(--text-micro)">Centers exceeding this occupancy turn RED in all modules.</p>
+                </div>
+                <div class="form-group">
+                  <label>Center Warning Threshold (%)</label>
+                  <div class="threshold-row">
+                    <input type="range" style="flex:1" min="1" max="100" value="70" oninput="updateVal('warn-val', this.value)">
+                    <span class="threshold-val" id="warn-val" style="color: var(--warning)">70%</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>SOS Alert Priority</label>
+                  <select class="input-select">
+                    <option>Always Immediate (Bypass Filter)</option>
+                    <option>Smart Filter (Based on keywords)</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section id="resources" class="settings-section">
+              <div class="section-head">
+                <h2>Response Resources</h2>
+                <p>Manage dispatch teams and incident categorization.</p>
+              </div>
+              <div class="panel">
+                <label>Active Response Units</label>
+                <div class="unit-list" id="unit-list-container">
+                  <div class="unit-item">
+                    <div class="unit-info"><span>🚒 Fire Unit Alpha</span> <span class="unit-tag">FIRE</span></div>
+                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px">Remove</button>
+                  </div>
+                  <div class="unit-item">
+                    <div class="unit-info"><span>🚑 Rescue Team Bravo</span> <span class="unit-tag">RESCUE</span></div>
+                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px">Remove</button>
+                  </div>
+                  <div class="unit-item">
+                    <div class="unit-info"><span>🏥 Medical Team Charlie</span> <span class="unit-tag">MED</span></div>
+                    <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px">Remove</button>
+                  </div>
+                </div>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addUnit()">+ Add New Response Unit</button>
+              </div>
+              <div class="panel">
+                <label>Incident Categories</label>
+                <textarea class="input-textarea" rows="4" id="set-inc-cats">Fire, Flood, Landslide, Medical, Chemical, Infrastructure, Earthquake, Other</textarea>
+                <p style="font-size:11px; color:var(--text-micro); margin-top: 8px;">Comma-separated values for all report dropdowns.</p>
+              </div>
+            </section>
+
+            <section id="territory" class="settings-section">
+              <div class="section-head">
+                <h2>Territorial Registry</h2>
+                <p>Manage Barangays, Zones, and their population data.</p>
+              </div>
+              <div class="panel">
+                <div class="unit-list" id="zone-list-container">
+                  <!-- Populated by renderZones() -->
+                </div>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addZone()">+ Register New Area</button>
+              </div>
+            </section>
+
+            <div style="position: sticky; bottom: 24px; padding-top: 20px; background: linear-gradient(transparent, var(--bg) 20%);">
+              <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);">Save All Changes</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-wrap"></div>
+
+  <script>
+    function updateVal(id, val) {
+      document.getElementById(id).textContent = val + '%';
+    }
+
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.s-nav-item').forEach(item => {
+        item.classList.toggle('active', item.getAttribute('onclick').includes(id));
+      });
+    }
+
+    function showToast(msg) {
+      const wrap = document.getElementById('toast-wrap');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = msg;
+      wrap.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    function saveSettings() {
+      const config = {
+        sysName: document.getElementById('set-sys-name').value,
+        orgName: document.getElementById('set-org-name').value,
+        critThreshold: parseInt(document.getElementById('crit-val').textContent),
+        warnThreshold: parseInt(document.getElementById('warn-val').textContent),
+        categories: document.getElementById('set-inc-cats').value.split(',').map(s => s.trim()),
+        maintMode: document.getElementById('set-maint').value,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      localStorage.setItem('ligtas_config', JSON.stringify(config));
+      
+      // Save Zones
+      localStorage.setItem('ligtas_zones', JSON.stringify(window.CURRENT_ZONES));
+      
+      // Save Units
+      localStorage.setItem('ligtas_units', JSON.stringify(window.CURRENT_UNITS));
+      
+      showToast('Settings saved successfully!');
+      
+      // Update sidebar logo text immediately
+      document.querySelectorAll('.sidebar-logo span:not(.version)').forEach(el => el.textContent = config.sysName);
+    }
+
+    window.CURRENT_ZONES = {
+      'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
+      'Manggahan': 4120, 'Pinagbuhatan': 2216,
+      'Rosario': 3842, 'San Joaquin': 1680,
+      'Santolan': 1920, 'Ugong': 480
+    };
+
+    window.CURRENT_UNITS = [
+      { name: 'Fire Unit Alpha', type: 'FIRE' },
+      { name: 'Rescue Team Bravo', type: 'RESCUE' },
+      { name: 'Medical Team Charlie', type: 'MED' }
+    ];
+
+    function renderUnits() {
+      const container = document.getElementById('unit-list-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      window.CURRENT_UNITS.forEach((unit, index) => {
+        const div = document.createElement('div');
+        div.className = 'unit-item';
+        div.innerHTML = `
+          <div class="unit-info">
+            <span>${unit.name}</span>
+            <span class="unit-tag">${unit.type}</span>
+          </div>
+          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeUnit(${index})">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeUnit(index) {
+      window.CURRENT_UNITS.splice(index, 1);
+      renderUnits();
+    }
+
+    function addUnit() {
+      const name = prompt('Enter Unit Name (e.g. Rescue Team Delta):');
+      if (!name) return;
+      const type = prompt('Enter Type (FIRE, RESCUE, MED, POLICE):', 'RESCUE');
+      if (type) {
+        window.CURRENT_UNITS.push({ name, type: type.toUpperCase() });
+        renderUnits();
+      }
+    }
+
+    function renderZones() {
+      const container = document.getElementById('zone-list-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      Object.entries(window.CURRENT_ZONES).forEach(([name, count]) => {
+        if (name === 'all') return;
+        const div = document.createElement('div');
+        div.className = 'unit-item';
+        div.innerHTML = `
+          <div class="unit-info">
+            <strong>${name}</strong>
+            <input type="number" class="input-text" style="width: 80px; padding: 4px 8px; font-size: 11px" value="${count}" onchange="updateZoneCount('${name}', this.value)">
+          </div>
+          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeZone('${name}')">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateZoneCount(name, val) {
+      window.CURRENT_ZONES[name] = parseInt(val) || 0;
+      updateTotalCount();
+    }
+
+    function removeZone(name) {
+      delete window.CURRENT_ZONES[name];
+      updateTotalCount();
+      renderZones();
+    }
+
+    function updateTotalCount() {
+      let total = 0;
+      Object.entries(window.CURRENT_ZONES).forEach(([name, count]) => {
+        if (name !== 'all') total += count;
+      });
+      window.CURRENT_ZONES['all'] = total;
+    }
+
+    function addZone() {
+      const name = prompt('Enter Barangay/Zone Name:');
+      if (name && !window.CURRENT_ZONES[name]) {
+        window.CURRENT_ZONES[name] = 0;
+        renderZones();
+      }
+    }
+
+    function loadSettings() {
+      const saved = localStorage.getItem('ligtas_config');
+      const savedZones = localStorage.getItem('ligtas_zones');
+      const savedUnits = localStorage.getItem('ligtas_units');
+      
+      if (savedZones) {
+        window.CURRENT_ZONES = JSON.parse(savedZones);
+      }
+      if (savedUnits) {
+        window.CURRENT_UNITS = JSON.parse(savedUnits);
+      }
+      renderZones();
+      renderUnits();
+
+      if (!saved) return;
+      
+      const config = JSON.parse(saved);
+      document.getElementById('set-sys-name').value = config.sysName || 'LIGTAS';
+      document.getElementById('set-org-name').value = config.orgName || 'Pasig City Command Center';
+      
+      if (config.critThreshold) {
+        document.querySelector('input[oninput*="crit-val"]').value = config.critThreshold;
+        document.getElementById('crit-val').textContent = config.critThreshold + '%';
+      }
+      
+      if (config.warnThreshold) {
+        document.querySelector('input[oninput*="warn-val"]').value = config.warnThreshold;
+        document.getElementById('warn-val').textContent = config.warnThreshold + '%';
+      }
+      
+      if (config.categories) {
+        document.getElementById('set-inc-cats').value = config.categories.join(', ');
+      }
+      
+      if (config.maintMode) {
+        document.getElementById('set-maint').value = config.maintMode;
+      }
+
+      // Apply system name to sidebar
+      if (config.sysName) {
+        document.querySelectorAll('.sidebar-logo span:not(.version)').forEach(el => el.textContent = config.sysName);
+      }
+    }
+
+    window.onload = () => {
+      loadSettings();
+      renderSOSBanners();
+    };
+
+    function renderSOSBanners() {
+      const container = document.getElementById('sos-banner-container');
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      if (queue.length > 0) {
+        container.innerHTML = `
+          <div class="sos-banner" onclick="window.location.href='incidents.html'">
+            <div class="sos-icon-pulse"></div>
+            <span style="font-size: 11px; font-weight: 600; color: var(--critical)">${queue.length} ACTIVE SOS</span>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
