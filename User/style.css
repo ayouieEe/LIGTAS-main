@@ -1,0 +1,51 @@
+﻿/* Tailwind custom utilities & scrollbar hiding */
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: flex;
+}
+
+.alert-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.alert-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+/* Custom Checkbox styles for specific pseudo-elements if Tailwind doesn't perfectly replicate it */
+/* But we used a pure Tailwind checkbox in step 4! */
+
+/* Optional subtle pulse animation for SOS that tailwind doesn't have natively without adding to config */
+@keyframes bounce-short {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15%);
+    }
+}
+
+.animate-bounce-short {
+    animation: bounce-short 1s ease-in-out;
+}

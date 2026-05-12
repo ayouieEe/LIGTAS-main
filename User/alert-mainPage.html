@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Emergency Alerts</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .alert-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .alert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: flex;
+            z-index: 10;
+            background: #F8FAFC;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .sos-ring {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .map-loading {
+            position: relative;
+        }
+        .map-loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        .map-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 2px solid #1C1C1E;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 11;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+
+    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+        <header class="pt-[59px] px-4 pb-3 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100 z-10 sticky top-0 shrink-0">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="text-emergency w-6 h-6"></i>
+                <span class="font-bold text-[18px] tracking-tight">LIGTAS</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative cursor-pointer" onclick="showScreen('screen-notifications')">
+                    <i data-lucide="bell" class="w-6 h-6 text-navy"></i>
+                    <span class="absolute top-0 right-0.5 w-2 h-2 bg-emergency rounded-full border border-white"></span>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gray-200 cursor-pointer overflow-hidden" onclick="window.location.href='Profile Tab/profilePage.html'">
+                    <img src="https://ui-avatars.com/api/?name=Juan+Dela+Cruz&background=1C1C1E&color=fff" alt="Juan Dela Cruz">
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 relative bg-gray-50 pb-[120px]">
+            <div id="screen-home" class="absolute inset-0 flex flex-col screen active bg-gray-50 z-10">
+                <header class="pt-4 px-5 pb-3 bg-white border-b border-gray-100 shrink-0">
+                    <h1 class="text-[24px] font-bold text-navy mb-1">Emergency Alerts</h1>
+                    <p class="text-[13px] text-slate leading-tight">Real-time community safety updates.</p>
+                </header>
+                <div class="flex-1 overflow-y-auto px-4 py-6 pb-[100px] no-scrollbar">
+                    <div class="space-y-4">
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-[13px] uppercase tracking-[0.24em] text-slate">Active Emergencies</p>
+                                <h2 id="active-emergencies-count" class="text-[36px] font-bold text-navy mt-2">05</h2>
+                            </div>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-emergency/10 px-3 py-2 text-[12px] font-semibold text-emergency">CRITICAL</span>
+                        </div>
+                        <p class="mt-4 text-[14px] leading-6 text-slate/70">Pasig City: 1 structural fire, 2 flash floods (Marikina & Pasig Rivers), 1 power outage, 1 typhoon alert. Immediate action required.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-[13px] uppercase tracking-[0.24em] text-slate">Civilians Impacted</p>
+                                <h2 id="civilians-impacted-count" class="text-[30px] font-bold text-flood mt-2">3,847</h2>
+                            </div>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-flood/10 px-3 py-2 text-[12px] font-semibold text-flood">AFFECTED</span>
+                        </div>
+                        <p class="mt-4 text-[14px] leading-6 text-slate/70">Pasig City: 2,100 from flood-prone areas, 980 from fire zone, 767 power outage impact. Evacuation ongoing.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center justify-between gap-4">
+                            <div>
+                                <p class="text-[13px] uppercase tracking-[0.24em] text-slate">Evacuation Centers</p>
+                                <h2 id="evacuation-centers-count" class="text-[30px] font-bold text-safe mt-2">18</h2>
+                            </div>
+                            <span class="inline-flex items-center gap-2 rounded-full bg-safe/10 px-3 py-2 text-[12px] font-semibold text-safe">READY</span>
+                        </div>
+                        <p id="evacuation-centers-summary" class="mt-4 text-[14px] leading-6 text-slate/70">Pasig City: 12 barangay centers, 4 schools, 2 sports complexes. Capacity: 8,500. Occupancy: 4,200 (49%).</p>
+                    </div>
+                </div>
+
+                <!-- FIXED FILTER SECTION: search full-width on top, buttons in single scrollable row -->
+                <div class="mt-6 rounded-3xl bg-white border border-gray-100 p-4 shadow-sm space-y-3">
+                    <div class="relative w-full">
+                        <input id="incident-search" type="search" placeholder="Search incidents..." oninput="searchIncidents(this.value)" class="w-full rounded-3xl border border-gray-200 bg-slate-50 px-4 py-3 text-[14px] text-navy outline-none transition focus:border-flood focus:ring-2 focus:ring-flood/20" />
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
+                        <button type="button" onclick="filterIncidents('all')" class="filter-btn flex-shrink-0 rounded-3xl border border-gray-200 bg-white px-4 py-2 text-[12px] font-semibold text-navy transition hover:bg-slate-50">All</button>
+                        <button type="button" onclick="filterIncidents('fire')" class="filter-btn flex-shrink-0 rounded-3xl border border-gray-200 bg-white px-4 py-2 text-[12px] font-semibold text-emergency transition hover:bg-emergency/10">Fire</button>
+                        <button type="button" onclick="filterIncidents('flood')" class="filter-btn flex-shrink-0 rounded-3xl border border-gray-200 bg-white px-4 py-2 text-[12px] font-semibold text-flood transition hover:bg-flood/10">Flood</button>
+                        <button type="button" onclick="filterIncidents('earthquake')" class="filter-btn flex-shrink-0 rounded-3xl border border-gray-200 bg-white px-4 py-2 text-[12px] font-semibold text-quake transition hover:bg-quake/10">Quake</button>
+                        <button type="button" onclick="filterIncidents('medical')" class="filter-btn flex-shrink-0 rounded-3xl border border-gray-200 bg-white px-4 py-2 text-[12px] font-semibold text-medical transition hover:bg-medical/10">Medical</button>
+                    </div>
+                </div>
+
+                <section class="mt-8">
+                    <div class="mb-4">
+                        <p class="text-[12px] uppercase tracking-[0.28em] text-slate/50">Active Alerts Near You</p>
+                        <h2 class="text-[20px] font-semibold text-navy">Stay alert</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <article data-incident-type="fire" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('fire')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-emergency rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-emergency/10 px-3 py-2 text-[12px] font-semibold text-emergency">Fire</span>
+                                    <span class="text-[12px] text-slate/60">2 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Residential Fire - Bagong Ilog, Pasig</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Pasig City Fire Department: Fire reported in residential area. Evacuate nearby residents immediately. Firefighters en route.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i>Radius 300m</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4"></i>Route via C. Raymundo</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Incident area</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Bagong Ilog, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5826,121.0735&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="flood" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('flood')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-flood rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-flood/10 px-3 py-2 text-[12px] font-semibold text-flood">Flood</span>
+                                    <span class="text-[12px] text-slate/60">15 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Flood Alert - Pasig River</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Heavy rainfall causing flooding in low-lying areas. Residents in flood-prone zones evacuate to higher ground. Water levels rising.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4"></i>Critical level</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="chevron-right" class="w-4 h-4"></i>Routes closing</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Flood zone</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Pasig River areas, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5735,121.0415&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="earthquake" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('earthquake')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-quake rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-quake/10 px-3 py-2 text-[12px] font-semibold text-quake">Earthquake</span>
+                                    <span class="text-[12px] text-slate/60">35 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Seismic Activity Detected</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Magnitude 4.2 earthquake recorded. USGS monitoring. Pasig City: No structural damage reported. Aftershocks possible. Stay alert and avoid tall structures.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i>Magnitude 4.2</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i>Aftershocks likely</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Affected area</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Pasig City & surrounding municipalities</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5800,121.0650&z=14&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="accident" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('accident')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-amber rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-amber/10 px-3 py-2 text-[12px] font-semibold text-amber">Accident</span>
+                                    <span class="text-[12px] text-slate/60">10 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Vehicle Accident - Ortigas Ave</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Multi-vehicle collision on Ortigas Avenue. Traffic backed up. Emergency services responding. Use alternate routes.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="car" class="w-4 h-4"></i>Multiple vehicles</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i>EMS en route</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Accident site</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Ortigas Avenue, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5705,121.0655&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="medical" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('medical')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-medical rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-medical/10 px-3 py-2 text-[12px] font-semibold text-medical">Medical</span>
+                                    <span class="text-[12px] text-slate/60">5 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Medical Emergency - Kapasigan</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Medical emergency reported in residential area. Ambulance dispatched. Please clear the way for emergency vehicles.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="activity" class="w-4 h-4"></i>Ambulance en route</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i>Clear pathways</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Emergency location</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Kapasigan, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5865,121.0435&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="neighbor" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('neighbor')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-slate rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-slate/10 px-3 py-2 text-[12px] font-semibold text-slate">Neighbor</span>
+                                    <span class="text-[12px] text-slate/60">20 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Neighbor Dispute - Dela Paz</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Neighbor dispute reported. Police responding to mediate. Residents advised to stay indoors and avoid confrontation.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i>Dispute reported</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="shield" class="w-4 h-4"></i>Police en route</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Dispute location</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Dela Paz, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5745,121.0785&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="crime" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('crime')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-slate rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-slate/10 px-3 py-2 text-[12px] font-semibold text-slate">Crime</span>
+                                    <span class="text-[12px] text-slate/60">8 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Crime Alert - Sta. Lucia</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Crime reported in commercial area. Police responding. Residents stay vigilant and report suspicious activity.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="alert-octagon" class="w-4 h-4"></i>Crime reported</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="search" class="w-4 h-4"></i>Police responding</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Crime scene</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Sta. Lucia, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5715,121.0835&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article data-incident-type="other" class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm relative overflow-hidden cursor-pointer" onclick="showIncidentDetails('other')">
+                            <div class="absolute inset-y-0 left-0 w-1 bg-slate rounded-tr-full rounded-br-full"></div>
+                            <div class="relative pl-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-slate/10 px-3 py-2 text-[12px] font-semibold text-slate">Other</span>
+                                    <span class="text-[12px] text-slate/60">30 mins ago</span>
+                                </div>
+                                <h3 class="mt-4 text-[17px] font-bold text-navy">Other Incident - Ugong</h3>
+                                <p class="mt-2 text-[14px] leading-6 text-slate/70">Unspecified incident reported. Authorities investigating. Stay informed through official channels.</p>
+                                <div class="mt-4 flex items-center justify-between gap-3 text-[13px] text-slate/70">
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="alert-triangle" class="w-4 h-4"></i>Incident reported</span>
+                                    <span class="inline-flex items-center gap-2"><i data-lucide="info" class="w-4 h-4"></i>Under investigation</span>
+                                </div>
+                                <div class="mt-4 rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-sm">
+                                    <div class="px-4 py-3 bg-slate-50 border-b border-gray-100">
+                                        <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Incident area</p>
+                                        <p class="mt-2 text-[14px] font-semibold text-navy">Ugong, Pasig City</p>
+                                    </div>
+                                    <div class="h-[200px] w-full bg-white">
+                                        <iframe class="h-full w-full" src="https://maps.google.com/maps?q=14.5895,121.0555&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+
+            <div id="screen-map" class="absolute inset-0 flex flex-col overflow-y-auto px-4 py-6 pb-[110px] no-scrollbar screen bg-gray-50">
+                <div class="flex items-center justify-between mb-4">
+                    <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span class="text-[13px] font-medium">Back</span>
+                    </button>
+                    <span class="text-[12px] uppercase tracking-[0.28em] text-slate/50">Map View</span>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center justify-between gap-4 mb-4">
+                            <div>
+                                <p class="text-[12px] uppercase tracking-[0.24em] text-slate/50" id="map-incident-type">Critical Incident</p>
+                                <h2 class="text-[18px] font-bold text-navy mt-1" id="map-incident-title">Pasig Industrial Fire - 5-alarm</h2>
+                            </div>
+                            <span class="rounded-full bg-emergency/10 px-3 py-2 text-[12px] font-semibold text-emergency" id="map-incident-badge">URGENT</span>
+                        </div>
+                        <div class="overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-sm">
+                            <div class="flex items-center justify-between gap-3 border-b border-gray-100 bg-white/90 px-4 py-3">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500">Location</p>
+                                    <p class="text-[15px] font-semibold text-navy" id="map-incident-location">San Miguel, Pasig City (Coord: 14.5826, 121.0735)</p>
+                                </div>
+                                <span class="inline-flex items-center gap-2 rounded-full bg-emergency/10 px-3 py-2 text-[11px] font-semibold text-emergency">Live map</span>
+                            </div>
+                            <div class="h-[320px] w-full bg-white map-loading">
+                                <iframe class="h-full w-full" id="map-incident-iframe" src="https://maps.google.com/maps?q=14.5826,121.0735&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" onload="this.parentElement.classList.remove('map-loading')"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <p class="text-[12px] uppercase tracking-[0.24em] text-slate/50">Threat Level</p>
+                        <h2 class="text-[28px] font-bold text-emergency mt-3" id="map-threat-level">CRITICAL</h2>
+                        <div class="mt-4 h-2 rounded-full bg-slate-200 overflow-hidden">
+                            <div class="h-full w-[90%] rounded-full bg-emergency" id="map-threat-bar"></div>
+                        </div>
+                        <p class="mt-4 text-[14px] leading-6 text-slate/70" id="map-threat-description">High risk of spread to San Miguel residential areas. Wind direction: NW. Affecting 2+ barangays.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <h2 class="text-[18px] font-bold text-navy">Status Report</h2>
+                        <p class="mt-3 text-[14px] leading-6 text-slate/70" id="map-status-description">Structural fire at Industrial Hub (San Miguel) 02:45 AM. 35 PCFD units deployed. 980 residents evacuated. Pasig City LGU coordinating with BFP, LDRRMO, MERALCO.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-[18px] font-bold text-navy">Pasig City Operations</h2>
+                            <span class="text-[11px] uppercase tracking-[0.25em] text-safe">Live</span>
+                        </div>
+                        <div class="space-y-4 text-slate">
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-[12px] text-emergency font-semibold"><span class="h-2 w-2 rounded-full bg-emergency"></span>03:25 AM · PCFD</div>
+                                <p class="text-[14px] leading-6">Evacuation zones expanded. Brgy. San Miguel & Caniogan residents moving to designated centers.</p>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-[12px] text-flood font-semibold"><span class="h-2 w-2 rounded-full bg-flood"></span>03:10 AM · PASIG LDRRMO</div>
+                                <p class="text-[14px] leading-6">Pasig River monitoring: Level 2 Alert. Prepared evacuation for Brgy. Palatiw & Sta. Cruz. 6 centers activated.</p>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-[12px] text-slate font-semibold"><span class="h-2 w-2 rounded-full bg-slate-400"></span>02:45 AM · PASIG DISPATCH</div>
+                                <p class="text-[14px] leading-6">San Miguel industrial area fire confirmed. All units responding. 980 residents notified of evacuation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pb-10">
+                        <button onclick="reportPersonalImpact()" class="w-full rounded-3xl bg-emergency text-white py-3.5 text-[15px] font-semibold shadow-xl shadow-emergency/20">I AM AFFECTED</button>
+                        <button onclick="shareCurrentLocation()" class="w-full rounded-3xl bg-flood text-white py-3.5 text-[15px] font-semibold shadow-xl shadow-flood/20">SHARE LOCATION</button>
+                        <button onclick="notifyFamily()" class="w-full rounded-3xl bg-navy text-white py-3.5 text-[15px] font-semibold shadow-xl shadow-navy/30">NOTIFY FAMILY</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="screen-notifications" class="absolute inset-0 flex flex-col overflow-y-auto px-4 py-6 pb-[110px] no-scrollbar screen bg-gray-50">
+                <div class="flex items-center justify-between mb-4">
+                    <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span class="text-[13px] font-medium">Back</span>
+                    </button>
+                    <div class="text-right">
+                        <p class="text-[12px] uppercase tracking-[0.28em] text-slate/50">Notifications</p>
+                        <p class="text-[11px] text-slate/40">Latest safety alerts & updates</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pb-24">
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <div class="space-y-1">
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-emergency">Critical Alert</p>
+                                <h2 class="text-[18px] font-bold text-navy">Residential Fire - Bagong Ilog</h2>
+                            </div>
+                            <span class="text-[12px] text-slate/50">2 mins ago</span>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Pasig City Fire Department responding to residential fire in Bagong Ilog. Evacuate nearby residents immediately.</p>
+                        <button onclick="openNotificationMap('fire')" class="mt-5 w-full rounded-3xl bg-emergency text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-emergency/90 transition">View Map</button>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City - Family Update</p>
+                                <p class="text-[17px] font-semibold text-navy"><span class="text-safe">Maria Santos</span> marked <span class="font-bold text-safe">SAFE</span></p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Location: Brgy. Kapitolyo, Pasig City. Medical emergency resolved.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i data-lucide="box" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Prepare</p>
+                                <p class="text-[17px] font-semibold text-navy">Emergency Kit Check</p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Pasig City recommends checking your emergency kit. Ensure you have water, food, medications, and important documents ready.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i data-lucide="info" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">System Update</p>
+                                <p class="text-[17px] font-semibold text-navy">Pasig Emergency Maps Updated</p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Emergency maps for all Pasig City barangays have been updated with latest evacuation routes and shelter locations.</p>
+                    </div>
+
+                    <div class="alert-card bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City LGU</p>
+                                <p class="text-[17px] font-semibold text-navy">Check-in: <span class="text-amber">PASIG RESIDENTS</span></p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70 mb-3">Help us locate you during emergencies. Your safety status helps coordinate response efforts.</p>
+                        <button onclick="markMyselfSafe()" class="w-full rounded-3xl bg-safe text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-safe/90 transition">Mark Myself Safe</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="h-[80px] pb-[34px] bg-white border-t border-gray-100 flex justify-around items-center absolute bottom-0 w-full z-20" id="global-bottom-nav">
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-emergency cursor-pointer relative z-10">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-[42px] bg-emergency/10 rounded-xl -z-10"></div>
+                <i data-lucide="alert-triangle" class="w-5 h-5 fill-emergency/20"></i>
+                <span class="text-[10px] font-bold">ALERT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='prepare-mainPage.html'">
+                <i data-lucide="shield" class="w-5 h-5 nav-icon"></i>
+                <span class="text-[10px] font-medium nav-text">PREPARE</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='Report Tab/report-mainPage.html'">
+                <i data-lucide="clipboard" class="w-5 h-5 nav-icon"></i>
+                <span class="text-[10px] font-medium nav-text">REPORT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='Group Tab/group-mainPage.html'">
+                <i data-lucide="users" class="w-5 h-5 nav-icon"></i>
+                <span class="text-[10px] font-medium nav-text">GROUP</span>
+            </div>
+        </nav>
+
+        <div id="sos-modal-container">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] items-center justify-center p-4 hidden" id="sos-modal">
+                <div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                    <h2 class="text-[20px] font-bold text-navy mb-3">Send SOS Alert?</h2>
+                    <p class="text-[14px] text-slate leading-relaxed mb-6">This will immediately send your current location and an emergency alert to your Safety Circle (Family, Neighbors) and Pasig City LDRRMO.</p>
+                    <div class="flex gap-3">
+                        <button class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px] active:scale-95 transition-transform" id="sos-cancel-btn">Cancel</button>
+                        <button class="flex-1 h-12 rounded-xl bg-emergency text-white font-semibold text-[14px] shadow-md shadow-red-500/20 active:scale-95 transition-transform" id="sos-send-btn">SEND NOW</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute inset-0 bg-deep/95 backdrop-blur-md z-[100] hidden items-center justify-center p-6 text-center text-white" id="sos-success-modal">
+                <div class="w-full max-w-[340px]">
+                    <div class="w-20 h-20 rounded-full border-4 border-white/20 flex items-center justify-center mx-auto mb-6 bg-white/10 backdrop-blur-md animate-[bounce_1s_ease-in-out]">
+                        <i data-lucide="check" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <h2 class="text-[28px] font-bold tracking-tight mb-3">SOS Sent!</h2>
+                    <p class="text-[15px] text-white/90 leading-relaxed mb-8">Your location has been shared with 3 contacts and Pasig City Dispatch.</p>
+                    <div class="bg-white/10 rounded-2xl p-4 mb-8 backdrop-blur-md border border-white/10 text-left">
+                        <div class="flex justify-between items-center text-[14px] mb-4">
+                            <span class="font-medium text-white/90">Maria Reyes (Family)</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div class="flex justify-between items-center text-[14px] mb-4">
+                            <span class="font-medium text-white/90">Pasig City LDRRMO</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div class="flex justify-between items-center text-[14px]">
+                            <span class="font-medium text-white/90">Pasig City Fire Department</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                    </div>
+                    <button class="w-full h-14 bg-white text-deep rounded-2xl font-bold text-[16px] active:scale-95 transition-transform shadow-xl shadow-black/20" id="sos-close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-[96px] right-5 w-[64px] h-[64px] z-30 flex items-center justify-center" id="sos-wrapper">
+            <div class="sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]"></div>
+            <button class="w-[64px] h-[64px] rounded-full bg-deep/60 backdrop-blur-md text-white font-bold text-[16px] shadow-lg shadow-red-900/30 relative z-[2] active:scale-95 transition-transform flex items-center justify-center" id="sos-btn">
+                SOS
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const sosBtn = document.getElementById('sos-btn');
+        const sosWrapper = document.getElementById('sos-wrapper');
+        const sosContainer = document.getElementById('sos-modal-container');
+
+        if (sosContainer) { initSOS(); }
+
+        let holdTimer;
+        let isHolding = false;
+
+        function initSOS() {
+            const sosModal = document.getElementById('sos-modal');
+            const sosSuccessModal = document.getElementById('sos-success-modal');
+            const sosCancelBtn = document.getElementById('sos-cancel-btn');
+            const sosSendBtn = document.getElementById('sos-send-btn');
+            const sosCloseBtn = document.getElementById('sos-close-btn');
+
+            function startHold() {
+                isHolding = true;
+                if (sosWrapper) {
+                    const ring = sosWrapper.querySelector('.sos-progress-ring');
+                    if (ring) ring.classList.add('border-t-emergency', 'border-r-emergency', 'animate-[spin_3s_linear_forwards]');
+                }
+                holdTimer = setTimeout(() => {
+                    if (isHolding && sosModal) {
+                        if (sosWrapper) {
+                            const ring = sosWrapper.querySelector('.sos-progress-ring');
+                            if (ring) ring.className = 'sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]';
+                        }
+                        sosModal.classList.remove('hidden');
+                        sosModal.classList.add('flex');
+                    }
+                }, 3000);
+            }
+
+            function cancelHold() {
+                isHolding = false;
+                clearTimeout(holdTimer);
+                if (sosWrapper) {
+                    const ring = sosWrapper.querySelector('.sos-progress-ring');
+                    if (ring) ring.className = 'sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]';
+                }
+            }
+
+            if (sosBtn) {
+                sosBtn.addEventListener('mousedown', startHold);
+                sosBtn.addEventListener('mouseup', cancelHold);
+                sosBtn.addEventListener('mouseleave', cancelHold);
+                sosBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+                sosBtn.addEventListener('touchend', cancelHold);
+                sosBtn.addEventListener('touchcancel', cancelHold);
+            }
+
+            if (sosCancelBtn) sosCancelBtn.addEventListener('click', () => { sosModal.classList.remove('flex'); sosModal.classList.add('hidden'); });
+            if (sosSendBtn) sosSendBtn.addEventListener('click', () => {
+                sosModal.classList.remove('flex'); sosModal.classList.add('hidden');
+                if (sosSuccessModal) { sosSuccessModal.classList.remove('hidden'); sosSuccessModal.classList.add('flex'); }
+            });
+            if (sosCloseBtn) sosCloseBtn.addEventListener('click', () => {
+                if (sosSuccessModal) { sosSuccessModal.classList.remove('flex'); sosSuccessModal.classList.add('hidden'); }
+            });
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach((screen) => screen.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+
+        function showIncidentDetails(incidentType) {
+            const incidentData = {
+                fire: {
+                    type: 'Fire', title: 'Residential Fire - Bagong Ilog, Pasig', badge: 'URGENT',
+                    badgeClass: 'bg-emergency/10 text-emergency', threatClass: 'bg-emergency',
+                    location: 'Bagong Ilog, Pasig City (Coord: 14.5826, 121.0735)', threatLevel: 'CRITICAL', threatBar: '90%',
+                    threatDescription: 'Residential fire spreading. Evacuate nearby residents immediately. Firefighters on scene.',
+                    statusDescription: 'Fire reported in residential area. Pasig City Fire Department responding. Residents evacuated. Fire containment in progress.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5826,121.0735&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PCFD', color: 'text-emergency', description: 'Fire units deployed to Bagong Ilog. Evacuation zones established. Residents moving to safe areas.' },
+                        { time: '03:10 AM', agency: 'PASIG LDRRMO', color: 'text-flood', description: 'Supporting fire response. Coordinating with barangay officials for evacuation centers.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Residential fire confirmed in Bagong Ilog. All emergency units responding.' }
+                    ]
+                },
+                flood: {
+                    type: 'Flood', title: 'Flood Alert - Pasig River', badge: 'CRITICAL',
+                    badgeClass: 'bg-flood/10 text-flood', threatClass: 'bg-flood',
+                    location: 'Pasig River areas, Pasig City (Coord: 14.5735, 121.0415)', threatLevel: 'CRITICAL', threatBar: '85%',
+                    threatDescription: 'Heavy rainfall causing flooding. Water levels rising. Evacuate to higher ground.',
+                    statusDescription: 'Flooding in low-lying areas. LDRRMO coordinating evacuation. Residents move to safe areas.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5735,121.0415&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PASIG LDRRMO', color: 'text-flood', description: 'Flood monitoring active. Water levels rising in Pasig River areas. Evacuation centers activated.' },
+                        { time: '03:10 AM', agency: 'PCFD', color: 'text-emergency', description: 'Supporting flood response. Rescue teams on standby for water rescues.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Heavy rainfall causing flooding. Residents advised to move to higher ground.' }
+                    ]
+                },
+                earthquake: {
+                    type: 'Earthquake', title: 'Seismic Activity Detected', badge: 'HIGH',
+                    badgeClass: 'bg-quake/10 text-quake', threatClass: 'bg-quake',
+                    location: 'Pasig City & surrounding municipalities (Coord: 14.5800, 121.0650)', threatLevel: 'HIGH', threatBar: '70%',
+                    threatDescription: 'Magnitude 4.2 earthquake recorded. Aftershocks possible. Stay alert and avoid tall structures.',
+                    statusDescription: 'Earthquake monitoring active. No major damage reported in Pasig. Aftershocks expected.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5800,121.0650&z=14&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PHIVOLCS', color: 'text-quake', description: 'Seismic monitoring active. Magnitude 4.2 earthquake recorded. Aftershock monitoring continues.' },
+                        { time: '03:10 AM', agency: 'PASIG LDRRMO', color: 'text-flood', description: 'Damage assessment teams deployed. No structural damage reported in Pasig City.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Earthquake detected. Residents advised to stay alert for aftershocks.' }
+                    ]
+                },
+                accident: {
+                    type: 'Accident', title: 'Vehicle Accident - Ortigas Ave', badge: 'MEDIUM',
+                    badgeClass: 'bg-amber/10 text-amber', threatClass: 'bg-amber',
+                    location: 'Ortigas Avenue, Pasig City (Coord: 14.5705, 121.0655)', threatLevel: 'MEDIUM', threatBar: '50%',
+                    threatDescription: 'Multi-vehicle collision. Traffic backed up. Emergency services responding.',
+                    statusDescription: 'Vehicle accident on Ortigas Ave. Traffic diverted. EMS on scene.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5705,121.0655&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PASIG TRAFFIC', color: 'text-amber', description: 'Traffic diversion active on Ortigas Ave. Alternate routes established.' },
+                        { time: '03:10 AM', agency: 'EMS', color: 'text-medical', description: 'Medical teams on scene. Injured persons being treated and transported.' },
+                        { time: '02:45 AM', agency: 'PNP-PASIG', color: 'text-slate', description: 'Vehicle accident reported. Traffic control established. Investigation ongoing.' }
+                    ]
+                },
+                medical: {
+                    type: 'Medical', title: 'Medical Emergency - Kapasigan', badge: 'HIGH',
+                    badgeClass: 'bg-medical/10 text-medical', threatClass: 'bg-medical',
+                    location: 'Kapasigan, Pasig City (Coord: 14.5745, 121.0785)', threatLevel: 'HIGH', threatBar: '75%',
+                    threatDescription: 'Medical emergency reported. Ambulance dispatched. Clear pathways.',
+                    statusDescription: 'Medical emergency in residential area. Ambulance en route. Emergency response active.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5745,121.0785&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'EMS', color: 'text-medical', description: 'Ambulance dispatched to Kapasigan. Medical team en route with full equipment.' },
+                        { time: '03:10 AM', agency: 'PASIG HEALTH', color: 'text-medical', description: 'Hospital notified and prepared for patient arrival. Emergency room on standby.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Medical emergency reported. All available units responding.' }
+                    ]
+                },
+                neighbor: {
+                    type: 'Neighbor', title: 'Neighbor Dispute - Dela Paz', badge: 'LOW',
+                    badgeClass: 'bg-slate/10 text-slate', threatClass: 'bg-slate-400',
+                    location: 'Dela Paz, Pasig City (Coord: 14.5715, 121.0835)', threatLevel: 'LOW', threatBar: '30%',
+                    threatDescription: 'Neighbor dispute reported. Police mediating. Stay indoors.',
+                    statusDescription: 'Neighbor dispute in residential area. Police responding to mediate.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5715,121.0835&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PNP-PASIG', color: 'text-slate', description: 'Police mediation team on scene. Situation de-escalated. Residents cooperating.' },
+                        { time: '03:10 AM', agency: 'BARANGAY DELA PAZ', color: 'text-safe', description: 'Barangay officials assisting police in mediation. Community watch activated.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Neighbor dispute reported. Police units dispatched for mediation.' }
+                    ]
+                },
+                crime: {
+                    type: 'Crime', title: 'Crime Alert - Sta. Lucia', badge: 'HIGH',
+                    badgeClass: 'bg-slate/10 text-slate', threatClass: 'bg-slate-400',
+                    location: 'Sta. Lucia, Pasig City (Coord: 14.5895, 121.0555)', threatLevel: 'HIGH', threatBar: '80%',
+                    threatDescription: 'Crime reported in commercial area. Police responding. Stay vigilant.',
+                    statusDescription: 'Crime incident in Sta. Lucia. Police on scene. Area secured.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5895,121.0555&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PNP-PASIG', color: 'text-slate', description: 'Crime scene secured. Investigation ongoing. Suspects apprehended.' },
+                        { time: '03:10 AM', agency: 'PNP-K9 UNIT', color: 'text-slate', description: 'K-9 unit deployed for evidence search. Area cleared for investigation.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Crime incident reported in Sta. Lucia. All available units responding.' }
+                    ]
+                },
+                other: {
+                    type: 'Other', title: 'Other Incident - Ugong', badge: 'UNKNOWN',
+                    badgeClass: 'bg-slate/10 text-slate', threatClass: 'bg-slate-400',
+                    location: 'Ugong, Pasig City (Coord: 14.5645, 121.0595)', threatLevel: 'UNKNOWN', threatBar: '40%',
+                    threatDescription: 'Unspecified incident reported. Authorities investigating.',
+                    statusDescription: 'Incident reported in Ugong. Investigation ongoing.',
+                    mapUrl: 'https://maps.google.com/maps?q=14.5645,121.0595&z=15&output=embed',
+                    operations: [
+                        { time: '03:25 AM', agency: 'PASIG LDRRMO', color: 'text-flood', description: 'Incident assessment complete. Situation under control. Monitoring continues.' },
+                        { time: '03:10 AM', agency: 'BARANGAY UGONG', color: 'text-safe', description: 'Barangay officials coordinating with authorities. Community notified.' },
+                        { time: '02:45 AM', agency: 'PASIG DISPATCH', color: 'text-slate', description: 'Unspecified incident reported in Ugong. Investigation teams dispatched.' }
+                    ]
+                }
+            };
+
+            const incident = incidentData[incidentType];
+            if (incident) {
+                document.getElementById('map-incident-type').textContent = incident.type;
+                document.getElementById('map-incident-title').textContent = incident.title;
+                document.getElementById('map-incident-badge').textContent = incident.badge;
+                document.getElementById('map-incident-badge').className = 'rounded-full px-3 py-2 text-[12px] font-semibold ' + incident.badgeClass;
+                document.getElementById('map-incident-location').textContent = incident.location;
+                document.getElementById('map-incident-iframe').parentElement.classList.add('map-loading');
+                document.getElementById('map-incident-iframe').src = incident.mapUrl;
+                document.getElementById('map-threat-level').textContent = incident.threatLevel;
+                document.getElementById('map-threat-bar').style.width = incident.threatBar;
+                document.getElementById('map-threat-bar').className = 'h-full rounded-full ' + incident.threatClass;
+                document.getElementById('map-threat-description').textContent = incident.threatDescription;
+                document.getElementById('map-status-description').textContent = incident.statusDescription;
+                const operationsContainer = document.querySelector('.space-y-4.text-slate');
+                operationsContainer.innerHTML = '';
+                incident.operations.forEach(op => {
+                    const opDiv = document.createElement('div');
+                    opDiv.className = 'space-y-2';
+                    opDiv.innerHTML = `<div class="flex items-center gap-2 text-[12px] ${op.color} font-semibold"><span class="h-2 w-2 rounded-full bg-current"></span>${op.time} · ${op.agency}</div><p class="text-[14px] leading-6">${op.description}</p>`;
+                    operationsContainer.appendChild(opDiv);
+                });
+                showScreen('screen-map');
+            }
+        }
+
+        function reportPersonalImpact() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            modal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><div class="w-16 h-16 rounded-full bg-emergency/10 flex items-center justify-center mx-auto mb-4"><i data-lucide="alert-triangle" class="w-8 h-8 text-emergency"></i></div><h2 class="text-[20px] font-bold text-navy mb-3">Report Personal Impact</h2><p class="text-[14px] text-slate leading-relaxed mb-6">This will notify Pasig City LDRRMO that you are personally affected by this incident.</p><div class="flex gap-3"><button onclick="this.closest('.fixed').remove()" class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px]">Cancel</button><button onclick="confirmPersonalImpact()" class="flex-1 h-12 rounded-xl bg-emergency text-white font-semibold text-[14px] shadow-md">CONFIRM</button></div></div>`;
+            document.body.appendChild(modal);
+            lucide.createIcons();
+        }
+
+        function confirmPersonalImpact() {
+            document.querySelector('.fixed').remove();
+            const successModal = document.createElement('div');
+            successModal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            successModal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><div class="w-16 h-16 rounded-full bg-safe/10 flex items-center justify-center mx-auto mb-4"><i data-lucide="check-circle" class="w-8 h-8 text-safe"></i></div><h2 class="text-[20px] font-bold text-navy mb-3">Impact Reported</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Pasig City LDRRMO has been notified.</p><button onclick="this.closest('.fixed').remove()" class="w-full h-12 rounded-xl bg-safe text-white font-semibold text-[14px]">OK</button></div>`;
+            document.body.appendChild(successModal);
+            lucide.createIcons();
+            setTimeout(() => { if (successModal.parentNode) successModal.remove(); }, 3000);
+        }
+
+        function shareCurrentLocation() {
+            if (!navigator.geolocation) { 
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+                modal.innerHTML = '<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><div class="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-4"><i data-lucide="alert-circle" class="w-8 h-8 text-amber"></i></div><h2 class="text-[20px] font-bold text-navy mb-3">Geolocation Not Supported</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Your browser does not support location services.</p><button onclick="this.closest(\'.fixed\').remove()" class="w-full h-12 rounded-xl bg-amber text-white font-semibold text-[14px]">OK</button></div>';
+                document.body.appendChild(modal);
+                lucide.createIcons();
+                return; 
+            }
+            const button = event.target;
+            const originalText = button.textContent;
+            button.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin inline mr-2"></i>Getting Location...';
+            button.disabled = true;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const modal = document.createElement('div');
+                    modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+                    modal.innerHTML = `<div class="bg-white rounded-3xl p-6 w-full max-w-[340px] shadow-xl"><h2 class="text-[18px] font-bold text-navy mb-4">Share Location</h2><div class="bg-slate-50 rounded-xl p-4 mb-4"><p class="text-[12px] text-slate-500 mb-2">Current Location</p><p class="text-[14px] font-mono text-navy">${latitude.toFixed(6)}, ${longitude.toFixed(6)}</p></div><div class="h-[120px] w-full bg-slate-100 rounded-xl mb-4 overflow-hidden"><iframe class="h-full w-full" src="https://maps.google.com/maps?q=${latitude},${longitude}&z=15&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div><div class="flex gap-3"><button onclick="this.closest('.fixed').remove()" class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px]">Cancel</button><button onclick="confirmLocationShare(${latitude}, ${longitude})" class="flex-1 h-12 rounded-xl bg-flood text-white font-semibold text-[14px] shadow-md">SHARE</button></div></div>`;
+                    document.body.appendChild(modal);
+                    lucide.createIcons();
+                    button.textContent = originalText;
+                    button.disabled = false;
+                },
+                () => { 
+                    const modal = document.createElement('div');
+                    modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+                    modal.innerHTML = '<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><div class="w-16 h-16 rounded-full bg-amber/10 flex items-center justify-center mx-auto mb-4"><i data-lucide="alert-circle" class="w-8 h-8 text-amber"></i></div><h2 class="text-[20px] font-bold text-navy mb-3">Location Error</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Unable to get your location. Please check permissions and try again.</p><button onclick="this.closest(\'.fixed\').remove()" class="w-full h-12 rounded-xl bg-amber text-white font-semibold text-[14px]">OK</button></div>';
+                    document.body.appendChild(modal);
+                    lucide.createIcons();
+                    button.textContent = originalText;
+                    button.disabled = false;
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+
+        function confirmLocationShare(latitude, longitude) {
+            document.querySelector('.fixed').remove();
+            const successModal = document.createElement('div');
+            successModal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            successModal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><h2 class="text-[20px] font-bold text-navy mb-3">Location Shared</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Your location has been shared with Pasig City emergency responders.</p><button onclick="this.closest('.fixed').remove()" class="w-full h-12 rounded-xl bg-flood text-white font-semibold text-[14px]">OK</button></div>`;
+            document.body.appendChild(successModal);
+            setTimeout(() => { if (successModal.parentNode) successModal.remove(); }, 3000);
+        }
+
+        function notifyFamily() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            modal.innerHTML = `<div class="bg-white rounded-3xl p-6 w-full max-w-[340px] shadow-xl"><h2 class="text-[18px] font-bold text-navy mb-4">Notify Family</h2><div class="space-y-3 mb-4"><div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl"><span class="text-[14px] font-semibold text-navy">Maria Santos</span><input type="checkbox" class="w-5 h-5 rounded" checked></div><div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl"><span class="text-[14px] font-semibold text-navy">Jose Santos</span><input type="checkbox" class="w-5 h-5 rounded" checked></div><div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl"><span class="text-[14px] font-semibold text-navy">Carla Santos</span><input type="checkbox" class="w-5 h-5 rounded" checked></div></div><div class="mb-4"><label class="block text-[12px] font-semibold text-slate-500 mb-2">Custom Message (Optional)</label><textarea id="family-message" placeholder="I'm safe, but there's an emergency nearby. Stay alert." class="w-full rounded-xl border border-gray-200 bg-slate-50 px-3 py-2 text-[14px] text-navy outline-none transition focus:border-navy focus:ring-2 focus:ring-navy/20" rows="3"></textarea></div><div class="flex gap-3"><button onclick="this.closest('.fixed').remove()" class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px]">Cancel</button><button onclick="confirmFamilyNotification()" class="flex-1 h-12 rounded-xl bg-navy text-white font-semibold text-[14px] shadow-md">SEND ALERT</button></div></div>`;
+            document.body.appendChild(modal);
+        }
+
+        function confirmFamilyNotification() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedCount = checkboxes.length;
+            const message = document.getElementById('family-message')?.value || 'Emergency alert from LIGTAS app.';
+            document.querySelector('.fixed').remove();
+            const successModal = document.createElement('div');
+            successModal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            successModal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><div class="w-16 h-16 rounded-full bg-safe/10 flex items-center justify-center mx-auto mb-4"><i data-lucide="check-circle" class="w-8 h-8 text-safe"></i></div><h2 class="text-[20px] font-bold text-navy mb-3">Family Notified</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Alert sent to ${selectedCount} contact${selectedCount > 1 ? 's' : ''} with your message.</p><button onclick="this.closest('.fixed').remove()" class="w-full h-12 rounded-xl bg-navy text-white font-semibold text-[14px]">OK</button></div>`;
+            document.body.appendChild(successModal);
+            setTimeout(() => { if (successModal.parentNode) successModal.remove(); }, 3000);
+        }
+
+        function openNotificationMap(incidentType) { showIncidentDetails(incidentType); }
+
+        function markMyselfSafe() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            modal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><h2 class="text-[20px] font-bold text-navy mb-3">Status Updated</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Your safety status has been shared with your Emergency Circle.</p><button onclick="this.closest('.fixed').remove()" class="w-full h-12 rounded-xl bg-safe text-white font-semibold text-[14px]">OK</button></div>`;
+            document.body.appendChild(modal);
+        }
+
+        const alertSummary = { activeEmergencies: 5, civiliansImpacted: 3847, evacuationCenters: 18, occupancyText: 'Pasig City: 12 barangay centers, 4 schools, 2 sports complexes. Capacity: 8,500. Occupancy: 4,200 (49%).' };
+
+        function renderDashboardStats() {
+            const activeCount = document.getElementById('active-emergencies-count');
+            const impactedCount = document.getElementById('civilians-impacted-count');
+            const centerCount = document.getElementById('evacuation-centers-count');
+            const summaryText = document.getElementById('evacuation-centers-summary');
+            if (activeCount) activeCount.textContent = alertSummary.activeEmergencies;
+            if (impactedCount) impactedCount.textContent = alertSummary.civiliansImpacted.toLocaleString();
+            if (centerCount) centerCount.textContent = alertSummary.evacuationCenters;
+            if (summaryText) summaryText.textContent = alertSummary.occupancyText;
+        }
+
+        function filterIncidents(type) {
+            const cards = document.querySelectorAll('article[data-incident-type]');
+            cards.forEach(card => {
+                const cardType = card.getAttribute('data-incident-type');
+                card.classList.toggle('hidden', type !== 'all' && cardType !== type);
+            });
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const isActive = btn.textContent.toLowerCase() === type || (type === 'all' && btn.textContent.toLowerCase() === 'all');
+                btn.classList.toggle('bg-slate-100', isActive);
+            });
+        }
+
+        function searchIncidents(query) {
+            const search = query.trim().toLowerCase();
+            const cards = document.querySelectorAll('article[data-incident-type]');
+            cards.forEach(card => {
+                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                const description = card.querySelector('p')?.textContent.toLowerCase() || '';
+                card.classList.toggle('hidden', search !== '' && !title.includes(search) && !description.includes(search));
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            renderDashboardStats();
+            filterIncidents('all');
+            const params = new URLSearchParams(window.location.search);
+            const screenParam = params.get('screen');
+            const incidentParam = params.get('incident');
+            if (incidentParam) showIncidentDetails(incidentParam);
+            else if (screenParam) showScreen('screen-' + screenParam);
+        });
+
+        // CONNECTIVITY LOGIC: Listen for Admin Broadcasts
+        let lastLogCount = (JSON.parse(localStorage.getItem('ligtas_audit') || '[]')).length;
+        setInterval(() => {
+            const logs = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+            if (logs.length > lastLogCount) {
+                const newLogs = logs.slice(0, logs.length - lastLogCount);
+                newLogs.forEach(log => {
+                    if (log.action === 'Broadcast') {
+                        showGlobalNotification('EMERGENCY BROADCAST', log.detail);
+                    }
+                });
+                lastLogCount = logs.length;
+            }
+        }, 1000);
+
+        function showGlobalNotification(title, msg) {
+            const notif = document.createElement('div');
+            notif.className = 'fixed top-10 left-4 right-4 bg-gray-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl z-[500] border border-blue-500/30 flex gap-4';
+            notif.innerHTML = `
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shrink-0">
+                    <i data-lucide="megaphone" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-[14px]">${title}</div>
+                    <div class="text-[12px] opacity-80">${msg}</div>
+                </div>
+            `;
+            document.body.appendChild(notif);
+            lucide.createIcons();
+            setTimeout(() => notif.remove(), 6000);
+        }
+    </script>
+
+</body>
+</html>

@@ -33,19 +33,43 @@ const applyLigtasConfig = () => {
         if (config.categories && config.categories.length > 0) {
             const incSelects = document.querySelectorAll('select[id*="inc-type"], select[id*="inc-cats"]');
             incSelects.forEach(sel => {
-                // Keep the first "Select..." option if it exists
+                // Keep the current selection if possible
+                const currentVal = sel.value;
                 const firstOpt = sel.options[0];
                 const hasPrompt = firstOpt && (firstOpt.value === "" || firstOpt.text.includes("Select"));
                 
                 sel.innerHTML = '';
                 if (hasPrompt) sel.appendChild(firstOpt);
 
-                config.categories.forEach(cat => {
-                    const opt = document.createElement('option');
-                    opt.value = cat;
-                    opt.textContent = cat;
-                    sel.appendChild(opt);
-                });
+                if (typeof config.categories[0] === 'object') {
+                    // Handle Structured Taxonomy with Optgroups
+                    const groups = {};
+                    config.categories.forEach(c => {
+                        if (!groups[c.group]) groups[c.group] = [];
+                        groups[c.group].push(c.name);
+                    });
+                    
+                    Object.keys(groups).forEach(g => {
+                        const og = document.createElement('optgroup');
+                        og.label = g;
+                        groups[g].forEach(item => {
+                            const opt = document.createElement('option');
+                            opt.value = item;
+                            opt.textContent = item;
+                            og.appendChild(opt);
+                        });
+                        sel.appendChild(og);
+                    });
+                } else {
+                    // Backward Compatibility for Flat Strings
+                    config.categories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        sel.appendChild(opt);
+                    });
+                }
+                if (currentVal) sel.value = currentVal;
             });
         }
 

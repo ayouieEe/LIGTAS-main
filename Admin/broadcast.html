@@ -1042,7 +1042,46 @@
       <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title" placeholder="e.g. Fire in Residential Area"></div>
       <div class="form-row">
         <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity"><option>Critical (Red)</option><option>Urgent (Orange)</option><option>Warning (Yellow)</option><option>Stable (Green)</option></select></div>
-        <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type"><option>Fire</option><option>Flood</option><option>Landslide</option><option>Medical</option><option>Chemical</option><option>Infrastructure</option><option>Other</option></select></div>
+        <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type">
+            <option value="">Select Incident Type...</option>
+            <optgroup label="Meteorological">
+              <option>Typhoon</option>
+              <option>Severe Winds</option>
+              <option>Tornado</option>
+            </optgroup>
+            <optgroup label="Hydrological">
+              <option>Flood</option>
+              <option>Flash Flood</option>
+              <option>Storm Surge</option>
+            </optgroup>
+            <optgroup label="Geological">
+              <option>Earthquake</option>
+              <option>Landslide</option>
+              <option>Volcanic Eruption</option>
+            </optgroup>
+            <optgroup label="Technological">
+              <option>Fire</option>
+              <option>Structural Collapse</option>
+              <option>Gas Leak</option>
+              <option>Chemical Spill</option>
+              <option>Power Outage</option>
+            </optgroup>
+            <optgroup label="Medical/Health">
+              <option>Medical Emergency</option>
+              <option>Mass Casualty</option>
+              <option>Disease Outbreak</option>
+            </optgroup>
+            <optgroup label="Security/Social">
+              <option>Civil Disturbance</option>
+              <option>Bomb Threat</option>
+              <option>Missing Person</option>
+            </optgroup>
+            <optgroup label="Logistical">
+              <option>Resource Shortage</option>
+              <option>Center Overflow</option>
+            </optgroup>
+            <option>Other</option>
+          </select></div>
       </div>
       <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc" onchange="recommendVolunteers()"><option value="">Select Barangay...</option><option>Caniogan</option><option>Kapitolyo</option><option>Manggahan</option><option>Pinagbuhatan</option><option>Rosario</option><option>San Joaquin</option><option>Santolan</option><option>Ugong</option></select></div>
       <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3" placeholder="Describe the incident in detail..."></textarea></div>

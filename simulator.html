@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIGTAS — System Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080A12;
+      --bg-elevated: #111421;
+      --border: #1E2335;
+      --primary: #3B82F6;
+      --critical: #EF4444;
+      --text: #F1F5F9;
+      --text-muted: #64748B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+    /* SIMULATOR HEADER */
+    .sim-header {
+      height: 60px;
+      padding: 0 24px;
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+    .sim-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; letter-spacing: -0.02em; }
+    .sim-logo svg { color: var(--critical); }
+    .sim-badge { background: rgba(59, 130, 246, 0.1); color: var(--primary); font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+
+    /* SIMULATOR CONTENT */
+    .sim-main { flex: 1; display: flex; overflow: hidden; }
+
+    /* LEFT: ADMIN VIEW */
+    .admin-pane { flex: 1; position: relative; border-right: 1px solid var(--border); }
+    .admin-iframe { width: 100%; height: 100%; border: none; }
+    .pane-label { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #fff; z-index: 10; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); }
+
+    /* RIGHT: MOBILE APP VIEW */
+    .mobile-pane { width: 440px; background: var(--bg); display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; }
+    
+    /* PHONE FRAME */
+    .phone-frame {
+      width: 340px;
+      height: 680px;
+      background: #000;
+      border: 8px solid #1E2335;
+      border-radius: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #0D0F1A;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+      font-size: 14px;
+    }
+    .notch { width: 120px; height: 24px; background: #000; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-radius: 0 0 16px 16px; z-index: 20; }
+    
+    /* APP UI */
+    .app-header { padding: 40px 20px 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .app-logo { font-weight: 800; font-size: 20px; color: var(--critical); }
+    .app-content { flex: 1; overflow-y: auto; padding: 0 20px 80px; scrollbar-width: none; }
+    .app-content::-webkit-scrollbar { display: none; }
+
+    /* SOS BUTTON */
+    .sos-btn-container { text-align: center; margin: 20px 0 32px; }
+    .sos-btn {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--critical);
+      border: 10px solid rgba(239, 68, 68, 0.2);
+      color: white;
+      font-size: 24px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 40px rgba(239, 68, 68, 0.4);
+      transition: transform 0.2s, background 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+    .sos-btn:active { transform: scale(0.92); background: #DC2626; }
+    .sos-btn span { font-size: 11px; font-weight: 500; opacity: 0.8; margin-top: 4px; }
+    .sos-hint { font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+
+    /* CARDS */
+    .app-card { background: #161B22; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #30363D; }
+    .card-title { font-weight: 600; font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .app-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-family: inherit; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-report { background: #238636; color: #fff; }
+    .btn-report:hover { background: #2EA043; }
+
+    /* ALERTS FEED */
+    .alert-item { border-left: 3px solid var(--primary); background: rgba(59, 130, 246, 0.05); padding: 10px 12px; border-radius: 0 8px 8px 0; margin-bottom: 8px; }
+    .alert-time { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; }
+    .alert-msg { font-size: 12.5px; line-height: 1.4; }
+
+    /* FOOTER NAV */
+    .app-nav {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 64px;
+      background: rgba(13, 15, 26, 0.8); backdrop-filter: blur(12px);
+      border-top: 1px solid #30363D; display: flex; justify-content: space-around; align-items: center;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-muted); font-size: 10px; cursor: pointer; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item svg { width: 20px; height: 20px; }
+
+    /* REPORT MODAL */
+    .app-modal {
+      position: absolute; inset: 0; background: #0D0F1A; z-index: 50;
+      transform: translateY(100%); transition: transform 0.3s ease;
+      display: flex; flex-direction: column;
+    }
+    .app-modal.open { transform: translateY(0); }
+    .modal-head { padding: 40px 20px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #30363D; }
+    .modal-body { padding: 20px; flex: 1; }
+    .app-input { width: 100%; background: #161B22; border: 1px solid #30363D; border-radius: 8px; padding: 12px; color: #fff; margin-bottom: 12px; font-family: inherit; }
+    .app-label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+
+    /* NOTIFICATION POPUP */
+    .app-notif {
+      position: absolute; top: 40px; left: 10px; right: 10px;
+      background: rgba(22, 27, 34, 0.95); backdrop-filter: blur(8px);
+      border: 1px solid var(--primary); border-radius: 12px;
+      padding: 12px 16px; display: flex; gap: 12px; align-items: center;
+      transform: translateY(-150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 60; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .app-notif.show { transform: translateY(0); }
+    .notif-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <header class="sim-header">
+    <div class="sim-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      LIGTAS INTEGRATED SIMULATOR
+    </div>
+    <div style="display:flex; align-items:center; gap:16px">
+      <div class="sim-badge">Real-time Sync Active</div>
+      <button onclick="resetData()" style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px">Reset Demo Data</button>
+    </div>
+  </header>
+
+  <main class="sim-main">
+    <!-- DISPATCHER SIDE -->
+    <section class="admin-pane">
+      <div class="pane-label">Dispatcher Console (Desktop)</div>
+      <iframe src="Admin/index.html" class="admin-iframe" id="admin-frame"></iframe>
+    </section>
+
+    <!-- CITIZEN SIDE -->
+    <section class="mobile-pane">
+      <div class="pane-label">Citizen App (Mobile)</div>
+      
+      <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="phone-screen" id="app-screen">
+          
+          <iframe src="User/Auth/login.html" style="width:100%; height:100%; border:none;" id="user-frame"></iframe>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // SYNC LOGIC
+    function triggerSOS() {
+      const sosData = {
+        name: 'John Citizen (App)',
+        location: 'Current GPS Coordinates',
+        coords: '14.5' + (Math.random()*1000).toFixed(0) + '° N, 121.0' + (Math.random()*1000).toFixed(0) + '° E',
+        timestamp: Date.now()
+      };
+      
+      // Store in queue for admin side
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      queue.unshift(sosData);
+      localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue.slice(0, 5)));
+      
+      // Add to audit logs
+      logToSystem('SOS Triggered', 'User App', 'Emergency SOS signal sent from mobile device');
+      
+      // Visual feedback
+      const btn = document.getElementById('sos-main-btn');
+      btn.style.background = '#991B1B';
+      btn.innerHTML = 'SENT!<span>Alert Active</span>';
+      
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.innerHTML = 'SOS<span>Hold to call</span>';
+      }, 3000);
+      
+      refreshAdmin();
+    }
+
+    function submitReport() {
+      const type = document.getElementById('rep-type').value;
+      const loc = document.getElementById('rep-loc').value;
+      const desc = document.getElementById('rep-desc').value;
+      
+      const incident = {
+        id: 'APP-' + Date.now(),
+        title: type + ' (via App)',
+        status: 'Reported',
+        barangay: loc,
+        description: desc,
+        createdAt: new Date().toLocaleString('en-PH'),
+        source: 'Mobile App'
+      };
+      
+      const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+      incidents.unshift(incident);
+      localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+      
+      logToSystem('Incident', incident.title, 'New report submitted via citizen app');
+      
+      closeReportModal();
+      showAppNotif('Report Sent', 'Your emergency report has been received by the Command Center.');
+      refreshAdmin();
+    }
+
+    function logToSystem(action, target, detail) {
+      const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      log.unshift({
+        id: 'LOG-' + Date.now(),
+        timestamp: new Date().toLocaleString('en-PH'),
+        admin: 'System',
+        action,
+        target,
+        detail,
+        ip: 'Mobile-App-ID'
+      });
+      localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
+    }
+
+    function showAppNotif(title, msg) {
+      const el = document.getElementById('app-notif');
+      document.getElementById('notif-title').textContent = title;
+      document.getElementById('notif-msg').textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 4000);
+    }
+
+    function openReportModal() { document.getElementById('report-modal').classList.add('open'); }
+    function closeReportModal() { document.getElementById('report-modal').classList.remove('open'); }
+
+    function refreshAdmin() {
+      const frame = document.getElementById('admin-frame');
+      frame.contentWindow.location.reload();
+    }
+
+    function resetData() {
+      if(confirm('Are you sure you want to reset all demo data? This will clear logs and incidents.')) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+
+    // LISTENER FOR ADMIN BROADCASTS
+    let lastLogCount = (JSON.parse(localStorage.getItem('ligtas_audit') || '[]')).length;
+    
+    function checkNewBroadcasts() {
+      const logs = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      if (logs.length > lastLogCount) {
+        const newLogs = logs.slice(0, logs.length - lastLogCount);
+        newLogs.forEach(log => {
+          if (log.action === 'Broadcast') {
+            showAppNotif('EMERGENCY BROADCAST', log.detail);
+            updateAlertsFeed();
+          }
+        });
+        lastLogCount = logs.length;
+      }
+    }
+
+    function updateAlertsFeed() {
+      const logs = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const broadcasts = logs.filter(l => l.action === 'Broadcast').slice(0, 3);
+      const feed = document.getElementById('alerts-feed');
+      
+      if (broadcasts.length === 0) {
+        feed.innerHTML = '<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:12px">No active advisories</div>';
+        return;
+      }
+
+      feed.innerHTML = broadcasts.map(b => `
+        <div class="alert-item">
+          <div class="alert-time">${b.timestamp.split(',')[1]}</div>
+          <div class="alert-msg">${b.detail}</div>
+        </div>
+      `).join('');
+    }
+
+    setInterval(checkNewBroadcasts, 1000);
+    updateAlertsFeed();
+  </script>
+</body>
+</html>

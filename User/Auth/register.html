@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Register</title>
+
+    <!-- Tailwind CSS & Custom Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+
+    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto bg-gray-50 px-4 py-6 flex flex-col">
+
+            <!-- Logo and Header -->
+            <div class="text-center mb-6">
+                <div class="flex justify-center mb-3">
+                    <i data-lucide="user-plus" class="w-12 h-12 text-emergency"></i>
+                </div>
+                <h1 class="text-[24px] font-bold text-navy mb-1">Create Your Account</h1>
+                <p class="text-[13px] text-slate">Join your safety network</p>
+            </div>
+
+            <!-- Register Form -->
+            <form class="space-y-3 flex-1" id="registerForm">
+
+                <!-- Full Name -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Full Name</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
+                        <input 
+                            type="text" 
+                            id="fullname" 
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
+                        <input 
+                            type="email" 
+                            id="email-register" 
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Mobile Number -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Mobile Number</label>
+                    <div class="relative">
+                        <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
+                        <input 
+                            type="tel" 
+                            id="mobile" 
+                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
+                            placeholder="+63 9XX XXX XXXX"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Barangay / Location -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Barangay / Location</label>
+                    <div class="relative">
+                        <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate z-10"></i>
+                        <select id="barangay" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all appearance-none cursor-pointer" required>
+                            <option value="">Select your barangay</option>
+                            <option value="barangay-1">Barangay 1 - Malate</option>
+                            <option value="barangay-2">Barangay 2 - Ermita</option>
+                            <option value="barangay-3">Barangay 3 - San Isidro</option>
+                            <option value="barangay-4">Barangay 4 - Tondo</option>
+                            <option value="barangay-5">Barangay 5 - Makati</option>
+                            <option value="other">Other Location</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
+                        <input 
+                            type="password" 
+                            id="password-register" 
+                            class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
+                            placeholder="Create a strong password"
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-emergency transition-colors"
+                            onclick="togglePasswordVisibility('password-register')"
+                        >
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <!-- Password Strength Bar -->
+                    <div class="mt-2">
+                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                            <div class="h-full w-0 bg-emergency rounded-full transition-all" id="strengthBar"></div>
+                        </div>
+                        <p class="text-[10px] text-slate mt-1">Strength: <span id="strengthText">–</span></p>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Confirm Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
+                        <input 
+                            type="password" 
+                            id="confirm-password" 
+                            class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
+                            placeholder="Confirm your password"
+                            required
+                        >
+                        <button 
+                            type="button" 
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-emergency transition-colors"
+                            onclick="togglePasswordVisibility('confirm-password')"
+                        >
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="flex items-start gap-2 py-2">
+                    <input 
+                        type="checkbox" 
+                        id="terms" 
+                        class="mt-1 w-4 h-4 accent-emergency rounded cursor-pointer"
+                        required
+                    >
+                    <label for="terms" class="text-[12px] text-slate cursor-pointer">
+                        I agree to the <a href="#" class="font-semibold text-emergency hover:text-deep transition-colors">Terms of Service</a> and <a href="#" class="font-semibold text-emergency hover:text-deep transition-colors">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Create Account Button -->
+                <button type="submit" class="btn w-full bg-gradient-to-r from-emergency to-alert hover:shadow-lg py-3 rounded-lg font-bold text-white transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mt-4">
+                    <span>Create Account</span>
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Login Link -->
+                <p class="text-center text-[13px] text-slate">
+                    Already have an account? <a href="login.html" class="font-bold text-emergency hover:text-deep transition-colors">Login</a>
+                </p>
+
+            </form>
+
+            <!-- Safety Tips Card -->
+            <div class="mt-4 p-3 bg-gradient-to-r from-safe/10 to-safe/5 border border-safe/20 rounded-lg">
+                <div class="flex items-center gap-2 mb-2">
+                    <i data-lucide="shield" class="w-5 h-5 text-safe flex-shrink-0"></i>
+                    <span class="text-[12px] font-bold text-safe">Safety Tips</span>
+                </div>
+                <ul class="space-y-1">
+                    <li class="text-[11px] text-slate flex items-center gap-1.5">
+                        <span class="text-safe font-bold">✓</span>
+                        <span>Use a strong, unique password</span>
+                    </li>
+                    <li class="text-[11px] text-slate flex items-center gap-1.5">
+                        <span class="text-safe font-bold">✓</span>
+                        <span>Keep your location updated</span>
+                    </li>
+                    <li class="text-[11px] text-slate flex items-center gap-1.5">
+                        <span class="text-safe font-bold">✓</span>
+                        <span>Enable emergency contacts</span>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function togglePasswordVisibility(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+        }
+
+        // Password strength indicator
+        document.getElementById('password-register').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            let strength = 0;
+            let strengthLevel = 'Weak';
+            
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (strength === 0) {
+                strengthLevel = 'Very Weak';
+                strengthBar.style.width = '20%';
+                strengthBar.className = 'h-full w-0 bg-emergency rounded-full transition-all';
+                strengthBar.style.width = '20%';
+            } else if (strength === 1) {
+                strengthLevel = 'Weak';
+                strengthBar.className = 'h-full w-0 bg-emergency rounded-full transition-all';
+                strengthBar.style.width = '40%';
+            } else if (strength === 2 || strength === 3) {
+                strengthLevel = 'Fair';
+                strengthBar.className = 'h-full w-0 bg-amber rounded-full transition-all';
+                strengthBar.style.width = '60%';
+            } else if (strength === 4) {
+                strengthLevel = 'Good';
+                strengthBar.className = 'h-full w-0 bg-flood rounded-full transition-all';
+                strengthBar.style.width = '80%';
+            } else {
+                strengthLevel = 'Strong';
+                strengthBar.className = 'h-full w-0 bg-safe rounded-full transition-all';
+                strengthBar.style.width = '100%';
+            }
+            
+            strengthText.textContent = strengthLevel;
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password-register').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            const fullname = document.getElementById('fullname').value;
+            const email = document.getElementById('email-register').value;
+            const mobile = document.getElementById('mobile').value;
+            const barangay = document.getElementById('barangay').value;
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            console.log('Registration attempt:', { fullname, email, mobile, barangay });
+            
+            // Simulate network delay
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                // Redirect to login page or home page after successful registration
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+    </script>
+
+</body>
+</html>
+

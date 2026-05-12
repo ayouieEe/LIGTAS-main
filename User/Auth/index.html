@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIGTAS Auth Pages</title>
+
+    <!-- Tailwind CSS & Custom Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-900 text-navy antialiased">
+
+    <div class="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <div class="flex justify-center mb-4">
+                    <svg class="w-16 h-16 text-emergency" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">LIGTAS Authentication</h1>
+                <p class="text-lg text-gray-400">Modern Login & Register Pages</p>
+            </div>
+
+            <!-- Main CTAs -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <a href="login.html" class="px-8 py-3 bg-gradient-to-r from-emergency to-alert text-white font-bold rounded-lg hover:shadow-lg transition-all transform hover:scale-105 flex items-center gap-2">
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                    Login Page
+                </a>
+                <a href="register.html" class="px-8 py-3 bg-gradient-to-r from-emergency to-alert text-white font-bold rounded-lg hover:shadow-lg transition-all transform hover:scale-105 flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5"></i>
+                    Register Page
+                </a>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="smartphone" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Mobile-First Design</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Optimized for 390px mobile mockup matching existing app pages</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="palette" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Consistent Branding</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Uses Tailwind CSS with official LIGTAS color palette</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="zap" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Interactive Elements</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Password toggle, strength meter, real-time validation</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Form Validation</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Email validation, password matching, required fields</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="navigation" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Bottom Navigation</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Same navigation structure as app pages (Home, Reports, Groups)</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 hover:border-emergency transition-colors">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="share-2" class="w-6 h-6 text-emergency"></i>
+                        <h3 class="text-white font-bold">Social Login</h3>
+                    </div>
+                    <p class="text-gray-400 text-sm">Google & Facebook integration ready on login page</p>
+                </div>
+            </div>
+
+            <!-- Color Palette -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-white mb-6">LIGTAS Color Palette</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-emergency"></div>
+                        <p class="text-xs text-gray-400">Emergency</p>
+                        <p class="text-xs text-gray-500">#D32F2F</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-alert"></div>
+                        <p class="text-xs text-gray-400">Alert</p>
+                        <p class="text-xs text-gray-500">#E53935</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-tint border border-gray-600"></div>
+                        <p class="text-xs text-gray-400">Tint</p>
+                        <p class="text-xs text-gray-500">#FFEBEE</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-safe"></div>
+                        <p class="text-xs text-gray-400">Safe</p>
+                        <p class="text-xs text-gray-500">#2E7D32</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-flood"></div>
+                        <p class="text-xs text-gray-400">Flood</p>
+                        <p class="text-xs text-gray-500">#1565C0</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-full h-20 rounded-lg mb-2 bg-navy"></div>
+                        <p class="text-xs text-gray-400">Navy</p>
+                        <p class="text-xs text-gray-500">#1C1C1E</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Files Overview -->
+            <div class="bg-gray-800/50 backdrop-blur border border-gray-700 rounded-lg p-6 mb-12">
+                <h2 class="text-xl font-bold text-white mb-4">📁 Project Structure</h2>
+                <div class="bg-gray-900 rounded p-4 font-mono text-sm text-gray-300 overflow-x-auto">
+                    <pre>Auth/
+├── login.html          ← Login page (email + password + social)
+├── register.html       ← Register page (full form with validation)
+├── index.html          ← This demo page
+├── auth-styles.css     ← Legacy CSS (not used)
+└── README.md           ← Full documentation
+
+Key Features:
+• Tailwind CSS with custom LIGTAS config
+• Lucide icons for modern SVGs
+• Mobile mockup 390px max-width
+• Bottom navigation matching app structure
+• Form validation & password strength
+• Responsive design
+</pre>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="bg-gradient-to-r from-emergency/10 to-alert/10 border border-emergency/30 rounded-lg p-6 mb-12">
+                <h2 class="text-xl font-bold text-white mb-4">🚀 Quick Start</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-400 mb-3">Open in Browser:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="login.html" class="text-emergency hover:text-alert font-semibold">→ Login Page</a></li>
+                            <li><a href="register.html" class="text-emergency hover:text-alert font-semibold">→ Register Page</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 mb-3">Integration:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="README.md" class="text-emergency hover:text-alert font-semibold">→ Full Documentation</a></li>
+                            <li class="text-gray-400">Check README.md for backend integration guide</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="text-center text-gray-400 text-sm border-t border-gray-700 pt-8">
+                <p>LIGTAS Authentication Pages • Tailwind CSS + Lucide Icons</p>
+                <p class="mt-2">Matches existing app design system • Mobile-first responsive</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+</html>
+

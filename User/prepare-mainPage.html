@@ -1,0 +1,1725 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Prepare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        safeLight: '#4CAF50',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                        // Dark theme surfaces
+                        surface: '#1A1A2E',
+                        surfaceCard: '#1E2035',
+                        surfaceBorder: '#2A2D4A',
+                        surfaceHover: '#252845',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            background: #F8FAFC;
+            color: #1C1C1E;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .phone-shell {
+            background: #F8FAFC;
+            color: #1C1C1E;
+        }
+
+        .screen:not(#screen-notifications) .text-navy {
+            color: #1C1C1E !important;
+        }
+        .screen:not(#screen-notifications) .text-slate {
+            color: #64748B !important;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Cards */
+        /* Volunteer button */
+        .btn-volunteer {
+            background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%);
+            border-radius: 14px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 13px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(46,125,50,0.35);
+            transition: all 0.2s;
+        }
+        .btn-volunteer:active { transform: scale(0.98); }
+
+        /* Supply cards */
+        .supply-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+            color: #1C1C1E;
+        }
+        .supply-card.critical { border-color: rgba(249, 115, 22, 0.35); }
+        .supply-card.low { border-color: rgba(248, 113, 113, 0.35); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.03em;
+        }
+        .status-good { background: rgba(34,197,94,0.16); color: #86EFAC; border: 1px solid rgba(34,197,94,0.24); }
+        .status-low { background: rgba(249,115,22,0.16); color: #FDBA74; border: 1px solid rgba(249,115,22,0.24); }
+        .status-critical { background: rgba(248,113,113,0.16); color: #FCA5A5; border: 1px solid rgba(248,113,113,0.24); }
+
+        /* Protocol rows */
+        .protocol-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            color: #1C1C1E;
+        }
+        .protocol-accent {
+            width: 4px;
+            height: 36px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Progress bar */
+        .progress-track {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 99px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.6s ease;
+        }
+
+        /* Map placeholder */
+        .map-container {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .google-map-embed,
+        .map-fullscreen {
+            width: 100%;
+            min-height: 180px;
+            height: 100%;
+            border: 0;
+        }
+        .map-fullscreen {
+            min-height: 260px;
+        }
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(15,23,42,0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15,23,42,0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* Assembly point card */
+        .assembly-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1C1C1E;
+        }
+
+        /* Checklist items */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .checklist-item:last-child { border-bottom: none; }
+
+        /* First aid items */
+        .first-aid-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .first-aid-item:last-child { border-bottom: none; }
+
+        .checkbox {
+            width: 22px; height: 22px;
+            border: 2px solid #475569;
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1px;
+        }
+        .checkbox.checked {
+            background: #D32F2F;
+            border-color: #D32F2F;
+        }
+        .checkbox.checked-green {
+            background: #2E7D32;
+            border-color: #2E7D32;
+        }
+
+        /* Readiness ring */
+        .readiness-ring {
+            position: relative;
+            width: 64px; height: 64px;
+        }
+        .ring-svg { transform: rotate(-90deg); }
+
+        /* Guide step numbers */
+        .step-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* Bottom nav */
+        .bottom-nav {
+            background: #13152A;
+            border-top: 1px solid #2A2D44;
+        }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px 0; cursor: pointer; }
+        .nav-item span { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+        .nav-item.active { color: #D32F2F; }
+        .nav-item.active .nav-bg { background: rgba(211,47,47,0.1); border-radius: 10px; padding: 6px 14px; }
+        .nav-item:not(.active) { color: #6B7280; }
+
+        /* Screen system */
+        .screen { display: none !important; }
+        .screen.active { display: flex !important; }
+
+        /* SOS */
+        .sos-progress-ring {
+            position: absolute;
+            inset: -4px;
+            border: 4px solid transparent;
+            border-radius: 9999px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .sos-ring-active {
+            border-top-color: #D32F2F;
+            border-right-color: #D32F2F;
+            animation: rotate-sos 3s linear forwards;
+        }
+        .sos-btn {
+            width: 64px; height: 64px;
+            border-radius: 9999px;
+            background: rgba(17,24,39,0.64);
+            backdrop-filter: blur(12px);
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.05em;
+            transition: transform 0.2s ease;
+        }
+        .sos-btn:active { transform: scale(0.96); }
+
+        @keyframes rotate-sos { to { transform: rotate(360deg); } }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+            border: none;
+            border-radius: 32px;
+            box-shadow: 0 28px 90px rgba(15,23,42,0.18);
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 420px;
+            max-height: calc(100vh - 80px);
+            color: #1C1C1E;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .modal-header .modal-icon {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            border-radius: 18px;
+            background: rgba(46,125,50,0.14);
+            display: grid;
+            place-items: center;
+        }
+        .modal-box .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .modal-box .modal-subtitle {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .modal-content {
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: rgba(15,23,42,0.18);
+            border-radius: 999px;
+        }
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .form-field input,
+        .form-field textarea {
+            border: 1px solid #E5E7EB;
+            border-radius: 18px;
+            background: #F8FAFC;
+            color: #1C1C1E;
+            padding: 14px 16px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-field input:focus,
+        .form-field textarea:focus {
+            border-color: #2E7D32;
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.12);
+        }
+        .modal-footer {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .modal-footer .btn-secondary {
+            background: #F8FAFC;
+            color: #475569;
+            border: 1px solid #D1D5DB;
+        }
+        .modal-footer .btn-primary {
+            background: #2E7D32;
+            color: white;
+        }
+        .consent-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 18px;
+            background: #FFFFFF;
+            color: #475569;
+        }
+        .consent-row input {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            border-radius: 6px;
+            border: 1px solid #D1D5DB;
+            accent-color: #2E7D32;
+        }
+
+        /* Animate in */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeUp 0.4s ease forwards; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; }
+        .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; }
+        .delay-4 { animation-delay: 0.2s; opacity: 0; }
+        .delay-5 { animation-delay: 0.25s; opacity: 0; }
+
+        /* Volunteer screen styles */
+        .announcement-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            color: #1C1C1E;
+        }
+
+        .announcement-urgent {
+            border-color: rgba(249, 115, 22, 0.35);
+            background: linear-gradient(135deg, #FFFFFF 0%, rgba(249, 115, 22, 0.05) 100%);
+        }
+
+        .announcement-normal {
+            border-color: rgba(46, 125, 50, 0.35);
+            background: linear-gradient(135deg, #FFFFFF 0%, rgba(46, 125, 50, 0.05) 100%);
+        }
+
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .announcement-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .announcement-urgent .announcement-icon {
+            background: rgba(249, 115, 22, 0.15);
+            color: #E65100;
+        }
+
+        .announcement-normal .announcement-icon {
+            background: rgba(46, 125, 50, 0.15);
+            color: #2E7D32;
+        }
+
+        .announcement-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .announcement-meta {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 8px;
+        }
+
+        .announcement-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #374151;
+        }
+
+        .announcement-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-accept {
+            background: #2E7D32;
+            color: white;
+        }
+
+        .btn-accept:hover {
+            background: #1B5E20;
+        }
+
+        .btn-decline {
+            background: #F3F4F6;
+            color: #6B7280;
+            border: 1px solid #D1D5DB;
+        }
+
+        .btn-decline:hover {
+            background: #E5E7EB;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.03em;
+        }
+
+        .status-urgent {
+            background: rgba(249,115,22,0.16);
+            color: #FDBA74;
+            border: 1px solid rgba(249,115,22,0.24);
+        }
+
+        .status-assigned {
+            background: rgba(34,197,94,0.16);
+            color: #86EFAC;
+            border: 1px solid rgba(34,197,94,0.24);
+        }
+
+        .status-completed {
+            background: rgba(59,130,246,0.16);
+            color: #93C5FD;
+            border: 1px solid rgba(59,130,246,0.24);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+
+    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+    <!-- Header -->
+    <header class="pt-[59px] px-4 pb-3 flex justify-between items-center bg-white/95 backdrop-blur-md border-b border-gray-100 z-10 sticky top-0 shrink-0">
+        <div class="flex items-center gap-2">
+            <i data-lucide="shield-alert" class="text-emergency w-6 h-6"></i>
+            <span class="font-bold text-[18px] tracking-tight">LIGTAS</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative cursor-pointer" onclick="showScreen('screen-notifications')">
+                <i data-lucide="bell" class="w-6 h-6 text-navy"></i>
+                <span class="absolute top-0 right-0.5 w-2 h-2 bg-emergency rounded-full border border-white"></span>
+            </div>
+            <div class="w-8 h-8 rounded-full bg-gray-200 cursor-pointer overflow-hidden" onclick="window.location.href='Profile Tab/profilePage.html'">
+                <img src="https://ui-avatars.com/api/?name=Juan+Dela+Cruz&background=1C1C1E&color=fff" alt="Juan Dela Cruz">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main scrollable -->
+    <main class="flex-1 relative bg-[#F8FAFC] pb-[120px] overflow-y-auto no-scrollbar">
+
+        <!-- Screen: Home -->
+        <div id="screen-home" class="screen active flex-col px-4 py-5 gap-4 bg-[#F8FAFC]">
+
+            <!-- Hero: Join the Frontline -->
+            <div class="bg-gradient-to-b from-white to-slate-50 border border-gray-200 rounded-3xl p-5 animate-in delay-1">
+                <div class="relative z-10">
+                    <p class="text-[13px] font-semibold text-slate-300">JOIN THE FRONTLINE</p>
+                    <h2 class="text-[22px] font-bold mt-1 leading-tight text-navy">Contribute your skills to local disaster response teams.</h2>
+                    <button id="volunteer-action-button" class="btn-volunteer mt-4" onclick="checkVolunteerStatus()">
+                        <i data-lucide="hand-helping" class="w-5 h-5"></i>
+                        Register as Volunteer
+                    </button>
+                    <p id="volunteer-status-message" class="mt-3 text-[13px] text-green-700 hidden">You are registered as a volunteer. Open the dashboard anytime.</p>
+                </div>
+            </div>
+
+            <!-- Emergency Supplies -->
+            <div class="animate-in delay-2">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-[19px] font-bold text-navy">Emergency Supplies</h2>
+                    <button class="flex items-center gap-1 text-[13px] font-medium text-red-500" onclick="openInventoryScreen()">
+                        Manage Inventory <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Water Storage -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-3.5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(21,101,192,0.15);">
+                                <i data-lucide="droplet" class="w-5 h-5" style="color: #42A5F5;"></i>
+                            </div>
+                            <span id="water-storage-badge" class="status-badge status-good">Good</span>
+                        </div>
+                        <p class="text-[12px] text-slate">Water Storage</p>
+                        <p id="water-storage-value" class="text-[17px] font-bold mt-0.5 text-navy">15.5 Liters</p>
+                    </div>
+                    <!-- Canned Food -->
+                    <div class="bg-white border border-red-200 rounded-xl p-3.5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(230,81,0,0.15);">
+                                <i data-lucide="utensils" class="w-5 h-5" style="color: #FF8A65;"></i>
+                            </div>
+                            <span id="canned-food-badge" class="status-badge status-low">Low</span>
+                        </div>
+                        <p class="text-[12px] text-slate">Canned Food</p>
+                        <p id="canned-food-value" class="text-[17px] font-bold mt-0.5 text-navy">3 Days Left</p>
+                    </div>
+                    <!-- Medical Kit -->
+                    <div class="bg-white border border-gray-200 rounded-xl p-3.5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(0,105,92,0.15);">
+                                <i data-lucide="cross" class="w-5 h-5" style="color: #4DB6AC;"></i>
+                            </div>
+                            <span id="medical-kit-badge" class="status-badge status-good">Good</span>
+                        </div>
+                        <p class="text-[12px] text-slate">Medical Kit</p>
+                        <p id="medical-kit-value" class="text-[17px] font-bold mt-0.5 text-navy">Level 2 Kit</p>
+                    </div>
+                    <!-- Power Source -->
+                    <div class="bg-white border border-orange-200 rounded-xl p-3.5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background: rgba(211,47,47,0.15);">
+                                <i data-lucide="battery-low" class="w-5 h-5" style="color: #EF5350;"></i>
+                            </div>
+                            <span id="power-source-badge" class="status-badge status-critical">Critical</span>
+                        </div>
+                        <p class="text-[12px] text-slate">Power Source</p>
+                        <p id="power-source-value" class="text-[17px] font-bold mt-0.5 text-emergency">12% Charge</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety Protocols -->
+            <div class="animate-in delay-3">
+                <h2 class="text-[19px] font-bold mb-3 text-navy">Safety Protocols</h2>
+                <div class="flex flex-col gap-3">
+
+                    <!-- Fire Safety -->
+                    <div class="protocol-row cursor-pointer" onclick="openModal('fire-modal')">
+                        <div class="protocol-accent" style="background: #D32F2F;"></div>
+                        <div class="flex-1">
+                            <p class="text-[15px] font-semibold text-navy">Fire Safety Plan</p>
+                            <p class="text-[12px] mt-0.5 text-slate">Updated: Oct 12, 2023</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[15px] font-bold text-emergency">Review Recommended</p>
+                            <p class="text-[11px] text-slate">Keep fire plan current</p>
+                        </div>
+                    </div>
+
+                    <!-- Earthquake Response -->
+                    <div class="protocol-row cursor-pointer" onclick="openModal('quake-modal')">
+                        <div class="protocol-accent" style="background: #1565C0;"></div>
+                        <div class="flex-1">
+                            <p class="text-[15px] font-semibold text-navy">Earthquake Response</p>
+                            <p class="text-[12px] mt-0.5 text-slate">Updated: Sep 05, 2023</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[15px] font-bold text-flood">Ready</p>
+                            <p class="text-[11px] text-safe">Earthquake response set</p>
+                        </div>
+                    </div>
+
+                    <!-- Flood Evacuation -->
+                    <div class="protocol-row cursor-pointer" onclick="openModal('flood-modal')">
+                        <div class="protocol-accent" style="background: #3A3D5A;"></div>
+                        <div class="flex-1">
+                            <p class="text-[15px] font-semibold text-navy">Flood Evacuation</p>
+                            <p class="text-[12px] mt-0.5 text-amber">New Update Available</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[15px] font-bold text-slate">Needs Update</p>
+                            <p class="text-[11px] text-slate">Follow latest flood alerts</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Evacuation Routes -->
+            <div class="animate-in delay-4">
+                <h2 class="text-[19px] font-bold mb-3 text-navy">Evacuation Routes</h2>
+                <div class="map-container" style="height: 180px;">
+                    <div id="home-route-map" class="google-map-embed rounded-3xl overflow-hidden">
+                        <iframe class="h-full w-full" src="https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5760,121.0835&daddr=14.57775,121.08365&dirflg=d&output=embed" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                    <div class="absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full" style="background: rgba(255,255,255,0.9); border: 1px solid #E5E7EB;">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        <span class="text-[12px] font-semibold text-navy">Routes Clear</span>
+                    </div>
+                    <button class="absolute bottom-3 right-3 w-10 h-10 rounded-full flex items-center justify-center" style="background: #D32F2F; box-shadow: 0 4px 12px rgba(211,47,47,0.4);" onclick="openModal('map-modal')">
+                        <i data-lucide="locate" class="w-5 h-5 text-white"></i>
+                    </button>
+                </div>
+
+                <!-- Assembly Point -->
+                <div class="assembly-card mt-3">
+                    <div class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0" style="background: #F8FAFC; border: 1px solid #E5E7EB;">
+                        <i data-lucide="map-pin" class="w-5 h-5" style="color: #D32F2F;"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[13px] text-slate">Nearest Assembly Point</p>
+                        <p class="text-[14px] font-semibold text-navy">Pasig City Sports Complex · 1.2km</p>
+                    </div>
+                    <button class="text-[13px] font-bold" style="color: #D32F2F;" onclick="showAssemblyDetails('sports')">VIEW</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Screen: Notifications -->
+        <div id="screen-notifications" class="absolute inset-0 flex flex-col overflow-y-auto px-4 py-6 pb-[110px] no-scrollbar screen bg-gray-50">
+            <div class="flex items-center justify-between mb-4">
+                <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="text-[13px] font-medium">Back</span>
+                </button>
+                <div class="text-right">
+                    <p class="text-[12px] uppercase tracking-[0.28em] text-slate/50">Notifications</p>
+                    <p class="text-[11px] text-slate/40">Latest safety alerts & updates</p>
+                </div>
+            </div>
+            <div class="space-y-4 pb-24">
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                        <div class="space-y-1">
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-emergency">Critical Alert</p>
+                            <h2 class="text-[18px] font-bold text-navy">Residential Fire - Bagong Ilog</h2>
+                        </div>
+                        <span class="text-[12px] text-slate/50">2 mins ago</span>
+                    </div>
+                    <p class="text-[14px] leading-6 text-slate/70">Pasig City Fire Department responding to residential fire in Bagong Ilog. Evacuate nearby residents immediately.</p>
+                    <button onclick="window.location.href='alert-mainPage.html?incident=fire'" class="mt-5 w-full rounded-3xl bg-emergency text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-emergency/90 transition">View Map</button>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                            <i data-lucide="users" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City - Family Update</p>
+                            <p class="text-[17px] font-semibold text-navy"><span class="text-safe">Maria Santos</span> marked <span class="font-bold text-safe">SAFE</span></p>
+                        </div>
+                    </div>
+                    <p class="text-[14px] leading-6 text-slate/70">Location: Brgy. Kapitolyo, Pasig City. Medical emergency resolved.</p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                            <i data-lucide="box" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Prepare</p>
+                            <p class="text-[17px] font-semibold text-navy">Emergency Kit Check</p>
+                        </div>
+                    </div>
+                    <p class="text-[14px] leading-6 text-slate/70">Pasig City recommends checking your emergency kit. Ensure you have water, food, medications, and important documents ready.</p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                            <i data-lucide="info" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">System Update</p>
+                            <p class="text-[17px] font-semibold text-navy">Pasig Emergency Maps Updated</p>
+                        </div>
+                    </div>
+                    <p class="text-[14px] leading-6 text-slate/70">Emergency maps for all Pasig City barangays have been updated with latest evacuation routes and shelter locations.</p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City LGU</p>
+                            <p class="text-[17px] font-semibold text-navy">Check-in: <span class="text-amber">PASIG RESIDENTS</span></p>
+                        </div>
+                    </div>
+                    <p class="text-[14px] leading-6 text-slate/70 mb-3">Help us locate you during emergencies. Your safety status helps coordinate response efforts.</p>
+                    <button onclick="markMyselfSafe()" class="w-full rounded-3xl bg-safe text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-safe/90 transition">Mark Myself Safe</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen: Inventory (Go-Bag Checklist) -->
+        <div id="screen-inventory" class="screen flex-col bg-[#F8FAFC]">
+            <div class="px-4 pt-5 pb-3">
+                <div class="flex items-center justify-between mb-4">
+                    <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <span class="text-[13px] font-medium">Back</span>
+                    </button>
+                    <div class="text-right">
+                        <p class="text-[11px] text-slate">TOTAL READINESS</p>
+                        <p class="text-[28px] font-bold text-safe" id="readiness-pct">68%</p>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-safe/10 text-safe border border-safe/20">PREPARE MODE</span>
+                    <h1 class="mt-3 text-[24px] font-bold text-navy">Go-Bag Checklist</h1>
+                </div>
+                <div class="progress-track" style="height: 10px;">
+                    <div class="progress-fill" id="readiness-bar" style="width: 68%; background: linear-gradient(90deg, #2E7D32, #4CAF50);"></div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-4 py-4 flex flex-col gap-4">
+
+                <!-- Hydration & Nutrition -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-4" data-inventory-category="hydration">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="droplet" class="w-5 h-5" style="color: #42A5F5;"></i>
+                            <p class="text-[15px] font-bold text-navy">Hydration & Nutrition</p>
+                        </div>
+                        <span id="hydration-pct" class="text-[12px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate">50%</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox checked-green" data-inventory-item="water-supply" onclick="toggleCheck(this)">
+                            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-[14px] font-semibold text-navy">3-Day Water Supply</p>
+                            <p class="text-[12px] mt-0.5 text-slate">4 Liters per person/day minimum</p>
+                        </div>
+                        <i data-lucide="info" class="w-4 h-4 ml-auto mt-1 flex-shrink-0" style="color: #3A3D5A;"></i>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-inventory-item="non-perishable-food" onclick="toggleCheck(this)">
+                        </div>
+                        <div>
+                            <p class="text-[14px] font-semibold text-slate">Non-Perishable Food</p>
+                            <p class="text-[12px] mt-0.5 text-slate">Energy bars, canned goods, dried fruit</p>
+                        </div>
+                        <i data-lucide="info" class="w-4 h-4 ml-auto mt-1 flex-shrink-0" style="color: #3A3D5A;"></i>
+                    </div>
+                    <button class="w-full mt-3 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[13px] font-medium hover:bg-slate-100 transition-colors flex items-center justify-center gap-2" onclick="openAddItemModal('hydration')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Add Item
+                    </button>
+                </div>
+
+                <!-- Health & First Aid -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-4" data-inventory-category="health">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="cross" class="w-5 h-5" style="color: #D32F2F;"></i>
+                            <p class="text-[15px] font-bold text-navy">Health & First Aid</p>
+                        </div>
+                        <span id="health-pct" class="text-[12px] font-bold px-2 py-0.5 rounded">100%</span>
+                    </div>
+                    <div class="checklist-item" style="background: rgba(211,47,47,0.07); border-radius: 10px; padding: 12px; border-bottom: none; margin-bottom: 0;">
+                        <div class="checkbox checked" data-inventory-item="first-aid-kit" onclick="toggleCheck(this)">
+                            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[14px] font-semibold text-navy">First Aid Kit</p>
+                            <p class="text-[12px] mt-0.5 text-slate">Bandages, antiseptics, and trauma supplies</p>
+                        </div>
+                        <i data-lucide="settings" class="w-4 h-4 flex-shrink-0 cursor-pointer hover:opacity-70 transition-opacity" style="color: #D32F2F;" onclick="openFirstAidSettings()"></i>
+                    </div>
+                    <button class="w-full mt-3 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[13px] font-medium hover:bg-slate-100 transition-colors flex items-center justify-center gap-2" onclick="openAddItemModal('health')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Add Item
+                    </button>
+                </div>
+
+                <!-- Power -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-4" data-inventory-category="power">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="zap" class="w-5 h-5" style="color: #66BB6A;"></i>
+                        <p class="text-[15px] font-bold text-safe">Power</p>
+                        <span id="power-pct" class="ml-auto text-[12px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate">50%</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-inventory-item="battery-bank" onclick="toggleCheck(this)"></div>
+                        <p class="text-[14px] font-semibold text-slate">Battery Bank</p>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox checked-green" data-inventory-item="spare-aa-aaa" onclick="toggleCheck(this)">
+                            <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                        </div>
+                        <p class="text-[14px] font-semibold text-navy">Spare AA/AAA</p>
+                    </div>
+                    <button class="w-full mt-3 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[13px] font-medium hover:bg-slate-100 transition-colors flex items-center justify-center gap-2" onclick="openAddItemModal('power')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Add Item
+                    </button>
+                </div>
+
+                <!-- Banner image placeholder -->
+                <div class="rounded-2xl overflow-hidden" style="height: 100px; background: linear-gradient(135deg, #F8FAFC, #FFFFFF);">
+                    <div style="width:100%;height:100%;background:linear-gradient(135deg,rgba(15,23,42,0.04),rgba(16,185,129,0.08));display:flex;align-items:center;justify-content:center;">
+                        <i data-lucide="backpack" class="w-10 h-10" style="color:rgba(28,28,30,0.2);"></i>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-4" data-inventory-category="documents">
+                    <div class="flex items-center gap-3 mb-3">
+                        <i data-lucide="file-text" class="w-5 h-5" style="color: #42A5F5;"></i>
+                        <p class="text-[15px] font-bold text-navy">Documents</p>
+                        <span id="documents-pct" class="ml-auto text-[12px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate">0%</span>
+                    </div>
+                    <div class="checklist-item">
+                        <div class="checkbox" data-inventory-item="go-bag-documents" onclick="toggleCheck(this)"></div>
+                        <p class="text-[14px] font-semibold text-slate">Go-Bag Documents</p>
+                    </div>
+                    <button class="w-full mt-3 py-2 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 text-[13px] font-medium hover:bg-slate-100 transition-colors flex items-center justify-center gap-2" onclick="openAddItemModal('documents')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        Add Item
+                    </button>
+                </div>
+
+                <!-- Preparation Guide -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-4">
+                    <h3 class="text-[16px] font-bold mb-4 text-navy">Preparation Guide</h3>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-start gap-3">
+                            <div class="step-num" style="background: #E5E7EB; color: #3A3D5A;">1</div>
+                            <div>
+                                <p class="text-[14px] font-semibold text-navy">Pack Heaviest Items</p>
+                                <p class="text-[12px] mt-0.5 text-slate">Place water and tools at the bottom of your bag for better balance.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="step-num" style="background: rgba(46,125,50,0.2); color: #66BB6A; border: 1px solid rgba(46,125,50,0.3);">2</div>
+                            <div>
+                                <p class="text-[14px] font-semibold text-navy">Check Expirations</p>
+                                <p class="text-[12px] mt-0.5 text-slate">Set a 6-month reminder to rotate food, water, and medicine.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="step-num" style="background: #E5E7EB; color: #3A3D5A;">3</div>
+                            <div>
+                                <p class="text-[14px] font-semibold text-navy">Waterproof Docs</p>
+                                <p class="text-[12px] mt-0.5 text-slate">Keep IDs and deeds in double-sealed plastic bags or a hard drive.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Screen: Assembly Point Detail -->
+        <div id="screen-assembly" class="screen flex-col bg-gray-50">
+            <div class="flex items-center gap-3 px-5 pt-4 pb-3" style="border-bottom: 1px solid #E5E7EB;">
+                <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    <span class="text-[13px] font-medium">Back</span>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar">
+                <!-- Map top hero -->
+                <div class="relative overflow-hidden rounded-3xl">
+                    <iframe id="assembly-map-iframe" class="w-full h-[280px]" src="https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5826,121.0735&daddr=14.5760,121.0835&dirflg=d&output=embed" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    <span class="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-emergency/10 px-2 py-1 text-[10px] font-semibold text-emergency">Live map</span>
+                </div>
+
+                <div class="px-4 py-3 rounded-xl bg-white">
+                    <p class="text-[10px] uppercase tracking-[0.08em] font-semibold text-slate-500 mb-1">Location</p>
+                    <h2 id="assembly-title" class="text-[16px] font-bold text-navy leading-5 truncate">Pasig City Sports Complex</h2>
+                    <p id="assembly-address" class="text-[12px] text-slate mt-1 truncate">Caruncho Ave, Pasig City</p>
+                </div>
+
+                <div class="px-4 py-4 flex flex-col gap-3">
+                    <div class="flex items-center gap-2 text-[13px] text-slate">
+                        <i data-lucide="info" class="w-4 h-4"></i>
+                        <p id="assembly-description">This evacuation center is ready to receive residents with emergency support, water, and medical care.</p>
+                    </div>
+                    <!-- Safe Arrival -->
+                    <div class="flex items-center justify-between p-4 rounded-2xl" style="background: #F8FAFC; border: 1px solid #E5E7EB;">
+                        <div>
+                        <p class="text-[16px] font-bold text-safe">Safe Arrival?</p>
+                        <p class="text-[13px] mt-0.5 text-slate">Notify your family group instantly.</p>
+                        </div>
+                        <button class="w-12 h-12 rounded-full flex items-center justify-center bg-safe text-white shadow-md shadow-green-200/50" onclick="openModal('safe-modal')">
+                            <i data-lucide="check" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="bg-white border border-gray-200 rounded-3xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="grid-3x3" class="w-5 h-5" style="color: #D32F2F;"></i>
+                            <p class="text-[15px] font-bold text-navy">Amenities</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-100 border border-gray-200">
+                                <i data-lucide="zap" class="w-4 h-4" style="color: #66BB6A;"></i>
+                                <span class="text-[13px] font-medium text-navy">Electricity</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-100 border border-gray-200">
+                                <i data-lucide="droplet" class="w-4 h-4" style="color: #42A5F5;"></i>
+                                <span class="text-[13px] font-medium text-navy">Water</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-100 border border-gray-200">
+                                <i data-lucide="cross" class="w-4 h-4" style="color: #4DB6AC;"></i>
+                                <span class="text-[13px] font-medium text-navy">Medical</span>
+                            </div>
+                            <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-100 border border-gray-200">
+                                <i data-lucide="paw-print" class="w-4 h-4" style="color: #FFB74D;"></i>
+                                <span class="text-[13px] font-medium text-navy">Pet Friendly</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="bg-white border border-gray-200 rounded-3xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="phone" class="w-5 h-5" style="color: #D32F2F;"></i>
+                            <p class="text-[15px] font-bold text-navy">Contact Information</p>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-xl mb-3 bg-slate-100 border border-gray-200">
+                            <div>
+                                <p class="text-[12px] text-slate">Hotline</p>
+                                <p class="text-[15px] font-semibold text-navy">02-888-SAFE</p>
+                            </div>
+                            <button class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white border border-gray-200">
+                                <i data-lucide="phone" class="w-4 h-4 text-navy"></i>
+                            </button>
+                        </div>
+                        <button class="w-full py-3.5 rounded-2xl font-bold text-[15px] flex items-center justify-center gap-2 text-white" style="background: #1565C0; box-shadow: 0 4px 16px rgba(21,101,192,0.35);">
+                            <i data-lucide="navigation" class="w-5 h-5"></i>
+                            Start Navigation
+                        </button>
+                    </div>
+
+                    <!-- Live Updates -->
+                    <div class="bg-white border border-gray-200 rounded-3xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="clock" class="w-5 h-5" style="color: #D32F2F;"></i>
+                            <p class="text-[15px] font-bold text-navy">Live Updates</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="flex flex-col items-center gap-1 pt-1">
+                                <div class="w-2.5 h-2.5 rounded-full bg-flood flex-shrink-0"></div>
+                                <div class="w-px flex-1 bg-slate-200"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <div>
+                                    <p class="text-[11px] font-bold text-flood">10 MINUTES AGO</p>
+                                    <p class="text-[13px] mt-0.5 text-slate">Additional medical staff arrived from the Regional Center.</p>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] font-bold text-slate">1 HOUR AGO</p>
+                                    <p class="text-[13px] mt-0.5 text-slate">Water supply replenished. All stations operational.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen: Volunteer Dashboard -->
+        <div id="screen-volunteer" class="screen flex-col bg-[#F8FAFC]">
+            <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3">
+                <div class="flex items-center justify-between">
+                    <button type="button" onclick="showScreen('screen-home')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span class="text-[13px] font-medium">Back</span>
+                    </button>
+                    <div class="text-right">
+                        <div class="text-[11px] text-slate">Prepare</div>
+                        <div class="text-[15px] font-bold text-navy">Volunteer Hub</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar px-4 py-4 flex flex-col gap-4">
+
+                <!-- Welcome Hero -->
+                <div class="bg-gradient-to-b from-white to-green-50 border border-green-200 rounded-3xl p-5">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                <i data-lucide="hand-heart" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-bold text-navy volunteer-welcome-title">Welcome, Volunteer!</h2>
+                                <p class="text-sm text-slate volunteer-role">Ready to make a difference</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate mb-4">Stay updated with the latest volunteer assignments and emergency response opportunities.</p>
+                        <div class="flex items-center gap-2 text-xs text-green-600 font-medium">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            <span>Active Volunteer Status</span>
+                        </div>
+                        <button type="button" class="mt-4 inline-flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-emergency hover:bg-red-100 transition" onclick="unregisterVolunteer()">
+                            <i data-lucide="user-x" class="w-4 h-4"></i>
+                            Unregister
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Volunteer Announcements -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-[19px] font-bold text-navy">Volunteer Assignments</h2>
+                        <span id="assignment-count-badge" class="status-badge status-urgent">5 Active</span>
+                    </div>
+                    <div class="flex flex-col gap-3">
+
+                        <!-- Urgent Assignment 1: Flood Response -->
+                        <div class="announcement-card announcement-urgent" data-assignment-id="flood-response">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Emergency Response Team Needed</h3>
+                                    <div class="announcement-meta">Posted 2 hours ago • Barangay San Miguel</div>
+                                </div>
+                                <span class="status-badge status-urgent">URGENT</span>
+                            </div>
+                            <div class="announcement-content">
+                                Flooding in Barangay San Miguel requires immediate volunteer assistance. We need experienced responders for evacuation and first aid support. Report to the barangay hall within 30 minutes.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('flood-response')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Urgent Assignment 2: Medical Support -->
+                        <div class="announcement-card announcement-urgent" data-assignment-id="medical-support">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="heart" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Medical Assistance Team</h3>
+                                    <div class="announcement-meta">Posted 1 hour ago • Pasig City Sports Complex</div>
+                                </div>
+                                <span class="status-badge status-urgent">URGENT</span>
+                            </div>
+                            <div class="announcement-content">
+                                Support medical personnel at evacuation centers. Basic first aid knowledge helpful but not required. Flexible scheduling available.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('medical-support')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Assigned: Supply Distribution -->
+                        <div class="announcement-card announcement-normal" data-assignment-id="supply-distribution">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="package" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Supply Distribution Support</h3>
+                                    <div class="announcement-meta">Posted 4 hours ago • City Hall</div>
+                                </div>
+                                <span class="status-badge status-assigned">ASSIGNED</span>
+                            </div>
+                            <div class="announcement-content">
+                                Help distribute emergency supplies to affected families. Training provided. 4-hour shift available tomorrow morning. Contact coordinator for details.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('supply-distribution')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Assigned: Hotline Support -->
+                        <div class="announcement-card announcement-normal" data-assignment-id="communication-hotline">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="headphones" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Hotline Support Volunteer</h3>
+                                    <div class="announcement-meta">Posted 3 hours ago • Emergency Operations Center</div>
+                                </div>
+                                <span class="status-badge status-assigned">ASSIGNED</span>
+                            </div>
+                            <div class="announcement-content">
+                                Answer emergency calls and assist with family reunification. Training provided. Can work from command center or remotely.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('communication-hotline')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Urgent: Shelter Logistics -->
+                        <div class="announcement-card announcement-urgent" data-assignment-id="shelter-logistics">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="home" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Shelter Logistics & Setup</h3>
+                                    <div class="announcement-meta">Posted 30 minutes ago • Barangay San Antonio</div>
+                                </div>
+                                <span class="status-badge status-urgent">URGENT</span>
+                            </div>
+                            <div class="announcement-content">
+                                Help set up and organize emergency shelter facilities. Physical tasks involved - good for group volunteering. Starts this evening.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('shelter-logistics')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Volunteer Stats -->
+                <div>
+                    <h2 class="text-[19px] font-bold mb-3 text-navy">Your Impact</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-center">
+                            <div class="text-2xl font-bold text-green-600 mb-1">12</div>
+                            <div class="text-xs text-slate font-medium">Assignments Completed</div>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">48</div>
+                            <div class="text-xs text-slate font-medium">Hours Served</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Screen: Assignment Detail -->
+        <div id="assignment-detail-screen" class="screen flex-col bg-gray-50">
+            <header class="pt-4 px-5 pb-3 bg-white border-b border-gray-100 shrink-0">
+                <button type="button" onclick="showScreen('screen-volunteer')" class="inline-flex items-center gap-2 text-slate hover:text-navy transition-colors mb-4">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    <span class="text-[13px] font-medium">Back</span>
+                </button>
+                <h2 id="assignment-detail-title" class="text-[20px] font-bold text-navy mb-2">Assignment Instructions</h2>
+                <p id="assignment-detail-subtitle" class="text-[14px] text-slate">Full volunteer instructions for your accepted task.</p>
+            </header>
+            <div class="flex-1 overflow-y-auto p-5 no-scrollbar space-y-5">
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <span id="assignment-detail-status" class="text-[11px] uppercase tracking-[0.24em] text-slate/50"></span>
+                        <span id="assignment-detail-time" class="text-[11px] uppercase tracking-[0.24em] text-slate/50"></span>
+                    </div>
+                    <p id="assignment-detail-description" class="text-[15px] leading-7 text-slate/80"></p>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <h3 class="text-[16px] font-semibold text-navy mb-3">What to do</h3>
+                    <ul id="assignment-detail-tasks" class="space-y-3 text-[14px] text-slate leading-7 list-disc list-inside"></ul>
+                </div>
+                <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                    <h3 class="text-[16px] font-semibold text-navy mb-3">Logistics</h3>
+                    <div class="space-y-3 text-[14px] text-slate leading-7">
+                        <p><strong>Location:</strong> <span id="assignment-detail-location"></span></p>
+                        <p><strong>Report time:</strong> <span id="assignment-detail-report-time"></span></p>
+                        <p><strong>Coordinator:</strong> <span id="assignment-detail-coordinator"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="h-[80px] pb-[34px] bg-white border-t border-gray-100 flex justify-around items-center absolute bottom-0 w-full z-20" id="global-bottom-nav">
+        <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='alert-mainPage.html'">
+            <i data-lucide="alert-triangle" class="w-5 h-5 nav-icon"></i>
+            <span class="text-[10px] font-medium nav-text">ALERT</span>
+        </div>
+        <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-emergency cursor-pointer relative z-10">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-[42px] bg-emergency/10 rounded-xl -z-10"></div>
+            <i data-lucide="shield" class="w-5 h-5 fill-emergency/20"></i>
+            <span class="text-[10px] font-bold">PREPARE</span>
+        </div>
+        <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='Report Tab/report-mainPage.html'">
+            <i data-lucide="clipboard" class="w-5 h-5 nav-icon"></i>
+            <span class="text-[10px] font-medium nav-text">REPORT</span>
+        </div>
+        <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors" onclick="window.location.href='Group Tab/group-mainPage.html'">
+            <i data-lucide="users" class="w-5 h-5 nav-icon"></i>
+            <span class="text-[10px] font-medium nav-text">GROUP</span>
+        </div>
+    </nav>
+
+    <!-- SOS Button -->
+    <div class="absolute bottom-[96px] right-5 w-[64px] h-[64px] z-30 flex items-center justify-center" id="sos-wrapper">
+        <div class="sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]"></div>
+        <button class="w-[64px] h-[64px] rounded-full bg-deep/60 backdrop-blur-md text-white font-bold text-[16px] shadow-lg shadow-red-900/30 relative z-[2] active:scale-95 transition-transform flex items-center justify-center" id="sos-btn">
+            SOS
+        </button>
+    </div>
+
+    <!-- === MODALS === -->
+
+    <!-- Volunteer Modal -->
+    <div class="modal-overlay" id="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="volunteer-modal-title" aria-describedby="volunteer-modal-desc">
+        <div class="modal-box text-left">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i data-lucide="hand-helping" class="w-6 h-6 text-safe"></i>
+                </div>
+                <div>
+                    <h3 id="volunteer-modal-title" class="modal-title">Volunteer Registration</h3>
+                    <p id="volunteer-modal-desc" class="modal-subtitle">Share your volunteer details so our local response team can contact you quickly when help is needed.</p>
+                </div>
+            </div>
+            <div class="modal-content space-y-4">
+                <div class="form-field">
+                    <label for="volunteer-name">Full name</label>
+                    <input id="volunteer-name" type="text" placeholder="Juan dela Cruz" />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-contact">Contact number</label>
+                    <input id="volunteer-contact" type="tel" placeholder="09xx xxx xxxx" />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-email">Email address</label>
+                    <input id="volunteer-email" type="email" placeholder="juan@example.com" />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-address">Address / Barangay</label>
+                    <input id="volunteer-address" type="text" placeholder="Barangay San Miguel, Pasig City" />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-role">Volunteer role</label>
+                    <input id="volunteer-role" type="text" placeholder="First aid responder, logistics volunteer..." />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-skills">Skills or certifications</label>
+                    <input id="volunteer-skills" type="text" placeholder="CPR, emergency management, radio comms" />
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-availability">Availability</label>
+                    <input id="volunteer-availability" type="text" placeholder="Weekends, weekdays, 24/7" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-field">
+                        <label for="volunteer-emergency-name">Emergency contact</label>
+                        <input id="volunteer-emergency-name" type="text" placeholder="Maria Cruz" />
+                    </div>
+                    <div class="form-field">
+                        <label for="volunteer-emergency-number">Contact number</label>
+                        <input id="volunteer-emergency-number" type="tel" placeholder="09xx xxx xxxx" />
+                    </div>
+                </div>
+                <div class="form-field">
+                    <label for="volunteer-note">Short note / reason for volunteering</label>
+                    <textarea id="volunteer-note" rows="3" placeholder="I want to help families stay safe during emergencies"></textarea>
+                </div>
+                <label class="consent-row" for="volunteer-consent">
+                    <input id="volunteer-consent" type="checkbox" />
+                    <span>I agree to share my details and volunteer according to local emergency response guidelines.</span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 rounded-2xl font-semibold text-[14px]" onclick="closeModal('volunteer-modal')">Cancel</button>
+                <button type="button" class="btn-primary py-3 rounded-2xl font-bold text-[14px]" onclick="registerVolunteer()">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Review Modal -->
+    <div class="modal-overlay" id="assignment-modal" role="dialog" aria-modal="true" aria-labelledby="assignment-modal-title" aria-describedby="assignment-modal-desc">
+        <div class="modal-box text-left" style="background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%); border: 1px solid #E5E7EB; max-width: 420px; height: auto; max-height: 90vh; display: flex; flex-direction: column; padding: 0;">
+            
+            <!-- Header (Fixed) -->
+            <div class="border-b border-gray-200 px-6 pt-6 pb-4 flex-shrink-0">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[11px] font-medium text-gray-500 tracking-widest">PREVIEW</span>
+                    <span id="assignment-modal-priority-badge" class="px-3 py-1 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-700 border border-orange-300">HIGH PRIORITY</span>
+                </div>
+                <h2 id="assignment-modal-title" class="text-[22px] font-bold text-navy mb-2 leading-tight">Volunteer Assignment</h2>
+                <p id="assignment-modal-desc" class="text-[13px] text-slate">Enter a message to see preview...</p>
+            </div>
+
+            <!-- Content (Scrollable) -->
+            <div class="flex-1 overflow-y-auto px-6 py-4">
+                <p id="assignment-modal-summary" class="text-[15px] text-slate font-semibold mb-5 leading-relaxed"></p>
+                
+                <!-- Key Details Box -->
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 space-y-3 mb-5">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-[11px] text-gray-500 font-medium uppercase tracking-wider mb-1">Location</p>
+                            <p id="assignment-modal-location" class="text-[14px] text-navy font-medium"></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="clock" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-[11px] text-gray-500 font-medium uppercase tracking-wider mb-1">Deadline</p>
+                            <p id="assignment-modal-time" class="text-[14px] text-navy font-medium"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons (Fixed) -->
+            <div class="border-t border-gray-200 px-6 py-4 flex gap-3 flex-shrink-0 bg-gradient-to-t from-gray-50/50">
+                <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-blue-600 hover:bg-blue-700 text-white transition-colors" onclick="acceptAssignment(currentAssignmentId)">Accept</button>
+                <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors" onclick="declineAssignment(currentAssignmentId)">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="fire-modal">
+        <div class="modal-box">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(211,47,47,0.15);">
+                    <i data-lucide="flame" class="w-6 h-6" style="color: #EF5350;"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-semibold text-emergency uppercase tracking-[0.06em]">SAFETY PROTOCOL</p>
+                    <h3 class="text-[18px] font-bold text-navy">Fire Safety Plan</h3>
+                </div>
+            </div>
+            <div class="space-y-3 text-[14px] text-slate">
+                <p>1. Evacuate immediately and stay low to avoid smoke inhalation.</p>
+                <p>2. Use a wet cloth to cover your nose and mouth.</p>
+                <p>3. Call emergency services (911) and follow marked evacuation routes.</p>
+                <p>4. Do not use elevators. Meet at your designated assembly point.</p>
+            </div>
+            <button class="mt-5 w-full py-3 rounded-2xl font-bold text-[14px] text-white bg-emergency hover:bg-emergency/90 transition" onclick="closeModal('fire-modal')">Close Guide</button>
+        </div>
+    </div>
+
+    <!-- Quake Protocol Modal -->
+    <div class="modal-overlay" id="quake-modal">
+        <div class="modal-box">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(21,101,192,0.15);">
+                    <i data-lucide="activity" class="w-6 h-6" style="color: #42A5F5;"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-semibold text-flood uppercase tracking-[0.06em]">SAFETY PROTOCOL</p>
+                    <h3 class="text-[18px] font-bold text-navy">Earthquake Response</h3>
+                </div>
+            </div>
+            <div class="space-y-3 text-[14px] text-slate">
+                <p>1. Drop, cover, and hold on until shaking stops completely.</p>
+                <p>2. Stay away from windows, glass, and heavy furniture.</p>
+                <p>3. Move to a safe outdoor area away from buildings.</p>
+                <p>4. Check on your household and await further instructions.</p>
+            </div>
+            <button class="mt-5 w-full py-3 rounded-2xl font-bold text-[14px] text-white bg-flood hover:bg-flood/90 transition" onclick="closeModal('quake-modal')">Close Guide</button>
+        </div>
+    </div>
+
+    <!-- Flood Protocol Modal -->
+    <div class="modal-overlay" id="flood-modal">
+        <div class="modal-box">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(106,27,154,0.15);">
+                    <i data-lucide="droplet" class="w-6 h-6" style="color: #AB47BC;"></i>
+                </div>
+                <div>
+                    <p class="text-[11px] font-semibold text-quake uppercase tracking-[0.06em]">SAFETY PROTOCOL</p>
+                    <h3 class="text-[18px] font-bold text-navy">Flood Evacuation</h3>
+                </div>
+            </div>
+            <div class="space-y-3 text-[14px] text-slate">
+                <p>1. Move to higher ground immediately. Avoid floodwater.</p>
+                <p>2. Keep your emergency kit and important documents dry.</p>
+                <p>3. Follow official evacuation routes from Pasig City LDRRMO.</p>
+                <p>4. Do not walk or drive through moving water.</p>
+            </div>
+            <button class="mt-5 w-full py-3 rounded-2xl font-bold text-[14px] text-white bg-quake hover:bg-quake/90 transition" onclick="closeModal('flood-modal')">Close Guide</button>
+        </div>
+    </div>
+
+    <!-- Safe Arrival Modal -->
+    <div class="modal-overlay" id="safe-modal">
+        <div class="modal-box text-center">
+            <div class="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style="background: rgba(46,125,50,0.15); border: 1px solid rgba(46,125,50,0.4);">
+                <i data-lucide="check-circle" class="w-7 h-7" style="color: #66BB6A;"></i>
+            </div>
+            <h3 class="text-[20px] font-bold mb-2 text-navy">Mark Safe Arrival?</h3>
+            <p class="text-[14px] mb-6 text-slate">Your family group will be notified that you have safely arrived at the assembly point.</p>
+            <div class="flex gap-3">
+                <button class="flex-1 py-3 rounded-2xl font-semibold text-[14px] bg-slate-100 text-slate hover:bg-slate-200 transition" onclick="closeModal('safe-modal')">Cancel</button>
+                <button class="flex-1 py-3 rounded-2xl font-bold text-[14px] text-white bg-safe hover:bg-safe/90 transition" onclick="closeModal('safe-modal'); showToast('Family notified — Safe arrival!')">Notify</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div class="modal-overlay" id="map-modal" role="dialog" aria-modal="true" aria-labelledby="map-modal-title" aria-describedby="map-modal-desc">
+        <div class="modal-box text-center" style="max-width: 420px;">
+            <div class="mb-4">
+                <i data-lucide="map" class="w-10 h-10 mx-auto mb-3 text-emergency"></i>
+                <h3 id="map-modal-title" class="text-[18px] font-bold mb-2 text-navy">Evacuation Map</h3>
+                <p id="map-modal-desc" class="text-[14px] mb-4 text-slate">Tap the map to see the safe route from your current location to the assembly point.</p>
+            </div>
+            <div class="map-fullscreen mb-4 overflow-hidden rounded-3xl border border-gray-200">
+                <iframe class="h-full w-full" src="https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5760,121.0835&daddr=14.57775,121.08365&dirflg=d&output=embed" style="border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="flex gap-3">
+                <button class="flex-1 py-3 rounded-2xl font-semibold text-[14px] bg-slate-100 text-slate hover:bg-slate-200 transition" onclick="closeModal('map-modal')">Cancel</button>
+                <button class="flex-1 py-3 rounded-2xl font-bold text-[14px] text-white bg-emergency hover:bg-emergency/90 transition" onclick="closeModal('map-modal'); showScreen('screen-assembly')">View Assembly</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Modal -->
+    <div class="modal-overlay" id="add-item-modal" role="dialog" aria-modal="true" aria-labelledby="add-item-modal-title" aria-describedby="add-item-modal-desc">
+        <div class="modal-box text-left">
+            <div class="modal-header">
+                <div class="modal-icon" style="background: rgba(46,125,50,0.14);">
+                    <i data-lucide="plus" class="w-6 h-6" style="color: #2E7D32;"></i>
+                </div>
+                <div>
+                    <h3 id="add-item-modal-title" class="modal-title">Add Custom Item</h3>
+                    <p id="add-item-modal-desc" class="modal-subtitle">Add a personal item to your Go-Bag checklist</p>
+                </div>
+            </div>
+            <div class="modal-content space-y-4">
+                <div class="form-field">
+                    <label for="item-name">Item Name</label>
+                    <input type="text" id="item-name" placeholder="e.g., Flashlight, Extra clothes, etc." maxlength="50">
+                </div>
+                <div class="form-field">
+                    <label for="item-description">Description (Optional)</label>
+                    <input type="text" id="item-description" placeholder="Brief description or notes" maxlength="100">
+                </div>
+                <div class="form-field">
+                    <label for="item-category">Category</label>
+                    <select id="item-category" class="border border-gray-200 rounded-xl bg-white px-4 py-3 text-[14px] outline-none focus:border-green-500 transition-colors">
+                        <option value="hydration">Hydration & Nutrition</option>
+                        <option value="health">Health & First Aid</option>
+                        <option value="power">Power</option>
+                        <option value="documents">Documents</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 rounded-2xl font-semibold text-[14px]" onclick="closeModal('add-item-modal')">Cancel</button>
+                <button type="button" class="btn-primary py-3 rounded-2xl font-bold text-[14px]" onclick="addCustomItem()">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- First Aid Kit Settings Modal -->
+    <div class="modal-overlay" id="first-aid-settings-modal" role="dialog" aria-modal="true" aria-labelledby="first-aid-settings-modal-title" aria-describedby="first-aid-settings-modal-desc">
+        <div class="modal-box text-left">
+            <div class="modal-header">
+                <div class="modal-icon" style="background: rgba(211,47,47,0.14);">
+                    <i data-lucide="settings" class="w-6 h-6" style="color: #D32F2F;"></i>
+                </div>
+                <div>
+                    <h3 id="first-aid-settings-modal-title" class="modal-title">Customize First Aid Kit</h3>
+                    <p id="first-aid-settings-modal-desc" class="modal-subtitle">Select the items you want to include in your first aid kit checklist</p>
+                </div>
+            </div>
+            <div class="modal-content space-y-3">
+                <div class="first-aid-item">
+                    <div class="checkbox checked" data-first-aid-item="bandages" onclick="toggleFirstAidItem(this)">
+                        <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-navy">Bandages & Dressings</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Various sizes for wounds</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox checked" data-first-aid-item="antiseptics" onclick="toggleFirstAidItem(this)">
+                        <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-navy">Antiseptics</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Alcohol, iodine, hydrogen peroxide</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox checked" data-first-aid-item="gauze" onclick="toggleFirstAidItem(this)">
+                        <i data-lucide="check" class="w-3 h-3 text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-navy">Gauze & Tape</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Sterile gauze pads and medical tape</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="scissors" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Scissors & Tweezers</p>
+                        <p class="text-[12px] mt-0.5 text-slate">For cutting bandages and removing splinters</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="gloves" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Latex Gloves</p>
+                        <p class="text-[12px] mt-0.5 text-slate">For personal protection</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="burn-cream" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Burn Cream</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Aloe vera gel or burn ointment</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="pain-relief" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Pain Relief</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Ibuprofen, acetaminophen, aspirin</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="thermometer" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Thermometer</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Digital or mercury thermometer</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="cpr-mask" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">CPR Mask</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Face shield for rescue breathing</p>
+                    </div>
+                </div>
+                <div class="first-aid-item">
+                    <div class="checkbox" data-first-aid-item="blanket" onclick="toggleFirstAidItem(this)"></div>
+                    <div class="flex-1">
+                        <p class="text-[14px] font-semibold text-slate">Emergency Blanket</p>
+                        <p class="text-[12px] mt-0.5 text-slate">Space blanket for shock treatment</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary py-3 rounded-2xl font-semibold text-[14px]" onclick="closeModal('first-aid-settings-modal')">Cancel</button>
+                <button type="button" class="btn-primary py-3 rounded-2xl font-bold text-[14px]" onclick="saveFirstAidSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sos-modal-container">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] hidden items-center justify-center p-4" id="sos-modal">
+            <div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                <h2 class="text-[20px] font-bold text-navy mb-3">Send SOS Alert?</h2>
+                <p class="text-[14px] text-slate leading-relaxed mb-6">This will immediately send your current location and an emergency alert to your Safety Circle (Family, Neighbors) and Pasig City LDRRMO.</p>
+                <div class="flex gap-3">
+                    <button class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px] active:scale-95 transition-transform" id="sos-cancel-btn">Cancel</button>
+                    <button class="flex-1 h-12 rounded-xl bg-emergency text-white font-semibold text-[14px] shadow-md shadow-red-500/20 active:scale-95 transition-transform" id="sos-send-btn">SEND NOW</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute inset-0 bg-deep/95 backdrop-blur-md z-[100] hidden items-center justify-center p-6 text-center text-white" id="sos-success-modal">
+            <div class="w-full max-w-[340px] mx-auto">
+                <div class="w-20 h-20 rounded-full border-4 border-white/20 flex items-center justify-center mx-auto mb-6 bg-white/10 backdrop-blur-md animate-[bounce_1s_ease-in-out]">
+                    <i data-lucide="check" class="w-10 h-10 text-white"></i>
+                </div>
+                <h2 class="text-[28px] font-bold tracking-tight mb-3">SOS Sent!</h2>
+                <p class="text-[15px] leading-relaxed text-white/90 mb-8">Your location has been shared with 3 contacts and Pasig City Dispatch.</p>
+                <div class="bg-white/10 rounded-2xl p-4 mb-8 backdrop-blur-md border border-white/10 text-left">
+                    <div class="flex justify-between items-center text-[14px] mb-4">
+                        <span class="font-medium text-white/90">Maria Reyes (Family)</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="flex justify-between items-center text-[14px] mb-4">
+                        <span class="font-medium text-white/90">Pasig City LDRRMO</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div class="flex justify-between items-center text-[14px]">
+                        <span class="font-medium text-white/90">Pasig City Fire Department</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    </div>
+                </div>
+                <button class="w-full h-14 bg-white text-deep rounded-2xl font-bold text-[16px] active:scale-95 transition-transform shadow-xl shadow-black/20" id="sos-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="absolute bottom-[90px] left-4 right-4 py-3.5 px-4 rounded-2xl text-white text-[14px] font-semibold text-center z-[60] opacity-0 transition-opacity duration-300 pointer-events-none bg-safe/95 backdrop-blur-md border border-safe/40">
+        ✓ Action completed
+    </div>
+
+</div>
+
+<script src="prepare-mainPage.js"></script>
+
+</body>
+</html>

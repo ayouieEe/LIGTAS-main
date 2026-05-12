@@ -222,9 +222,12 @@
                 <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addUnit()">+ Add New Response Unit</button>
               </div>
               <div class="panel">
-                <label>Incident Categories</label>
-                <textarea class="input-textarea" rows="4" id="set-inc-cats">Fire, Flood, Landslide, Medical, Chemical, Infrastructure, Earthquake, Other</textarea>
-                <p style="font-size:11px; color:var(--text-micro); margin-top: 8px;">Comma-separated values for all report dropdowns.</p>
+                <label>Incident Taxonomy</label>
+                <div class="unit-list" id="cat-list-container">
+                  <!-- Populated by renderCategories() -->
+                </div>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addCategoryItem()">+ Add New Incident Type</button>
+                <p style="font-size:11px; color:var(--text-micro); margin-top: 12px;">Manage standardized incident types and their parent categories for system-wide reporting.</p>
               </div>
             </section>
 
@@ -280,7 +283,7 @@
         orgName: document.getElementById('set-org-name').value,
         critThreshold: parseInt(document.getElementById('crit-val').textContent),
         warnThreshold: parseInt(document.getElementById('warn-val').textContent),
-        categories: document.getElementById('set-inc-cats').value.split(',').map(s => s.trim()),
+        categories: window.CURRENT_CATEGORIES,
         maintMode: document.getElementById('set-maint').value,
         lastUpdated: new Date().toISOString()
       };
@@ -311,6 +314,65 @@
       { name: 'Rescue Team Bravo', type: 'RESCUE' },
       { name: 'Medical Team Charlie', type: 'MED' }
     ];
+
+    window.DEFAULT_CATEGORIES = [
+      { name: 'Typhoon', group: 'Meteorological' },
+      { name: 'Severe Winds', group: 'Meteorological' },
+      { name: 'Flood', group: 'Hydrological' },
+      { name: 'Flash Flood', group: 'Hydrological' },
+      { name: 'Earthquake', group: 'Geological' },
+      { name: 'Landslide', group: 'Geological' },
+      { name: 'Fire', group: 'Technological' },
+      { name: 'Gas Leak', group: 'Technological' },
+      { name: 'Power Outage', group: 'Technological' },
+      { name: 'Medical Emergency', group: 'Medical/Health' },
+      { name: 'Accident', group: 'Medical/Health' },
+      { name: 'Mass Casualty', group: 'Medical/Health' },
+      { name: 'Crime', group: 'Security/Social' },
+      { name: 'Neighbor Dispute', group: 'Security/Social' },
+      { name: 'Civil Disturbance', group: 'Security/Social' },
+      { name: 'Missing Person', group: 'Security/Social' },
+      { name: 'Resource Shortage', group: 'Logistical' },
+      { name: 'Center Overflow', group: 'Logistical' },
+      { name: 'Other', group: 'General' }
+    ];
+
+    window.CURRENT_CATEGORIES = [...window.DEFAULT_CATEGORIES];
+
+    function renderCategories() {
+      const container = document.getElementById('cat-list-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      // Group by category for cleaner UI if desired, but here we follow unit-list style
+      window.CURRENT_CATEGORIES.forEach((cat, index) => {
+        const div = document.createElement('div');
+        div.className = 'unit-item';
+        div.innerHTML = `
+          <div class="unit-info">
+            <span>${cat.name}</span>
+            <span class="unit-tag">${cat.group.toUpperCase()}</span>
+          </div>
+          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeCategoryItem(${index})">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeCategoryItem(index) {
+      window.CURRENT_CATEGORIES.splice(index, 1);
+      renderCategories();
+    }
+
+    function addCategoryItem() {
+      const name = prompt('Enter Incident Type Name (e.g. Tsunami):');
+      if (!name) return;
+      const group = prompt('Enter Category Group (Meteorological, Hydrological, etc.):', 'General');
+      if (group) {
+        window.CURRENT_CATEGORIES.push({ name, group });
+        renderCategories();
+      }
+    }
 
     function renderUnits() {
       const container = document.getElementById('unit-list-container');
@@ -406,6 +468,7 @@
       }
       renderZones();
       renderUnits();
+      renderCategories();
 
       if (!saved) return;
       
@@ -424,7 +487,13 @@
       }
       
       if (config.categories) {
-        document.getElementById('set-inc-cats').value = config.categories.join(', ');
+        if (Array.isArray(config.categories) && typeof config.categories[0] === 'object') {
+          window.CURRENT_CATEGORIES = config.categories;
+        } else {
+          // Backward compatibility: Convert string list to objects if needed
+          // But since we updated the structure, we favor the new format.
+        }
+        renderCategories();
       }
       
       if (config.maintMode) {

@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - My Profile</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                        background: '#F7F8FA'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .toast {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #D32F2F;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #D32F2F;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+
+    <div
+        class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-background relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+        <!-- Header -->
+        <header
+            class="pt-[59px] px-4 pb-3 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100 z-10 sticky top-0 shrink-0">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.history.back()">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-navy"></i>
+                <span class="font-bold text-[18px] tracking-tight">My Profile</span>
+            </div>
+            <div class="flex items-center gap-4">
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 relative overflow-y-auto px-4 py-6 no-scrollbar pb-[100px]">
+
+            <!-- Profile Hero Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5 text-center relative">
+                <div
+                    class="mx-auto w-[80px] h-[80px] rounded-full border-[3px] border-emergency overflow-hidden mb-3 relative">
+                    <img src="https://ui-avatars.com/api/?name=Juan+Dela+Cruz&background=F3F4F6&color=D32F2F&size=80"
+                        alt="Avatar" class="w-full h-full object-cover">
+                </div>
+                <h1 class="text-[20px] font-bold text-navy leading-tight">Juan Dela Cruz</h1>
+                <div class="flex items-center justify-center gap-1 mt-1">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emergency"></i>
+                    <span class="text-[12px] font-medium text-emergency">Verified Pasig City Resident</span>
+                </div>
+
+                <div class="mt-3 flex flex-col items-center gap-2">
+                    <div class="cursor-pointer inline-flex items-center gap-1 active:scale-95 transition-transform"
+                        id="copy-user-id">
+                        <span class="text-[13px] font-mono text-slate">PCC-2024-78921</span>
+                        <i data-lucide="copy" class="w-3.5 h-3.5 text-slate"></i>
+                    </div>
+                    <span class="inline-block bg-tint text-emergency text-[12px] font-medium px-3 py-1 rounded-[100px]">
+                        Brgy. Kapitolyo
+                    </span>
+                </div>
+            </section>
+
+            <!-- Personal Information Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-[15px] font-semibold text-navy">Personal Information</h2>
+                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline">Edit</span>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="user" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Full Name</p>
+                            <p class="text-[14px] text-navy font-medium">Juan Dela Cruz</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="calendar" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Date of Birth</p>
+                            <p class="text-[14px] text-navy font-medium">March 14, 1990</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="person-standing" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Sex</p>
+                            <p class="text-[14px] text-navy font-medium">Male</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="smartphone" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Mobile</p>
+                            <p class="text-[14px] text-navy font-medium">0917-555-1234</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="mail" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Email</p>
+                            <p class="text-[14px] text-navy font-medium">juan.delacruz@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Address</p>
+                            <p class="text-[14px] text-navy font-medium leading-tight">45 Calle Uno St., Brgy.
+                                Kapitolyo, Pasig City</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Medical Information Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-[15px] font-semibold text-navy">Medical Information</h2>
+                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline">Edit</span>
+                </div>
+
+                <div class="bg-[#FFF3E0] rounded-lg p-2.5 flex items-start gap-2 mb-4">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber mt-0.5 shrink-0"></i>
+                    <p class="text-[11px] text-amber font-medium leading-tight">Shared with responders during
+                        emergencies only</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="droplet" class="w-4 h-4 text-slate"></i>
+                            <span class="text-[13px] text-slate">Blood Type</span>
+                        </div>
+                        <span class="text-[18px] font-bold text-emergency">O+</span>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Allergies</p>
+                            <p class="text-[14px] text-navy font-medium">Penicillin, Shellfish</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="activity" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Chronic Conditions</p>
+                            <p class="text-[14px] text-navy font-medium">Hypertension, Type 2 Diabetes</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="pill" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Medications</p>
+                            <p class="text-[14px] text-navy font-medium">Metformin 500mg · Amlodipine 5mg</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="stethoscope" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Physician</p>
+                            <p class="text-[14px] text-navy font-medium">Dr. Ana Reyes — The Medical City</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="building-2" class="w-4 h-4 text-slate mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Insurance</p>
+                            <p class="text-[14px] text-navy font-medium">PhilHealth + Maxicare</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3 mt-2 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <i data-lucide="phone-call" class="w-4 h-4 text-emergency mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-slate uppercase tracking-wider">Emergency Contact</p>
+                            <p class="text-[14px] text-navy font-medium">Maria Santos (Mother)</p>
+                            <p class="text-[14px] text-navy font-medium">0917-555-9876</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Reports Summary Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
+                <div class="flex justify-between items-center mb-4 cursor-pointer"
+                    onclick="window.location.href='../Report Tab/report-mainPage.html#history'">
+                    <h2 class="text-[15px] font-semibold text-navy">My Reports</h2>
+                    <div class="flex items-center text-emergency text-[13px] font-medium">
+                        View All <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <div
+                        class="flex-1 bg-white border border-[#EBEBEB] rounded-xl py-3 flex flex-col items-center justify-center">
+                        <span class="text-[18px] font-bold text-navy">5</span>
+                        <span class="text-[11px] text-slate mt-1">Filed</span>
+                    </div>
+                    <div
+                        class="flex-1 bg-white border border-[#EBEBEB] rounded-xl py-3 flex flex-col items-center justify-center">
+                        <span class="text-[18px] font-bold text-safe">4</span>
+                        <span class="text-[11px] text-slate mt-1">Resolved</span>
+                    </div>
+                    <div
+                        class="flex-1 bg-white border border-[#EBEBEB] rounded-xl py-3 flex flex-col items-center justify-center">
+                        <span class="text-[18px] font-bold text-amber">1</span>
+                        <span class="text-[11px] text-slate mt-1">Active</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Verification & Credentials Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
+                <h2 class="text-[15px] font-semibold text-navy mb-4">Verification Status</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full bg-safe/10 flex items-center justify-center">
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-safe"></i>
+                            </div>
+                            <span class="text-[14px] text-navy font-medium">Mobile Verified</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full bg-safe/10 flex items-center justify-center">
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-safe"></i>
+                            </div>
+                            <span class="text-[14px] text-navy font-medium">Email Verified</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full bg-safe/10 flex items-center justify-center">
+                                <i data-lucide="check" class="w-3.5 h-3.5 text-safe"></i>
+                            </div>
+                            <span class="text-[14px] text-navy font-medium">Pasig Residency</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
+                                <span class="w-2 h-0.5 bg-gray-300"></span>
+                            </div>
+                            <span class="text-[14px] text-navy font-medium">PhilSys ID</span>
+                        </div>
+                        <span class="text-[13px] font-medium text-emergency cursor-pointer">Link Now</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center">
+                                <span class="w-2 h-0.5 bg-gray-300"></span>
+                            </div>
+                            <span class="text-[14px] text-navy font-medium">DRRMO Volunteer</span>
+                        </div>
+                        <div class="flex items-center text-emergency text-[13px] font-medium cursor-pointer"
+                            onclick="window.location.href='../prepare-mainPage.html'">
+                            Earn This <i data-lucide="chevron-right" class="w-4 h-4 ml-0.5"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Account Settings Card -->
+            <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-8">
+                <h2 class="text-[15px] font-semibold text-navy mb-4">Account Settings</h2>
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[14px] text-navy font-medium">Notifications</span>
+                        <div
+                            class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="toggle-notif"
+                                class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"
+                                checked />
+                            <label for="toggle-notif"
+                                class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[14px] text-navy font-medium">Location Sharing</span>
+                        <div
+                            class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="toggle-loc"
+                                class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"
+                                checked />
+                            <label for="toggle-loc"
+                                class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer">
+                        <span class="text-[14px] text-navy font-medium">Language</span>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[13px] text-slate">Filipino</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer">
+                        <span class="text-[14px] text-navy font-medium">Change Password</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer">
+                        <span class="text-[14px] text-navy font-medium">Privacy Settings</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
+                    </div>
+                    <div class="flex items-center justify-between cursor-pointer">
+                        <span class="text-[14px] text-navy font-medium">Linked Accounts</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Danger Zone -->
+            <div class="flex flex-col items-center gap-4 mb-8">
+                <button id="logout-btn"
+                    class="w-full py-4 rounded-[12px] border border-emergency text-emergency font-semibold text-[15px] bg-white active:bg-tint transition-colors">
+                    Log Out
+                </button>
+                <span class="text-[12px] text-slate underline cursor-pointer hover:text-navy transition-colors">
+                    Deactivate Account
+                </span>
+            </div>
+
+        </main>
+
+
+        <!-- Global Bottom Nav -->
+        <nav class="h-[80px] pb-[34px] bg-white border-t border-gray-100 flex justify-around items-center absolute bottom-0 w-full z-20"
+            id="global-bottom-nav">
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../alert-mainPage.html'">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">ALERT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../prepare-mainPage.html'">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">PREPARE</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../Report Tab/report-mainPage.html'">
+                <i data-lucide="clipboard" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">REPORT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../Group Tab/group-mainPage.html'">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">GROUP</span>
+            </div>
+        </nav>
+
+        <!-- Toast Notification -->
+        <div id="toast"
+            class="toast fixed bottom-[100px] left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-[150] flex items-center gap-2 pointer-events-none">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span class="text-[13px] font-medium">Copied!</span>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Toast elements
+            const copyUserId = document.getElementById('copy-user-id');
+            const toast = document.getElementById('toast');
+            const logoutBtn = document.getElementById('logout-btn');
+
+            // Copy user ID to clipboard and show toast
+            if (copyUserId && toast) {
+                copyUserId.addEventListener('click', () => {
+                    const userId = 'PCC-2024-78921';
+                    navigator.clipboard.writeText(userId).then(() => {
+                        // Show toast
+                        toast.classList.add('show');
+
+                        // Hide toast after 2 seconds
+                        setTimeout(() => {
+                            toast.classList.remove('show');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                });
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    // Redirect to login page on logout
+                    window.location.href = '../Auth/login.html';
+                });
+            }
+
+            // Initialize Lucide icons if not already done inline
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Report Tab</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F',
+                        alert: '#E53935',
+                        tint: '#FFEBEE',
+                        deep: '#B71C1C',
+                        safe: '#2E7D32',
+                        amber: '#E65100',
+                        flood: '#1565C0',
+                        quake: '#6A1B9A',
+                        medical: '#00695C',
+                        navy: '#1C1C1E',
+                        slate: '#6B7280',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Screen visibility */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Scrollbar hiding */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Step content visibility */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.block {
+            display: block;
+        }
+
+        /* SOS */
+        .sos-progress-ring {
+            position: absolute;
+            inset: -4px;
+            border: 4px solid transparent;
+            border-radius: 9999px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sos-ring-active {
+            border-top-color: #D32F2F;
+            border-right-color: #D32F2F;
+            animation: rotate-sos 3s linear forwards;
+        }
+
+        @keyframes rotate-sos {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+
+    <div
+        class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+        <!-- HEADER -->
+        <header
+            class="pt-[59px] px-4 pb-3 flex justify-between items-center bg-white/80 backdrop-blur-md border-b border-gray-100 z-10 sticky top-0 shrink-0">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-alert" class="text-emergency w-6 h-6"></i>
+                <span class="font-bold text-[18px] tracking-tight">LIGTAS</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative cursor-pointer" onclick="showScreen('screen-notifications')">
+                    <i data-lucide="bell" class="w-6 h-6 text-navy"></i>
+                    <span class="absolute top-0 right-0.5 w-2 h-2 bg-emergency rounded-full border border-white"></span>
+                </div>
+                <div class="relative cursor-pointer" onclick="showScreen('report-history-flow')" title="My Reports">
+                    <i data-lucide="clipboard-list" class="w-6 h-6 text-navy"></i>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gray-200 cursor-pointer overflow-hidden"
+                    onclick="window.location.href='../Profile Tab/profilePage.html'">
+                    <img src="https://ui-avatars.com/api/?name=Juan+Dela+Cruz&background=1C1C1E&color=fff"
+                        alt="Juan Dela Cruz">
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 overflow-hidden relative bg-gray-50 pb-[120px]">
+
+            <!-- SHARED NOTIFICATIONS PANEL -->
+            <div id="screen-notifications"
+                class="screen absolute inset-0 flex-col overflow-y-auto pb-[80px] no-scrollbar bg-gray-50 z-30">
+                <div class="px-4 pt-6 pb-3 flex items-center justify-between shrink-0">
+                    <button onclick="showScreen('create-report-flow')"
+                        class="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-[13px] font-semibold text-navy hover:bg-slate-50 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+                    </button>
+                    <div class="text-right">
+                        <p class="text-[12px] uppercase tracking-[0.28em] text-slate/50">Notifications</p>
+                        <p class="text-[11px] text-slate/40">Latest safety alerts & updates</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 px-4 pb-6">
+                    <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-start justify-between gap-4 mb-3">
+                            <div class="space-y-1">
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-emergency">Critical Alert</p>
+                                <h2 class="text-[18px] font-bold text-navy">Residential Fire - Bagong Ilog</h2>
+                            </div>
+                            <span class="text-[12px] text-slate/50 shrink-0">2 mins ago</span>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Pasig City Fire Department responding to
+                            residential fire in Bagong Ilog. Evacuate nearby residents immediately.</p>
+                        <button onclick="window.location.href='../alert-mainPage.html?incident=fire'"
+                            class="mt-5 w-full rounded-3xl bg-emergency text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-emergency/90 transition">View
+                            Map</button>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div
+                                class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City - Family
+                                    Update</p>
+                                <p class="text-[17px] font-semibold text-navy"><span class="text-safe">Maria
+                                        Santos</span> marked <span class="font-bold text-safe">SAFE</span></p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Location: Brgy. Kapitolyo, Pasig City. Medical
+                            emergency resolved.</p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div
+                                class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                                <i data-lucide="box" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Prepare</p>
+                                <p class="text-[17px] font-semibold text-navy">Emergency Kit Check</p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Pasig City recommends checking your emergency
+                            kit. Ensure you have water, food, medications, and important documents ready.</p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div
+                                class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                                <i data-lucide="info" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">System Update</p>
+                                <p class="text-[17px] font-semibold text-navy">Pasig Emergency Maps Updated</p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70">Emergency maps for all Pasig City barangays have
+                            been updated with latest evacuation routes and shelter locations.</p>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div
+                                class="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 shrink-0">
+                                <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400">Pasig City LGU</p>
+                                <p class="text-[17px] font-semibold text-navy">Check-in: <span class="text-amber">PASIG
+                                        RESIDENTS</span></p>
+                            </div>
+                        </div>
+                        <p class="text-[14px] leading-6 text-slate/70 mb-3">Help us locate you during emergencies. Your
+                            safety status helps coordinate response efforts.</p>
+                        <button onclick="markMyselfSafe()"
+                            class="w-full rounded-3xl bg-safe text-white py-3 text-[14px] font-semibold shadow-sm hover:bg-safe/90 transition">Mark
+                            Myself Safe</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREATE REPORT FLOW -->
+            <div id="create-report-flow" class="absolute inset-0 flex flex-col screen active">
+                <div class="px-5 py-2 bg-white shrink-0">
+                    <h1 class="text-[20px] font-bold tracking-tight text-navy mb-0.5">File a Report</h1>
+                    <p class="text-[13px] text-slate">Report an incident in Pasig City</p>
+                </div>
+
+                <!-- STEPPER -->
+                <div
+                    class="flex items-center justify-between px-6 py-2 bg-white border-b border-gray-100 shrink-0 relative">
+                    <div class="absolute inset-x-12 top-[22px] h-[2px] bg-gray-100 z-0"></div>
+                    <div class="absolute left-12 top-[22px] h-[2px] bg-emergency transition-all duration-300 z-0"
+                        id="stepper-progress" style="width: 0%;"></div>
+
+                    <div class="flex flex-col items-center gap-1.5 z-10" id="stepper-1">
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white transition-colors duration-300 ring-4 ring-white">
+                            1</div>
+                        <span class="text-[11px] font-medium text-emergency">Type</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 z-10" id="stepper-2">
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 transition-colors duration-300 ring-4 ring-white">
+                            2</div>
+                        <span class="text-[11px] font-medium text-slate">Details</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 z-10" id="stepper-3">
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 transition-colors duration-300 ring-4 ring-white">
+                            3</div>
+                        <span class="text-[11px] font-medium text-slate">Media</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-1.5 z-10" id="stepper-4">
+                        <div
+                            class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 transition-colors duration-300 ring-4 ring-white">
+                            4</div>
+                        <span class="text-[11px] font-medium text-slate">Review</span>
+                    </div>
+                </div>
+
+                <!-- SCROLLABLE STEP CONTENT -->
+                <div class="flex-1 overflow-y-auto px-5 py-3 pb-[76px] no-scrollbar">
+
+                    <!-- STEP 1 -->
+                    <div class="step-content block" id="step1">
+                        <h2 class="text-[16px] font-semibold text-navy mb-3">What are you reporting?</h2>
+                        <div class="grid grid-cols-2 gap-2 mb-4" id="incident-type-grid">
+
+                            <div class="incident-card selected relative bg-tint border-2 border-emergency rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Fire">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-white text-emergency flex items-center justify-center shadow-sm">
+                                    <i data-lucide="flame" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Fire</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Flood">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-blue-50 text-flood flex items-center justify-center">
+                                    <i data-lucide="waves" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Flood</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Earthquake">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-purple-50 text-quake flex items-center justify-center">
+                                    <i data-lucide="activity" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Earthquake</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Accident">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-orange-50 text-amber flex items-center justify-center">
+                                    <i data-lucide="car" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Accident</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Medical">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-teal-50 text-medical flex items-center justify-center">
+                                    <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Medical</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Neighbor">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-purple-50 text-quake flex items-center justify-center">
+                                    <i data-lucide="users" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Neighbor</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Crime">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center">
+                                    <i data-lucide="siren" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Crime</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+
+                            <div class="incident-card relative bg-white border border-gray-200 rounded-2xl p-3 flex flex-col items-center gap-1.5 cursor-pointer transition-all"
+                                data-type="Other">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center">
+                                    <i data-lucide="box" class="w-5 h-5"></i>
+                                </div>
+                                <span class="text-[12px] font-medium text-navy">Other</span>
+                                <div class="check-icon absolute top-2 right-2 text-emergency hidden">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 fill-white"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-[13px] text-slate mb-2">Reporting for:</label>
+                            <div class="flex bg-gray-100/50 p-1 rounded-xl border border-gray-200">
+                                <div
+                                    class="segment active flex-1 text-center py-2 text-[13px] font-medium rounded-lg bg-white shadow-sm text-navy cursor-pointer transition-all">
+                                    Myself</div>
+                                <div
+                                    class="segment flex-1 text-center py-2 text-[13px] font-medium rounded-lg text-slate cursor-pointer transition-all hover:text-navy">
+                                    Someone Else</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2 -->
+                    <div class="step-content" id="step2">
+                        <div class="mb-6">
+                            <label class="block text-[14px] font-semibold text-navy mb-3">Location</label>
+                            <button
+                                class="w-full h-12 bg-tint text-emergency rounded-xl text-[14px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                                <i data-lucide="map-pin" class="w-4 h-4"></i> Use My Current Location
+                            </button>
+
+                            <div class="flex items-center gap-3 my-4">
+                                <div class="h-px bg-gray-200 flex-1"></div>
+                                <span class="text-[12px] text-slate">or enter manually</span>
+                                <div class="h-px bg-gray-200 flex-1"></div>
+                            </div>
+
+                            <div class="relative mb-3">
+                                <i data-lucide="search"
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                                <input type="text"
+                                    class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all"
+                                    placeholder="Street address, landmark..." value="C5 Road, Brgy. Ugong, Pasig City">
+                            </div>
+
+                            <div
+                                class="w-full h-[140px] bg-gray-200 rounded-xl flex items-center justify-center relative overflow-hidden shadow-inner">
+                                <div class="absolute inset-0 opacity-20"
+                                    style="background-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0); background-size: 16px 16px;">
+                                </div>
+                                <i data-lucide="map-pin" class="w-8 h-8 text-emergency z-10 drop-shadow-md pb-2"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 mb-6">
+                            <div class="flex-1 relative">
+                                <i data-lucide="calendar"
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                                <input type="text" value="May 9, 2026" readonly
+                                    class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-3 text-[14px] text-navy">
+                            </div>
+                            <div class="flex-1 relative">
+                                <i data-lucide="clock"
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                                <input type="text" value="10:30 AM" readonly
+                                    class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-3 text-[14px] text-navy">
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-[14px] font-semibold text-navy mb-3">Severity</label>
+                            <div class="flex bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                <div class="sev-btn flex-1 text-center py-3 text-[13px] font-medium text-slate cursor-pointer border-r border-gray-100 hover:bg-gray-50 transition-colors"
+                                    data-color="gray-500">Low</div>
+                                <div class="sev-btn flex-1 text-center py-3 text-[13px] font-medium text-amber cursor-pointer border-r border-gray-100 hover:bg-orange-50 transition-colors"
+                                    data-color="amber">Medium</div>
+                                <div class="sev-btn active flex-1 text-center py-3 text-[13px] font-bold text-emergency bg-tint shadow-inner cursor-pointer border-r border-gray-100"
+                                    data-color="emergency">High</div>
+                                <div class="sev-btn flex-1 text-center py-3 text-[13px] font-medium text-deep cursor-pointer hover:bg-red-50 transition-colors"
+                                    data-color="deep">Critical</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-[14px] font-semibold text-navy mb-3">What is needed?</label>
+                            <div class="flex flex-wrap gap-2">
+                                <div
+                                    class="chip px-4 py-2 rounded-full border border-gray-200 bg-white text-[13px] text-navy cursor-pointer transition-all flex items-center gap-1.5 hover:border-gray-300">
+                                    <i data-lucide="flame" class="w-3.5 h-3.5"></i> Fire Truck
+                                </div>
+                                <div
+                                    class="chip active px-4 py-2 rounded-full border border-emergency bg-emergency text-white text-[13px] font-medium cursor-pointer transition-all flex items-center gap-1.5 shadow-sm">
+                                    <i data-lucide="activity" class="w-3.5 h-3.5"></i> Ambulance
+                                </div>
+                                <div
+                                    class="chip active px-4 py-2 rounded-full border border-emergency bg-emergency text-white text-[13px] font-medium cursor-pointer transition-all flex items-center gap-1.5 shadow-sm">
+                                    <i data-lucide="shield" class="w-3.5 h-3.5"></i> Police
+                                </div>
+                                <div
+                                    class="chip px-4 py-2 rounded-full border border-gray-200 bg-white text-[13px] text-navy cursor-pointer transition-all flex items-center gap-1.5 hover:border-gray-300">
+                                    <i data-lucide="coffee" class="w-3.5 h-3.5"></i> Food & Water
+                                </div>
+                                <div
+                                    class="chip px-4 py-2 rounded-full border border-gray-200 bg-white text-[13px] text-navy cursor-pointer transition-all flex items-center gap-1.5 hover:border-gray-300">
+                                    <i data-lucide="home" class="w-3.5 h-3.5"></i> Shelter
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3 -->
+                    <div class="step-content" id="step3">
+                        <div class="mb-6">
+                            <textarea
+                                class="w-full min-h-[120px] bg-white border border-gray-200 rounded-xl p-4 text-[14px] text-navy resize-none focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all"
+                                placeholder="Describe what happened...">Two vehicles collided at the C5–Levi Mariano intersection. One passenger appears injured.</textarea>
+                            <div class="text-right text-[11px] text-slate mt-1.5">92 / 500</div>
+                        </div>
+
+                        <div
+                            class="flex justify-between items-center mb-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                            <label class="text-[14px] font-medium text-navy">Is this still happening?</label>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emergency">
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-[14px] font-semibold text-navy mb-3">Attach Media</label>
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div
+                                    class="aspect-square bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
+                                    <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=300&q=80"
+                                        class="w-full h-full object-cover" alt="Accident photo">
+                                    <div
+                                        class="absolute top-2 right-2 w-6 h-6 bg-black/50 rounded-full flex items-center justify-center backdrop-blur-md cursor-pointer">
+                                        <i data-lucide="x" class="w-3.5 h-3.5 text-white"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                                    <span class="text-[12px] font-medium text-slate">Add Photo</span>
+                                </div>
+                                <div
+                                    class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                                </div>
+                                <div
+                                    class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                    <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <a href="#"
+                                class="text-[13px] font-medium text-emergency flex items-center gap-1.5 hover:underline">
+                                <i data-lucide="video" class="w-4 h-4"></i> Add Video
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4 -->
+                    <div class="step-content" id="step4">
+                        <h2 class="text-[18px] font-bold text-navy mb-4">Review Your Report</h2>
+
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6 relative">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[12px] text-slate w-20 shrink-0">Type</span>
+                                <span
+                                    class="bg-orange-50 text-amber px-2.5 py-1 rounded-md text-[12px] font-semibold flex items-center gap-1.5">
+                                    <i data-lucide="car" class="w-3.5 h-3.5"></i> Vehicular Accident
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-start mb-3 gap-4">
+                                <span class="text-[12px] text-slate w-20 shrink-0">Location</span>
+                                <span class="text-[13px] font-medium text-navy text-right">C5 Road, Brgy. Ugong, Pasig
+                                    City</span>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[12px] text-slate w-20 shrink-0">Time</span>
+                                <span class="text-[13px] font-medium text-navy text-right">May 9, 2026 — 10:30 AM</span>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[12px] text-slate w-20 shrink-0">Severity</span>
+                                <span
+                                    class="text-[13px] font-medium text-navy text-right flex items-center gap-1.5 justify-end">
+                                    <span class="w-2 h-2 rounded-full bg-emergency"></span> High
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-[12px] text-slate w-20 shrink-0">Needs</span>
+                                <span class="text-[13px] font-medium text-navy text-right">Ambulance, Police</span>
+                            </div>
+                            <div class="flex flex-col gap-1.5 mb-2 pr-[84px]">
+                                <span class="text-[12px] text-slate">Description</span>
+                                <span class="text-[13px] text-slate italic leading-relaxed">"Two vehicles collided at
+                                    the C5–Levi Mariano intersection. One passenger appears injured."</span>
+                            </div>
+                            <div
+                                class="absolute bottom-5 right-5 w-[72px] h-[72px] rounded-lg overflow-hidden border border-gray-200">
+                                <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80"
+                                    class="w-full h-full object-cover" alt="Thumb">
+                            </div>
+                        </div>
+
+                        <p class="text-[11px] text-slate text-center px-4">Submitting false reports violates Pasig City
+                            Ordinance No. 45-21.</p>
+                    </div>
+                </div>
+
+                <!-- BOTTOM FIXED NEXT BUTTON — sits just above the bottom nav -->
+                <div class="shrink-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 z-20">
+                    <button
+                        class="w-full h-13 bg-emergency text-white rounded-2xl text-[16px] font-bold shadow-md shadow-red-500/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-2 py-3.5"
+                        id="next-btn">
+                        <span>Next</span> <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- REPORT RECEIVED SCREEN -->
+            <div id="report-received-flow" class="screen absolute inset-0 flex-col bg-gray-50 z-20 overflow-hidden">
+                <div class="h-[240px] bg-tint flex flex-col items-center justify-center px-6 relative shrink-0">
+                    <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-gray-50 to-transparent">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-safe rounded-full flex items-center justify-center shadow-lg shadow-green-600/30 mb-4">
+                        <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h1 class="text-[24px] font-bold text-navy mb-1">Report Received!</h1>
+                    <div
+                        class="text-[16px] font-semibold text-emergency font-mono bg-white/50 px-3 py-1 rounded-lg backdrop-blur-sm tracking-wide">
+                        #PSG-2026-00847</div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto px-5 pt-6 pb-28 no-scrollbar">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                        <div class="relative pl-6">
+                            <div class="absolute left-[5px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">10:31 AM</div>
+                                <div class="text-[14px] text-navy font-medium">Report Submitted</div>
+                            </div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="absolute -left-[23px] top-[-30px] bottom-[20px] w-0.5 bg-safe"></div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">10:33 AM</div>
+                                <div class="text-[14px] text-navy font-medium">Verified by DRRMO Admin</div>
+                            </div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-emergency ring-4 ring-white z-10">
+                                    <div class="absolute inset-0 rounded-full bg-emergency animate-ping opacity-75">
+                                    </div>
+                                </div>
+                                <div class="absolute -left-[23px] top-[-30px] bottom-[20px] w-0.5 bg-safe"></div>
+                                <div class="text-[12px] text-emergency font-medium mb-0.5">10:36 AM</div>
+                                <div class="text-[14px] text-navy font-medium">Response unit dispatching...</div>
+                            </div>
+                            <div class="relative mb-6 opacity-50">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-gray-300 ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">--:--</div>
+                                <div class="text-[14px] text-navy font-medium">Response Unit On-Scene</div>
+                            </div>
+                            <div class="relative opacity-50">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-gray-300 ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">--:--</div>
+                                <div class="text-[14px] text-navy font-medium">Incident Resolved</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border-l-4 border-tint shadow-sm mb-6 flex gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-emergency shrink-0 mt-0.5"></i>
+                        <p class="text-[13px] text-navy leading-relaxed">BFP Unit 4 and Pasig PNP have been notified.
+                            Please maintain a safe distance from the incident area.</p>
+                    </div>
+
+                    <div class="flex gap-2 mb-8">
+                        <button
+                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                            <i data-lucide="phone" class="w-5 h-5 text-navy"></i>
+                            <span class="text-[11px] font-medium text-navy">Dispatch</span>
+                        </button>
+                        <button
+                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                            <i data-lucide="share" class="w-5 h-5 text-navy"></i>
+                            <span class="text-[11px] font-medium text-navy">Share</span>
+                        </button>
+                        <button
+                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                            <i data-lucide="file-text" class="w-5 h-5 text-navy"></i>
+                            <span class="text-[11px] font-medium text-navy">Report</span>
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-[14px] font-medium text-slate hover:text-navy cursor-pointer hover:underline"
+                            onclick="showScreen('create-report-flow'); goToStep(1);">Back to Home</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT HISTORY SCREEN -->
+            <div id="report-history-flow" class="screen absolute inset-0 flex-col bg-gray-50 z-20 overflow-hidden">
+                <div class="px-5 py-4 bg-white border-b border-gray-100 shrink-0">
+                    <div class="flex items-center gap-3 mb-3">
+                        <button onclick="showScreen('create-report-flow')"
+                            class="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-2 text-[13px] font-semibold text-navy hover:bg-slate-50 transition">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        </button>
+                        <h1 class="text-[24px] font-bold tracking-tight text-navy">My Reports</h1>
+                    </div>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                        <div
+                            class="px-4 py-1.5 rounded-full bg-navy text-white text-[13px] font-medium whitespace-nowrap cursor-pointer">
+                            All</div>
+                        <div
+                            class="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-slate text-[13px] font-medium whitespace-nowrap cursor-pointer hover:border-gray-300">
+                            Active</div>
+                        <div
+                            class="px-4 py-1.5 rounded-full bg-white border border-gray-200 text-slate text-[13px] font-medium whitespace-nowrap cursor-pointer hover:border-gray-300">
+                            Resolved</div>
+                    </div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 pb-28 no-scrollbar flex flex-col gap-3">
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98]"
+                        onclick="showReceived()">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-mono text-[12px] font-bold text-emergency">#PSG-2026-00847</span>
+                            <span class="text-[12px] text-slate">May 9, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="bg-orange-50 text-amber px-2 py-0.5 rounded text-[11px] font-bold flex items-center gap-1">
+                                <i data-lucide="car" class="w-3 h-3"></i> Accident
+                            </span>
+                            <span class="text-[13px] font-medium text-navy truncate flex-1">Vehicular accident at
+                                C5...</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-50">
+                            <span
+                                class="bg-orange-50 text-amber px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> Responding
+                            </span>
+                            <span class="text-[12px] font-medium text-emergency flex items-center gap-1">View Tracking
+                                <i data-lucide="chevron-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98]"
+                        onclick="showResolved()">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-mono text-[12px] font-bold text-slate">#PSG-2026-00712</span>
+                            <span class="text-[12px] text-slate">Apr 30, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="bg-blue-50 text-flood px-2 py-0.5 rounded text-[11px] font-bold flex items-center gap-1">
+                                <i data-lucide="waves" class="w-3 h-3"></i> Flood
+                            </span>
+                            <span class="text-[13px] font-medium text-navy truncate flex-1">Flood — Street
+                                Level...</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-50">
+                            <span
+                                class="bg-green-50 text-safe px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                                <i data-lucide="check" class="w-3 h-3"></i> Resolved
+                            </span>
+                            <span class="text-[12px] font-medium text-emergency flex items-center gap-1">View Tracking
+                                <i data-lucide="chevron-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98]">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-mono text-[12px] font-bold text-slate">#PSG-2026-00581</span>
+                            <span class="text-[12px] text-slate">Apr 15, 2026</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span
+                                class="bg-tint text-emergency px-2 py-0.5 rounded text-[11px] font-bold flex items-center gap-1">
+                                <i data-lucide="flame" class="w-3 h-3"></i> Fire
+                            </span>
+                            <span class="text-[13px] font-medium text-navy truncate flex-1">Fire (Residential)...</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-50">
+                            <span
+                                class="bg-green-50 text-safe px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5">
+                                <i data-lucide="check" class="w-3 h-3"></i> Resolved
+                            </span>
+                            <span class="text-[12px] font-medium text-emergency flex items-center gap-1">View Tracking
+                                <i data-lucide="chevron-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT RESOLVED SCREEN -->
+            <div id="report-resolved-flow" class="screen absolute inset-0 flex-col bg-gray-50 z-20 overflow-hidden">
+                <div class="h-[240px] bg-green-50 flex flex-col items-center justify-center px-6 relative shrink-0">
+                    <div class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-gray-50 to-transparent">
+                    </div>
+                    <div
+                        class="w-16 h-16 bg-safe rounded-full flex items-center justify-center shadow-lg shadow-green-600/30 mb-4">
+                        <i data-lucide="shield-check" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h1 class="text-[24px] font-bold text-navy mb-1">Incident Resolved</h1>
+                    <div
+                        class="text-[16px] font-semibold text-safe font-mono bg-white/50 px-3 py-1 rounded-lg backdrop-blur-sm tracking-wide">
+                        #PSG-2026-00712</div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto px-5 pt-6 pb-28 no-scrollbar">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                        <!-- Report summary row -->
+                        <div class="flex items-center gap-2 mb-5 pb-4 border-b border-gray-50">
+                            <span
+                                class="bg-blue-50 text-flood px-2 py-0.5 rounded text-[11px] font-bold flex items-center gap-1">
+                                <i data-lucide="waves" class="w-3 h-3"></i> Flood
+                            </span>
+                            <span class="text-[13px] font-medium text-navy">Flood — Street Level, Brgy. Ugong</span>
+                        </div>
+                        <div class="relative pl-6">
+                            <div class="absolute left-[5px] top-2 bottom-2 w-0.5 bg-safe"></div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">9:15 AM · Apr 30</div>
+                                <div class="text-[14px] text-navy font-medium">Report Submitted</div>
+                            </div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">9:18 AM · Apr 30</div>
+                                <div class="text-[14px] text-navy font-medium">Verified by DRRMO Admin</div>
+                            </div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">9:25 AM · Apr 30</div>
+                                <div class="text-[14px] text-navy font-medium">Response Unit Dispatched</div>
+                            </div>
+                            <div class="relative mb-6">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-slate font-medium mb-0.5">10:02 AM · Apr 30</div>
+                                <div class="text-[14px] text-navy font-medium">Response Unit On-Scene</div>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-safe ring-4 ring-white z-10">
+                                </div>
+                                <div class="text-[12px] text-safe font-semibold mb-0.5">11:45 AM · Apr 30</div>
+                                <div class="text-[14px] text-navy font-bold">Incident Resolved ✓</div>
+                                <p class="text-[12px] text-slate mt-1 leading-relaxed">Floodwater cleared. Area declared
+                                    safe by BFP and DRRMO.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-4 border-l-4 border-green-200 shadow-sm mb-6 flex gap-3">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-safe shrink-0 mt-0.5"></i>
+                        <p class="text-[13px] text-navy leading-relaxed">This incident has been fully resolved. Thank
+                            you for helping keep Pasig City safe.</p>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6">
+                        <h3 class="text-[13px] font-semibold text-navy mb-3">Report Details</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="text-[12px] text-slate">Location</span><span
+                                    class="text-[12px] font-medium text-navy">Brgy. Ugong, Pasig City</span></div>
+                            <div class="flex justify-between"><span class="text-[12px] text-slate">Date
+                                    Filed</span><span class="text-[12px] font-medium text-navy">Apr 30, 2026 · 9:15
+                                    AM</span></div>
+                            <div class="flex justify-between"><span class="text-[12px] text-slate">Severity</span><span
+                                    class="text-[12px] font-medium text-amber">Medium</span></div>
+                            <div class="flex justify-between"><span class="text-[12px] text-slate">Response
+                                    Time</span><span class="text-[12px] font-medium text-safe">10 minutes</span></div>
+                            <div class="flex justify-between"><span class="text-[12px] text-slate">Duration</span><span
+                                    class="text-[12px] font-medium text-navy">~2 hrs 30 min</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mb-8">
+                        <button
+                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                            <i data-lucide="share" class="w-5 h-5 text-navy"></i>
+                            <span class="text-[11px] font-medium text-navy">Share</span>
+                        </button>
+                        <button
+                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                            <i data-lucide="file-text" class="w-5 h-5 text-navy"></i>
+                            <span class="text-[11px] font-medium text-navy">Full Report</span>
+                        </button>
+                    </div>
+
+                    <div class="text-center">
+                        <span class="text-[14px] font-medium text-slate hover:text-navy cursor-pointer hover:underline"
+                            onclick="showScreen('report-history-flow')">← Back to My Reports</span>
+                    </div>
+                </div>
+            </div>
+
+
+        </main>
+
+        <!-- SOS MODAL CONTAINER -->
+        <div id="sos-modal-container">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] items-center justify-center p-4 hidden"
+                id="sos-modal">
+                <div
+                    class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                    <h2 class="text-[20px] font-bold text-navy mb-3">Send SOS Alert?</h2>
+                    <p class="text-[14px] text-slate leading-relaxed mb-6">This will immediately send your current
+                        location and an emergency alert to your Safety Circle (Family, Neighbors) and Pasig City LDRRMO.
+                    </p>
+                    <div class="flex gap-3">
+                        <button
+                            class="flex-1 h-12 rounded-xl bg-gray-50 border border-gray-200 text-slate font-semibold text-[14px] active:scale-95 transition-transform"
+                            id="sos-cancel-btn">Cancel</button>
+                        <button
+                            class="flex-1 h-12 rounded-xl bg-emergency text-white font-semibold text-[14px] shadow-md shadow-red-500/20 active:scale-95 transition-transform"
+                            id="sos-send-btn">SEND NOW</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute inset-0 bg-deep/95 backdrop-blur-md z-[100] hidden items-center justify-center p-6 text-center text-white"
+                id="sos-success-modal">
+                <div class="w-full max-w-[340px]">
+                    <div
+                        class="w-20 h-20 rounded-full border-4 border-white/20 flex items-center justify-center mx-auto mb-6 bg-white/10 backdrop-blur-md">
+                        <i data-lucide="check" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <h2 class="text-[28px] font-bold tracking-tight mb-3">SOS Sent!</h2>
+                    <p class="text-[15px] text-white/90 leading-relaxed mb-8">Your location has been shared with 3
+                        contacts and Pasig City Dispatch.</p>
+                    <div class="bg-white/10 rounded-2xl p-4 mb-8 backdrop-blur-md border border-white/10 text-left">
+                        <div class="flex justify-between items-center text-[14px] mb-4">
+                            <span class="font-medium text-white/90">Maria Santos (Family)</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div class="flex justify-between items-center text-[14px] mb-4">
+                            <span class="font-medium text-white/90">Jose Reyes (Family)</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div class="flex justify-between items-center text-[14px]">
+                            <span class="font-medium text-white/90">Barangay Kapitolyo</span>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full h-14 bg-white text-deep rounded-2xl font-bold text-[16px] active:scale-95 transition-transform shadow-xl shadow-black/20"
+                        id="sos-close-btn">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAV -->
+        <nav class="h-[80px] pb-[20px] bg-white border-t border-gray-100 flex justify-around items-center shrink-0 z-20 relative"
+            id="global-bottom-nav">
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../alert-mainPage.html'">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">ALERT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../prepare-mainPage.html'">
+                <i data-lucide="shield" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">PREPARE</span>
+            </div>
+            <div
+                class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-emergency cursor-pointer relative z-10">
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-[42px] bg-emergency/10 rounded-xl -z-10">
+                </div>
+                <i data-lucide="clipboard" class="w-5 h-5 fill-emergency/20"></i>
+                <span class="text-[10px] font-bold">REPORT</span>
+            </div>
+            <div class="flex-1 h-full flex flex-col items-center justify-center gap-1 text-gray-400 cursor-pointer hover:text-navy transition-colors"
+                onclick="window.location.href='../Group Tab/group-mainPage.html'">
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span class="text-[10px] font-medium">GROUP</span>
+            </div>
+        </nav>
+
+        <!-- SOS BUTTON -->
+        <div class="absolute bottom-[96px] right-5 w-[64px] h-[64px] z-30 flex items-center justify-center"
+            id="sos-wrapper">
+            <div
+                class="sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]">
+            </div>
+            <button
+                class="w-[64px] h-[64px] rounded-full bg-deep/60 backdrop-blur-md text-white font-bold text-[16px] shadow-lg shadow-red-900/30 relative z-[2] active:scale-95 transition-transform flex items-center justify-center"
+                id="sos-btn">
+                SOS
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const sosBtn = document.getElementById('sos-btn');
+        const sosWrapper = document.getElementById('sos-wrapper');
+        const sosContainer = document.getElementById('sos-modal-container');
+
+        if (sosContainer) { initSOS(); }
+
+        let holdTimer;
+        let isHolding = false;
+
+        function initSOS() {
+            const sosModal = document.getElementById('sos-modal');
+            const sosSuccessModal = document.getElementById('sos-success-modal');
+            const sosCancelBtn = document.getElementById('sos-cancel-btn');
+            const sosSendBtn = document.getElementById('sos-send-btn');
+            const sosCloseBtn = document.getElementById('sos-close-btn');
+
+            function startHold() {
+                isHolding = true;
+                if (sosWrapper) {
+                    const ring = sosWrapper.querySelector('.sos-progress-ring');
+                    if (ring) ring.classList.add('border-t-emergency', 'border-r-emergency', 'animate-[spin_3s_linear_forwards]');
+                }
+                holdTimer = setTimeout(() => {
+                    if (isHolding && sosModal) {
+                        if (sosWrapper) {
+                            const ring = sosWrapper.querySelector('.sos-progress-ring');
+                            if (ring) ring.className = 'sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]';
+                        }
+                        sosModal.classList.remove('hidden');
+                        sosModal.classList.add('flex');
+                    }
+                }, 3000);
+            }
+
+            function cancelHold() {
+                isHolding = false;
+                clearTimeout(holdTimer);
+                if (sosWrapper) {
+                    const ring = sosWrapper.querySelector('.sos-progress-ring');
+                    if (ring) ring.className = 'sos-progress-ring absolute inset-[-4px] rounded-full border-[4px] border-transparent pointer-events-none z-[1]';
+                }
+            }
+
+            if (sosBtn) {
+                sosBtn.addEventListener('mousedown', startHold);
+                sosBtn.addEventListener('mouseup', cancelHold);
+                sosBtn.addEventListener('mouseleave', cancelHold);
+                sosBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(); });
+                sosBtn.addEventListener('touchend', cancelHold);
+                sosBtn.addEventListener('touchcancel', cancelHold);
+            }
+
+            if (sosCancelBtn) sosCancelBtn.addEventListener('click', () => { sosModal.classList.remove('flex'); sosModal.classList.add('hidden'); });
+            if (sosSendBtn) sosSendBtn.addEventListener('click', () => {
+                sosModal.classList.remove('flex'); sosModal.classList.add('hidden');
+                if (sosSuccessModal) { 
+                    sosSuccessModal.classList.remove('hidden'); 
+                    sosSuccessModal.classList.add('flex'); 
+                    
+                    // CONNECTIVITY LOGIC: Trigger SOS
+                    const user = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+                    const sosData = {
+                        name: user.name || 'Juan Dela Cruz',
+                        phone: user.phone || '0917-555-1234',
+                        location: 'Brgy. Ugong, Pasig City', // Simulated current location
+                        coords: '14.5826° N, 121.0735° E',
+                        timestamp: Date.now()
+                    };
+                    const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+                    queue.unshift(sosData);
+                    localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue.slice(0, 5)));
+                }
+            });
+            if (sosCloseBtn) sosCloseBtn.addEventListener('click', () => {
+                if (sosSuccessModal) { sosSuccessModal.classList.remove('flex'); sosSuccessModal.classList.add('hidden'); }
+            });
+        }
+
+        // ── Screen switching ──────────────────────────────────────────────
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+
+        function showReceived() {
+            showScreen('report-received-flow');
+        }
+
+        function showResolved() {
+            showScreen('report-resolved-flow');
+        }
+
+        // ── Incident type selection ───────────────────────────────────────
+        document.querySelectorAll('.incident-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.incident-card').forEach(c => {
+                    c.classList.remove('selected', 'bg-tint', 'border-emergency', 'border-2');
+                    c.classList.add('bg-white', 'border', 'border-gray-200');
+                    c.querySelector('.check-icon').classList.add('hidden');
+                });
+                card.classList.add('selected', 'bg-tint', 'border-2', 'border-emergency');
+                card.classList.remove('bg-white', 'border-gray-200');
+                card.querySelector('.check-icon').classList.remove('hidden');
+            });
+        });
+
+        // ── Reporting-for segment ─────────────────────────────────────────
+        document.querySelectorAll('.segment').forEach(seg => {
+            seg.addEventListener('click', () => {
+                document.querySelectorAll('.segment').forEach(s => {
+                    s.classList.remove('active', 'bg-white', 'shadow-sm', 'text-navy');
+                    s.classList.add('text-slate');
+                });
+                seg.classList.add('active', 'bg-white', 'shadow-sm', 'text-navy');
+                seg.classList.remove('text-slate');
+            });
+        });
+
+        // ── Severity buttons ─────────────────────────────────────────────
+        document.querySelectorAll('.sev-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.sev-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-tint', 'shadow-inner', 'font-bold');
+                });
+                btn.classList.add('active', 'bg-tint', 'shadow-inner', 'font-bold');
+            });
+        });
+
+        // ── Chip toggle ───────────────────────────────────────────────────
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.classList.toggle('active');
+                if (chip.classList.contains('active')) {
+                    chip.classList.add('border-emergency', 'bg-emergency', 'text-white', 'font-medium', 'shadow-sm');
+                    chip.classList.remove('border-gray-200', 'bg-white', 'text-navy');
+                } else {
+                    chip.classList.remove('border-emergency', 'bg-emergency', 'text-white', 'font-medium', 'shadow-sm');
+                    chip.classList.add('border-gray-200', 'bg-white', 'text-navy');
+                }
+            });
+        });
+
+        // ── Step navigation ───────────────────────────────────────────────
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function goToStep(step) {
+            // Hide all step content
+            document.querySelectorAll('.step-content').forEach(s => {
+                s.classList.remove('block');
+                s.style.display = 'none';
+            });
+
+            // Show current step
+            const stepEl = document.getElementById('step' + step);
+            if (stepEl) {
+                stepEl.style.display = 'block';
+            }
+
+            // Update stepper indicators
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.querySelector('#stepper-' + i + ' div');
+                const label = document.querySelector('#stepper-' + i + ' span');
+                if (i < step) {
+                    dot.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white transition-colors duration-300 ring-4 ring-white';
+                    dot.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                    label.className = 'text-[11px] font-medium text-emergency';
+                } else if (i === step) {
+                    dot.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white transition-colors duration-300 ring-4 ring-white';
+                    dot.textContent = i;
+                    label.className = 'text-[11px] font-medium text-emergency';
+                } else {
+                    dot.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 transition-colors duration-300 ring-4 ring-white';
+                    dot.textContent = i;
+                    label.className = 'text-[11px] font-medium text-slate';
+                }
+            }
+
+            // Update progress bar
+            const progress = document.getElementById('stepper-progress');
+            const pct = ((step - 1) / (totalSteps - 1)) * 100;
+            progress.style.width = pct + '%';
+
+            // Update button label
+            const btn = document.getElementById('next-btn');
+            if (step === totalSteps) {
+                btn.innerHTML = '<span>Submit Report</span><i data-lucide="send" class="w-4 h-4"></i>';
+            } else {
+                btn.innerHTML = '<span>Next</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+            }
+            lucide.createIcons();
+
+            currentStep = step;
+        }
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            } else {
+                // CONNECTIVITY LOGIC: Save to System
+                const user = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+                const reportType = document.querySelector('.incident-card.selected')?.getAttribute('data-type') || 'Other';
+                const reportDesc = document.querySelector('textarea')?.value || '';
+                const reportingFor = document.querySelector('.segment.active')?.textContent.trim() || 'Myself';
+                
+                const incident = {
+                    id: 'PSG-' + Date.now(),
+                    title: reportType + (reportDesc ? ': ' + reportDesc.substring(0, 20) + '...' : ''),
+                    type: reportType,
+                    severity: document.querySelector('.sev-btn.active')?.textContent || 'Moderate',
+                    status: 'Reported',
+                    barangay: user.barangay || 'Brgy. Ugong',
+                    description: reportDesc,
+                    reporter: user.name || 'Juan Dela Cruz',
+                    contact: user.phone || '0917-555-1234',
+                    reportingFor: reportingFor,
+                    emergencyProfile: reportingFor === 'Myself' ? user.medical : null,
+                    emergencyContact: reportingFor === 'Myself' ? user.emergencyContact : null,
+                    createdAt: new Date().toLocaleString('en-PH'),
+                    source: 'Mobile App'
+                };
+                
+                const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+                incidents.unshift(incident);
+                localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+                
+                showScreen('report-received-flow');
+            }
+        });
+
+        // ── SOS button logic ──────────────────────────────────────────────
+        // Handled by initSOS() function above
+
+        // ── Notifications helpers ─────────────────────────────────────────
+        function markMyselfSafe() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4';
+            modal.innerHTML = `<div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl"><h2 class="text-[20px] font-bold text-navy mb-3">Status Updated</h2><p class="text-[14px] text-slate leading-relaxed mb-6">Your safety status has been shared with your Emergency Circle.</p><button onclick="this.closest('.fixed').remove()" class="w-full h-12 rounded-xl bg-safe text-white font-semibold text-[14px]">OK</button></div>`;
+            document.body.appendChild(modal);
+        }
+
+        // Initialise step 1 display
+        goToStep(1);
+
+        // If navigated here from profile "View All", show history screen
+        if (window.location.hash === '#history') {
+            showScreen('report-history-flow');
+        }
+    </script>
+</body>
+
+</html>
