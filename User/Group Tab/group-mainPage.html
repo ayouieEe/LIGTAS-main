@@ -61,6 +61,36 @@
         .screen.active {
             display: flex;
         }
+
+        /* Modal system — matches profilePage */
+        #group-modal-backdrop {
+            display: none;
+        }
+
+        #group-modal-backdrop.open {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .modal-sheet {
+            transform: translateY(100%);
+            transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .modal-sheet.open {
+            transform: translateY(0);
+        }
+
+        .modal-sheet::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            border-radius: 9999px;
+            background: #E5E7EB;
+            margin: 10px auto 2px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -352,7 +382,8 @@
                     </button>
                     <h1 class="text-[18px] font-bold text-navy flex items-center gap-2"><i data-lucide="users"
                             class="w-5 h-5"></i> Family</h1>
-                    <button class="w-10 h-10 flex items-center justify-center text-slate">
+                    <button class="w-10 h-10 flex items-center justify-center text-slate"
+                        onclick="openModal('modal-family-settings')">
                         <i data-lucide="settings" class="w-5 h-5"></i>
                     </button>
                 </header>
@@ -398,8 +429,8 @@
                                 </div>
                                 <div class="text-[11px] text-gray-400 mt-1">2 hrs ago</div>
                             </div>
-                            <div
-                                class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer">
+                            <div class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer"
+                                onclick="openLocationModal('Maria Santos','Brgy. Kapitolyo')">
                                 <span>Location</span>
                                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
                             </div>
@@ -422,8 +453,8 @@
                                 </div>
                                 <div class="text-[11px] text-gray-400 mt-1">1 hr ago</div>
                             </div>
-                            <div
-                                class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer">
+                            <div class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer"
+                                onclick="openLocationModal('Jose Santos','Pasig City Hall')">
                                 <span>Location</span>
                                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
                             </div>
@@ -446,8 +477,8 @@
                                 </div>
                                 <div class="text-[11px] text-gray-400 mt-1">20 mins ago</div>
                             </div>
-                            <div
-                                class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer">
+                            <div class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer"
+                                onclick="openLocationModal('Carla Santos','SM Megamall')">
                                 <span>Location</span>
                                 <i data-lucide="chevron-right" class="w-4 h-4"></i>
                             </div>
@@ -470,8 +501,8 @@
                                 </div>
                                 <div class="text-[11px] text-gray-400 mt-1">8 hrs ago</div>
                             </div>
-                            <div
-                                class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer">
+                            <div class="text-[12px] font-semibold text-emergency flex flex-col items-end gap-1 cursor-pointer"
+                                onclick="openModal('modal-checkin')">
                                 <span>Check-In</span>
                                 <i data-lucide="send" class="w-4 h-4"></i>
                             </div>
@@ -480,15 +511,15 @@
 
                     <div class="px-4 pb-4">
                         <div class="flex gap-2">
-                            <button
+                            <button onclick="openModal('modal-message')"
                                 class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
                                 <i data-lucide="message-square" class="w-4 h-4"></i> Message
                             </button>
-                            <button
+                            <button onclick="openModal('modal-shareloc')"
                                 class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> Share Loc
                             </button>
-                            <button
+                            <button onclick="openModal('modal-sos-group')"
                                 class="flex-1 h-12 bg-tint border border-emergency/20 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-emergency shadow-sm">
                                 <i data-lucide="bell-ring" class="w-4 h-4"></i> SOS
                             </button>
@@ -539,7 +570,8 @@
                     <h1 class="text-[18px] font-bold text-navy flex items-center gap-2"><i data-lucide="home"
                             class="w-5 h-5 text-amber"></i> Kapitolyo Neighbors <span
                             class="bg-gray-100 text-slate text-[11px] px-1.5 py-0.5 rounded-full ml-1">12</span></h1>
-                    <button class="w-10 h-10 flex items-center justify-center text-slate">
+                    <button class="w-10 h-10 flex items-center justify-center text-slate"
+                        onclick="openModal('modal-neighbors-settings')">
                         <i data-lucide="settings" class="w-5 h-5"></i>
                     </button>
                 </header>
@@ -600,17 +632,9 @@
 
                     <div class="px-4 pb-4">
                         <div class="flex gap-2">
-                            <button
+                            <button onclick="openModal('modal-post')"
                                 class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
                                 <i data-lucide="edit-3" class="w-4 h-4"></i> Post
-                            </button>
-                            <button
-                                class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
-                                <i data-lucide="message-square" class="w-4 h-4"></i> Message
-                            </button>
-                            <button
-                                class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
-                                <i data-lucide="map-pin" class="w-4 h-4"></i> Location
                             </button>
                         </div>
                     </div>
@@ -647,7 +671,8 @@
                             data-lucide="arrow-left" class="w-6 h-6 text-navy"></i></button>
                     <h1 class="text-[18px] font-bold text-navy flex items-center gap-2"><i data-lucide="briefcase"
                             class="w-5 h-5 text-flood"></i> SM Officemates</h1>
-                    <button class="w-10 h-10 flex items-center justify-center text-slate"><i data-lucide="settings"
+                    <button class="w-10 h-10 flex items-center justify-center text-slate"
+                        onclick="openModal('modal-office-settings')"><i data-lucide="settings"
                             class="w-5 h-5"></i></button>
                 </header>
 
@@ -670,9 +695,17 @@
                                     class="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-[10px] font-bold">
                                     +4</div>
                             </div>
-                            <div class="text-[12px] text-slate font-medium flex items-center gap-1">View All <i
-                                    data-lucide="chevron-right" class="w-3 h-3"></i></div>
+                            <div class="text-[12px] text-slate font-medium flex items-center gap-1 cursor-pointer"
+                                onclick="openModal('modal-viewall')">View All <i data-lucide="chevron-right"
+                                    class="w-3 h-3"></i></div>
                         </div>
+                    </div>
+
+                    <div class="flex gap-2 mb-4">
+                        <button onclick="openModal('modal-post')"
+                            class="flex-1 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center gap-1.5 text-[13px] font-semibold text-navy shadow-sm">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i> Post
+                        </button>
                     </div>
 
                     <h3 class="text-[13px] font-bold text-slate mb-3">Group Feed</h3>
@@ -687,15 +720,6 @@
                             <div class="text-[13px] text-navy mt-1 font-medium">Reminder: WFH tomorrow per HR
                                 announcement due to flooding advisory.</div>
                         </div>
-                    </div>
-
-                    <div
-                        class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 p-4 rounded-xl shadow-sm flex flex-col gap-2 mt-6 relative overflow-hidden cursor-pointer">
-                        <i data-lucide="heart-handshake"
-                            class="absolute -right-2 -bottom-2 w-16 h-16 text-blue-200 opacity-50"></i>
-                        <h4 class="text-[14px] font-bold text-navy relative z-10">2 members signed up for CPR</h4>
-                        <p class="text-[12px] text-slate relative z-10">Join them and be prepared for emergencies.</p>
-                        <div class="text-[12px] font-bold text-flood mt-1 relative z-10">View Prepare Tab &rarr;</div>
                     </div>
                 </div>
             </div>
@@ -931,10 +955,539 @@
 
     </div>
 
+    <!-- ═══════════════════════════════════════════════
+             GROUP MODAL BACKDROP (shared, matches profilePage)
+        ════════════════════════════════════════════════ -->
+    <div id="group-modal-backdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden"
+        onclick="handleGroupBackdropClick(event)">
+
+        <!-- ── LOCATION MODAL ── -->
+        <div id="modal-location" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-emergency/10 flex items-center justify-center shrink-0">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-emergency"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-[17px] font-bold text-navy" id="modal-location-name">Member Name</h3>
+                        <p class="text-[12px] text-slate" id="modal-location-place">Location</p>
+                    </div>
+                </div>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <div
+                    class="bg-gray-100 rounded-2xl h-[160px] flex items-center justify-center overflow-hidden relative">
+                    <div class="absolute inset-0 opacity-30"
+                        style="background-image:url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'200\'%3E%3Cpath d=\'M0 150 Q100 120 200 160 T400 140\' stroke=\'%23CBD5E1\' stroke-width=\'30\' fill=\'none\'/%3E%3C/svg%3E');background-size:cover">
+                    </div>
+                    <div class="flex flex-col items-center z-10">
+                        <i data-lucide="map-pin" class="w-10 h-10 text-emergency"></i>
+                        <span class="text-[13px] font-bold text-navy mt-1" id="modal-location-place2">Location</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <i data-lucide="clock" class="w-4 h-4 text-slate shrink-0"></i>
+                    <div>
+                        <p class="text-[11px] text-slate uppercase tracking-wider">Last Updated</p>
+                        <p class="text-[13px] font-medium text-navy">Just now</p>
+                    </div>
+                </div>
+                <button onclick="closeGroupModal()"
+                    class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- ── CHECK-IN MODAL (Lolo Ben / Unknown) ── -->
+        <div id="modal-checkin" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Send Check-In Request</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <div class="bg-[#FFF3E0] rounded-lg p-3 flex items-start gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber mt-0.5 shrink-0"></i>
+                    <p class="text-[12px] text-amber font-medium leading-tight">Lolo Ben's status is unknown. A check-in
+                        ping will be sent to their device.</p>
+                </div>
+                <div class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <img src="https://ui-avatars.com/api/?name=Lolo+Ben&background=F3E8FF&color=1C1C1E"
+                        class="w-9 h-9 rounded-full shrink-0">
+                    <div>
+                        <p class="text-[14px] font-semibold text-navy">Lolo Ben</p>
+                        <p class="text-[12px] text-slate">Last seen: Home · 8 hrs ago</p>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Optional
+                        Message</label>
+                    <textarea rows="2" placeholder="e.g. Kumusta ka na, Lolo?"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all resize-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 rounded-xl bg-gray-100 text-slate text-[14px] font-semibold active:scale-[0.98] transition-transform">Cancel</button>
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 bg-emergency text-white rounded-xl text-[14px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">Send
+                        Ping</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MESSAGE MODAL ── -->
+        <div id="modal-message" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Message Family</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <p class="text-[13px] text-slate">Send a message to all family members.</p>
+                <div>
+                    <label
+                        class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Message</label>
+                    <textarea rows="4" placeholder="Type your message..."
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all resize-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 rounded-xl bg-gray-100 text-slate text-[14px] font-semibold active:scale-[0.98] transition-transform">Cancel</button>
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 bg-emergency text-white rounded-xl text-[14px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SHARE LOCATION MODAL ── -->
+        <div id="modal-shareloc" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Share My Location</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <div class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-emergency shrink-0"></i>
+                    <div>
+                        <p class="text-[11px] text-slate uppercase tracking-wider">Current Location</p>
+                        <p class="text-[14px] font-medium text-navy">Brgy. Kapitolyo, Pasig City</p>
+                    </div>
+                </div>
+                <p class="text-[13px] text-slate leading-relaxed">Your real-time location will be shared with all family
+                    members for 1 hour.</p>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 rounded-xl bg-gray-100 text-slate text-[14px] font-semibold active:scale-[0.98] transition-transform">Cancel</button>
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 bg-emergency text-white rounded-xl text-[14px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">Share
+                        Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── SOS GROUP MODAL ── -->
+        <div id="modal-sos-group" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Send Group SOS</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <div class="bg-tint border border-emergency/20 rounded-xl p-3 flex items-start gap-2">
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-emergency mt-0.5 shrink-0"></i>
+                    <p class="text-[12px] text-emergency font-medium leading-tight">This will send an urgent SOS alert
+                        with your live location to all family members.</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="text-[11px] font-semibold text-slate uppercase tracking-wider">Alert will be sent to</p>
+                    <div class="flex items-center gap-2 py-1"><img
+                            src="https://ui-avatars.com/api/?name=Maria+Santos&background=EBF8FF&color=1C1C1E"
+                            class="w-7 h-7 rounded-full"><span class="text-[13px] text-navy">Maria Santos</span></div>
+                    <div class="flex items-center gap-2 py-1"><img
+                            src="https://ui-avatars.com/api/?name=Jose+Santos&background=F0FDF4&color=1C1C1E"
+                            class="w-7 h-7 rounded-full"><span class="text-[13px] text-navy">Jose Santos</span></div>
+                    <div class="flex items-center gap-2 py-1"><img
+                            src="https://ui-avatars.com/api/?name=Carla+Santos&background=FFFBEB&color=1C1C1E"
+                            class="w-7 h-7 rounded-full"><span class="text-[13px] text-navy">Carla Santos</span></div>
+                    <div class="flex items-center gap-2 py-1"><img
+                            src="https://ui-avatars.com/api/?name=Lolo+Ben&background=F3E8FF&color=1C1C1E"
+                            class="w-7 h-7 rounded-full"><span class="text-[13px] text-navy">Lolo Ben</span></div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 rounded-xl bg-gray-100 text-slate text-[14px] font-semibold active:scale-[0.98] transition-transform">Cancel</button>
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 bg-emergency text-white rounded-xl text-[14px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">Send
+                        SOS</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── FAMILY SETTINGS MODAL ── -->
+        <div id="modal-family-settings"
+            class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Family Group Settings</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-3 no-scrollbar">
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Invite Member</p>
+                        <p class="text-[11px] text-slate">Add someone to Family group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="bell-off" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Mute Notifications</p>
+                        <p class="text-[11px] text-slate">Pause alerts from this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="edit-2" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Edit Group Name</p>
+                        <p class="text-[11px] text-slate">Rename this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-red-50 border border-red-100 rounded-xl text-[14px] font-medium text-emergency text-left px-4 flex items-center gap-3 active:bg-red-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-red-100 flex items-center justify-center shrink-0">
+                        <i data-lucide="log-out" class="w-4 h-4 text-emergency"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-emergency">Leave Group</p>
+                        <p class="text-[11px] text-emergency/70">Remove yourself from Family</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── NEIGHBORS SETTINGS MODAL ── -->
+        <div id="modal-neighbors-settings"
+            class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">Kapitolyo Neighbors Settings</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-3 no-scrollbar">
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Invite Neighbor</p>
+                        <p class="text-[11px] text-slate">Add someone nearby</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="bell-off" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Mute Notifications</p>
+                        <p class="text-[11px] text-slate">Pause alerts from this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="edit-2" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Edit Group Info</p>
+                        <p class="text-[11px] text-slate">Update name or description</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-red-50 border border-red-100 rounded-xl text-[14px] font-medium text-emergency text-left px-4 flex items-center gap-3 active:bg-red-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-red-100 flex items-center justify-center shrink-0">
+                        <i data-lucide="log-out" class="w-4 h-4 text-emergency"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-emergency">Leave Group</p>
+                        <p class="text-[11px] text-emergency/70">Remove yourself from Neighbors</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── OFFICE SETTINGS MODAL ── -->
+        <div id="modal-office-settings"
+            class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">SM Officemates Settings</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-3 no-scrollbar">
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="user-plus" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Invite Colleague</p>
+                        <p class="text-[11px] text-slate">Add a co-worker to this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="bell-off" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Mute Notifications</p>
+                        <p class="text-[11px] text-slate">Pause alerts from this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-gray-50 border border-gray-200 rounded-xl text-[14px] font-medium text-navy text-left px-4 flex items-center gap-3 active:bg-gray-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+                        <i data-lucide="edit-2" class="w-4 h-4 text-slate"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-navy">Edit Group Name</p>
+                        <p class="text-[11px] text-slate">Rename this group</p>
+                    </div>
+                </button>
+                <button
+                    class="w-full h-14 bg-red-50 border border-red-100 rounded-xl text-[14px] font-medium text-emergency text-left px-4 flex items-center gap-3 active:bg-red-100 transition-colors">
+                    <div
+                        class="w-8 h-8 rounded-full bg-white border border-red-100 flex items-center justify-center shrink-0">
+                        <i data-lucide="log-out" class="w-4 h-4 text-emergency"></i></div>
+                    <div>
+                        <p class="text-[14px] font-medium text-emergency">Leave Group</p>
+                        <p class="text-[11px] text-emergency/70">Remove yourself from Officemates</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ── VIEW ALL MEMBERS MODAL ── -->
+        <div id="modal-viewall" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">All Members <span
+                        class="text-slate font-normal text-[15px]">(7)</span></h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-3 no-scrollbar">
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Juan+Dela+Cruz&background=EBF8FF&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Juan Dela Cruz</p>
+                            <p class="text-[11px] text-slate">You</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Ana+Reyes&background=F0FDF4&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Ana Reyes</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Ben+Torres&background=FFFBEB&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Ben Torres</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Clara+Sy&background=F3E8FF&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Clara Sy</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Dan+Ong&background=EBF8FF&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Dan Ong</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2 border-b border-gray-100">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Eva+Chan&background=F0FDF4&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Eva Chan</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+                <div class="flex items-center justify-between py-2">
+                    <div class="flex items-center gap-3"><img
+                            src="https://ui-avatars.com/api/?name=Fred+Go&background=FFFBEB&color=1C1C1E"
+                            class="w-9 h-9 rounded-full">
+                        <div>
+                            <p class="text-[14px] font-medium text-navy">Fred Go</p>
+                            <p class="text-[11px] text-slate">Colleague</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] bg-green-50 text-safe px-2 py-0.5 rounded-full font-medium">Safe</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── POST MODAL ── -->
+        <div id="modal-post" class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+            <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                <h3 class="text-[17px] font-bold text-navy">New Post</h3>
+                <button onclick="closeGroupModal()"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                    <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                </button>
+            </div>
+            <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                <p class="text-[13px] text-slate">Share a safety update with the group.</p>
+                <div>
+                    <label
+                        class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Message</label>
+                    <textarea rows="4" placeholder="What's your safety update?"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all resize-none"></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button
+                        class="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-[12px] font-medium text-slate active:bg-gray-100 transition-colors">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Add Location
+                    </button>
+                    <button
+                        class="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-[12px] font-medium text-slate active:bg-gray-100 transition-colors">
+                        <i data-lucide="image" class="w-3.5 h-3.5"></i> Add Photo
+                    </button>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 rounded-xl bg-gray-100 text-slate text-[14px] font-semibold active:scale-[0.98] transition-transform">Cancel</button>
+                    <button onclick="closeGroupModal()"
+                        class="flex-1 h-12 bg-emergency text-white rounded-xl text-[14px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform">Post</button>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end #group-modal-backdrop -->
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
 
             lucide.createIcons();
+
+            // ── Group Modal System (matches profilePage pattern) ──────────
+            let activeGroupModal = null;
+
+            function openGroupModal(id) {
+                const backdrop = document.getElementById('group-modal-backdrop');
+                document.querySelectorAll('.modal-sheet').forEach(s => {
+                    s.classList.add('hidden');
+                    s.classList.remove('open');
+                });
+                const sheet = document.getElementById(id);
+                if (!sheet) return;
+                activeGroupModal = id;
+                sheet.classList.remove('hidden');
+                backdrop.classList.add('open');
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    sheet.classList.add('open');
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }));
+            }
+
+            function closeGroupModal() {
+                const backdrop = document.getElementById('group-modal-backdrop');
+                if (activeGroupModal) {
+                    const sheet = document.getElementById(activeGroupModal);
+                    if (sheet) {
+                        sheet.classList.remove('open');
+                        setTimeout(() => {
+                            sheet.classList.add('hidden');
+                            backdrop.classList.remove('open');
+                            activeGroupModal = null;
+                        }, 320);
+                    }
+                } else {
+                    backdrop.classList.remove('open');
+                }
+            }
+
+            function handleGroupBackdropClick(e) {
+                if (e.target === document.getElementById('group-modal-backdrop')) closeGroupModal();
+            }
+
+            function openLocationModal(name, place) {
+                document.getElementById('modal-location-name').textContent = name;
+                document.getElementById('modal-location-place').textContent = place;
+                document.getElementById('modal-location-place2').textContent = place;
+                openGroupModal('modal-location');
+            }
+
+            window.openGroupModal = openGroupModal;
+            window.closeGroupModal = closeGroupModal;
+            window.handleGroupBackdropClick = handleGroupBackdropClick;
+            window.openLocationModal = openLocationModal;
+            // legacy shim so old onclick="openModal(...)" calls still work
+            window.openModal = openGroupModal;
+            window.closeModal = closeGroupModal;
 
             // --- SCREEN NAVIGATION ---
             function showScreen(screenId) {

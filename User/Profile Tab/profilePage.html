@@ -66,6 +66,37 @@
         .toggle-checkbox:checked+.toggle-label {
             background-color: #D32F2F;
         }
+
+        /* Modal system */
+        #modal-backdrop {
+            display: none;
+        }
+
+        #modal-backdrop.open {
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .modal-sheet {
+            transform: translateY(100%);
+            transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .modal-sheet.open {
+            transform: translateY(0);
+        }
+
+        /* drag handle */
+        .modal-sheet::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            border-radius: 9999px;
+            background: #E5E7EB;
+            margin: 10px auto 2px;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -117,7 +148,8 @@
             <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-[15px] font-semibold text-navy">Personal Information</h2>
-                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline">Edit</span>
+                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline"
+                        onclick="openModal('modal-personal')">Edit</span>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-start gap-3">
@@ -170,7 +202,8 @@
             <section class="bg-white rounded-[16px] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)] mb-5">
                 <div class="flex justify-between items-center mb-3">
                     <h2 class="text-[15px] font-semibold text-navy">Medical Information</h2>
-                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline">Edit</span>
+                    <span class="text-[13px] font-medium text-emergency cursor-pointer hover:underline"
+                        onclick="openModal('modal-medical')">Edit</span>
                 </div>
 
                 <div class="bg-[#FFF3E0] rounded-lg p-2.5 flex items-start gap-2 mb-4">
@@ -340,22 +373,22 @@
                                 class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="openModal('modal-language')">
                         <span class="text-[14px] text-navy font-medium">Language</span>
                         <div class="flex items-center gap-1">
-                            <span class="text-[13px] text-slate">Filipino</span>
+                            <span class="text-[13px] text-slate" id="language-display">Filipino</span>
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="openModal('modal-password')">
                         <span class="text-[14px] text-navy font-medium">Change Password</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="openModal('modal-privacy')">
                         <span class="text-[14px] text-navy font-medium">Privacy Settings</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
                     </div>
-                    <div class="flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="openModal('modal-linked')">
                         <span class="text-[14px] text-navy font-medium">Linked Accounts</span>
                         <i data-lucide="chevron-right" class="w-4 h-4 text-slate"></i>
                     </div>
@@ -368,7 +401,8 @@
                     class="w-full py-4 rounded-[12px] border border-emergency text-emergency font-semibold text-[15px] bg-white active:bg-tint transition-colors">
                     Log Out
                 </button>
-                <span class="text-[12px] text-slate underline cursor-pointer hover:text-navy transition-colors">
+                <span class="text-[12px] text-slate underline cursor-pointer hover:text-navy transition-colors"
+                    onclick="openModal('modal-deactivate')">
                     Deactivate Account
                 </span>
             </div>
@@ -408,45 +442,685 @@
             <span class="text-[13px] font-medium">Copied!</span>
         </div>
 
+        <!-- ═══════════════════════════════════════════════════
+             MODAL OVERLAY (shared backdrop)
+        ════════════════════════════════════════════════════ -->
+        <div id="modal-backdrop"
+            class="absolute inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden flex items-end justify-center"
+            onclick="handleBackdropClick(event)">
+
+            <!-- ── 1. EDIT PERSONAL INFORMATION ── -->
+            <div id="modal-personal"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Edit Personal Information</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Full
+                            Name</label>
+                        <input type="text" value="Juan Dela Cruz"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Date
+                            of Birth</label>
+                        <input type="date" value="1990-03-14"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Sex</label>
+                        <select
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all appearance-none">
+                            <option selected>Male</option>
+                            <option>Female</option>
+                            <option>Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Mobile
+                            Number</label>
+                        <input type="tel" value="0917-555-1234"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Email
+                            Address</label>
+                        <input type="email" value="juan.delacruz@gmail.com"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Home
+                            Address</label>
+                        <textarea rows="2"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all resize-none">45 Calle Uno St., Brgy. Kapitolyo, Pasig City</textarea>
+                    </div>
+                    <button onclick="saveAndClose('personal')"
+                        class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform mt-2">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── 2. EDIT MEDICAL INFORMATION ── -->
+            <div id="modal-medical"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Edit Medical Information</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="mx-5 mb-3 bg-[#FFF3E0] rounded-lg p-2.5 flex items-start gap-2 shrink-0">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber mt-0.5 shrink-0"></i>
+                    <p class="text-[11px] text-amber font-medium leading-tight">This information is shared with
+                        responders during emergencies only.</p>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Blood
+                            Type</label>
+                        <select
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all appearance-none">
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option selected>O+</option>
+                            <option>O-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Allergies</label>
+                        <input type="text" value="Penicillin, Shellfish" placeholder="e.g. Penicillin, Shellfish"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Chronic
+                            Conditions</label>
+                        <input type="text" value="Hypertension, Type 2 Diabetes" placeholder="e.g. Hypertension, Asthma"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Current
+                            Medications</label>
+                        <textarea rows="2" placeholder="e.g. Metformin 500mg, Amlodipine 5mg"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all resize-none">Metformin 500mg · Amlodipine 5mg</textarea>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Physician</label>
+                        <input type="text" value="Dr. Ana Reyes — The Medical City"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Health
+                            Insurance</label>
+                        <input type="text" value="PhilHealth + Maxicare"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                    </div>
+                    <div class="pt-2 border-t border-gray-100">
+                        <p class="text-[12px] font-bold text-navy mb-3 uppercase tracking-wider">Emergency Contact</p>
+                        <div class="space-y-3">
+                            <input type="text" value="Maria Santos" placeholder="Contact Name"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                            <input type="text" value="Mother" placeholder="Relationship (e.g. Mother)"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                            <input type="tel" value="0917-555-9876" placeholder="Contact Number"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                        </div>
+                    </div>
+                    <button onclick="saveAndClose('medical')"
+                        class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform mt-2">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── 3. CHANGE PASSWORD ── -->
+            <div id="modal-password"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Change Password</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 space-y-4 no-scrollbar">
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Current
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" id="pw-current" placeholder="Enter current password"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-11 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                            <button type="button" onclick="togglePw('pw-current', this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">New
+                            Password</label>
+                        <div class="relative">
+                            <input type="password" id="pw-new" placeholder="At least 8 characters"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-11 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all"
+                                oninput="checkPwStrength(this.value)">
+                            <button type="button" onclick="togglePw('pw-new', this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2 flex gap-1" id="pw-strength-bars">
+                            <div class="h-1 flex-1 rounded-full bg-gray-200" id="pwb1"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200" id="pwb2"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200" id="pwb3"></div>
+                            <div class="h-1 flex-1 rounded-full bg-gray-200" id="pwb4"></div>
+                        </div>
+                        <p class="text-[11px] text-slate mt-1" id="pw-strength-label">Enter a new password</p>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-[11px] font-semibold text-slate uppercase tracking-wider mb-1.5">Confirm
+                            New Password</label>
+                        <div class="relative">
+                            <input type="password" id="pw-confirm" placeholder="Re-enter new password"
+                                class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 pr-11 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all">
+                            <button type="button" onclick="togglePw('pw-confirm', this)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button onclick="saveAndClose('password')"
+                        class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform mt-2">
+                        Update Password
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── 4. PRIVACY SETTINGS ── -->
+            <div id="modal-privacy"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Privacy Settings</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 no-scrollbar">
+                    <p class="text-[12px] text-slate leading-relaxed mb-5">Control how LIGTAS uses and shares your
+                        information.</p>
+                    <div class="space-y-0 divide-y divide-gray-100">
+
+                        <div class="flex items-start justify-between py-4 gap-3">
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Share Location with Responders</p>
+                                <p class="text-[12px] text-slate mt-0.5 leading-relaxed">Allow emergency units to see
+                                    your real-time location during active incidents.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 mt-0.5 align-middle select-none">
+                                <input type="checkbox" id="priv-loc" checked
+                                    class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" />
+                                <label for="priv-loc"
+                                    class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start justify-between py-4 gap-3">
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Public Incident Reports</p>
+                                <p class="text-[12px] text-slate mt-0.5 leading-relaxed">Show your submitted reports on
+                                    the public community map.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 mt-0.5 align-middle select-none">
+                                <input type="checkbox" id="priv-pub" checked
+                                    class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" />
+                                <label for="priv-pub"
+                                    class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start justify-between py-4 gap-3">
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Share Data for Research</p>
+                                <p class="text-[12px] text-slate mt-0.5 leading-relaxed">Allow anonymized data to
+                                    improve LIGTAS and city disaster planning.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 mt-0.5 align-middle select-none">
+                                <input type="checkbox" id="priv-res"
+                                    class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" />
+                                <label for="priv-res"
+                                    class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start justify-between py-4 gap-3">
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Crash & Diagnostics Reports</p>
+                                <p class="text-[12px] text-slate mt-0.5 leading-relaxed">Send anonymous crash logs to
+                                    help us fix bugs faster.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 mt-0.5 align-middle select-none">
+                                <input type="checkbox" id="priv-crash" checked
+                                    class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" />
+                                <label for="priv-crash"
+                                    class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                            </div>
+                        </div>
+
+                    </div>
+                    <button onclick="saveAndClose('privacy')"
+                        class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform mt-4">
+                        Save Preferences
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── 5. LINKED ACCOUNTS ── -->
+            <div id="modal-linked"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Linked Accounts</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 no-scrollbar">
+                    <p class="text-[12px] text-slate leading-relaxed mb-5">Link third-party accounts for faster sign-in
+                        and verification.</p>
+                    <div class="space-y-3">
+
+                        <!-- Google -->
+                        <div class="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                            <div
+                                class="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm">
+                                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                    <path fill="#4285F4"
+                                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path fill="#34A853"
+                                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path fill="#FBBC05"
+                                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+                                    <path fill="#EA4335"
+                                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Google</p>
+                                <p class="text-[12px] text-safe font-medium">juan.delacruz@gmail.com</p>
+                            </div>
+                            <button
+                                class="text-[13px] font-semibold text-slate border border-gray-200 rounded-lg px-3 py-1.5 bg-white active:bg-gray-50 transition-colors"
+                                onclick="toggleLink(this, 'Google')">Unlink</button>
+                        </div>
+
+                        <!-- Facebook -->
+                        <div class="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center shrink-0">
+                                <svg class="w-5 h-5 text-white fill-white" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">Facebook</p>
+                                <p class="text-[12px] text-slate">Not linked</p>
+                            </div>
+                            <button
+                                class="text-[13px] font-semibold text-emergency border border-emergency rounded-lg px-3 py-1.5 bg-tint active:bg-red-100 transition-colors"
+                                onclick="toggleLink(this, 'Facebook')">Link</button>
+                        </div>
+
+                        <!-- PhilSys -->
+                        <div class="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-[#003087] flex items-center justify-center shrink-0">
+                                <i data-lucide="id-card" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">PhilSys ID</p>
+                                <p class="text-[12px] text-slate">Not linked · Boosts trust score</p>
+                            </div>
+                            <button
+                                class="text-[13px] font-semibold text-emergency border border-emergency rounded-lg px-3 py-1.5 bg-tint active:bg-red-100 transition-colors"
+                                onclick="toggleLink(this, 'PhilSys')">Link</button>
+                        </div>
+
+                        <!-- SSS -->
+                        <div class="flex items-center gap-4 bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-[#006400] flex items-center justify-center shrink-0">
+                                <i data-lucide="landmark" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[14px] font-semibold text-navy">SSS</p>
+                                <p class="text-[12px] text-slate">Not linked</p>
+                            </div>
+                            <button
+                                class="text-[13px] font-semibold text-emergency border border-emergency rounded-lg px-3 py-1.5 bg-tint active:bg-red-100 transition-colors"
+                                onclick="toggleLink(this, 'SSS')">Link</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── 6. LANGUAGE ── -->
+            <div id="modal-language"
+                class="modal-sheet w-full bg-white rounded-t-[28px] max-h-[88%] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Language</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="overflow-y-auto px-5 pb-6 no-scrollbar">
+                    <p class="text-[12px] text-slate mb-4 leading-relaxed">Choose the language for the LIGTAS app
+                        interface.</p>
+                    <div class="space-y-2" id="language-options">
+
+                        <div class="language-option selected flex items-center justify-between p-4 rounded-2xl border-2 border-emergency bg-tint cursor-pointer active:scale-[0.98] transition-all"
+                            data-lang="Filipino" onclick="selectLanguage(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[22px]">🇵🇭</span>
+                                <div>
+                                    <p class="text-[14px] font-semibold text-navy">Filipino</p>
+                                    <p class="text-[11px] text-slate">Wikang Filipino</p>
+                                </div>
+                            </div>
+                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emergency lang-check"></i>
+                        </div>
+
+                        <div class="language-option flex items-center justify-between p-4 rounded-2xl border border-gray-200 bg-white cursor-pointer active:scale-[0.98] transition-all"
+                            data-lang="English" onclick="selectLanguage(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[22px]">🇺🇸</span>
+                                <div>
+                                    <p class="text-[14px] font-semibold text-navy">English</p>
+                                    <p class="text-[11px] text-slate">English (US)</p>
+                                </div>
+                            </div>
+                            <i data-lucide="circle" class="w-5 h-5 text-gray-300 lang-check"></i>
+                        </div>
+
+                        <div class="language-option flex items-center justify-between p-4 rounded-2xl border border-gray-200 bg-white cursor-pointer active:scale-[0.98] transition-all"
+                            data-lang="Cebuano" onclick="selectLanguage(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[22px]">🇵🇭</span>
+                                <div>
+                                    <p class="text-[14px] font-semibold text-navy">Cebuano</p>
+                                    <p class="text-[11px] text-slate">Sinugbuanong Binisaya</p>
+                                </div>
+                            </div>
+                            <i data-lucide="circle" class="w-5 h-5 text-gray-300 lang-check"></i>
+                        </div>
+
+                        <div class="language-option flex items-center justify-between p-4 rounded-2xl border border-gray-200 bg-white cursor-pointer active:scale-[0.98] transition-all"
+                            data-lang="Ilocano" onclick="selectLanguage(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[22px]">🇵🇭</span>
+                                <div>
+                                    <p class="text-[14px] font-semibold text-navy">Ilocano</p>
+                                    <p class="text-[11px] text-slate">Pagsasao nga Ilokano</p>
+                                </div>
+                            </div>
+                            <i data-lucide="circle" class="w-5 h-5 text-gray-300 lang-check"></i>
+                        </div>
+
+                        <div class="language-option flex items-center justify-between p-4 rounded-2xl border border-gray-200 bg-white cursor-pointer active:scale-[0.98] transition-all"
+                            data-lang="Bisaya" onclick="selectLanguage(this)">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[22px]">🇵🇭</span>
+                                <div>
+                                    <p class="text-[14px] font-semibold text-navy">Bisaya</p>
+                                    <p class="text-[11px] text-slate">Binisaya</p>
+                                </div>
+                            </div>
+                            <i data-lucide="circle" class="w-5 h-5 text-gray-300 lang-check"></i>
+                        </div>
+
+                    </div>
+                    <button onclick="saveAndClose('language')"
+                        class="w-full h-12 bg-emergency text-white rounded-xl text-[15px] font-bold shadow-sm shadow-red-500/20 active:scale-[0.98] transition-transform mt-5">
+                        Apply Language
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── 7. DEACTIVATE ACCOUNT CONFIRMATION ── -->
+            <div id="modal-deactivate" class="modal-sheet w-full bg-white rounded-t-[28px] flex flex-col hidden">
+                <div class="flex items-center justify-between px-5 pt-5 pb-4 shrink-0">
+                    <h3 class="text-[17px] font-bold text-navy">Deactivate Account</h3>
+                    <button onclick="closeModal()"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center active:bg-gray-200">
+                        <i data-lucide="x" class="w-4 h-4 text-navy"></i>
+                    </button>
+                </div>
+                <div class="px-5 pb-6">
+                    <div class="w-14 h-14 bg-tint rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="triangle-alert" class="w-7 h-7 text-emergency"></i>
+                    </div>
+                    <h4 class="text-[16px] font-bold text-navy text-center mb-2">Are you sure?</h4>
+                    <p class="text-[13px] text-slate text-center leading-relaxed mb-5">Deactivating your account will
+                        remove your access to LIGTAS. Your emergency profile and report history will be retained for
+                        <span class="font-semibold text-navy">30 days</span> before permanent deletion.</p>
+
+                    <div class="bg-tint border border-emergency/20 rounded-xl p-3 mb-5">
+                        <p class="text-[12px] text-emergency font-medium leading-relaxed">
+                            ⚠️ Emergency contacts associated with your account will no longer be reachable through
+                            LIGTAS.
+                        </p>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-[12px] font-semibold text-slate uppercase tracking-wider mb-2">Type
+                            <span class="text-emergency font-bold">DEACTIVATE</span> to confirm</label>
+                        <input type="text" id="deactivate-confirm-input" placeholder="DEACTIVATE"
+                            class="w-full h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-[14px] text-navy text-center font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all uppercase"
+                            oninput="checkDeactivateInput(this.value)">
+                    </div>
+
+                    <button id="deactivate-confirm-btn" disabled onclick="confirmDeactivate()"
+                        class="w-full h-12 rounded-xl text-[15px] font-bold transition-all active:scale-[0.98] bg-gray-200 text-gray-400 cursor-not-allowed mb-3">
+                        Deactivate My Account
+                    </button>
+                    <button onclick="closeModal()"
+                        class="w-full h-12 rounded-xl border border-gray-200 text-[15px] font-semibold text-navy bg-white active:bg-gray-50 transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /modal-backdrop -->
+
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Toast elements
             const copyUserId = document.getElementById('copy-user-id');
             const toast = document.getElementById('toast');
             const logoutBtn = document.getElementById('logout-btn');
 
-            // Copy user ID to clipboard and show toast
             if (copyUserId && toast) {
                 copyUserId.addEventListener('click', () => {
-                    const userId = 'PCC-2024-78921';
-                    navigator.clipboard.writeText(userId).then(() => {
-                        // Show toast
+                    navigator.clipboard.writeText('PCC-2024-78921').then(() => {
                         toast.classList.add('show');
-
-                        // Hide toast after 2 seconds
-                        setTimeout(() => {
-                            toast.classList.remove('show');
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy: ', err);
-                    });
+                        setTimeout(() => toast.classList.remove('show'), 2000);
+                    }).catch(err => console.error('Failed to copy: ', err));
                 });
             }
 
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
-                    // Redirect to login page on logout
                     window.location.href = '../Auth/login.html';
                 });
             }
 
-            // Initialize Lucide icons if not already done inline
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         });
+
+        // ── Modal system ──────────────────────────────────────────────────
+        let activeModal = null;
+
+        function openModal(id) {
+            const backdrop = document.getElementById('modal-backdrop');
+            // Hide all sheets first
+            document.querySelectorAll('.modal-sheet').forEach(s => {
+                s.classList.add('hidden');
+                s.classList.remove('open');
+            });
+            const sheet = document.getElementById(id);
+            if (!sheet) return;
+            activeModal = id;
+            sheet.classList.remove('hidden');
+            backdrop.classList.add('open');
+            // Animate in on next frame
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                sheet.classList.add('open');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }));
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            if (activeModal) {
+                const sheet = document.getElementById(activeModal);
+                if (sheet) {
+                    sheet.classList.remove('open');
+                    setTimeout(() => {
+                        sheet.classList.add('hidden');
+                        backdrop.classList.remove('open');
+                        activeModal = null;
+                    }, 320);
+                }
+            } else {
+                backdrop.classList.remove('open');
+            }
+        }
+
+        function handleBackdropClick(e) {
+            if (e.target === document.getElementById('modal-backdrop')) closeModal();
+        }
+
+        // ── Save handlers ─────────────────────────────────────────────────
+        function saveAndClose(type) {
+            closeModal();
+            const messages = {
+                personal: 'Personal info updated!',
+                medical: 'Medical info updated!',
+                password: 'Password changed!',
+                privacy: 'Privacy settings saved!',
+                language: 'Language updated!'
+            };
+            showToast(messages[type] || 'Saved!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('span').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ── Language selection ────────────────────────────────────────────
+        function selectLanguage(el) {
+            document.querySelectorAll('.language-option').forEach(opt => {
+                opt.classList.remove('selected', 'border-2', 'border-emergency', 'bg-tint');
+                opt.classList.add('border', 'border-gray-200', 'bg-white');
+                const icon = opt.querySelector('.lang-check');
+                icon.setAttribute('data-lucide', 'circle');
+                icon.className = 'w-5 h-5 text-gray-300 lang-check';
+            });
+            el.classList.add('selected', 'border-2', 'border-emergency', 'bg-tint');
+            el.classList.remove('border', 'border-gray-200', 'bg-white');
+            const icon = el.querySelector('.lang-check');
+            icon.setAttribute('data-lucide', 'check-circle-2');
+            icon.className = 'w-5 h-5 text-emergency lang-check';
+            lucide.createIcons();
+            // Update the label in Account Settings
+            const display = document.getElementById('language-display');
+            if (display) display.textContent = el.getAttribute('data-lang');
+        }
+
+        // ── Password strength meter ───────────────────────────────────────
+        function checkPwStrength(val) {
+            const bars = ['pwb1', 'pwb2', 'pwb3', 'pwb4'];
+            const label = document.getElementById('pw-strength-label');
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const colors = ['bg-emergency', 'bg-amber', 'bg-yellow-400', 'bg-safe'];
+            const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+            bars.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.className = 'h-1 flex-1 rounded-full ' + (i < score ? colors[score - 1] : 'bg-gray-200');
+            });
+            label.textContent = val.length === 0 ? 'Enter a new password' : labels[score - 1] || 'Weak';
+            label.className = 'text-[11px] mt-1 ' + (score >= 3 ? 'text-safe' : score === 2 ? 'text-amber' : 'text-emergency');
+        }
+
+        // ── Toggle password visibility ────────────────────────────────────
+        function togglePw(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            btn.innerHTML = isHidden
+                ? '<i data-lucide="eye-off" class="w-4 h-4"></i>'
+                : '<i data-lucide="eye" class="w-4 h-4"></i>';
+            lucide.createIcons();
+        }
+
+        // ── Linked accounts toggle ────────────────────────────────────────
+        function toggleLink(btn, name) {
+            const isLinked = btn.textContent.trim() === 'Unlink';
+            if (isLinked) {
+                btn.textContent = 'Link';
+                btn.className = 'text-[13px] font-semibold text-emergency border border-emergency rounded-lg px-3 py-1.5 bg-tint active:bg-red-100 transition-colors';
+                btn.closest('.flex').querySelector('p.text-\\[12px\\]').textContent = 'Not linked';
+                btn.closest('.flex').querySelector('p.text-\\[12px\\]').className = 'text-[12px] text-slate';
+                showToast(name + ' unlinked');
+            } else {
+                btn.textContent = 'Unlink';
+                btn.className = 'text-[13px] font-semibold text-slate border border-gray-200 rounded-lg px-3 py-1.5 bg-white active:bg-gray-50 transition-colors';
+                btn.closest('.flex').querySelector('p.text-\\[12px\\]').textContent = 'Linked';
+                btn.closest('.flex').querySelector('p.text-\\[12px\\]').className = 'text-[12px] text-safe font-medium';
+                showToast(name + ' linked!');
+            }
+        }
+
+        // ── Deactivate confirmation input ─────────────────────────────────
+        function checkDeactivateInput(val) {
+            const btn = document.getElementById('deactivate-confirm-btn');
+            const ready = val.trim().toUpperCase() === 'DEACTIVATE';
+            btn.disabled = !ready;
+            btn.className = ready
+                ? 'w-full h-12 rounded-xl text-[15px] font-bold transition-all active:scale-[0.98] bg-emergency text-white shadow-sm shadow-red-500/20 cursor-pointer mb-3'
+                : 'w-full h-12 rounded-xl text-[15px] font-bold transition-all bg-gray-200 text-gray-400 cursor-not-allowed mb-3';
+        }
+
+        function confirmDeactivate() {
+            closeModal();
+            setTimeout(() => {
+                window.location.href = '../Auth/login.html';
+            }, 400);
+        }
     </script>
 
 </body>
