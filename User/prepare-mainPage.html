@@ -107,6 +107,9 @@
         .status-good { background: rgba(34,197,94,0.16); color: #86EFAC; border: 1px solid rgba(34,197,94,0.24); }
         .status-low { background: rgba(249,115,22,0.16); color: #FDBA74; border: 1px solid rgba(249,115,22,0.24); }
         .status-critical { background: rgba(248,113,113,0.16); color: #FCA5A5; border: 1px solid rgba(248,113,113,0.24); }
+        
+        /* Utility classes */
+        .hidden { display: none !important; }
 
         /* Protocol rows */
         .protocol-row {
@@ -410,6 +413,29 @@
             accent-color: #2E7D32;
         }
 
+        /* Dropdown styles */
+        .form-field select {
+            border: 1px solid #E5E7EB;
+            border-radius: 18px;
+            background: #F8FAFC;
+            color: #1C1C1E;
+            padding: 14px 16px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+        }
+        .form-field select:focus {
+            border-color: #2E7D32;
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.12);
+        }
+        .form-field select option {
+            color: #1C1C1E;
+            background: #FFFFFF;
+            padding: 10px;
+        }
+
         /* Animate in */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(12px); }
@@ -534,21 +560,27 @@
         }
 
         .status-urgent {
-            background: rgba(249,115,22,0.16);
-            color: #FDBA74;
-            border: 1px solid rgba(249,115,22,0.24);
+            background: rgba(148,163,184,0.16);
+            color: #475569;
+            border: 1px solid rgba(148,163,184,0.3);
         }
 
-        .status-assigned {
+        .status-accepted {
             background: rgba(34,197,94,0.16);
-            color: #86EFAC;
+            color: #22C55E;
             border: 1px solid rgba(34,197,94,0.24);
         }
 
         .status-completed {
             background: rgba(59,130,246,0.16);
-            color: #93C5FD;
+            color: #2563EB;
             border: 1px solid rgba(59,130,246,0.24);
+        }
+
+        .status-declined {
+            background: rgba(148,163,184,0.12);
+            color: #64748B;
+            border: 1px solid rgba(148,163,184,0.16);
         }
     </style>
 </head>
@@ -1036,17 +1068,13 @@
                         </div>
                         <div class="flex items-center justify-between p-3 rounded-xl mb-3 bg-slate-100 border border-gray-200">
                             <div>
-                                <p class="text-[12px] text-slate">Hotline</p>
-                                <p class="text-[15px] font-semibold text-navy">02-888-SAFE</p>
+                                <p class="text-[12px] text-slate">Pasig City Emergency Hotline</p>
+                                <p class="text-[15px] font-semibold text-navy">02-8635-0088</p>
                             </div>
                             <button class="w-10 h-10 rounded-2xl flex items-center justify-center bg-white border border-gray-200">
                                 <i data-lucide="phone" class="w-4 h-4 text-navy"></i>
                             </button>
                         </div>
-                        <button class="w-full py-3.5 rounded-2xl font-bold text-[15px] flex items-center justify-center gap-2 text-white" style="background: #1565C0; box-shadow: 0 4px 16px rgba(21,101,192,0.35);">
-                            <i data-lucide="navigation" class="w-5 h-5"></i>
-                            Start Navigation
-                        </button>
                     </div>
 
                     <!-- Live Updates -->
@@ -1123,12 +1151,17 @@
                 <div>
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-[19px] font-bold text-navy">Volunteer Assignments</h2>
-                        <span id="assignment-count-badge" class="status-badge status-urgent">5 Active</span>
                     </div>
-                    <div class="flex flex-col gap-3">
 
-                        <!-- Urgent Assignment 1: Flood Response -->
-                        <div class="announcement-card announcement-urgent" data-assignment-id="flood-response">
+                    <div class="status-section mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[17px] font-semibold text-navy">Urgent</h3>
+                            <span class="text-[13px] text-slate">New assignments waiting for your action</span>
+                        </div>
+                        <div id="urgent-assignments" class="flex flex-col gap-3">
+
+                            <!-- Urgent Assignment 1: Flood Response -->
+                            <div class="announcement-card announcement-urgent" data-assignment-id="flood-response" data-assignment-status="urgent">
                             <div class="announcement-header">
                                 <div class="announcement-icon">
                                     <i data-lucide="alert-triangle" class="w-5 h-5"></i>
@@ -1151,7 +1184,7 @@
                         </div>
 
                         <!-- Urgent Assignment 2: Medical Support -->
-                        <div class="announcement-card announcement-urgent" data-assignment-id="medical-support">
+                        <div class="announcement-card announcement-urgent" data-assignment-id="medical-support" data-assignment-status="urgent">
                             <div class="announcement-header">
                                 <div class="announcement-icon">
                                     <i data-lucide="heart" class="w-5 h-5"></i>
@@ -1174,7 +1207,7 @@
                         </div>
 
                         <!-- Assigned: Supply Distribution -->
-                        <div class="announcement-card announcement-normal" data-assignment-id="supply-distribution">
+                        <div class="announcement-card announcement-urgent" data-assignment-id="supply-distribution" data-assignment-status="urgent">
                             <div class="announcement-header">
                                 <div class="announcement-icon">
                                     <i data-lucide="package" class="w-5 h-5"></i>
@@ -1183,13 +1216,13 @@
                                     <h3 class="announcement-title">Supply Distribution Support</h3>
                                     <div class="announcement-meta">Posted 4 hours ago • City Hall</div>
                                 </div>
-                                <span class="status-badge status-assigned">ASSIGNED</span>
+                                <span class="status-badge status-urgent">URGENT</span>
                             </div>
                             <div class="announcement-content">
                                 Help distribute emergency supplies to affected families. Training provided. 4-hour shift available tomorrow morning. Contact coordinator for details.
                             </div>
                             <div class="announcement-actions">
-                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('supply-distribution')">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('supply-distribution')">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                     View Full Details
                                 </button>
@@ -1197,7 +1230,7 @@
                         </div>
 
                         <!-- Assigned: Hotline Support -->
-                        <div class="announcement-card announcement-normal" data-assignment-id="communication-hotline">
+                        <div class="announcement-card announcement-urgent" data-assignment-id="communication-hotline" data-assignment-status="urgent">
                             <div class="announcement-header">
                                 <div class="announcement-icon">
                                     <i data-lucide="headphones" class="w-5 h-5"></i>
@@ -1206,13 +1239,13 @@
                                     <h3 class="announcement-title">Hotline Support Volunteer</h3>
                                     <div class="announcement-meta">Posted 3 hours ago • Emergency Operations Center</div>
                                 </div>
-                                <span class="status-badge status-assigned">ASSIGNED</span>
+                                <span class="status-badge status-urgent">URGENT</span>
                             </div>
                             <div class="announcement-content">
                                 Answer emergency calls and assist with family reunification. Training provided. Can work from command center or remotely.
                             </div>
                             <div class="announcement-actions">
-                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('communication-hotline')">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('communication-hotline')">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                     View Full Details
                                 </button>
@@ -1220,7 +1253,7 @@
                         </div>
 
                         <!-- Urgent: Shelter Logistics -->
-                        <div class="announcement-card announcement-urgent" data-assignment-id="shelter-logistics">
+                        <div class="announcement-card announcement-urgent" data-assignment-id="shelter-logistics" data-assignment-status="urgent">
                             <div class="announcement-header">
                                 <div class="announcement-icon">
                                     <i data-lucide="home" class="w-5 h-5"></i>
@@ -1242,6 +1275,116 @@
                             </div>
                         </div>
 
+                        <div class="announcement-card announcement-urgent" data-assignment-id="road-safety-patrol" data-assignment-status="urgent">
+                            <div class="announcement-header">
+                                <div class="announcement-icon">
+                                    <i data-lucide="shield" class="w-5 h-5"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="announcement-title">Road Safety Patrol</h3>
+                                    <div class="announcement-meta">Posted just now • C-5 Road Section</div>
+                                </div>
+                                <span class="status-badge status-urgent">URGENT</span>
+                            </div>
+                            <div class="announcement-content">
+                                Help manage traffic flow and ensure safe passage for emergency vehicles near the evacuation route. High visibility gear provided.
+                            </div>
+                            <div class="announcement-actions">
+                                <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('road-safety-patrol')">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+
+                    <div class="status-section mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[17px] font-semibold text-navy">Accepted</h3>
+                            <span class="text-[13px] text-slate">Assignments you have confirmed</span>
+                        </div>
+                        <div id="accepted-assignments" class="flex flex-col gap-3">
+                            <div class="announcement-card announcement-accepted" data-assignment-id="community-outreach" data-assignment-status="accepted">
+                                <div class="announcement-header">
+                                    <div class="announcement-icon">
+                                        <i data-lucide="users" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="announcement-title">Community Outreach Support</h3>
+                                        <div class="announcement-meta">Posted yesterday • Brgy. Kapitolyo</div>
+                                    </div>
+                                    <span class="status-badge status-accepted">ACCEPTED</span>
+                                </div>
+                                <div class="announcement-content">
+                                    Coordinate neighborhood safety checks and share preparedness information with local residents.
+                                </div>
+                                <div class="announcement-actions">
+                                    <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('community-outreach')">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="accepted-empty" class="bg-white border border-gray-200 rounded-3xl p-5 text-center text-slate">No accepted assignments yet.</div>
+                        </div>
+                    </div>
+
+                    <div class="status-section mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[17px] font-semibold text-navy">Completed</h3>
+                            <span class="text-[13px] text-slate">Finished Assignments</span>
+                        </div>
+                        <div id="completed-assignments" class="flex flex-col gap-3">
+                            <div class="announcement-card announcement-completed" data-assignment-id="shelter-checkin" data-assignment-status="completed">
+                                <div class="announcement-header">
+                                    <div class="announcement-icon">
+                                        <i data-lucide="home" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="announcement-title">Shelter Check-in Team</h3>
+                                        <div class="announcement-meta">Completed yesterday • Brgy. San Joaquin</div>
+                                    </div>
+                                    <span class="status-badge status-completed">COMPLETED</span>
+                                </div>
+                                <div class="announcement-content">
+                                    Confirm shelter readiness, log arrivals, and ensure emergency supplies are in place.
+                                </div>
+                                <div class="announcement-actions">
+                                    <button class="w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg" onclick="openAssignmentModal('shelter-checkin')">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                        View Summary
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="completed-empty" class="bg-white border border-gray-200 rounded-3xl p-5 text-center text-slate">No completed assignments yet.</div>
+                        </div>
+                    </div>
+
+                    <div class="status-section mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-[17px] font-semibold text-navy">Declined</h3>
+                            <span class="text-[13px] text-slate">Assignments you have declined</span>
+                        </div>
+                        <div id="declined-assignments" class="flex flex-col gap-3">
+                            <div class="announcement-card announcement-declined" data-assignment-id="hotline-declined" data-assignment-status="declined">
+                                <div class="announcement-header">
+                                    <div class="announcement-icon">
+                                        <i data-lucide="phone-off" class="w-5 h-5"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="announcement-title">Emergency Hotline Training</h3>
+                                        <div class="announcement-meta">Declined earlier • EOC Training Room</div>
+                                    </div>
+                                    <span class="status-badge status-declined">DECLINED</span>
+                                </div>
+                                <div class="announcement-content">
+                                    Training to support hotline operations and family reunification calls during emergencies.
+                                </div>
+                            </div>
+                            <div id="declined-empty" class="bg-white border border-gray-200 rounded-3xl p-5 text-center text-slate">No declined assignments yet.</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1344,48 +1487,98 @@
             <div class="modal-content space-y-4">
                 <div class="form-field">
                     <label for="volunteer-name">Full name</label>
-                    <input id="volunteer-name" type="text" placeholder="Juan dela Cruz" />
+                    <input id="volunteer-name" type="text" placeholder="Juan dela Cruz" value="Juan Dela Cruz" />
                 </div>
                 <div class="form-field">
                     <label for="volunteer-contact">Contact number</label>
-                    <input id="volunteer-contact" type="tel" placeholder="09xx xxx xxxx" />
+                    <input id="volunteer-contact" type="tel" placeholder="09xx xxx xxxx" value="0917-555-1234" />
                 </div>
                 <div class="form-field">
                     <label for="volunteer-email">Email address</label>
-                    <input id="volunteer-email" type="email" placeholder="juan@example.com" />
+                    <input id="volunteer-email" type="email" placeholder="juan@example.com" value="juan@example.com" />
                 </div>
                 <div class="form-field">
                     <label for="volunteer-address">Address / Barangay</label>
-                    <input id="volunteer-address" type="text" placeholder="Barangay San Miguel, Pasig City" />
+                    <select id="volunteer-address" required>
+                        <option value="">Select a barangay</option>
+                        <option value="Brgy. Bagong Ilog">Brgy. Bagong Ilog</option>
+                        <option value="Brgy. Bagong Katipunan">Brgy. Bagong Katipunan</option>
+                        <option value="Brgy. Bambang">Brgy. Bambang</option>
+                        <option value="Brgy. Buting">Brgy. Buting</option>
+                        <option value="Brgy. Caniogan">Brgy. Caniogan</option>
+                        <option value="Brgy. Dela Paz">Brgy. Dela Paz</option>
+                        <option value="Brgy. Kalawaan">Brgy. Kalawaan</option>
+                        <option value="Brgy. Kapasigan">Brgy. Kapasigan</option>
+                        <option value="Brgy. Kapitolyo" selected>Brgy. Kapitolyo</option>
+                        <option value="Brgy. Malinao">Brgy. Malinao</option>
+                        <option value="Brgy. Manggahan">Brgy. Manggahan</option>
+                        <option value="Brgy. Maybunga">Brgy. Maybunga</option>
+                        <option value="Brgy. Oranbo">Brgy. Oranbo</option>
+                        <option value="Brgy. Palatiw">Brgy. Palatiw</option>
+                        <option value="Brgy. Pinagbuhatan">Brgy. Pinagbuhatan</option>
+                        <option value="Brgy. Pineda">Brgy. Pineda</option>
+                        <option value="Brgy. Rosario">Brgy. Rosario</option>
+                        <option value="Brgy. Sagad">Brgy. Sagad</option>
+                        <option value="Brgy. San Antonio">Brgy. San Antonio</option>
+                        <option value="Brgy. San Joaquin">Brgy. San Joaquin</option>
+                        <option value="Brgy. San Jose">Brgy. San Jose</option>
+                        <option value="Brgy. San Miguel">Brgy. San Miguel</option>
+                        <option value="Brgy. San Nicolas (Pob.)">Brgy. San Nicolas (Pob.)</option>
+                        <option value="Brgy. Santa Cruz">Brgy. Santa Cruz</option>
+                        <option value="Brgy. Santa Lucia">Brgy. Santa Lucia</option>
+                        <option value="Brgy. Santa Rosa">Brgy. Santa Rosa</option>
+                        <option value="Brgy. Santo Tomas">Brgy. Santo Tomas</option>
+                        <option value="Brgy. Santolan">Brgy. Santolan</option>
+                        <option value="Brgy. Sumilang">Brgy. Sumilang</option>
+                        <option value="Brgy. Ugong">Brgy. Ugong</option>
+                    </select>
                 </div>
                 <div class="form-field">
                     <label for="volunteer-role">Volunteer role</label>
-                    <input id="volunteer-role" type="text" placeholder="First aid responder, logistics volunteer..." />
+                    <select id="volunteer-role" required>
+                        <option value="">Select a role</option>
+                        <option value="First aid responder" selected>First aid responder</option>
+                        <option value="Logistics volunteer">Logistics volunteer</option>
+                        <option value="Hotline support">Hotline support</option>
+                        <option value="Medical support">Medical support</option>
+                        <option value="Shelter coordinator">Shelter coordinator</option>
+                        <option value="Evacuation assistance">Evacuation assistance</option>
+                        <option value="Supply distribution">Supply distribution</option>
+                        <option value="Community outreach">Community outreach</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 <div class="form-field">
                     <label for="volunteer-skills">Skills or certifications</label>
-                    <input id="volunteer-skills" type="text" placeholder="CPR, emergency management, radio comms" />
+                    <input id="volunteer-skills" type="text" placeholder="CPR, emergency management, radio comms" value="CPR, First Aid" />
                 </div>
                 <div class="form-field">
                     <label for="volunteer-availability">Availability</label>
-                    <input id="volunteer-availability" type="text" placeholder="Weekends, weekdays, 24/7" />
+                    <select id="volunteer-availability" required>
+                        <option value="">Select availability</option>
+                        <option value="Weekdays only">Weekdays only</option>
+                        <option value="Weekends only">Weekends only</option>
+                        <option value="Weekdays and weekends" selected>Weekdays and weekends</option>
+                        <option value="24/7">24/7</option>
+                        <option value="Flexible">Flexible</option>
+                    </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-field">
                         <label for="volunteer-emergency-name">Emergency contact</label>
-                        <input id="volunteer-emergency-name" type="text" placeholder="Maria Cruz" />
+                        <input id="volunteer-emergency-name" type="text" placeholder="Maria Cruz" value="Maria Santos" />
                     </div>
                     <div class="form-field">
                         <label for="volunteer-emergency-number">Contact number</label>
-                        <input id="volunteer-emergency-number" type="tel" placeholder="09xx xxx xxxx" />
+                        <input id="volunteer-emergency-number" type="tel" placeholder="09xx xxx xxxx" value="0917-555-9876" />
                     </div>
                 </div>
                 <div class="form-field">
                     <label for="volunteer-note">Short note / reason for volunteering</label>
-                    <textarea id="volunteer-note" rows="3" placeholder="I want to help families stay safe during emergencies"></textarea>
+                    <textarea id="volunteer-note" rows="3" placeholder="I want to help families stay safe during emergencies">I want to help families stay safe during emergencies</textarea>
                 </div>
                 <label class="consent-row" for="volunteer-consent">
-                    <input id="volunteer-consent" type="checkbox" />
+                    <input id="volunteer-consent" type="checkbox" checked />
                     <span>I agree to share my details and volunteer according to local emergency response guidelines.</span>
                 </label>
             </div>
@@ -1435,8 +1628,35 @@
 
             <!-- Buttons (Fixed) -->
             <div class="border-t border-gray-200 px-6 py-4 flex gap-3 flex-shrink-0 bg-gradient-to-t from-gray-50/50">
-                <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-blue-600 hover:bg-blue-700 text-white transition-colors" onclick="acceptAssignment(currentAssignmentId)">Accept</button>
-                <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors" onclick="declineAssignment(currentAssignmentId)">Decline</button>
+                <div id="assignment-modal-buttons-pending" class="flex gap-3 w-full">
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center gap-2" onclick="acceptAssignment(currentAssignmentId)">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        Accept
+                    </button>
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors flex items-center justify-center gap-2" onclick="declineAssignment(currentAssignmentId)">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        Decline
+                    </button>
+                </div>
+                <div id="assignment-modal-buttons-accepted" class="flex gap-3 w-full hidden">
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-green-600 hover:bg-green-700 text-white transition-colors flex items-center justify-center gap-2" onclick="showAssignmentDetailPage(currentAssignmentId); closeModal('assignment-modal')">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        View Details
+                    </button>
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors" onclick="closeModal('assignment-modal')">
+                        Close
+                    </button>
+                </div>
+                <div id="assignment-modal-buttons-completed" class="flex gap-3 w-full hidden">
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-blue-600 hover:bg-blue-700 text-white transition-colors" onclick="closeModal('assignment-modal')">
+                        Close
+                    </button>
+                </div>
+                <div id="assignment-modal-buttons-declined" class="flex gap-3 w-full hidden">
+                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors" onclick="closeModal('assignment-modal')">
+                        Close
+                    </button>
+                </div>
             </div>
         </div>
     </div>

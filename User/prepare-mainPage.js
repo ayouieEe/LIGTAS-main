@@ -217,6 +217,21 @@ const assignmentDetails = {
         ],
         coordinator: 'Dr. Maria Santos, Medical Coordinator'
     },
+    'road-safety-patrol': {
+        title: 'Road Safety Patrol',
+        summary: 'Help manage traffic flow and ensure safe passage for emergency vehicles near the evacuation route.',
+        location: 'C-5 Road Section',
+        status: 'URGENT',
+        time: 'Immediate',
+        description: 'Support the volunteer traffic management team by guiding vehicles, helping pedestrians cross safely, and keeping evacuation lanes clear for first responders.',
+        tasks: [
+            'Position yourself at assigned traffic points',
+            'Guide vehicles through alternate routes',
+            'Assist pedestrians safely across intersections',
+            'Coordinate with emergency responders for clear access'
+        ],
+        coordinator: 'Traffic Response Unit'
+    },
     'communication-hotline': {
         title: 'Hotline Support Volunteer',
         summary: 'Answer emergency calls and assist with family reunification. Training provided. Can work from command center or remotely.',
@@ -248,6 +263,51 @@ const assignmentDetails = {
             'Help arrange registration and check-in areas'
         ],
         coordinator: 'Barangay San Antonio Emergency Coordinator'
+    },
+    'community-outreach': {
+        title: 'Community Outreach Support',
+        summary: 'Coordinate neighborhood safety checks and share preparedness information with local residents.',
+        location: 'Brgy. Kapitolyo Community Center',
+        status: 'ACCEPTED',
+        time: 'Today 1:00 PM',
+        description: 'Visit households, collect readiness feedback, and distribute city-approved emergency planning materials.',
+        tasks: [
+            'Meet with barangay leaders at the community center',
+            'Conduct safety check-ins for nearby households',
+            'Share emergency contact cards and preparedness tips',
+            'Report any urgent needs to the barangay office'
+        ],
+        coordinator: 'Barangay Kapitolyo Volunteer Lead'
+    },
+    'shelter-checkin': {
+        title: 'Shelter Check-in Team',
+        summary: 'Confirm shelter readiness and assist families arriving to the evacuation site.',
+        location: 'Barangay San Joaquin Evacuation Shelter',
+        status: 'COMPLETED',
+        time: 'Completed',
+        description: 'Review shelter setup, log arrivals, and ensure supplies were stocked and operational for displaced families.',
+        tasks: [
+            'Verify cot assignments and sleeping areas',
+            'Confirm water, food, and hygiene stations are staffed',
+            'Log shelter occupants and their needs',
+            'Report completion to the shelter operations team'
+        ],
+        coordinator: 'Shelter Operations Team'
+    },
+    'hotline-declined': {
+        title: 'Emergency Hotline Training',
+        summary: 'Training to support hotline operations and family reunification calls during emergencies.',
+        location: 'Pasig EOC Training Room',
+        status: 'DECLINED',
+        time: 'Next training window',
+        description: 'Learn call intake procedures and how to route urgent family reunification requests to the appropriate response teams.',
+        tasks: [
+            'Attend a 30-minute hotline protocol briefing',
+            'Practice caller triage scripts',
+            'Review common emergency resources and referral contacts',
+            'Complete a short readiness checklist'
+        ],
+        coordinator: 'Communications Officer'
     }
 };
 
@@ -262,6 +322,10 @@ function openAssignmentModal(assignmentId) {
     const timeEl = document.getElementById('assignment-modal-time');
     const descEl = document.getElementById('assignment-modal-desc');
     const priorityBadgeEl = document.getElementById('assignment-modal-priority-badge');
+    const pendingButtonsEl = document.getElementById('assignment-modal-buttons-pending');
+    const acceptedButtonsEl = document.getElementById('assignment-modal-buttons-accepted');
+    const completedButtonsEl = document.getElementById('assignment-modal-buttons-completed');
+    const declinedButtonsEl = document.getElementById('assignment-modal-buttons-declined');
 
     if (titleEl) titleEl.textContent = assignment.title;
     if (summaryEl) summaryEl.textContent = assignment.summary;
@@ -270,13 +334,38 @@ function openAssignmentModal(assignmentId) {
     if (descEl) descEl.textContent = assignment.description;
     
     // Set priority badge
+    const currentStatus = getAssignmentStatus(assignmentId);
+
     if (priorityBadgeEl) {
-        if (assignment.status === 'URGENT') {
-            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold bg-orange-500/20 text-orange-400 border border-orange-500/30';
-            priorityBadgeEl.textContent = 'HIGH PRIORITY';
+        if (currentStatus === 'urgent') {
+            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold status-badge status-urgent';
+            priorityBadgeEl.textContent = 'URGENT';
+        } else if (currentStatus === 'accepted') {
+            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold status-badge status-accepted';
+            priorityBadgeEl.textContent = 'ACCEPTED';
+        } else if (currentStatus === 'completed') {
+            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold status-badge status-completed';
+            priorityBadgeEl.textContent = 'COMPLETED';
         } else {
-            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold bg-green-500/20 text-green-400 border border-green-500/30';
-            priorityBadgeEl.textContent = 'ASSIGNED';
+            priorityBadgeEl.className = 'px-3 py-1 rounded-full text-[11px] font-semibold status-badge status-declined';
+            priorityBadgeEl.textContent = 'DECLINED';
+        }
+    }
+
+    if (pendingButtonsEl && acceptedButtonsEl && completedButtonsEl && declinedButtonsEl) {
+        pendingButtonsEl.classList.add('hidden');
+        acceptedButtonsEl.classList.add('hidden');
+        completedButtonsEl.classList.add('hidden');
+        declinedButtonsEl.classList.add('hidden');
+
+        if (currentStatus === 'urgent') {
+            pendingButtonsEl.classList.remove('hidden');
+        } else if (currentStatus === 'accepted') {
+            acceptedButtonsEl.classList.remove('hidden');
+        } else if (currentStatus === 'completed') {
+            completedButtonsEl.classList.remove('hidden');
+        } else {
+            declinedButtonsEl.classList.remove('hidden');
         }
     }
 
@@ -591,7 +680,7 @@ function initInventoryState() {
 function showToast(msg) {
     const t = document.getElementById('toast');
     if (!t) return;
-    t.textContent = '✓ ' + msg;
+    t.textContent = msg;
     t.style.opacity = '1';
     setTimeout(() => {
         t.style.opacity = '0';
@@ -886,20 +975,238 @@ function loadVolunteerData() {
             profileImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=2E7D32&color=fff`;
         }
 
+        // Reset sample assignment state on reload, then update section layout
+        resetAssignmentSampleState();
+        setTimeout(() => {
+            updateAllAssignmentCardStatuses();
+            updateSectionPlaceholders();
+        }, 100);
+
         console.log('Loaded volunteer data:', data);
     }
 }
 
+function resetAssignmentSampleState() {
+    localStorage.removeItem(ASSIGNMENT_STATUS_KEY);
+    localStorage.removeItem(ACCEPTED_ASSIGNMENTS_KEY);
+}
+
+// Assignment acceptance tracking
+const ACCEPTED_ASSIGNMENTS_KEY = 'ligtas_accepted_assignments';
+const ASSIGNMENT_STATUS_KEY = 'ligtas_assignment_statuses';
+
+function getAcceptedAssignments() {
+    try {
+        return JSON.parse(localStorage.getItem(ACCEPTED_ASSIGNMENTS_KEY) || '[]');
+    } catch (error) {
+        return [];
+    }
+}
+
+function getAssignmentStatuses() {
+    try {
+        return JSON.parse(localStorage.getItem(ASSIGNMENT_STATUS_KEY) || '{}');
+    } catch (error) {
+        return {};
+    }
+}
+
+function getAssignmentStatus(assignmentId) {
+    const statuses = getAssignmentStatuses();
+    if (statuses[assignmentId]) {
+        return statuses[assignmentId];
+    }
+    const card = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
+    if (card && card.dataset.assignmentStatus) {
+        return card.dataset.assignmentStatus;
+    }
+    return 'urgent';
+}
+
+function setAssignmentStatus(assignmentId, status) {
+    const statuses = getAssignmentStatuses();
+    statuses[assignmentId] = status;
+    localStorage.setItem(ASSIGNMENT_STATUS_KEY, JSON.stringify(statuses));
+    updateAssignmentCardStatus(assignmentId);
+    updateSectionPlaceholders();
+}
+
+function isAssignmentAccepted(assignmentId) {
+    return getAssignmentStatus(assignmentId) === 'accepted';
+}
+
+function isAssignmentDeclined(assignmentId) {
+    return getAssignmentStatus(assignmentId) === 'declined';
+}
+
+function saveAcceptedAssignment(assignmentId) {
+    const assignment = assignmentDetails[assignmentId];
+    if (!assignment) return false;
+
+    const volunteerData = JSON.parse(localStorage.getItem('ligtas_volunteer_data') || '{}');
+    
+    // Check if already accepted or declined
+    const currentStatus = getAssignmentStatus(assignmentId);
+    if (currentStatus === 'accepted') {
+        return false;
+    }
+    if (currentStatus === 'declined') {
+        return false;
+    }
+
+    const acceptedAssignments = getAcceptedAssignments();
+    const acceptanceRecord = {
+        assignmentId,
+        assignmentTitle: assignment.title,
+        volunteerName: volunteerData.name || 'Unknown',
+        volunteerPhone: volunteerData.contact || '',
+        volunteerEmail: volunteerData.email || '',
+        acceptedAt: new Date().toISOString(),
+        location: assignment.location,
+        deadline: assignment.time,
+        status: 'accepted'
+    };
+    
+    acceptedAssignments.push(acceptanceRecord);
+    localStorage.setItem(ACCEPTED_ASSIGNMENTS_KEY, JSON.stringify(acceptedAssignments));
+    setAssignmentStatus(assignmentId, 'accepted');
+    
+    console.log('Assignment saved:', acceptanceRecord);
+    return true;
+}
+
+function moveAssignmentCard(assignmentId, status) {
+    const sectionMap = {
+        urgent: 'urgent-assignments',
+        accepted: 'accepted-assignments',
+        completed: 'completed-assignments',
+        declined: 'declined-assignments'
+    };
+    const targetId = sectionMap[status] || sectionMap.urgent;
+    const target = document.getElementById(targetId);
+    const card = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
+    if (!card || !target) return;
+    target.appendChild(card);
+}
+
+function updateSectionPlaceholders() {
+    ['accepted', 'completed', 'declined'].forEach(status => {
+        const sectionId = `${status}-assignments`;
+        const section = document.getElementById(sectionId);
+        const placeholder = section ? section.querySelector(`#${status}-empty`) : null;
+        if (!section || !placeholder) return;
+        const hasCards = Array.from(section.children).some(child => child.classList && child.classList.contains('announcement-card'));
+        placeholder.style.display = hasCards ? 'none' : 'block';
+    });
+}
+
+function updateAssignmentCardStatus(assignmentId) {
+    const card = document.querySelector(`[data-assignment-id="${assignmentId}"]`);
+    if (!card) return;
+
+    const status = getAssignmentStatus(assignmentId);
+    const badge = card.querySelector('.status-badge');
+    const actionArea = card.querySelector('.announcement-actions');
+    const button = actionArea ? actionArea.querySelector('button') : null;
+
+    if (status === 'accepted') {
+        card.setAttribute('data-assignment-status', 'accepted');
+        if (badge) {
+            badge.textContent = 'ACCEPTED';
+            badge.className = 'status-badge status-accepted';
+        }
+        if (actionArea) {
+            actionArea.style.display = 'block';
+        }
+        if (button) {
+            button.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> View Full Details';
+            button.className = 'w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg';
+            button.onclick = () => openAssignmentModal(assignmentId);
+        }
+    } else if (status === 'completed') {
+        card.setAttribute('data-assignment-status', 'completed');
+        if (badge) {
+            badge.textContent = 'COMPLETED';
+            badge.className = 'status-badge status-completed';
+        }
+        if (actionArea) {
+            actionArea.style.display = 'block';
+        }
+        if (button) {
+            button.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> View Full Details';
+            button.className = 'w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg';
+            button.onclick = () => openAssignmentModal(assignmentId);
+        }
+    } else if (status === 'declined') {
+        card.setAttribute('data-assignment-status', 'declined');
+        if (badge) {
+            badge.textContent = 'DECLINED';
+            badge.className = 'status-badge status-declined';
+        }
+        if (actionArea) {
+            actionArea.style.display = 'none';
+        }
+    } else {
+        card.setAttribute('data-assignment-status', 'urgent');
+        if (badge) {
+            badge.textContent = 'URGENT';
+            badge.className = 'status-badge status-urgent';
+        }
+        if (actionArea) {
+            actionArea.style.display = 'block';
+        }
+        if (button) {
+            button.innerHTML = '<i data-lucide="eye" class="w-4 h-4"></i> View Full Details';
+            button.className = 'w-full py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-95 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg';
+            button.onclick = () => openAssignmentModal(assignmentId);
+        }
+    }
+
+    moveAssignmentCard(assignmentId, status);
+    lucide.createIcons();
+}
+
 function acceptAssignment(assignmentId) {
+    const assignment = assignmentDetails[assignmentId];
+    if (!assignment) return;
+
+    const currentStatus = getAssignmentStatus(assignmentId);
+    if (currentStatus === 'accepted') {
+        showToast('You already accepted this assignment');
+        closeModal('assignment-modal');
+        return;
+    }
+    if (currentStatus === 'declined') {
+        showToast('This assignment was declined and cannot be accepted.');
+        closeModal('assignment-modal');
+        return;
+    }
+
+    const saved = saveAcceptedAssignment(assignmentId);
+    if (!saved) {
+        showToast('Unable to accept assignment.');
+        closeModal('assignment-modal');
+        return;
+    }
+
+    showToast(`Accepted! Report to ${assignment.location}`);
     closeModal('assignment-modal');
     showScreen('assignment-detail-screen');
     showAssignmentDetailPage(assignmentId);
-    console.log('Accepted assignment:', assignmentId);
+    console.log('Assignment accepted:', assignmentId);
 }
 
 function declineAssignment(assignmentId) {
+    const currentStatus = getAssignmentStatus(assignmentId);
+    if (currentStatus === 'accepted') {
+        showToast('Accepted assignments cannot be declined.');
+        closeModal('assignment-modal');
+        return;
+    }
+    setAssignmentStatus(assignmentId, 'declined');
     closeModal('assignment-modal');
     showScreen('screen-volunteer');
+    showToast('Assignment declined');
     console.log('Declined assignment:', assignmentId);
 }
 
@@ -907,6 +1214,14 @@ function viewAssignmentDetails(assignmentId) {
     closeModal('assignment-modal');
     showAssignmentDetailPage(assignmentId);
     console.log('Viewing assignment:', assignmentId);
+}
+
+function updateAllAssignmentCardStatuses() {
+    const cards = document.querySelectorAll('[data-assignment-id]');
+    cards.forEach(card => {
+        const assignmentId = card.dataset.assignmentId;
+        updateAssignmentCardStatus(assignmentId);
+    });
 }
 
 // Expose functions used by inline event handlers to ensure page interactions work reliably.
@@ -927,4 +1242,6 @@ window.saveFirstAidSettings = saveFirstAidSettings;
 window.unbindVolunteer = unregisterVolunteer;
 window.openAddItemModal = openAddItemModal;
 window.showToast = showToast;
+window.isAssignmentAccepted = isAssignmentAccepted;
+window.updateAllAssignmentCardStatuses = updateAllAssignmentCardStatuses;
 
