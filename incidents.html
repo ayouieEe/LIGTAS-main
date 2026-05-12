@@ -5,9 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LIGTAS — Admin Command Center</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="js/app-config.js"></script>
   <style>
     :root {
       --bg: #0D0F1A;
@@ -26,6 +25,13 @@
       --radius: 4px;
       --radius-lg: 6px;
       --sidebar-w: 240px;
+
+      /* COMPATIBILITY ALIASES */
+      --bg3: #1C1F2E;
+      --bg4: #242736;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --primary: #3B82F6;
     }
 
     * {
@@ -197,11 +203,37 @@
       color: var(--text-muted)
     }
 
+    /* PREMIUM SCROLLBARS */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Target specific scrollable areas for better visibility if needed */
+    .table-wrap::-webkit-scrollbar-thumb,
+    .feed-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
     /* TOPBAR */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 150;
       background: rgba(13, 15, 26, .8);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -210,6 +242,88 @@
       display: flex;
       align-items: center;
       justify-content: space-between
+    }
+
+    #sos-banner-container {
+      display: flex;
+      gap: 8px;
+      margin-right: 12px;
+      max-width: 600px;
+      overflow-x: auto;
+      padding: 4px 0;
+    }
+
+    #sos-banner-container::-webkit-scrollbar {
+      height: 2px;
+    }
+
+    #sos-banner-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+    }
+
+    /* SOS BANNER */
+    .sos-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: sos-pulse 2s infinite;
+      max-width: 300px;
+    }
+
+    .sos-banner:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .sos-icon-pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--critical);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: sos-dot-pulse 1.5s infinite;
+    }
+
+    .sos-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sos-user {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--critical);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sos-location {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @keyframes sos-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+      50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    @keyframes sos-dot-pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
     }
 
     .topbar-left {
@@ -587,9 +701,17 @@
       font-size: 11px
     }
 
+    /* GRID LAYOUTS */
+    .grid-left-heavy {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
     /* TABLE */
     .table-wrap {
-      overflow-x: auto;
+      overflow-x: hidden; /* We want it to fit */
       flex: 1;
       overflow-y: auto;
       min-height: 0;
@@ -607,49 +729,111 @@
       background: var(--bg-card);
       z-index: 10;
       box-shadow: inset 0 -1px 0 var(--border);
-      padding: 12px;
-      font-size: 11px;
-      font-weight: 600;
+      padding: 14px 16px;
+      font-size: 10px;
+      font-weight: 700;
       color: var(--text-micro);
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: 0.12em;
       text-align: left;
     }
 
+    .col-detail { width: 65%; }
+    .col-source { width: 35%; }
+
     td {
-      padding: 12px;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border);
+      padding: 16px;
+      font-size: 12.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       vertical-align: middle;
-      white-space: nowrap;
+      transition: all 0.2s;
+      min-width: 120px; /* Prevent collapse */
     }
 
-    tbody tr:last-child td {
-      border-bottom: none
+    tbody tr {
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    tbody tr:hover {
+      background: rgba(59, 130, 246, 0.06);
+    }
+
+    .view-details-hint {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%) translateX(10px);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--nominal);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+    }
+
+    tbody tr:hover .view-details-hint {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
     }
 
     tbody tr:hover td {
-      background: rgba(255, 255, 255, .02)
+      border-bottom-color: rgba(59, 130, 246, 0.1);
+      color: #FFF !important;
     }
 
+    /* COMPRESSED CELLS */
+    .incident-cell {
+      padding-right: 20px;
+    }
     .td-title {
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-primary);
       margin-bottom: 2px;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      line-height: 1.4;
+      font-size: 13.5px;
     }
-
     .td-sub {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-muted);
-      max-width: 300px;
+      white-space: normal;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
-
-      height: 100%;
+    .source-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .source-name {
+      font-weight: 500;
+      color: var(--text-primary);
+      font-size: 12px;
+    }
+    .source-loc {
+      font-size: 11px;
+      color: var(--nominal);
+    }
+    .status-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .time-mini {
+      font-size: 10px;
+      color: var(--text-micro);
+      font-family: 'IBM Plex Mono', monospace;
     }
 
     .feed-list {
@@ -2037,6 +2221,35 @@
       gap: 8px;
     }
 
+    /* Polished Controls */
+    .mc-segmented {
+      display: flex;
+      background: #0F1117;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid #2E3247;
+      gap: 4px;
+    }
+
+    .mc-seg-btn {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6B7280;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mc-seg-btn.active {
+      background: #242736;
+      color: #F9FAFB;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     .form-section-head::after {
       content: "";
       height: 1px;
@@ -2044,6 +2257,45 @@
       flex: 1;
     }
 
+    /* UNIT SELECTOR PILLS */
+    .unit-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .unit-pill {
+      padding: 8px 14px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .unit-pill:hover {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .unit-pill.selected {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .unit-pill .icon {
+      font-size: 14px;
+    }
+
+    /* ROLE VISIBILITY */
     .super-admin-only {
       display: none !important;
     }
@@ -2052,12 +2304,21 @@
       display: flex !important;
     }
 
-    nav .super-admin-only {
-      display: none !important;
+    .role-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--nominal);
+      margin-left: 8px;
     }
 
-    body.role-super nav .super-admin-only {
-      display: flex !important;
+    body.role-super .role-badge {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--critical);
     }
   </style>
 </head>
@@ -2068,67 +2329,60 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7l-9-5z" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
         </svg>
         <span>LIGTAS</span>
         <span class="version">v2.4</span>
+        <div id="active-role-badge" class="role-badge">Admin</div>
       </div>
       <nav class="nav">
         <a href="index.html" class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
           </svg>
           Dashboard
         </a>
         <a href="incidents.html" class="nav-item active">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-            <line x1="12" y1="9" x2="12" y2="13" />
-            <line x1="12" y1="17" x2="12.01" y2="17" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
           </svg>
           Incidents
         </a>
         <a href="centers.html" class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
           </svg>
           Centers
         </a>
         <a href="relief-ops.html" class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path
-              d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-            <line x1="12" y1="22.08" x2="12" y2="12" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.5 9.4 7.5 4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/>
           </svg>
           Relief Ops
         </a>
         <a href="broadcast.html" class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path
-              d="M22 8.01c0-6.39-14-6.39-14 0S1.55 22 8 22c2.04 0 4.01-.64 5.56-1.84L19 22l-1.3-5.45C21.07 14.56 22 11.37 22 8.01z" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/>
           </svg>
           Broadcast
         </a>
         <div class="nav-divider"></div>
         <a href="profile.html" class="nav-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
           Admin Profile
         </a>
+        <a href="settings.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+          System Settings
+        </a>
         <a href="audit-logs.html" class="nav-item super-admin-only">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-            <line x1="16" y1="13" x2="8" y2="13" />
-            <line x1="16" y1="17" x2="8" y2="17" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>
           </svg>
           Audit Logs
         </a>
@@ -2147,18 +2401,17 @@
           <span class="breadcrumb" id="live-time"></span>
         </div>
         <div class="topbar-right">
+          <div id="sos-banner-container"></div>
           <button class="btn btn-sm btn-danger-ghost" style="margin-right:8px"
             onclick="openModal('add-incident-modal')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
             </svg>
             Report Incident
           </button>
           <button class="icon-btn" onclick="renderNotifications(); openModal('notif-modal')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
             </svg>
             <span class="notif-dot"></span>
           </button>
@@ -2173,147 +2426,161 @@
 
         <!-- INCIDENTS PAGE -->
         <div class="page active" id="page-incidents">
-          <div class="metrics-row">
-            <div class="m-card c-red">
-              <div class="m-card-label">Active Emergencies</div>
-              <div class="m-card-value red">8</div>
-              <div class="m-card-sub">Within 5km radius</div>
+          <div class="metrics-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div class="m-card c-red" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Active Emergencies</div>
+              <div class="m-card-value red" style="font-size: 26px;">8</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Critical Status</div>
             </div>
-            <div class="m-card c-orange">
-              <div class="m-card-label">Civilians Affected</div>
-              <div class="m-card-value orange">1,503</div>
-              <div class="m-card-sub">Est. displacement</div>
+            <div class="m-card c-blue" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Units Deployed</div>
+              <div class="m-card-value blue" style="font-size: 26px;">14</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Across all zones</div>
             </div>
-            <div class="m-card c-blue">
-              <div class="m-card-label">Units Deployed</div>
-              <div class="m-card-value blue">14</div>
-              <div class="m-card-sub">All zones</div>
+            <div class="m-card c-orange" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Civilians Affected</div>
+              <div class="m-card-value orange" style="font-size: 26px;">1,503</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Est. displacement</div>
             </div>
-            <div class="m-card c-yellow">
-              <div class="m-card-label">Incident Types</div>
-              <div class="m-card-value orange">4</div>
-              <div class="m-card-sub">Fire · Flood · Quake · Medical</div>
+            <div class="m-card c-yellow" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Pending Dispatch</div>
+              <div class="m-card-value orange" style="font-size: 26px;">5</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Awaiting verification</div>
             </div>
           </div>
+          <div class="grid-left-heavy" style="height:620px">
+            <div class="panel" style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+                <div class="panel-head" style="gap: 16px; flex-wrap: wrap; padding: 14px 20px;">
+                  <div style="display:flex;align-items:center;gap:12px; flex-shrink: 0;">
+                    <h2 id="inc-panel-title" style="margin:0; white-space: nowrap;">Active Incidents</h2>
+                    <div class="mc-segmented" style="padding: 2px;">
+                      <button class="mc-seg-btn active" id="btn-show-active" style="padding: 4px 10px; font-size: 11px;" onclick="toggleIncidentView('active')">Active</button>
+                      <button class="mc-seg-btn" id="btn-show-resolved" style="padding: 4px 10px; font-size: 11px;" onclick="toggleIncidentView('resolved')">Resolved</button>
+                    </div>
+                  </div>
+                  
+                  <div style="display:flex; align-items:center; gap: 8px; flex: 1; min-width: 200px;">
+                    <div class="search-wrap" style="flex:1; margin:0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.3-4.3" />
+                    </svg>
+                      <input type="text" class="search-input" placeholder="Search..." oninput="filterIncidents(this.value)">
+                    </div>
+                    <select class="filter-select" style="width: 140px; margin:0" onchange="filterByStatus(this.value)">
+                      <option value="all">All</option>
+                      <option value="Critical">Critical</option>
+                      <option value="Urgent">Urgent</option>
+                      <option value="Medical/Rescue">Medical</option>
+                      <option value="Hydrological">Hydro</option>
+                    </select>
+                  </div>
 
-          <div class="metrics-row" style="margin-top:-8px">
-            <div class="m-card c-teal">
-              <div class="m-card-label">Volunteers Assigned</div>
-              <div class="m-card-value green">24</div>
-              <div class="m-card-sub">Active deployments</div>
-            </div>
-            <div class="m-card c-blue">
-              <div class="m-card-label">Public Advisories</div>
-              <div class="m-card-value blue">12</div>
-              <div class="m-card-sub">Live broadcasts</div>
-            </div>
-            <div class="m-card c-green">
-              <div class="m-card-label">Avg. Response Time</div>
-              <div class="m-card-value green">8.5m</div>
-              <div class="m-card-sub">-2m from yesterday</div>
-            </div>
-            <div class="m-card c-blue">
-              <div class="m-card-label">Citizen Awareness</div>
-              <div class="m-card-value blue">42.1k</div>
-              <div class="m-card-sub">+15% this week</div>
-            </div>
-          </div>
-          <div class="grid-left-heavy">
-            <div>
-              <div class="panel">
-              <div class="panel-head">
-                <h2>Active Incidents</h2><button class="btn btn-sm btn-primary"
-                  onclick="openModal('add-incident-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>Add Incident</button>
-              </div>
-              <div class="controls-row">
-                <div class="search-wrap">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                  <input type="text" class="search-input" placeholder="Search incidents..."
-                    oninput="filterIncidents(this.value)">
+                  <button class="btn btn-sm btn-primary" style="flex-shrink: 0;" onclick="openModal('add-incident-modal')">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12h14M12 5v14" />
+                    </svg>Add
+                  </button>
                 </div>
-                <select class="filter-select" onchange="filterByStatus(this.value)">
-                  <option value="all">All Statuses</option>
-                  <option value="Critical">Critical</option>
-                  <option value="Urgent">Urgent</option>
-                  <option value="Medical/Rescue">Medical</option>
-                  <option value="Hydrological">Hydrological</option>
-                  <option value="Logistical">Logistical</option>
-                </select>
-              </div>
-              <div class="table-wrap">
+              <div class="table-wrap" id="active-incidents-wrap">
                 <table>
                   <thead>
                     <tr>
-                      <th>Incident</th>
-                      <th>Reporter</th>
-                      <th>Severity</th>
-                      <th>Barangay</th>
-                      <th>Time</th>
-                      <th>Lifecycle Status</th>
-                      <th>Action</th>
+                      <th class="col-detail">Incident Detail</th>
+                      <th class="col-source">Source / Loc</th>
                     </tr>
                   </thead>
                   <tbody id="incidents-tbody">
-                <!-- Populated by renderIncidentsTable() -->
-              </tbody>
+                    <!-- Populated by renderIncidentsTable() -->
+                  </tbody>
+                </table>
+              </div>
 
-            </table>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Resolved Incidents</h2>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Incident</th>
-                  <th>Reporter</th>
-                  <th>Severity</th>
-                  <th>Barangay</th>
-                  <th>Time</th>
-                  <th>Lifecycle Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="resolved-incidents-tbody">
-                <!-- Populated by renderIncidentsTable() -->
-              </tbody>
-            </table>
-          </div>
-          </div>
+              <div class="table-wrap" id="resolved-incidents-wrap" style="display:none">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="col-detail">Incident Detail</th>
+                      <th class="col-source">Source / Loc</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resolved-incidents-tbody">
+                    <!-- Populated by renderIncidentsTable() -->
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div class="panel">
+            <div class="panel" style="display:flex;flex-direction:column;height:100%;overflow:hidden">
               <div class="panel-head">
                 <h2>Status Reports</h2>
               </div>
-              <div class="feed-list" id="status-reports-feed">
+              <div class="feed-list" id="status-reports-feed" style="flex:1;overflow-y:auto">
                 <!-- Populated dynamically by JS -->
               </div>
             </div>
           </div>
-        </div>
 
       </div>
     </div>
 
     <!-- ====== MODALS ====== -->
 
+    <!-- SOS Alert Modal -->
+    <div class="modal-backdrop" id="sos-modal">
+      <div class="modal modal-sm" style="border: 1px solid var(--critical)">
+        <div class="modal-head" style="background: rgba(239, 68, 68, 0.05)">
+          <h2 style="color: var(--critical); display: flex; align-items: center; gap: 8px">
+            <div class="sos-icon-pulse"></div>
+            Emergency SOS Signal
+          </h2>
+          <button class="close-btn" onclick="closeSOS()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="text-align: center; margin-bottom: 20px">
+            <div style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: var(--critical)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h3 id="sos-detail-name" style="font-size: 18px; font-weight: 600; margin-bottom: 4px">---</h3>
+            <p id="sos-detail-time" style="font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace">REPORTED JUST NOW</p>
+          </div>
+
+          <div class="form-group">
+            <label>Current Coordinates</label>
+            <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius); font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-primary); border: 1px solid var(--border)">
+              <span id="sos-detail-coords">14.5764° N, 121.0851° E</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Location Profile</label>
+            <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-primary); line-height: 1.5">---</div>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: var(--radius); margin-top: 16px">
+            <div style="font-size: 10px; font-weight: 600; color: var(--warning); text-transform: uppercase; margin-bottom: 4px">Dispatcher Note</div>
+            <div style="font-size: 12px; color: var(--text-primary)">User app tracking is live. Visual contact via city CCTV is recommended for this sector.</div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeSOS()" style="flex: 1; justify-content: center">Dismiss</button>
+          <button class="btn btn-primary" onclick="acknowledgeSOS()" style="flex: 1; justify-content: center; background: var(--critical); border-color: var(--critical)">Acknowledge</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Add Incident -->
     <div class="modal-backdrop" id="add-incident-modal">
       <div class="modal modal-lg">
         <div class="modal-head">
           <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg
-              width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M18 6L6 18M6 6l12 12" />
+              width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18M6 6l12 12" />
             </svg></button>
         </div>
         <div class="modal-body">
@@ -2454,6 +2721,28 @@
         'default': 'badge'
       };
 
+      function toggleIncidentView(type) {
+        const activeWrap = document.getElementById('active-incidents-wrap');
+        const resolvedWrap = document.getElementById('resolved-incidents-wrap');
+        const btnActive = document.getElementById('btn-show-active');
+        const btnResolved = document.getElementById('btn-show-resolved');
+        const title = document.getElementById('inc-panel-title');
+
+        if (type === 'active') {
+          activeWrap.style.display = 'block';
+          resolvedWrap.style.display = 'none';
+          btnActive.classList.add('active');
+          btnResolved.classList.remove('active');
+          title.textContent = 'Active Incidents';
+        } else {
+          activeWrap.style.display = 'none';
+          resolvedWrap.style.display = 'block';
+          btnActive.classList.remove('active');
+          btnResolved.classList.add('active');
+          title.textContent = 'Resolved Incidents';
+        }
+      }
+
       function renderIncidentsTable() {
         const incidents = getIncidents();
         const activeTbody = document.getElementById('incidents-tbody');
@@ -2470,26 +2759,31 @@
           const lifeCls = LIFECYCLE_BADGE[inc.status] || 'badge';
           const btnCls = (inc.severity === 'Critical' && inc.status !== 'Resolved') ? 'btn-primary' : 'btn-ghost';
           
-          const rowHTML = `<tr data-id="${inc.id}" data-status="${inc.severity}">
-      <td>
-        <div class="td-title" title="${inc.title}">${inc.title}</div>
-        <div class="td-sub" title="${inc.description}">${inc.description}</div>
-      </td>
-      <td>
-        <div class="reporter-cell">
-          <span class="reporter-name">${inc.reporter || '—'}</span>
-          <span class="reporter-contact">${inc.contact || ''}</span>
-        </div>
-      </td>
-      <td><span class="${sevCls}"><div class="dot"></div>${inc.severity}</span></td>
-      <td>${inc.barangay}</td>
-      <td class="mono" style="font-size:11px">${inc.createdAt}</td>
-      <td><span class="${lifeCls}" id="lifecycle-${inc.id}">${inc.status}</span></td>
-      <td><button class="btn btn-sm ${btnCls}" onclick="openDetailById('${inc.id}')">View</button></td>
-    </tr>`;
+          const rowHTML = `<tr onclick="openDetailById('${inc.id}')">
+            <td class="col-detail">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px">
+                <div class="td-title" style="margin:0">${inc.title}</div>
+                <span class="${sevCls}" style="font-size:8.5px; padding:1px 5px; height:16px; display:inline-flex; align-items:center; border-radius:4px"><div class="dot"></div>${inc.severity}</span>
+              </div>
+              <div class="td-sub">${inc.description}</div>
+            </td>
+            <td class="col-source" style="position: relative;">
+              <div class="source-cell">
+                <span class="source-name">${inc.reporter || 'Field Report'}</span>
+                <div style="display:flex; align-items:center; gap:6px">
+                  <span class="source-loc">📍 ${inc.barangay}</span>
+                  <span class="time-mini" style="opacity:0.6; font-size:10px">🕒 ${inc.createdAt}</span>
+                </div>
+              </div>
+              <div class="view-details-hint">
+                View Details <span>→</span>
+              </div>
+            </td>
+          </tr>`;
           if (inc.status === 'Resolved') {
             resolvedHTML += rowHTML;
-          } else {
+          } else if (inc.status !== 'Dispatched') {
+            // Only show Reported/Ongoing in main table. Dispatched are in side feed.
             activeHTML += rowHTML;
           }
           
@@ -2506,14 +2800,16 @@
           }
         });
         
-        const emptyActive = `<tr><td colspan="7">
+        const emptyActive = `<tr><td colspan="2">
           <div class="empty-state">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10.01-3-3"/>
+            </svg>
             <p>No active incidents reported</p>
           </div>
         </td></tr>`;
         
-        const emptyResolved = `<tr><td colspan="7">
+        const emptyResolved = `<tr><td colspan="2">
           <div class="empty-state">
             <p>No resolved incidents yet</p>
           </div>
@@ -2536,7 +2832,7 @@
         if (!inc) return;
 
         document.getElementById('modal-inc-id').textContent = inc.id;
-        setIncidentDetail(inc.title, inc.status, inc.barangay + ', Pasig City', inc.createdAt, inc.description);
+        setIncidentDetail(inc.title, inc.status, inc.barangay + ', Pasig City', inc.createdAt, inc.description, inc.reporter, inc.contact);
 
         const notesArea = document.getElementById('field-notes-area');
         if (notesArea) notesArea.value = '';
@@ -2552,7 +2848,14 @@
         buttonsHTML += `<div style="flex:1"></div><button class="btn btn-ghost" onclick="saveIncidentNotes()">Save Notes</button><button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>`;
         foot.innerHTML = buttonsHTML;
 
+        // Reset unit selection
+        document.querySelectorAll('#assign-unit-buttons .unit-pill').forEach(btn => btn.classList.remove('selected'));
+
         openModal('incident-detail-modal');
+      }
+
+      function toggleUnit(el) {
+        el.classList.toggle('selected');
       }
 
       function toggleBroadcastPanel() {
@@ -2751,6 +3054,17 @@
             style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)"
             id="modal-inc-desc">Incident description loading...</div>
 
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.03);border-radius:var(--radius);border:1px solid var(--border)">
+            <div>
+              <div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">Reporter Name</div>
+              <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            </div>
+            <div>
+              <div style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">Contact Info</div>
+              <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            </div>
+          </div>
+
           <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:16px;margin-bottom:16px">
             <div>
               <div class="form-section-head" style="margin-top:0">Recommended Volunteers</div>
@@ -2801,14 +3115,26 @@
           </div>
 
           <div class="form-section-head">Response Actions</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div class="form-row">
-              <div class="form-group"><label>Assign Unit</label><select class="input-select" id="assign-unit-select">
-                  <option>Fire Unit Alpha</option>
-                  <option>Rescue Team Bravo</option>
-                  <option>Medical Team Charlie</option>
-                  <option>Hazmat Delta</option>
-                </select></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="form-group">
+              <label>Assign Response Units (Select multiple)</label>
+              <div class="unit-selector" id="assign-unit-buttons">
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Fire Unit Alpha">
+                  <span class="icon">🚒</span> Fire Unit Alpha
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Rescue Team Bravo">
+                  <span class="icon">🚑</span> Rescue Team Bravo
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Medical Team Charlie">
+                  <span class="icon">🏥</span> Medical Team Charlie
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Hazmat Delta">
+                  <span class="icon">☣️</span> Hazmat Delta
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Police Support">
+                  <span class="icon">👮</span> Police Support
+                </div>
+              </div>
             </div>
             <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" id="field-notes-area"
                 rows="2" placeholder="Add field update or notes..."></textarea></div>
@@ -3088,7 +3414,10 @@
 
       (function applyRole() {
         const role = localStorage.getItem('ligtas_role') || 'Admin';
-        if (role === 'Super Admin') {
+        const badge = document.getElementById('active-role-badge');
+        if (badge) badge.textContent = role;
+
+        if (role.toLowerCase().includes('super')) {
           document.body.classList.add('role-super');
         }
         const nameEl = document.querySelector('.admin-name');
@@ -3191,11 +3520,17 @@
         el.classList.add('selected');
         if (document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent = name;
       }
-      function setIncidentDetail(title, status, barangay, timeAgo, description) {
+      function setIncidentDetail(title, status, barangay, timeAgo, description, reporter, contact) {
         document.getElementById('modal-inc-title').textContent = title;
         document.getElementById('modal-inc-loc').textContent = barangay;
         document.getElementById('modal-inc-time').textContent = timeAgo;
         document.getElementById('modal-inc-desc').textContent = description;
+        if (document.getElementById('modal-inc-reporter')) {
+          document.getElementById('modal-inc-reporter').textContent = reporter || 'Field Report';
+        }
+        if (document.getElementById('modal-inc-contact')) {
+          document.getElementById('modal-inc-contact').textContent = contact || '—';
+        }
 
         const b = document.getElementById('modal-inc-badge');
         const map = {
@@ -3236,8 +3571,12 @@
       }
 
       function openDispatchConfirm() {
-        const unit = document.getElementById('assign-unit-select').value;
-        document.getElementById('conf-disp-unit').textContent = unit;
+        const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
+        if (selected.length === 0) {
+          showToast('Please select at least one unit to dispatch', 'warning');
+          return;
+        }
+        document.getElementById('conf-disp-unit').textContent = selected.join(', ');
         openModal('confirm-dispatch-modal');
       }
 
@@ -3249,12 +3588,13 @@
         if (idx === -1) return;
 
         incidents[idx].status = 'Dispatched';
-        const unit = document.getElementById('assign-unit-select').value;
+        const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
+        const unitStr = selected.join(' & ');
         const timeNow = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
-        incidents[idx].description += `\n\n[DISPATCH ${timeNow}]: ${unit} dispatched to scene.`;
+        incidents[idx].description += `\n\n[DISPATCH ${timeNow}]: ${unitStr} dispatched to scene.`;
         
         saveIncidents(incidents);
-        logAction('Dispatch', incidents[idx].title, `${unit} deployed.`);
+        logAction('Dispatch', incidents[idx].title, `${unitStr} deployed.`);
         showToast('Rescue team dispatched!', 'success');
         
         closeModal('confirm-dispatch-modal');
@@ -3286,12 +3626,16 @@
         for (let o of hs.options) { if (o.value === map[health] || o.text.includes(health)) { o.selected = true; break } }
         document.getElementById('edit-needs').value = needs;
       }
-      const ZONE_RECIPIENTS = {
-        'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
-        'Manggahan': 4120, 'Pinagbuhatan': 2216,
-        'Rosario': 3842, 'San Joaquin': 1680,
-        'Santolan': 1920, 'Ugong': 480
-      };
+      // ZONE_RECIPIENTS is now managed globally in js/app-config.js
+      if (!window.ZONE_RECIPIENTS) {
+        window.ZONE_RECIPIENTS = {
+          'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
+          'Manggahan': 4120, 'Pinagbuhatan': 2216,
+          'Rosario': 3842, 'San Joaquin': 1680,
+          'Santolan': 1920, 'Ugong': 480
+        };
+      }
+      const ZONE_RECIPIENTS = window.ZONE_RECIPIENTS;
       function openBroadcastConfirm(level, zone, message) {
         const count = ZONE_RECIPIENTS[zone] || 14203;
         document.getElementById('conf-b-count').textContent = '\u26a0\ufe0f This will send to ' + count.toLocaleString() + ' recipients';
@@ -3315,6 +3659,90 @@
       }
       setInterval(updateTime, 1000); updateTime();
       document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')) });
+
+      // SOS ALERT SYSTEM - MULTI-REPORT HANDLING
+      let sosQueue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      let currentSOSIndex = -1;
+
+      function showSOSAlert(data) {
+        const exists = sosQueue.some(s => s.id === data.id || (s.name === data.name && s.location === data.location));
+        if (!exists) {
+          data.id = data.id || 'SOS-' + Date.now();
+          data.status = 'Pending';
+          sosQueue.unshift(data);
+          localStorage.setItem('ligtas_sos_queue', JSON.stringify(sosQueue));
+        }
+        renderSOSBanners();
+        console.log('🚨 EMERGENCY SOS RECEIVED:', data);
+      }
+
+      function renderSOSBanners() {
+        const container = document.getElementById('sos-banner-container');
+        if (!container) return;
+        if (sosQueue.length === 0) { container.innerHTML = ''; return; }
+
+        const visibleAlerts = sosQueue.slice(0, 2);
+        let html = '';
+        visibleAlerts.forEach((sos, index) => {
+          html += `
+            <div class="sos-banner" onclick="openSOSDetailByIndex(${index})">
+              <div class="sos-icon-pulse"></div>
+              <div class="sos-info">
+                <div class="sos-user">${sos.name}</div>
+                <div class="sos-location">${sos.location}</div>
+              </div>
+            </div>
+          `;
+        });
+
+        if (sosQueue.length > 2) {
+          html += `
+            <div class="sos-banner" style="background: var(--bg-elevated); animation: none; border-color: var(--critical)" onclick="openSOSDetailByIndex(0)">
+              <div class="sos-info">
+                <div class="sos-user" style="color: var(--text-primary)">+${sosQueue.length - 2} MORE ALERTS</div>
+                <div class="sos-location">Critical Priority Queue</div>
+              </div>
+            </div>
+          `;
+        }
+        container.innerHTML = html;
+      }
+
+      function openSOSDetailByIndex(index) {
+        currentSOSIndex = index;
+        const sos = sosQueue[index];
+        if (!sos) return;
+        document.getElementById('sos-detail-name').textContent = sos.name;
+        document.getElementById('sos-detail-loc').textContent = sos.location;
+        document.getElementById('sos-detail-coords').textContent = sos.coords;
+        const head = document.querySelector('#sos-modal .modal-head h2');
+        head.innerHTML = `<div class="sos-icon-pulse"></div> Alert ${index + 1} of ${sosQueue.length}`;
+        openModal('sos-modal');
+      }
+
+      function closeSOS() { closeModal('sos-modal'); }
+
+      function acknowledgeSOS() {
+        if (currentSOSIndex === -1) return;
+        const ackSOS = sosQueue[currentSOSIndex];
+        logAction('SOS Acknowledged', ackSOS.name, 'Emergency response dispatched to ' + ackSOS.location);
+        showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
+        sosQueue.splice(currentSOSIndex, 1);
+        localStorage.setItem('ligtas_sos_queue', JSON.stringify(sosQueue));
+        closeModal('sos-modal');
+        renderSOSBanners();
+        if (sosQueue.length > 0) { setTimeout(() => { openSOSDetailByIndex(0); }, 600); }
+      }
+
+      // Initialize from storage
+      renderSOSBanners();
+
+      // Simulation trigger (only if queue is empty to avoid spam)
+      setTimeout(() => {
+        if (sosQueue.length === 0) {
+          showSOSAlert({ id: 'SOS-1', name: 'Sarah Jenkins', location: 'Pinagbuhatan', coords: '14.5582° N, 121.0921° E' });
+        }
+      }, 5000);
 
       // Bootstrap on load
       document.addEventListener('DOMContentLoaded', () => {

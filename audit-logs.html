@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIGTAS — Admin Command Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="js/app-config.js"></script>
 <style>
 :root {
   --bg: #0D0F1A;
@@ -53,6 +54,68 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text-muted);text-
 
 /* TOPBAR */
 .topbar{position:sticky;top:0;z-index:50;background:rgba(13,15,26,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+
+/* SOS BANNER */
+.sos-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: sos-pulse 2s infinite;
+  max-width: 300px;
+}
+
+.sos-banner:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.sos-icon-pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--critical);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: sos-dot-pulse 1.5s infinite;
+}
+
+.sos-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.sos-user {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--critical);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sos-location {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes sos-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes sos-dot-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
 .topbar-left{display:flex;align-items:center;gap:16px}
 .topbar h1{font-size:14px;font-weight:500;color:var(--text-primary)}
 .breadcrumb{font-size:12px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace}
@@ -373,10 +436,31 @@ input:checked + .slider:before { transform: translateX(16px); }
 /* SECTION HEADERS */
 .form-section-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px; }
 .form-section-head::after { content: ""; height: 1px; background: var(--border); flex: 1; }
-  .super-admin-only { display: none !important; }
-  body.role-super .super-admin-only { display: flex !important; }
-  nav .super-admin-only { display: none !important; }
-  body.role-super nav .super-admin-only { display: flex !important; }
+    /* ROLE VISIBILITY */
+    .super-admin-only {
+      display: none !important;
+    }
+
+    body.role-super .super-admin-only {
+      display: flex !important;
+    }
+
+    .role-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--nominal);
+      margin-left: 8px;
+    }
+
+    body.role-super .role-badge {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--critical);
+    }
 </style>
 </head>
 <body>
@@ -385,38 +469,49 @@ input:checked + .slider:before { transform: translateX(16px); }
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v6c0 5.25 3.75 10.15 9 11.25C17.25 23.15 21 18.25 21 13V7l-9-5z"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
     <span>LIGTAS</span>
     <span class="version">v2.4</span>
+    <div id="active-role-badge" class="role-badge">Admin</div>
   </div>
   <nav class="nav">
     <a href="index.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>
+      </svg>
       Dashboard
     </a>
     <a href="incidents.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
       Incidents
     </a>
     <a href="centers.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Centers
     </a>
     <a href="relief-ops.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.5 4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" x2="12" y1="22" y2="12"/></svg>
       Relief Ops
     </a>
     <a href="broadcast.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 8.01c0-6.39-14-6.39-14 0S1.55 22 8 22c2.04 0 4.01-.64 5.56-1.84L19 22l-1.3-5.45C21.07 14.56 22 11.37 22 8.01z"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
       Broadcast
     </a>
     <div class="nav-divider"></div>
-    <a href="profile.html" class="nav-item" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <a href="profile.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Admin Profile
     </a>
+    <a href="settings.html" class="nav-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+      </svg>
+      System Settings
+    </a>
     <a href="audit-logs.html" class="nav-item active super-admin-only" >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
       Audit Logs
     </a>
   </nav>
@@ -434,12 +529,13 @@ input:checked + .slider:before { transform: translateX(16px); }
       <span class="breadcrumb" id="live-time"></span>
     </div>
     <div class="topbar-right">
+      <div id="sos-banner-container"></div>
       <button class="btn btn-sm btn-danger-ghost" style="margin-right:8px" onclick="openModal('add-incident-modal')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
         Report Incident
       </button>
       <button class="icon-btn" onclick="renderNotifications(); openModal('notif-modal')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         <span class="notif-dot"></span>
       </button>
       <div class="admin-chip" onclick="window.location.href='profile.html'">
@@ -456,7 +552,10 @@ input:checked + .slider:before { transform: translateX(16px); }
       <div class="panel">
       <div class="audit-filters">
           <div class="search-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
             <input type="text" class="search-input" id="audit-search" placeholder="Search logs (Admin, Action, Target...)" onkeyup="filterAuditLogs()">
           </div>
           <select class="filter-select" id="audit-action-filter" onchange="filterAuditLogs()">
@@ -494,7 +593,10 @@ input:checked + .slider:before { transform: translateX(16px); }
             </tbody>
           </table>
           <div class="empty-state" id="audit-empty" style="display:none">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-secondary"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.3-4.3"/>
+            </svg>
             <div>No audit logs found matching your filters.</div>
           </div>
         </div>
@@ -508,6 +610,57 @@ input:checked + .slider:before { transform: translateX(16px); }
 </div>
 
 <!-- ====== MODALS ====== -->
+
+<!-- ====== MODALS ====== -->
+
+<!-- SOS Alert Modal -->
+<div class="modal-backdrop" id="sos-modal">
+  <div class="modal modal-sm" style="border: 1px solid var(--critical)">
+    <div class="modal-head" style="background: rgba(239, 68, 68, 0.05)">
+      <h2 style="color: var(--critical); display: flex; align-items: center; gap: 8px">
+        <div class="sos-icon-pulse"></div>
+        Emergency SOS Signal
+      </h2>
+      <button class="close-btn" onclick="closeSOS()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align: center; margin-bottom: 20px">
+        <div style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: var(--critical)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3 id="sos-detail-name" style="font-size: 18px; font-weight: 600; margin-bottom: 4px">---</h3>
+        <p id="sos-detail-time" style="font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace">REPORTED JUST NOW</p>
+      </div>
+
+      <div class="form-group">
+        <label>Current Coordinates</label>
+        <div style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius); font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-primary); border: 1px solid var(--border)">
+          <span id="sos-detail-coords">14.5764° N, 121.0851° E</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Location Profile</label>
+        <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-primary); line-height: 1.5">---</div>
+      </div>
+
+      <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: var(--radius); margin-top: 16px">
+        <div style="font-size: 10px; font-weight: 600; color: var(--warning); text-transform: uppercase; margin-bottom: 4px">Dispatcher Note</div>
+        <div style="font-size: 12px; color: var(--text-primary)">User app tracking is live. Visual contact via city CCTV is recommended for this sector.</div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeSOS()" style="flex: 1; justify-content: center">Dismiss</button>
+      <button class="btn btn-primary" onclick="acknowledgeSOS()" style="flex: 1; justify-content: center; background: var(--critical); border-color: var(--critical)">Acknowledge</button>
+    </div>
+  </div>
+</div>
 
 <!-- Add Incident -->
 <div class="modal-backdrop" id="add-incident-modal">
@@ -880,7 +1033,10 @@ function logAction(action, target, detail) {
 
 (function applyRole() {
   const role = localStorage.getItem('ligtas_role') || 'Admin';
-  if (role === 'Super Admin') {
+  const badge = document.getElementById('active-role-badge');
+  if (badge) badge.textContent = role;
+
+  if (role.toLowerCase().includes('super')) {
     document.body.classList.add('role-super');
   }
   const nameEl = document.querySelector('.admin-name');
@@ -1128,6 +1284,58 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 
 // Auto-load on page ready
 document.addEventListener('DOMContentLoaded', loadAuditLogs);
+
+// SOS ALERT SYSTEM
+let currentSOS = null;
+
+function showSOSAlert(data) {
+  currentSOS = data;
+  const container = document.getElementById('sos-banner-container');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="sos-banner" onclick="openSOSDetail()">
+      <div class="sos-icon-pulse"></div>
+      <div class="sos-info">
+        <div class="sos-user">${data.name} — SOS</div>
+        <div class="sos-location">${data.location}</div>
+      </div>
+    </div>
+  `;
+  console.log('🚨 EMERGENCY SOS RECEIVED:', data);
+}
+
+function openSOSDetail() {
+  if (!currentSOS) return;
+  document.getElementById('sos-detail-name').textContent = currentSOS.name;
+  document.getElementById('sos-detail-loc').textContent = currentSOS.location;
+  document.getElementById('sos-detail-coords').textContent = currentSOS.coords;
+  openModal('sos-modal');
+}
+
+function closeSOS() {
+  closeModal('sos-modal');
+}
+
+function acknowledgeSOS() {
+  if (!currentSOS) return;
+  logAction('SOS Acknowledged', currentSOS.name, 'Emergency response dispatched to ' + currentSOS.location);
+  showToast('SOS Acknowledged — Units Dispatched', 'success');
+  document.getElementById('sos-banner-container').innerHTML = '';
+  closeModal('sos-modal');
+  currentSOS = null;
+}
+
+// Simulate SOS after 5s
+setTimeout(() => {
+  if (!currentSOS) {
+    showSOSAlert({
+      name: 'Sarah Jenkins',
+      location: 'Blk 12, Brgy. Pinagbuhatan (Riverside Area)',
+      coords: '14.5582° N, 121.0921° E'
+    });
+  }
+}, 5000);
 </script>
 </body>
 </html>
