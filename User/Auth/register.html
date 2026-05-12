@@ -66,22 +66,36 @@
 </head>
 <body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
 
-    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-[#F5F7FB] relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
 
         <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 px-4 py-6 flex flex-col">
+        <main class="flex-1 overflow-y-auto bg-[#F5F7FB] px-4 py-6 flex flex-col">
 
-            <!-- Logo and Header -->
-            <div class="text-center mb-6">
-                <div class="flex justify-center mb-3">
-                    <i data-lucide="user-plus" class="w-12 h-12 text-emergency"></i>
+            <div class="bg-white border border-gray-200 shadow-sm rounded-[32px] p-6 mb-4">
+                <div class="text-center mb-4">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-emergency/10 text-emergency mb-3">
+                        <i data-lucide="user-plus" class="w-7 h-7"></i>
+                    </div>
+                    <h1 class="text-[24px] font-bold text-navy mb-1">Create your account</h1>
+                    <p class="text-[13px] text-slate">Join the LIGTAS network and stay ready for emergencies.</p>
                 </div>
-                <h1 class="text-[24px] font-bold text-navy mb-1">Create Your Account</h1>
-                <p class="text-[13px] text-slate">Join your safety network</p>
+                <div class="rounded-3xl bg-[#F8FAFC] border border-slate-200 p-4 text-left">
+                    <p class="text-[13px] font-semibold text-navy mb-2">Why register?</p>
+                    <ul class="space-y-2 text-[12px] text-slate">
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-safe/10 text-safe text-[11px]">✓</span>
+                            <span>Receive urgent alerts and volunteer assignments from your barangay.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emergency/10 text-emergency text-[11px]">✓</span>
+                            <span>Keep your emergency contact details ready for rescue teams.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Register Form -->
-            <form class="space-y-3 flex-1" id="registerForm">
+            <form class="space-y-4" id="registerForm">
 
                 <!-- Full Name -->
                 <div>
@@ -93,6 +107,7 @@
                             id="fullname" 
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
                             placeholder="Enter your full name"
+                            value="Juan Dela Cruz"
                             required
                         >
                     </div>
@@ -108,6 +123,7 @@
                             id="email-register" 
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
                             placeholder="Enter your email"
+                            value="juan@example.com"
                             required
                         >
                     </div>
@@ -123,6 +139,7 @@
                             id="mobile" 
                             class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
                             placeholder="+63 9XX XXX XXXX"
+                            value="0917-555-9876"
                             required
                         >
                     </div>
@@ -135,12 +152,36 @@
                         <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate z-10"></i>
                         <select id="barangay" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all appearance-none cursor-pointer" required>
                             <option value="">Select your barangay</option>
-                            <option value="barangay-1">Barangay 1 - Malate</option>
-                            <option value="barangay-2">Barangay 2 - Ermita</option>
-                            <option value="barangay-3">Barangay 3 - San Isidro</option>
-                            <option value="barangay-4">Barangay 4 - Tondo</option>
-                            <option value="barangay-5">Barangay 5 - Makati</option>
-                            <option value="other">Other Location</option>
+                            <option value="Brgy. Bagong Ilog">Brgy. Bagong Ilog</option>
+                            <option value="Brgy. Bagong Katipunan">Brgy. Bagong Katipunan</option>
+                            <option value="Brgy. Bambang">Brgy. Bambang</option>
+                            <option value="Brgy. Buting">Brgy. Buting</option>
+                            <option value="Brgy. Caniogan">Brgy. Caniogan</option>
+                            <option value="Brgy. Dela Paz">Brgy. Dela Paz</option>
+                            <option value="Brgy. Kalawaan">Brgy. Kalawaan</option>
+                            <option value="Brgy. Kapasigan">Brgy. Kapasigan</option>
+                            <option value="Brgy. Kapitolyo" selected>Brgy. Kapitolyo</option>
+                            <option value="Brgy. Malinao">Brgy. Malinao</option>
+                            <option value="Brgy. Manggahan">Brgy. Manggahan</option>
+                            <option value="Brgy. Maybunga">Brgy. Maybunga</option>
+                            <option value="Brgy. Oranbo">Brgy. Oranbo</option>
+                            <option value="Brgy. Palatiw">Brgy. Palatiw</option>
+                            <option value="Brgy. Pinagbuhatan">Brgy. Pinagbuhatan</option>
+                            <option value="Brgy. Pineda">Brgy. Pineda</option>
+                            <option value="Brgy. Rosario">Brgy. Rosario</option>
+                            <option value="Brgy. Sagad">Brgy. Sagad</option>
+                            <option value="Brgy. San Antonio">Brgy. San Antonio</option>
+                            <option value="Brgy. San Joaquin">Brgy. San Joaquin</option>
+                            <option value="Brgy. San Jose">Brgy. San Jose</option>
+                            <option value="Brgy. San Miguel">Brgy. San Miguel</option>
+                            <option value="Brgy. San Nicolas (Pob.)">Brgy. San Nicolas (Pob.)</option>
+                            <option value="Brgy. Santa Cruz">Brgy. Santa Cruz</option>
+                            <option value="Brgy. Santa Lucia">Brgy. Santa Lucia</option>
+                            <option value="Brgy. Santa Rosa">Brgy. Santa Rosa</option>
+                            <option value="Brgy. Santo Tomas">Brgy. Santo Tomas</option>
+                            <option value="Brgy. Santolan">Brgy. Santolan</option>
+                            <option value="Brgy. Sumilang">Brgy. Sumilang</option>
+                            <option value="Brgy. Ugong">Brgy. Ugong</option>
                         </select>
                     </div>
                 </div>
@@ -155,6 +196,7 @@
                             id="password-register" 
                             class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
                             placeholder="Create a strong password"
+                            value="password123"
                             required
                         >
                         <button 
@@ -184,6 +226,7 @@
                             id="confirm-password" 
                             class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
                             placeholder="Confirm your password"
+                            value="password123"
                             required
                         >
                         <button 
@@ -202,6 +245,7 @@
                         type="checkbox" 
                         id="terms" 
                         class="mt-1 w-4 h-4 accent-emergency rounded cursor-pointer"
+                        checked
                         required
                     >
                     <label for="terms" class="text-[12px] text-slate cursor-pointer">
@@ -210,36 +254,40 @@
                 </div>
 
                 <!-- Create Account Button -->
-                <button type="submit" class="btn w-full bg-gradient-to-r from-emergency to-alert hover:shadow-lg py-3 rounded-lg font-bold text-white transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mt-4">
+                <button type="submit" class="btn w-full bg-gradient-to-r from-emergency to-alert hover:shadow-xl py-3 rounded-[18px] font-bold text-white transition-all transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2 mt-2">
                     <span>Create Account</span>
                     <i data-lucide="check-circle" class="w-5 h-5"></i>
                 </button>
 
                 <!-- Login Link -->
-                <p class="text-center text-[13px] text-slate">
+                <p class="text-center text-[13px] text-slate mt-3">
                     Already have an account? <a href="login.html" class="font-bold text-emergency hover:text-deep transition-colors">Login</a>
                 </p>
-
             </form>
 
             <!-- Safety Tips Card -->
-            <div class="mt-4 p-3 bg-gradient-to-r from-safe/10 to-safe/5 border border-safe/20 rounded-lg">
-                <div class="flex items-center gap-2 mb-2">
-                    <i data-lucide="shield" class="w-5 h-5 text-safe flex-shrink-0"></i>
-                    <span class="text-[12px] font-bold text-safe">Safety Tips</span>
+            <div class="mt-5 rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="rounded-2xl bg-safe/10 p-2">
+                        <i data-lucide="shield" class="w-5 h-5 text-safe"></i>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-semibold text-navy">Security Best Practices</p>
+                        <p class="text-[11px] text-slate">Safe registration tips for your LIGTAS profile.</p>
+                    </div>
                 </div>
-                <ul class="space-y-1">
-                    <li class="text-[11px] text-slate flex items-center gap-1.5">
-                        <span class="text-safe font-bold">✓</span>
-                        <span>Use a strong, unique password</span>
+                <ul class="space-y-2 text-[12px] text-slate">
+                    <li class="flex items-start gap-2">
+                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-safe/10 text-safe text-[11px]">✓</span>
+                        <span>Choose a password with letters, numbers, and symbols.</span>
                     </li>
-                    <li class="text-[11px] text-slate flex items-center gap-1.5">
-                        <span class="text-safe font-bold">✓</span>
-                        <span>Keep your location updated</span>
+                    <li class="flex items-start gap-2">
+                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emergency/10 text-emergency text-[11px]">✓</span>
+                        <span>Verify your contact details for faster emergency alerts.</span>
                     </li>
-                    <li class="text-[11px] text-slate flex items-center gap-1.5">
-                        <span class="text-safe font-bold">✓</span>
-                        <span>Enable emergency contacts</span>
+                    <li class="flex items-start gap-2">
+                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate text-[11px]">✓</span>
+                        <span>Keep your barangay location updated in your profile.</span>
                     </li>
                 </ul>
             </div>
