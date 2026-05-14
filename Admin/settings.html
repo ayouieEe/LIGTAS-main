@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LIGTAS — System Settings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
   <style>
     :root {
       --bg: #0D0F1A;
@@ -22,81 +25,516 @@
       --sidebar-w: 240px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; font-size: 13px; }
-    
-    .app { display: flex; width: 100%; }
-    .sidebar { width: var(--sidebar-w); min-height: 100vh; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
-    .main-wrap { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      font-size: 13px;
+    }
+
+    .app {
+      display: flex;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+
+    .main-wrap {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
     /* SIDEBAR */
-    .sidebar-logo { padding: 24px 20px 20px; display: flex; align-items: center; gap: 10px; }
-    .sidebar-logo svg { color: var(--critical); width: 18px; height: 18px; }
-    .sidebar-logo span { font-size: 14px; font-weight: 600; letter-spacing: 0.05em; }
-    .nav { flex: 1; padding: 12px 10px; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius); color: var(--text-muted); transition: all .1s; text-decoration: none; margin-bottom: 2px; }
-    .nav-item:hover { background: var(--bg-card); color: var(--text-primary); }
-    .nav-item.active { background: var(--bg-elevated); color: var(--text-primary); border-left: 2px solid var(--nominal); border-radius: 0 4px 4px 0; padding-left: 10px; }
-    .nav-divider { height: 1px; background: var(--border); margin: 16px 8px; }
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-logo svg {
+      color: var(--critical);
+      width: 18px;
+      height: 18px;
+    }
+
+    .sidebar-logo span {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .nav {
+      flex: 1;
+      padding: 12px 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      transition: all .1s;
+      text-decoration: none;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border-left: 2px solid var(--nominal);
+      border-radius: 0 4px 4px 0;
+      padding-left: 10px;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 8px;
+    }
 
     /* TOPBAR */
-    .topbar { position: sticky; top: 0; z-index: 50; background: rgba(13,15,26,.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
-    .topbar h1 { font-size: 14px; font-weight: 500; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(13, 15, 26, .8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar h1 {
+      font-size: 14px;
+      font-weight: 500;
+    }
 
     /* CONTENT */
-    .content { padding: 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
-    .settings-grid { display: grid; grid-template-columns: 240px 1fr; gap: 32px; align-items: start; }
-    
-    .settings-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 88px; }
-    .s-nav-item { padding: 10px 16px; border-radius: var(--radius); color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; }
-    .s-nav-item:hover { background: var(--bg-card); color: var(--text-primary); }
-    .s-nav-item.active { background: var(--bg-elevated); color: var(--nominal); }
+    .content {
+      padding: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
-    .settings-section { margin-bottom: 40px; scroll-margin-top: 100px; }
-    .section-head { margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-    .section-head h2 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
-    .section-head p { font-size: 12px; color: var(--text-muted); }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
 
-    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.05em; }
-    .input-text, .input-select, .input-textarea { width: 100%; padding: 10px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-primary); font-family: inherit; font-size: 13px; outline: none; }
-    .input-text:focus { border-color: var(--nominal); }
+    .settings-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: sticky;
+      top: 88px;
+    }
 
-    .threshold-row { display: flex; align-items: center; gap: 16px; background: var(--bg); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 8px; }
-    .threshold-val { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600; color: var(--nominal); min-width: 50px; }
+    .s-nav-item {
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
 
-    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
-    .btn-primary { background: var(--nominal); color: white; }
-    .btn-primary:hover { background: #2563EB; }
-    .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-muted); }
-    .btn-ghost:hover { background: var(--bg-elevated); color: var(--text-primary); }
+    .s-nav-item:hover {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
 
-    .unit-list { display: flex; flex-direction: column; gap: 8px; }
-    .unit-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-elevated); padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--border); }
-    .unit-info { display: flex; align-items: center; gap: 12px; }
-    .unit-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+    .s-nav-item.active {
+      background: var(--bg-elevated);
+      color: var(--nominal);
+    }
 
-    .role-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.1); color: var(--nominal); margin-left: 8px; }
-    
-    #toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--success); border-left: 4px solid var(--success); color: var(--text-primary); border-radius: var(--radius); font-weight: 500; animation: toast-in 0.3s ease-out; }
-    @keyframes toast-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .settings-section {
+      margin-bottom: 40px;
+      scroll-margin-top: 100px;
+    }
+
+    .section-head {
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .section-head p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+
+    .input-text,
+    .input-select,
+    .input-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .input-text:focus {
+      border-color: var(--nominal);
+    }
+
+    .threshold-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--bg);
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .threshold-val {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--nominal);
+      min-width: 50px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--nominal);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563EB;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .unit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .unit-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-elevated);
+      padding: 10px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .unit-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .unit-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .role-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--nominal);
+      margin-left: 8px;
+    }
+
+    #toast-wrap {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--success);
+      border-left: 4px solid var(--success);
+      color: var(--text-primary);
+      border-radius: var(--radius);
+      font-weight: 500;
+      animation: toast-in 0.3s ease-out;
+    }
+
+    @keyframes toast-in {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
 
     /* SOS Alert System styles for topbar compatibility */
-    #sos-banner-container { display: flex; gap: 8px; margin-right: 16px; }
-    .sos-banner { display: flex; align-items: center; gap: 10px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 12px; border-radius: var(--radius); cursor: pointer; animation: sos-pulse 2s infinite; }
-    .sos-icon-pulse { width: 8px; height: 8px; background: var(--critical); border-radius: 50%; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: sos-dot-pulse 1.5s infinite; }
-    @keyframes sos-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } 50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.1); } }
-    @keyframes sos-dot-pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    #sos-banner-container {
+      display: flex;
+      gap: 8px;
+      margin-right: 16px;
+    }
+
+    .sos-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      animation: sos-pulse 2s infinite;
+    }
+
+    .sos-icon-pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--critical);
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      animation: sos-dot-pulse 1.5s infinite;
+    }
+
+    @keyframes sos-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+
+      50% {
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+      }
+    }
+
+    @keyframes sos-dot-pulse {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    /* MODALS */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #1A1D27;
+      border: 1px solid #2E3247;
+      border-radius: 12px;
+      width: 480px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: scale(.97) translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .modal-head {
+      padding: 18px 24px;
+      background: #0F1117;
+      border-bottom: 1px solid #2E3247;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-head h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #F9FAFB;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+      background: #1A1D27;
+    }
+
+    .modal-foot {
+      padding: 16px 24px;
+      background: #0F1117;
+      border-top: 1px solid #2E3247;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #242736;
+      border: 1px solid #2E3247;
+      color: #6B7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .close-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: #EF4444;
+      color: #EF4444;
+    }
   </style>
 </head>
+
 <body>
   <div class="app">
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
         <span>LIGTAS</span>
         <div class="role-badge">Admin</div>
       </div>
@@ -118,8 +556,11 @@
         <h1>System Configuration</h1>
         <div style="display: flex; align-items: center;">
           <div id="sos-banner-container"></div>
-          <div class="admin-chip" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="window.location.href='profile.html'">
-            <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 10px;">CR</div>
+          <div class="admin-chip" style="display: flex; align-items: center; gap: 8px; cursor: pointer;"
+            onclick="window.location.href='profile.html'">
+            <div
+              style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 10px;">
+              CR</div>
             <span style="font-size: 13px;">Cmdr. Reyes</span>
           </div>
         </div>
@@ -136,7 +577,7 @@
           </nav>
 
           <div class="settings-form">
-            
+
             <section id="general" class="settings-section">
               <div class="section-head">
                 <h2>General Settings</h2>
@@ -176,15 +617,18 @@
                 <div class="form-group">
                   <label>Center Critical Threshold (%)</label>
                   <div class="threshold-row">
-                    <input type="range" style="flex:1" min="1" max="100" value="90" oninput="updateVal('crit-val', this.value)">
+                    <input type="range" style="flex:1" min="1" max="100" value="90"
+                      oninput="updateVal('crit-val', this.value)">
                     <span class="threshold-val" id="crit-val">90%</span>
                   </div>
-                  <p style="font-size:11px; color:var(--text-micro)">Centers exceeding this occupancy turn RED in all modules.</p>
+                  <p style="font-size:11px; color:var(--text-micro)">Centers exceeding this occupancy turn RED in all
+                    modules.</p>
                 </div>
                 <div class="form-group">
                   <label>Center Warning Threshold (%)</label>
                   <div class="threshold-row">
-                    <input type="range" style="flex:1" min="1" max="100" value="70" oninput="updateVal('warn-val', this.value)">
+                    <input type="range" style="flex:1" min="1" max="100" value="70"
+                      oninput="updateVal('warn-val', this.value)">
                     <span class="threshold-val" id="warn-val" style="color: var(--warning)">70%</span>
                   </div>
                 </div>
@@ -219,15 +663,18 @@
                     <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px">Remove</button>
                   </div>
                 </div>
-                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addUnit()">+ Add New Response Unit</button>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;"
+                  onclick="addUnit()">+ Add New Response Unit</button>
               </div>
               <div class="panel">
                 <label>Incident Taxonomy</label>
                 <div class="unit-list" id="cat-list-container">
                   <!-- Populated by renderCategories() -->
                 </div>
-                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addCategoryItem()">+ Add New Incident Type</button>
-                <p style="font-size:11px; color:var(--text-micro); margin-top: 12px;">Manage standardized incident types and their parent categories for system-wide reporting.</p>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;"
+                  onclick="addCategoryItem()">+ Add New Incident Type</button>
+                <p style="font-size:11px; color:var(--text-micro); margin-top: 12px;">Manage standardized incident types
+                  and their parent categories for system-wide reporting.</p>
               </div>
             </section>
 
@@ -240,12 +687,16 @@
                 <div class="unit-list" id="zone-list-container">
                   <!-- Populated by renderZones() -->
                 </div>
-                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;" onclick="addZone()">+ Register New Area</button>
+                <button class="btn btn-ghost" style="width:100%; margin-top: 12px; border-style: dashed;"
+                  onclick="addZone()">+ Register New Area</button>
               </div>
             </section>
 
-            <div style="position: sticky; bottom: 24px; padding-top: 20px; background: linear-gradient(transparent, var(--bg) 20%);">
-              <button class="btn btn-primary" onclick="saveSettings()" style="width: 100%; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);">Save All Changes</button>
+            <div
+              style="position: sticky; bottom: 24px; padding-top: 20px; background: linear-gradient(transparent, var(--bg) 20%);">
+              <button class="btn btn-primary" onclick="saveSettings()"
+                style="width: 100%; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);">Save All
+                Changes</button>
             </div>
 
           </div>
@@ -287,17 +738,17 @@
         maintMode: document.getElementById('set-maint').value,
         lastUpdated: new Date().toISOString()
       };
-      
+
       localStorage.setItem('ligtas_config', JSON.stringify(config));
-      
+
       // Save Zones
       localStorage.setItem('ligtas_zones', JSON.stringify(window.CURRENT_ZONES));
-      
+
       // Save Units
       localStorage.setItem('ligtas_units', JSON.stringify(window.CURRENT_UNITS));
-      
+
       showToast('Settings saved successfully!');
-      
+
       // Update sidebar logo text immediately
       document.querySelectorAll('.sidebar-logo span:not(.version)').forEach(el => el.textContent = config.sysName);
     }
@@ -342,7 +793,7 @@
     function renderCategories() {
       const container = document.getElementById('cat-list-container');
       if (!container) return;
-      
+
       container.innerHTML = '';
       // Group by category for cleaner UI if desired, but here we follow unit-list style
       window.CURRENT_CATEGORIES.forEach((cat, index) => {
@@ -365,19 +816,13 @@
     }
 
     function addCategoryItem() {
-      const name = prompt('Enter Incident Type Name (e.g. Tsunami):');
-      if (!name) return;
-      const group = prompt('Enter Category Group (Meteorological, Hydrological, etc.):', 'General');
-      if (group) {
-        window.CURRENT_CATEGORIES.push({ name, group });
-        renderCategories();
-      }
+      triggerAddCategory();
     }
 
     function renderUnits() {
       const container = document.getElementById('unit-list-container');
       if (!container) return;
-      
+
       container.innerHTML = '';
       window.CURRENT_UNITS.forEach((unit, index) => {
         const div = document.createElement('div');
@@ -399,19 +844,13 @@
     }
 
     function addUnit() {
-      const name = prompt('Enter Unit Name (e.g. Rescue Team Delta):');
-      if (!name) return;
-      const type = prompt('Enter Type (FIRE, RESCUE, MED, POLICE):', 'RESCUE');
-      if (type) {
-        window.CURRENT_UNITS.push({ name, type: type.toUpperCase() });
-        renderUnits();
-      }
+      triggerAddUnit();
     }
 
     function renderZones() {
       const container = document.getElementById('zone-list-container');
       if (!container) return;
-      
+
       container.innerHTML = '';
       Object.entries(window.CURRENT_ZONES).forEach(([name, count]) => {
         if (name === 'all') return;
@@ -448,18 +887,14 @@
     }
 
     function addZone() {
-      const name = prompt('Enter Barangay/Zone Name:');
-      if (name && !window.CURRENT_ZONES[name]) {
-        window.CURRENT_ZONES[name] = 0;
-        renderZones();
-      }
+      triggerAddZone();
     }
 
     function loadSettings() {
       const saved = localStorage.getItem('ligtas_config');
       const savedZones = localStorage.getItem('ligtas_zones');
       const savedUnits = localStorage.getItem('ligtas_units');
-      
+
       if (savedZones) {
         window.CURRENT_ZONES = JSON.parse(savedZones);
       }
@@ -471,21 +906,21 @@
       renderCategories();
 
       if (!saved) return;
-      
+
       const config = JSON.parse(saved);
       document.getElementById('set-sys-name').value = config.sysName || 'LIGTAS';
       document.getElementById('set-org-name').value = config.orgName || 'Pasig City Command Center';
-      
+
       if (config.critThreshold) {
         document.querySelector('input[oninput*="crit-val"]').value = config.critThreshold;
         document.getElementById('crit-val').textContent = config.critThreshold + '%';
       }
-      
+
       if (config.warnThreshold) {
         document.querySelector('input[oninput*="warn-val"]').value = config.warnThreshold;
         document.getElementById('warn-val').textContent = config.warnThreshold + '%';
       }
-      
+
       if (config.categories) {
         if (Array.isArray(config.categories) && typeof config.categories[0] === 'object') {
           window.CURRENT_CATEGORIES = config.categories;
@@ -495,7 +930,7 @@
         }
         renderCategories();
       }
-      
+
       if (config.maintMode) {
         document.getElementById('set-maint').value = config.maintMode;
       }
@@ -523,6 +958,167 @@
         `;
       }
     }
+
+    // Modal Handling
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Modal Action Handlers
+    function triggerAddCategory() {
+      document.getElementById('modal-cat-name').value = '';
+      document.getElementById('modal-cat-group').value = 'General';
+      openModal('add-category-modal');
+    }
+
+    function confirmAddCategory() {
+      const name = document.getElementById('modal-cat-name').value;
+      const group = document.getElementById('modal-cat-group').value;
+      if (name) {
+        window.CURRENT_CATEGORIES.push({ name, group });
+        renderCategories();
+        closeModal('add-category-modal');
+      }
+    }
+
+    function triggerAddUnit() {
+      document.getElementById('modal-unit-name').value = '';
+      document.getElementById('modal-unit-type').value = 'RESCUE';
+      openModal('add-unit-modal');
+    }
+
+    function confirmAddUnit() {
+      const name = document.getElementById('modal-unit-name').value;
+      const type = document.getElementById('modal-unit-type').value;
+      if (name) {
+        window.CURRENT_UNITS.push({ name, type: type.toUpperCase() });
+        renderUnits();
+        closeModal('add-unit-modal');
+      }
+    }
+
+    function triggerAddZone() {
+      document.getElementById('modal-zone-name').value = '';
+      document.getElementById('modal-zone-count').value = '0';
+      openModal('add-zone-modal');
+    }
+
+    function confirmAddZone() {
+      const name = document.getElementById('modal-zone-name').value;
+      const count = parseInt(document.getElementById('modal-zone-count').value) || 0;
+      if (name) {
+        window.CURRENT_ZONES[name] = count;
+        updateTotalCount();
+        renderZones();
+        closeModal('add-zone-modal');
+      }
+    }
   </script>
+
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="add-category-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Add Incident Type</h2>
+        <button class="close-btn" onclick="closeModal('add-category-modal')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Type Name</label>
+          <input type="text" class="input-text" id="modal-cat-name" placeholder="e.g. Tsunami">
+        </div>
+        <div class="form-group">
+          <label>Category Group</label>
+          <select class="input-select" id="modal-cat-group">
+            <option>Meteorological</option>
+            <option>Hydrological</option>
+            <option>Geological</option>
+            <option>Technological</option>
+            <option>General</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-category-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddCategory()">Add Type</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="add-unit-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Add Response Unit</h2>
+        <button class="close-btn" onclick="closeModal('add-unit-modal')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Unit Name</label>
+          <input type="text" class="input-text" id="modal-unit-name" placeholder="e.g. Rescue Team Delta">
+        </div>
+        <div class="form-group">
+          <label>Unit Type</label>
+          <select class="input-select" id="modal-unit-type">
+            <option value="RESCUE">Rescue Team</option>
+            <option value="FIRE">Fire Station</option>
+            <option value="MED">Medical Team</option>
+            <option value="POLICE">Police Unit</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-unit-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddUnit()">Add Unit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="add-zone-modal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>Add Barangay Zone</h2>
+        <button class="close-btn" onclick="closeModal('add-zone-modal')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Barangay Name</label>
+          <input type="text" class="input-text" id="modal-zone-name" placeholder="e.g. Pinagbuhatan">
+        </div>
+        <div class="form-group">
+          <label>Initial Resident Count</label>
+          <input type="number" class="input-text" id="modal-zone-count" value="0">
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-zone-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAddZone()">Add Zone</button>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>
