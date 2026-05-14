@@ -2834,24 +2834,28 @@
             style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
             <div class="m-card c-red" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Active Emergencies</div>
-              <div class="m-card-value red" style="font-size: 26px;">8</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Critical Status</div>
+              <div class="m-card-value red" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No active status</div>
+
             </div>
             <div class="m-card c-blue" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Units Deployed</div>
-              <div class="m-card-value blue" style="font-size: 26px;">14</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Across all zones</div>
+              <div class="m-card-value blue" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No units deployed</div>
+
             </div>
             <div class="m-card c-orange" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Civilians Affected</div>
-              <div class="m-card-value orange" style="font-size: 26px;">1,503</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Est. displacement</div>
+              <div class="m-card-value orange" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No citizens affected</div>
+
             </div>
             <div class="m-card c-yellow" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Pending Dispatch</div>
-              <div class="m-card-value orange" style="font-size: 26px;">5</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Awaiting verification
+              <div class="m-card-value orange" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No pending dispatch
               </div>
+
             </div>
           </div>
           <div class="grid-left-heavy" style="height:620px">
@@ -3120,18 +3124,8 @@
         function getIncidents() {
           return JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
         }
-        function saveIncidents(arr) {
-          localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
-        }
+        const SEED_INCIDENTS = [];
 
-        const SEED_INCIDENTS = [
-          { id: 'INC-S001', title: 'Residential Fire: Brgy. Rosario', type: 'Fire', severity: 'Critical', barangay: 'Rosario', description: '3-alarm residential fire affecting 5 houses. BFP Pasig deployed 2 fire trucks.', status: 'Dispatched', createdAt: '2m ago', reporter: 'Maria Santos', contact: '📱 +63 917-555-1001', source: 'Field Report' },
-          { id: 'INC-S002', title: 'Flash Flood: Brgy. Santolan', type: 'Flood', severity: 'Critical', barangay: 'Santolan', description: 'Pasig River overflow affecting low-lying areas. Water level at 17.2m.', status: 'Reported', createdAt: '4m ago', reporter: 'Juan Dela Cruz', contact: '📱 Citizen App', source: 'Mobile App' },
-          { id: 'INC-S003', title: 'Vehicular Accident: C-5 Bagong Ilog', type: 'Accident', severity: 'Critical', barangay: 'Bagong Ilog', description: 'Multi-vehicle collision on C-5. 3 ambulances dispatched.', status: 'Dispatched', createdAt: '8m ago', reporter: 'Brgy. Capt. Reyes', contact: '📧 reyes@pasig.gov.ph', source: 'Admin Portal' },
-          { id: 'INC-S004', title: 'Crime Incident: Brgy. Kapitolyo', type: 'Crime', severity: 'High', barangay: 'Kapitolyo', description: 'Theft reported in commercial area. Police units alerted.', status: 'Reported', createdAt: '12m ago', reporter: 'Pedro Mendoza', contact: '📱 Citizen App', source: 'Mobile App' },
-          { id: 'INC-S005', title: 'Medical Emergency: Brgy. Ugong', type: 'Medical', severity: 'Critical', barangay: 'Ugong', description: 'Cardiac arrest report. Ambulance dispatched.', status: 'Dispatched', createdAt: '15m ago', reporter: 'Elena Gomez', contact: '📱 Citizen App', source: 'Mobile App' },
-          { id: 'INC-S006', title: 'Neighbor Dispute: Brgy. Pinagbuhatan', type: 'Neighbor', severity: 'Medium', barangay: 'Pinagbuhatan', description: 'Noise complaint and verbal altercation. Barangay Tanod requested.', status: 'Reported', createdAt: '20m ago', reporter: 'Aling Nena', contact: '📱 +63 916-555-4004', source: 'Hotline' }
-        ];
 
         function seedIncidents() {
           if (getIncidents().length === 0) {
@@ -3437,13 +3431,8 @@
           const needs = (draft.needs || []).map(item => item.toLowerCase());
           const type = String(draft.type || '').toLowerCase();
 
-          const pool = [
-            { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], phone: '+63 917 555 3001', color: '#2f81f7' },
-            { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Medical', 'Triage'], phone: '+63 917 555 3002', color: '#8b5cf6' },
-            { name: 'Marco Reyes', dist: '1.1km', time: '14m', skills: ['Traffic Control', 'Security'], phone: '+63 917 555 3003', color: '#f59e0b' },
-            { name: 'Ana Santos', dist: '1.3km', time: '16m', skills: ['Evacuation', 'Relief'], phone: '+63 917 555 3004', color: '#22c55e' },
-            { name: 'Paolo Cruz', dist: '1.5km', time: '18m', skills: ['Fire Safety', 'Crowd Control'], phone: '+63 917 555 3005', color: '#ef4444' }
-          ];
+          const pool = [];
+
 
           return pool
             .map(vol => {
@@ -4346,59 +4335,7 @@
           return /pasig/i.test(text) ? text : `${text}, Pasig City`;
         }
 
-        function getIncidentNeeds(inc) {
-          return normalizeList(firstValue(
-            inc.needs,
-            inc.requiredAssistance,
-            inc.assistanceNeeded,
-            inc.resourcesNeeded,
-            inc.unitsNeeded,
-            inc.responseUnits
-          ));
-        }
 
-        function getIncidentMedia(inc) {
-          const media = normalizeList(firstValue(
-            inc.media,
-            inc.attachments,
-            inc.photos,
-            inc.images,
-            inc.photoUrls,
-            inc.photoUrl,
-            inc.imageUrl
-          ));
-
-          return media.filter(Boolean);
-        }
-
-        function renderInfoBadge(text, tone = 'default') {
-          const styles = {
-            critical: 'background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)',
-            warning: 'background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.2)',
-            nominal: 'background:rgba(59,130,246,0.1);color:var(--nominal);border-color:rgba(59,130,246,0.2)',
-            success: 'background:rgba(34,197,94,0.1);color:var(--success);border-color:rgba(34,197,94,0.2)',
-            default: 'background:var(--bg-elevated);color:var(--text-muted);border-color:var(--border)'
-          };
-          return `<span class="badge" style="${styles[tone] || styles.default}">${escapeHTML(text)}</span>`;
-        }
-
-        function severityTone(severity) {
-          const value = String(severity || '').toLowerCase();
-          if (value.includes('critical')) return 'critical';
-          if (value.includes('high')) return 'critical';
-          if (value.includes('medium') || value.includes('moderate')) return 'warning';
-          if (value.includes('low')) return 'success';
-          return 'default';
-        }
-
-        function sourceTone(source) {
-          return String(source || '').toLowerCase().includes('mobile') ? 'badge badge-teal' : 'badge';
-        }
-
-        function setText(id, value, fallback = '—') {
-          const el = document.getElementById(id);
-          if (el) el.textContent = value || fallback;
-        }
 
 
         function getAssignedUnits(inc) {
@@ -4413,13 +4350,9 @@
         }
 
         function getDefaultVolunteerPool() {
-          return [
-            { name: 'Ricardo Dalisay', initials: 'RD', distance: '0.4km away', status: 'En Route', dot: 'active', color: 'var(--primary)' },
-            { name: 'Elena Gomez', initials: 'EG', distance: '0.9km away', status: 'Dispatched', dot: 'busy', color: 'var(--nominal)' },
-            { name: 'Mark Reyes', initials: 'MR', distance: '1.1km away', status: 'Available', dot: 'active', color: 'var(--success)' },
-            { name: 'Ana Santos', initials: 'AS', distance: '1.6km away', status: 'Standby', dot: 'offline', color: 'var(--warning)' }
-          ];
+          return [];
         }
+
 
         function normalizeVolunteer(value, index = 0) {
           if (typeof value === 'object' && value !== null) {
@@ -4488,46 +4421,17 @@
         }
 
 
-        function getCallableNumber(value) {
-          const raw = String(value || '').trim();
-          const phone = raw.match(/(\+?63|0)?[\s-]?\d{3}[\s-]?\d{3}[\s-]?\d{4}/);
-          if (!phone) return '';
-          return phone[0].replace(/[^\d+]/g, '');
-        }
 
-        function renderCallButton(label, number, variant = 'primary') {
-          if (!number) {
-            return `<button class="btn btn-ghost" disabled style="opacity:0.55;cursor:not-allowed;">No phone number</button>`;
-          }
-          const cls = variant === 'primary' ? 'btn btn-primary' : 'btn btn-ghost';
-          return `<a class="${cls}" href="tel:${escapeHTML(number)}" onclick="event.stopPropagation()">☎ ${escapeHTML(label)}</a>`;
-        }
 
         const RESPONSE_DIRECTORY = {
-          ambulance: [
-            { unit: 'Ambulance', name: 'Pasig City General Hospital Emergency Room', phone: '+63 2 8643 3333', distance: 'Nearest public hospital', role: 'Hospital ER' },
-            { unit: 'Ambulance', name: 'Pasig City Rescue Ambulance', phone: '+63 917 555 2301', distance: 'City rescue dispatch', role: 'Ambulance Unit' }
-          ],
-          police: [
-            { unit: 'Police', name: 'Pasig City Police Station', phone: '+63 2 8641 1907', distance: 'Nearest police coordination', role: 'Police Station' },
-            { unit: 'Police', name: 'Eastern Police District Hotline', phone: '+63 2 8723 0401', distance: 'District backup', role: 'Police Hotline' }
-          ],
-          fire: [
-            { unit: 'Fire Truck', name: 'BFP Pasig Central Fire Station', phone: '+63 2 8641 1931', distance: 'Nearest fire station', role: 'Fire Station' },
-            { unit: 'Fire Truck', name: 'Pasig Fire Rescue Unit', phone: '+63 917 555 2302', distance: 'Fire rescue dispatch', role: 'Fire Rescue' }
-          ],
-          relief: [
-            { unit: 'Food & Water', name: 'Pasig CSWDO Relief Desk', phone: '+63 2 8643 1111', distance: 'Relief coordination', role: 'Relief Support' },
-            { unit: 'Food & Water', name: 'Pasig DRRMO Logistics', phone: '+63 917 555 2303', distance: 'Emergency supplies', role: 'Logistics' }
-          ],
-          shelter: [
-            { unit: 'Shelter', name: 'Pasig DRRMO Evacuation Desk', phone: '+63 2 8643 0000', distance: 'Evacuation coordination', role: 'Shelter Desk' },
-            { unit: 'Shelter', name: 'Barangay Evacuation Coordinator', phone: '+63 917 555 2304', distance: 'Nearest barangay support', role: 'Evacuation Center' }
-          ],
-          barangay: [
-            { unit: 'Barangay Response', name: 'Barangay Emergency Desk', phone: '+63 917 555 2305', distance: 'Local response desk', role: 'Barangay Desk' }
-          ]
+          ambulance: [],
+          police: [],
+          fire: [],
+          relief: [],
+          shelter: [],
+          barangay: []
         };
+
 
         function contactKeysForIncident(inc) {
           const needs = getIncidentNeeds(inc).map(v => v.toLowerCase());
@@ -4780,12 +4684,8 @@
         }
         // ZONE_RECIPIENTS is now managed globally in js/app-config.js
         if (!window.ZONE_RECIPIENTS) {
-          window.ZONE_RECIPIENTS = {
-            'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
-            'Manggahan': 4120, 'Pinagbuhatan': 2216,
-            'Rosario': 3842, 'San Joaquin': 1680,
-            'Santolan': 1920, 'Ugong': 480
-          };
+          window.ZONE_RECIPIENTS = {};
+
         }
         const ZONE_RECIPIENTS = window.ZONE_RECIPIENTS;
         function openBroadcastConfirm(level, zone, message) {

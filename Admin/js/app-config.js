@@ -1,41 +1,140 @@
-// DEFAULT DATA SEEDING
-const DEFAULT_ZONES = {
-    'all': 811800,
-    'Bagong Ilog': 18200, 'Bagong Katipunan': 1200, 'Bambang': 22000,
-    'Buting': 11500, 'Caniogan': 31000, 'Dela Paz': 15400,
-    'Kalawaan': 32100, 'Kapasigan': 6700, 'Kapitolyo': 14300,
-    'Malinao': 5900, 'Manggahan': 94000, 'Maybunga': 45200,
-    'Oranbo': 4500, 'Palatiw': 22800, 'Pinagbuhatan': 151000,
-    'Pineda': 18900, 'Rosario': 68000, 'Sagad': 8400,
-    'San Antonio': 16500, 'San Joaquin': 15600, 'San Jose': 2300,
-    'San Miguel': 33000, 'San Nicolas': 1800, 'Santa Cruz': 6400,
-    'Santa Lucia': 46200, 'Santa Rosa': 1700, 'Santolan': 52100,
-    'Santo Tomas': 40300, 'Sumilang': 5600, 'Ugong': 28500
+// CORE UTILITIES (Global)
+const firstValue = (...vals) => {
+    for (const v of vals) {
+        if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim().toLowerCase() !== 'undefined') return v;
+    }
+    return vals[vals.length - 1];
 };
 
-const DEFAULT_UNITS = [
-    { name: 'Fire Truck', type: 'FIRE' },
-    { name: 'Ambulance', type: 'MED' },
-    { name: 'Police', type: 'SECURITY' },
-    { name: 'Food & Water', type: 'RELIEF' },
-    { name: 'Shelter', type: 'RELIEF' }
-];
+const normalizeList = (val) => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') return val.split(/,|\n|\|/).map(s => s.trim()).filter(Boolean);
+    return [];
+};
 
-const DEFAULT_CATEGORIES = [
-    { name: 'Fire', group: 'Technological' },
-    { name: 'Flood', group: 'Hydrological' },
-    { name: 'Earthquake', group: 'Geological' },
-    { name: 'Accident', group: 'Medical/Health' },
-    { name: 'Medical', group: 'Medical/Health' },
-    { name: 'Neighbor', group: 'Security/Social' },
-    { name: 'Crime', group: 'Security/Social' },
-    { name: 'Other', group: 'General' }
-];
+const escapeHTML = (str) => {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+};
+
+const getIncidentLocation = (inc) => {
+    const raw = firstValue(inc.location, inc.barangay, inc.address, inc.fullAddress, inc.landmark, inc.reportLocation, inc.latlng, 'Unknown location');
+    const text = String(raw).trim();
+    if (text === 'Unknown location' || /pasig/i.test(text)) return text;
+    return `${text}, Pasig City`;
+};
+
+const getIncidentNeeds = (inc) => {
+    return normalizeList(firstValue(
+        inc.needs, inc.requiredAssistance, inc.assistanceNeeded, inc.resourcesNeeded, inc.unitsNeeded, inc.responseUnits, inc.assistance, inc.requirements
+    ));
+};
+
+const getIncidentMedia = (inc) => {
+    return normalizeList(firstValue(
+        inc.media, inc.attachments, inc.photos, inc.images, inc.photoUrls, inc.photoUrl, inc.imageUrl
+    )).filter(Boolean);
+};
+
+const severityTone = (severity) => {
+    if (!severity) return 'default';
+    const s = String(severity).toLowerCase();
+    if (s.includes('critical')) return 'critical';
+    if (s.includes('high') || s.includes('urgent')) return 'warning';
+    if (s.includes('medium') || s.includes('stable')) return 'nominal';
+    if (s.includes('low') || s.includes('info')) return 'success';
+    return 'default';
+};
+
+const sourceTone = (source) => {
+    if (!source) return 'badge';
+    const s = String(source).toLowerCase();
+    if (s.includes('admin') || s.includes('official')) return 'badge critical';
+    if (s.includes('field') || s.includes('verify')) return 'badge warning';
+    if (s.includes('mobile') || s.includes('app')) return 'badge nominal';
+    return 'badge';
+};
+
+const getCallableNumber = (phone) => {
+    if (!phone) return '';
+    return String(phone).replace(/[^\d+]/g, '');
+};
+
+const renderCallButton = (label, phone, type = 'primary') => {
+    if (!phone) return `<button class="btn btn-ghost" disabled style="opacity:0.55;cursor:not-allowed;">No phone number</button>`;
+    const btnClass = type === 'ghost' ? 'btn-ghost' : 'btn-primary';
+    return `<a href="tel:${phone}" class="btn ${btnClass}" style="text-decoration:none;font-size:11px;padding:6px 10px;" onclick="event.stopPropagation()">☎ ${label}</a>`;
+};
+
+const renderInfoBadge = (text, type = 'default') => {
+    const colors = {
+        'critical': 'background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)',
+        'warning': 'background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.2)',
+        'nominal': 'background:rgba(59,130,246,0.1);color:var(--primary);border-color:rgba(59,130,246,0.2)',
+        'success': 'background:rgba(34,197,94,0.1);color:var(--success);border-color:rgba(34,197,94,0.2)',
+        'default': 'background:var(--bg3);color:var(--text3);border-color:var(--border)'
+    };
+    return `<span class="badge" style="${colors[type] || colors.default}">${escapeHTML(text)}</span>`;
+};
+
+const setText = (id, value, fallback = '—') => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value || fallback;
+};
+
+const getIncidents = () => JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+const saveIncidents = (arr) => localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
+
+// MASTER DUMMY DATA
+const DEFAULT_ZONES = {};
+
+
+const DEFAULT_UNITS = [];
+
+
+const DEFAULT_CATEGORIES = [];
+
+
+const DEFAULT_INCIDENTS = [];
+
+
+const DEFAULT_AUDIT = [];
+
+
+const DEFAULT_INVENTORY = {};
+
+
+const DEFAULT_AIDED = [];
+
 
 const applyLigtasConfig = () => {
+    // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
+    const CURRENT_VERSION = '2026.05.15.v2';
+
+    const savedVersion = localStorage.getItem('ligtas_data_version');
+    if (savedVersion !== CURRENT_VERSION) {
+        // Clear specific dummy data keys to allow fresh seeding
+        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs'];
+        keysToReset.forEach(k => localStorage.removeItem(k));
+        localStorage.setItem('ligtas_data_version', CURRENT_VERSION);
+        console.log("LIGTAS: Dummy data reset to latest version (" + CURRENT_VERSION + ")");
+    }
+
     // Seed defaults if empty
     if (!localStorage.getItem('ligtas_zones')) localStorage.setItem('ligtas_zones', JSON.stringify(DEFAULT_ZONES));
     if (!localStorage.getItem('ligtas_units')) localStorage.setItem('ligtas_units', JSON.stringify(DEFAULT_UNITS));
+    if (!localStorage.getItem('ligtas_inventory')) localStorage.setItem('ligtas_inventory', JSON.stringify(DEFAULT_INVENTORY));
+    if (!localStorage.getItem('ligtas_aided_requests')) localStorage.setItem('ligtas_aided_requests', JSON.stringify(DEFAULT_AIDED));
+    
+    if (!localStorage.getItem('ligtas_incidents') || JSON.parse(localStorage.getItem('ligtas_incidents')).length === 0) {
+        localStorage.setItem('ligtas_incidents', JSON.stringify(DEFAULT_INCIDENTS));
+    }
+    
+    if (!localStorage.getItem('ligtas_audit') || JSON.parse(localStorage.getItem('ligtas_audit')).length === 0) {
+        localStorage.setItem('ligtas_audit', JSON.stringify(DEFAULT_AUDIT));
+    }
+
     if (!localStorage.getItem('ligtas_config')) {
         localStorage.setItem('ligtas_config', JSON.stringify({
             sysName: 'LIGTAS',

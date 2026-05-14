@@ -2758,35 +2758,10 @@
                 <h2 style="font-size:11px;color:var(--text-muted);text-transform:uppercase;margin-bottom:12px">Supply
                   Status</h2>
                 <div style="display:flex;flex-direction:column;gap:10px">
-                  <div style="margin-bottom:12px">
-                    <div
-                      style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px">
-                      <span>Medical Kits</span>
-                      <div style="display:flex;align-items:center;gap:8px">
-                        <span id="supply-medical-label" style="color:var(--success)">Optimal</span>
-                        <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:10px"
-                          onclick="openSupplyUpdate('medical','Medical Kits',85)">Update</button>
-                      </div>
-                    </div>
-                    <div class="cap-bar">
-                      <div class="cap-fill green" id="supply-medical-bar" style="width:85%"></div>
-                    </div>
+                  <div style="padding:24px; text-align:center; color:var(--text-muted); font-size:12px;">
+                    Select an evacuation center to view supply status
                   </div>
 
-                  <div style="margin-bottom:12px">
-                    <div
-                      style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px">
-                      <span>Food Packs</span>
-                      <div style="display:flex;align-items:center;gap:8px">
-                        <span id="supply-food-label" style="color:var(--warning)">Low</span>
-                        <button class="btn btn-sm btn-ghost" style="padding:2px 8px;font-size:10px"
-                          onclick="openSupplyUpdate('food','Food Packs',32)">Update</button>
-                      </div>
-                    </div>
-                    <div class="cap-bar">
-                      <div class="cap-fill orange" id="supply-food-bar" style="width:32%"></div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -2812,12 +2787,13 @@
         <div class="modal-body">
           <div class="form-group">
             <label>Current Level (%)</label>
-            <input type="range" id="supply-range" min="0" max="100" value="85"
+            <input type="range" id="supply-range" min="0" max="100" value="0"
               oninput="document.getElementById('supply-range-label').textContent = this.value + '%'"
               style="width:100%;margin-bottom:8px">
             <div
               style="text-align:center;font-size:18px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:var(--text-primary)"
-              id="supply-range-label">85%</div>
+              id="supply-range-label">0%</div>
+
           </div>
         </div>
         <div class="modal-foot">
@@ -3029,10 +3005,8 @@
 
         panel.style.display = 'block';
         // Mock volunteer data based on location
-        const volunteers = [
-          { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#1C1F2E', rec: true },
-          { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#1C1F2E', rec: false }
-        ];
+        const volunteers = [];
+
 
         grid.innerHTML = volunteers.map(v => `
     <div class="vol-card selected" onclick="this.classList.toggle('selected')">
@@ -3210,7 +3184,7 @@
                     RD</div>
                   <div style="flex:1">
                     <div style="font-size:12px;font-weight:500;color:var(--text-primary)">Ricardo Dalisay</div>
-                    <div style="font-size:10px;color:var(--text-micro)">📍 0.4km away • En Route</div>
+                    <div style="font-size:10px;color:var(--text-micro)">📍 0.4km away • Responding</div>
                   </div>
                   <div class="status-dot active"></div>
                 </div>
@@ -3221,9 +3195,9 @@
                     EG</div>
                   <div style="flex:1">
                     <div style="font-size:12px;font-weight:500;color:var(--text-primary)">Elena Gomez</div>
-                    <div style="font-size:10px;color:var(--text-micro)">📍 0.9km away • Dispatched</div>
+                    <div style="font-size:10px;color:var(--text-micro)">📍 0.9km away • Acknowledged</div>
                   </div>
-                  <div class="status-dot busy"></div>
+                  <div class="status-dot warning"></div>
                 </div>
               </div>
             </div>
@@ -3515,19 +3489,10 @@
     <div id="toast-wrap"></div>
 
     <script>
-      function logAction(action, target, detail) {
-        const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
-        log.unshift({
-          id: 'LOG-' + Date.now(),
-          timestamp: new Date().toLocaleString('en-PH'),
-          admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-          action,
-          target: target || '—',
-          detail: detail || '—',
-          ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
-        });
-        localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
+      function seedIncidents() {
+        // Handled by app-config.js
       }
+      seedIncidents();
 
       (function applyRole() {
       const badge = document.getElementById('active-role-badge');
@@ -3612,26 +3577,51 @@
         el.classList.add('selected');
         if (document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent = name;
       }
-      function setIncidentDetail(title, status, barangay, timeAgo, description) {
-        document.getElementById('modal-inc-title').textContent = title;
-        document.getElementById('modal-inc-loc').textContent = barangay;
-        document.getElementById('modal-inc-time').textContent = timeAgo;
-        document.getElementById('modal-inc-desc').textContent = description;
+      function setIncidentDetail(inc) {
+        if (typeof inc === 'string') {
+          // Fallback for legacy calls if any
+          setText('modal-inc-title', inc);
+          return;
+        }
+        const title = firstValue(inc.title, `${inc.type || 'Incident'} Report`);
+        const status = firstValue(inc.status, 'Reported');
+        const location = getIncidentLocation(inc);
+        const description = firstValue(inc.description, inc.details, inc.message, 'No description provided.');
+        const reporter = firstValue(inc.reporter, inc.reporterName, inc.name, 'Unknown reporter');
+        const contact = firstValue(inc.contact, inc.phone, inc.mobile, inc.contactInfo, 'No contact provided');
+        const source = firstValue(inc.source, 'Mobile App');
+        const reportingFor = firstValue(inc.reportingFor, inc.reportFor, 'Not provided');
+        const needs = getIncidentNeeds(inc);
+        const media = getIncidentMedia(inc);
+
+        setText('modal-inc-title', title);
+        setText('modal-inc-loc', location);
+        setText('modal-inc-time', inc.createdAt || 'Just now');
+        setText('modal-inc-desc', description);
+        setText('modal-inc-reporter', reporter);
+        setText('modal-inc-contact', contact);
+
+        const needsEl = document.getElementById('modal-inc-needs');
+        if (needsEl) {
+          needsEl.innerHTML = needs.length
+            ? needs.map(item => renderInfoBadge(item, 'nominal')).join('')
+            : renderInfoBadge('None provided', 'default');
+        }
 
         const b = document.getElementById('modal-inc-badge');
-        const map = {
-          'Critical': ['critical', 'Critical'],
-          'Reported': ['', 'Reported'],
-          'Verified': ['nominal', 'Verified'],
-          'Dispatched': ['warning', 'Dispatched'],
-          'Resolved': ['success', 'Resolved'],
-          'Urgent': ['warning', 'Urgent'],
-          'Hydrological': ['nominal', 'Hydrological'],
-          'Medical/Rescue': ['warning', 'Medical']
-        };
-        const [cls, label] = map[status] || ['', status];
-        b.className = 'badge' + (cls ? ' ' + cls : '');
-        b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+        if (b) {
+          const map = {
+            'Critical': ['badge-critical', 'Critical'],
+            'Reported': ['', 'Reported'],
+            'Acknowledged': ['warning', 'Acknowledged'],
+            'Ongoing': ['critical', 'Ongoing'],
+            'Resolved': ['success', 'Resolved'],
+            'Urgent': ['warning', 'Urgent']
+          };
+          const [cls, label] = map[status] || ['', status];
+          b.className = 'badge' + (cls ? ' ' + cls : '');
+          b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+        }
       };
       function setEditEvacuee(name, age, gender, health, needs) {
         document.getElementById('edit-name').value = name;

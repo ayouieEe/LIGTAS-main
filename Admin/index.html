@@ -2820,39 +2820,43 @@
           <div class="metrics-row" style="grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
             <div class="m-card c-red" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Active Emergencies</div>
-              <div class="m-card-value red" style="font-size: 22px;">8</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Immediate threats</div>
+              <div class="m-card-value red" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No active threats</div>
               <div class="m-card-details">
-                <span>3 Fire &bull; 2 Flood &bull; 3 Med</span>
+                <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='incidents.html'">View Reports</span>
               </div>
+
             </div>
             <div class="m-card c-blue" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Avg. Center Load</div>
-              <div class="m-card-value blue" style="font-size: 22px;">74%</div>
+              <div class="m-card-value blue" style="font-size: 22px;">0%</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">City-wide capacity</div>
               <div class="m-card-details">
-                <span>Z1: 96% &bull; Z5: 38% &bull; Z7: 88%</span>
+                <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='centers.html'">View Capacity</span>
               </div>
+
             </div>
             <div class="m-card c-green" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Units Deployed</div>
-              <div class="m-card-value green" style="font-size: 22px;">14</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Active logistics</div>
+              <div class="m-card-value green" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No active logistics</div>
               <div class="m-card-details">
-                <span>8 Rescue &bull; 4 Med &bull; 2 Log</span>
+                <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Manage Units</span>
               </div>
+
             </div>
             <div class="m-card c-yellow" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Supply Alerts</div>
-              <div class="m-card-value orange" style="font-size: 22px;">3</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Centers low stock</div>
+              <div class="m-card-value orange" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No supply alerts</div>
               <div class="m-card-details">
-                <span>2 Food &bull; 1 Water</span>
+                <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Restock</span>
               </div>
+
             </div>
           </div>
 
@@ -2864,29 +2868,31 @@
               </div>
               <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px">
                 <div>
-                  <div class="weather-temp">31&deg;</div>
-                  <div class="weather-desc">Partly Cloudy, Thunderstorms Expected</div>
+                  <div class="weather-temp">--&deg;</div>
+                  <div class="weather-desc">Awaiting sensor data...</div>
+
                 </div>
               </div>
               <div class="weather-metrics-row">
                 <div class="weather-metric-item">
                   <div class="weather-metric-label">Humidity</div>
-                  <div class="weather-metric-val">87%</div>
+                  <div class="weather-metric-val">--%</div>
                 </div>
                 <div class="weather-metric-divider"></div>
                 <div class="weather-metric-item">
                   <div class="weather-metric-label">Wind</div>
-                  <div class="weather-metric-val">18 km/h</div>
+                  <div class="weather-metric-val">-- km/h</div>
                 </div>
                 <div class="weather-metric-divider"></div>
                 <div class="weather-metric-item">
                   <div class="weather-metric-label">Feels Like</div>
-                  <div class="weather-metric-val">38&deg;C</div>
+                  <div class="weather-metric-val">--&deg;C</div>
                 </div>
                 <div class="weather-metric-divider"></div>
                 <div class="weather-metric-item">
                   <div class="weather-metric-label">Rain Prob.</div>
-                  <div class="weather-metric-val" style="color:var(--warning)">75%</div>
+                  <div class="weather-metric-val" style="color:var(--warning)">--%</div>
+
                 </div>
               </div>
               <div style="display:flex;justify-content:flex-end;margin-top:16px">
@@ -2905,14 +2911,15 @@
                     Current Water Level</div>
                   <div
                     style="font-size:36px;font-weight:600;color:var(--text-primary);font-family:'IBM Plex Mono',monospace">
-                    16.8m <span style="font-size:13px;font-weight:400;color:var(--text-micro)">/ 21m critical</span>
+                    0.0m <span style="font-size:13px;font-weight:400;color:var(--text-micro)">/ 21m critical</span>
                   </div>
                 </div>
                 <div class="flood-gauge">
                   <div class="flood-gauge-label"><span>Water Level Gauge</span><span
-                      style="color:var(--warning);font-weight:600">80%</span></div>
+                      style="color:var(--warning);font-weight:600">0%</span></div>
                   <div class="flood-gauge-track">
-                    <div class="flood-gauge-fill" style="width:80%;background:var(--warning)"></div>
+                    <div class="flood-gauge-fill" style="width:0%;background:var(--warning)"></div>
+
                   </div>
                   <div class="flood-gauge-markers">
                     <div class="flood-gauge-marker"></div>
@@ -2924,17 +2931,18 @@
                 <div class="weather-metrics-row">
                   <div class="weather-metric-item">
                     <div class="weather-metric-label">24h Rainfall</div>
-                    <div class="weather-metric-val">42mm</div>
+                    <div class="weather-metric-val">0mm</div>
                   </div>
                   <div class="weather-metric-divider"></div>
                   <div class="weather-metric-item">
                     <div class="weather-metric-label">Flow Rate</div>
-                    <div class="weather-metric-val">285 m&sup3;/s</div>
+                    <div class="weather-metric-val">0 m&sup3;/s</div>
                   </div>
                   <div class="weather-metric-divider"></div>
                   <div class="weather-metric-item">
                     <div class="weather-metric-label">Trend</div>
-                    <div class="weather-metric-val" style="color:var(--warning)">&uarr; Rising</div>
+                    <div class="weather-metric-val" style="color:var(--success)">Stable</div>
+
                   </div>
                 </div>
               </div>
@@ -2947,115 +2955,23 @@
                 <h2>Live Incidents Feed</h2>
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='incidents.html'">View All</button>
               </div>
-              <div>
-                <div class="dash-incident-mini critical" onclick="openDetailById('INC-S001')">
-                  <div class="dim-info">
-                    <div class="dim-title">Residential Fire: Brgy. Rosario</div>
-                    <div class="dim-loc">Rosario, Pasig City</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--critical)"></div>Critical
-                  </div>
-                  <div class="dim-time">2m</div>
-                </div>
-                <div class="dash-incident-mini nominal" onclick="openDetailById('INC-S002')">
-                  <div class="dim-info">
-                    <div class="dim-title">Flash Flood: Brgy. Santolan</div>
-                    <div class="dim-loc">Santolan, Pasig City</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--nominal)"></div>Hydro
-                  </div>
-                  <div class="dim-time">4m</div>
-                </div>
-                <div class="dash-incident-mini medical" onclick="openDetailById('INC-S005')">
-                  <div class="dim-info">
-                    <div class="dim-title">Medical Emergency: Brgy. Kapitolyo</div>
-                    <div class="dim-loc">Kapitolyo, Pasig City</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--text-micro)"></div>Medical
-                  </div>
-                  <div class="dim-time">8m</div>
-                </div>
-                <div class="dash-incident-mini warning" onclick="openDetailById('INC-S004')">
-                  <div class="dim-info">
-                    <div class="dim-title">Crime Incident: Brgy. Ugong</div>
-                    <div class="dim-loc">C-5 Road, Ugong</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--warning)"></div>Urgent
-                  </div>
-                  <div class="dim-time">12m</div>
-                </div>
-                <div class="dash-incident-mini critical" onclick="openDetailById('INC-D001')">
-                  <div class="dim-info">
-                    <div class="dim-title">Power Outage: Brgy. Oranbo</div>
-                    <div class="dim-loc">Oranbo, Pasig City</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--critical)"></div>Critical
-                  </div>
-                  <div class="dim-time">15m</div>
-                </div>
-                <div class="dash-incident-mini nominal" onclick="openDetailById('INC-S006')">
-                  <div class="dim-info">
-                    <div class="dim-title">Flood Warning: Brgy. Pinagbuhatan</div>
-                    <div class="dim-loc">Pinagbuhatan, Pasig City</div>
-                  </div>
-                  <div class="badge">
-                    <div class="dot" style="background:var(--nominal)"></div>Hydro
-                  </div>
-                  <div class="dim-time">20m</div>
+              <div id="dash-incidents-feed">
+                <div class="empty-state">
+                  <p>No active incidents</p>
                 </div>
               </div>
+
             </div>
             <div class="panel">
               <div class="panel-head">
                 <h2>Barangay Capacity Load</h2>
               </div>
-              <div style="padding:10px 0">
-                <div class="zone-bar"><span class="zone-label">Santolan</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:96%;background:var(--critical)"></div>
-                  </div><span class="zone-val">96%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Rosario</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:88%;background:var(--critical)"></div>
-                  </div><span class="zone-val">88%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Pinagbuhatan</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:72%;background:var(--warning)"></div>
-                  </div><span class="zone-val">72%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Manggahan</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:65%;background:var(--warning)"></div>
-                  </div><span class="zone-val">65%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Dela Paz</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:50%;background:var(--nominal)"></div>
-                  </div><span class="zone-val">50%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Kapitolyo</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:38%;background:var(--success)"></div>
-                  </div><span class="zone-val">38%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">Ugong</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:25%;background:var(--success)"></div>
-                  </div><span class="zone-val">25%</span>
-                </div>
-                <div class="zone-bar"><span class="zone-label">San Miguel</span>
-                  <div class="zone-track">
-                    <div class="zone-fill" style="width:12%;background:var(--success)"></div>
-                  </div><span class="zone-val">12%</span>
+              <div style="padding:10px 0" id="barangay-capacity-list">
+                <div class="empty-state">
+                  <p>No capacity data available</p>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -3065,24 +2981,12 @@
                 <h2>Relief Requests</h2><span class="badge-pill-warning">8 Pending</span>
               </div>
               <div style="padding:0 20px 20px">
-                <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
-                  <div
-                    style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--critical)">
-                    <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Food Pack Depletion</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Rizal HS Gymnasium, Santolan &middot; 20m ago
-                    </div>
-                  </div>
-                  <div
-                    style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--critical)">
-                    <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Medical Kits Needed</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Pasig City Sports Center &middot; 35m ago</div>
-                  </div>
-                  <div
-                    style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--border)">
-                    <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Clean Water Shortage</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Manggahan Covered Court &middot; 45m ago</div>
+                <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px" id="dash-relief-requests">
+                  <div class="empty-state" style="padding: 20px;">
+                    <p>No pending requests</p>
                   </div>
                 </div>
+
                 <button class="btn btn-ghost w-full mt-3" style="justify-content:center"
                   onclick="window.location.href='relief-ops.html'">View All Requests</button>
               </div>
@@ -3886,27 +3790,22 @@
             </div>
           </div>
 
-          <div style="margin-bottom:16px;">
-            <div class="form-section-head" style="margin-top:0">Recommended Volunteers</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div
-                style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
-                <div class="vol-avatar-mini" style="background:var(--primary)">RD</div>
-                <div style="flex:1">
-                  <div style="font-size:12px;font-weight:500">Ricardo Dalisay</div>
-                  <div style="font-size:10px;color:var(--text3)">📍 0.4km away • En Route</div>
-                </div>
-                <div class="status-dot active"></div>
-              </div>
-              <div
-                style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
-                <div class="vol-avatar-mini" style="background:var(--purple)">EG</div>
-                <div style="flex:1">
-                  <div style="font-size:12px;font-weight:500">Elena Gomez</div>
-                  <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Dispatched</div>
-                </div>
-                <div class="status-dot busy"></div>
-              </div>
+          <!-- Volunteer Section -->
+          <div style="margin-bottom:24px;">
+            <div class="form-section-head" style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
+              <span>Recommended Volunteers</span>
+              <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">In-App Notify Only</span>
+            </div>
+            <div id="modal-volunteer-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Response Units / Nearby Contacts -->
+          <div style="margin-bottom:24px;">
+            <div class="form-section-head" style="margin-top:0">Nearby Response Contacts</div>
+            <div id="modal-response-contact-list" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <!-- Dynamically populated -->
             </div>
           </div>
 
@@ -3934,7 +3833,7 @@
                 <label
                   style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Public
                   Headline</label>
-                <input type="text" placeholder="Official Advisory Headline"
+                <input type="text" id="broadcast-headline" placeholder="Official Advisory Headline"
                   style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;">
               </div>
 
@@ -3942,7 +3841,7 @@
                 <label
                   style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Safety
                   Message</label>
-                <textarea placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"
+                <textarea id="broadcast-message" placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"
                   style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;min-height:80px;resize:vertical;"></textarea>
               </div>
 
@@ -3951,7 +3850,7 @@
                   <label
                     style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Alert
                     Level</label>
-                  <select
+                  <select id="broadcast-level"
                     style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
                     <option>High Alert</option>
                     <option>Moderate</option>
@@ -3962,7 +3861,7 @@
                   <label
                     style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Target
                     Scope</label>
-                  <select
+                  <select id="broadcast-scope"
                     style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
                     <option>City-Wide</option>
                     <option>District-Wide</option>
@@ -4013,18 +3912,8 @@
   ════════════════════════════════ -->
   <script>
     /* ── MULTI-SELECT BARANGAY DATA ── */
-    const BM_BARANGAYS = [
-      { name: 'Bagong Ilog', pop: 18200 }, { name: 'Bagong Katipunan', pop: 1200 }, { name: 'Bambang', pop: 22000 },
-      { name: 'Buting', pop: 11500 }, { name: 'Caniogan', pop: 31000 }, { name: 'Dela Paz', pop: 15400 },
-      { name: 'Kalawaan', pop: 32100 }, { name: 'Kapasigan', pop: 6700 }, { name: 'Kapitolyo', pop: 14300 },
-      { name: 'Malinao', pop: 5900 }, { name: 'Manggahan', pop: 94000 }, { name: 'Maybunga', pop: 45200 },
-      { name: 'Oranbo', pop: 4500 }, { name: 'Palatiw', pop: 22800 }, { name: 'Pinagbuhatan', pop: 151000 },
-      { name: 'Pineda', pop: 18900 }, { name: 'Rosario', pop: 68000 }, { name: 'Sagad', pop: 8400 },
-      { name: 'San Antonio', pop: 16500 }, { name: 'San Joaquin', pop: 15600 }, { name: 'San Jose', pop: 2300 },
-      { name: 'San Miguel', pop: 33000 }, { name: 'San Nicolas', pop: 1800 }, { name: 'Santa Cruz', pop: 6400 },
-      { name: 'Santa Lucia', pop: 46200 }, { name: 'Santa Rosa', pop: 1700 }, { name: 'Santolan', pop: 52100 },
-      { name: 'Santo Tomas', pop: 40300 }, { name: 'Sumilang', pop: 5600 }, { name: 'Ugong', pop: 28500 }
-    ];
+    const BM_BARANGAYS = [];
+
 
     const bmSelected = new Set();
     let bmOpen = false;
@@ -4213,31 +4102,63 @@
       localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
     }
 
-    const SEED_INCIDENTS = [
-      { id: 'INC-S001', title: 'Residential Fire: Brgy. Rosario', type: 'Fire', severity: 'Critical', barangay: 'Rosario', description: '3-alarm residential fire affecting 5 houses. BFP Pasig deployed 2 fire trucks.', status: 'Dispatched', createdAt: '2m ago', reporter: 'Maria Santos', contact: '📱 +63 917-555-1001', source: 'Field Report' },
-      { id: 'INC-S002', title: 'Flash Flood: Brgy. Santolan', type: 'Flood', severity: 'Critical', barangay: 'Santolan', description: 'Pasig River overflow affecting low-lying areas. Water level at 17.2m.', status: 'Reported', createdAt: '4m ago', reporter: 'Juan Dela Cruz', contact: '📱 Citizen App', source: 'Mobile App' },
-      { id: 'INC-S003', title: 'Vehicular Accident: C-5 Bagong Ilog', type: 'Accident', severity: 'Critical', barangay: 'Bagong Ilog', description: 'Multi-vehicle collision on C-5. 3 ambulances dispatched.', status: 'Dispatched', createdAt: '8m ago', reporter: 'Brgy. Capt. Reyes', contact: '📧 reyes@pasig.gov.ph', source: 'Admin Portal' },
-      { id: 'INC-S004', title: 'Crime Incident: Brgy. Kapitolyo', type: 'Crime', severity: 'High', barangay: 'Kapitolyo', description: 'Theft reported in commercial area. Police units alerted.', status: 'Reported', createdAt: '12m ago', reporter: 'Pedro Mendoza', contact: '📱 Citizen App', source: 'Mobile App' },
-      { id: 'INC-S005', title: 'Medical Emergency: Brgy. Ugong', type: 'Medical', severity: 'Critical', barangay: 'Ugong', description: 'Cardiac arrest report. Ambulance dispatched.', status: 'Dispatched', createdAt: '15m ago', reporter: 'Elena Gomez', contact: '📱 Citizen App', source: 'Mobile App' },
-      { id: 'INC-S006', title: 'Neighbor Dispute: Brgy. Pinagbuhatan', type: 'Neighbor', severity: 'Medium', barangay: 'Pinagbuhatan', description: 'Noise complaint and verbal altercation. Barangay Tanod requested.', status: 'Reported', createdAt: '20m ago', reporter: 'Aling Nena', contact: '📱 +63 916-555-4004', source: 'Hotline' },
-      { id: 'INC-D001', title: 'Power Outage: Brgy. Oranbo', type: 'Utility', severity: 'Critical', barangay: 'Oranbo', description: 'Major power line failure affecting multiple blocks.', status: 'Reported', createdAt: '15m ago', reporter: 'City Engineers', contact: '📧 maintenance@pasig.gov', source: 'Admin Portal' }
-    ];
+
+
+    function seedIncidents() {
+      // Handled by app-config.js
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    function firstValue(...values) {
+      for (const value of values) {
+        if (Array.isArray(value) && value.length) return value;
+        if (value !== undefined && value !== null && String(value).trim() !== '') return value;
+      }
+      return '';
+    }
+
+    function normalizeList(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
+      if (typeof value === 'object') return Object.values(value).map(v => String(v).trim()).filter(Boolean);
+      return String(value).split(/,|\n|\|/).map(v => v.trim()).filter(Boolean);
+    }
+
+    function getIncidentLocation(inc) {
+      const rawLocation = firstValue(inc.location, inc.address, inc.fullAddress, inc.landmark, inc.reportLocation, inc.barangay);
+      if (!rawLocation) return 'Location not provided';
+      const text = String(rawLocation).trim();
+      return /pasig/i.test(text) ? text : `${text}, Pasig City`;
+    }
+
+    function getIncidentNeeds(inc) {
+      return normalizeList(firstValue(inc.needs, inc.requiredAssistance, inc.assistanceNeeded, inc.resourcesNeeded, inc.unitsNeeded, inc.responseUnits));
+    }
+
+    function getIncidentMedia(inc) {
+      return normalizeList(firstValue(inc.media, inc.attachments, inc.photos, inc.images, inc.photoUrls, inc.photoUrl, inc.imageUrl)).filter(Boolean);
+    }
 
     function openDetailById(id) {
       const incidents = getIncidents();
       let inc = incidents.find(i => i.id === id);
-      if (!inc) inc = SEED_INCIDENTS.find(i => i.id === id);
       if (!inc) return;
 
       document.getElementById('modal-inc-id').textContent = inc.id;
-      setIncidentDetail(inc.title, inc.status, inc.barangay + ', Pasig City', inc.createdAt, inc.description, inc.reporter, inc.contact, inc.source, inc.emergencyProfile, inc.emergencyContact);
+      setIncidentDetail(inc);
 
       const notesArea = document.getElementById('field-notes-area');
       if (notesArea) notesArea.value = '';
 
       const foot = document.getElementById('dynamic-modal-foot');
       let buttonsHTML = '';
-      const isReported = inc.status === 'Reported';
+      const status = firstValue(inc.status, 'Reported');
+      const isReported = status === 'Reported';
 
       const broadcastWrap = document.getElementById('modal-broadcast-wrap');
       const broadcastToggle = document.getElementById('broadcast-toggle');
@@ -4254,8 +4175,8 @@
       }
 
       if (isReported) {
-        buttonsHTML += `<button class="btn btn-primary" onclick="openDispatchConfirm()">Dispatch Rescue</button>`;
-      } else if (inc.status === 'Dispatched' || inc.status === 'Ongoing') {
+        buttonsHTML += `<button class="btn btn-primary" onclick="acknowledgeIncident()">Acknowledge</button>`;
+      } else if (status === 'Acknowledged' || status === 'Dispatched' || status === 'Ongoing') {
         buttonsHTML += `<button class="btn" style="background:var(--success);color:white;border:none;" onclick="resolveIncident()">Mark as Resolved</button>`;
       }
 
@@ -4269,68 +4190,204 @@
 
     function toggleUnit(el) { el.classList.toggle('selected'); }
 
-    function openDispatchConfirm() {
-      const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
-      if (selected.length === 0) {
-        showToast('Please select at least one unit to dispatch', 'warning');
-        return;
-      }
-      if (confirm('Dispatch ' + selected.join(' & ') + ' to this scene?')) {
-        executeDispatch();
-      }
+    function getResponseContacts(inc) {
+      return [];
     }
 
-    function executeDispatch() {
-      const id = document.getElementById('modal-inc-id').textContent;
-      logAction('Dispatch', id, 'Rescue units deployed');
-      showToast('Rescue team dispatched!', 'success');
+
+    function renderVolunteerList(inc) {
+      const grid = document.getElementById('modal-volunteer-grid');
+      if (!grid) return;
+
+      const volunteers = [];
+
+
+      grid.innerHTML = volunteers.map(v => `
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+          <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--text-primary)">${escapeHTML(v.name)}</div>
+            <div style="font-size:10px;color:var(--text3)">📍 ${v.dist} &bull; ${v.time} ETA</div>
+          </div>
+          <div class="status-dot active"></div>
+        </div>
+      `).join('');
+    }
+
+    function renderResponseContacts(inc) {
+      const list = document.getElementById('modal-response-contact-list');
+      if (!list) return;
+
+      const contacts = getResponseContacts(inc);
+      list.innerHTML = contacts.map(contact => {
+        const phone = getCallableNumber(contact.phone);
+        return `
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:start;">
+              <span class="badge" style="font-size:9px;padding:1px 5px;">${escapeHTML(contact.unit)}</span>
+              <span style="font-size:9px;color:var(--text3);">${escapeHTML(contact.distance)}</span>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.2;">${escapeHTML(contact.name)}</div>
+            ${renderCallButton('Call', phone, 'ghost')}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function acknowledgeIncident() {
+      saveIncidentNotes(false);
+      const id = document.getElementById('modal-inc-id').textContent.trim();
+      const incidents = getIncidents();
+      const idx = incidents.findIndex(i => i.id === id);
+      if (idx === -1) return;
+
+      incidents[idx].status = 'Acknowledged';
+      incidents[idx].acknowledgedAt = new Date().toLocaleString('en-PH');
+      
+      const broadcastHeadline = document.getElementById('broadcast-headline')?.value.trim();
+      const broadcastMsg = document.getElementById('broadcast-message')?.value.trim();
+      const isBroadcast = document.getElementById('broadcast-toggle')?.checked;
+
+      if (isBroadcast && (broadcastHeadline || broadcastMsg)) {
+        incidents[idx].broadcastSent = true;
+        incidents[idx].broadcastData = {
+          headline: broadcastHeadline,
+          message: broadcastMsg,
+          level: document.getElementById('broadcast-level').value,
+          scope: document.getElementById('broadcast-scope').value
+        };
+        logAction('Broadcast', incidents[idx].title, broadcastHeadline || 'Public safety advisory');
+      }
+
+      saveIncidents(incidents);
+      logAction('Acknowledged', incidents[idx].title, 'Incident acknowledged and responders alerted');
+      showToast('Incident acknowledged', 'success');
       closeModal('incident-detail-modal');
+      if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
+      else location.reload();
     }
 
     function resolveIncident() {
-      const id = document.getElementById('modal-inc-id').textContent;
-      logAction('Status Update', id, 'Incident marked as Resolved');
+      saveIncidentNotes(false);
+      const id = document.getElementById('modal-inc-id').textContent.trim();
+      const incidents = getIncidents();
+      const idx = incidents.findIndex(i => i.id === id);
+      if (idx === -1) return;
+
+      incidents[idx].status = 'Resolved';
+      incidents[idx].resolvedAt = new Date().toLocaleString('en-PH');
+
+      saveIncidents(incidents);
+      logAction('Status Update', incidents[idx].title, 'Incident marked as Resolved');
       showToast('Incident marked as Resolved', 'success');
       closeModal('incident-detail-modal');
+      if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
+      else location.reload();
     }
 
-    function saveIncidentNotes() {
-      showToast('Notes saved successfully', 'success');
-      closeModal('incident-detail-modal');
-    }
-
-    function setIncidentDetail(title, status, barangay, timeAgo, description, reporter, contact, source, medical, emergencyContact) {
-      document.getElementById('modal-inc-title').textContent = title;
-      document.getElementById('modal-inc-loc').textContent = barangay;
-      document.getElementById('modal-inc-time').textContent = timeAgo;
-      document.getElementById('modal-inc-desc').textContent = description;
-      if (document.getElementById('modal-inc-reporter')) document.getElementById('modal-inc-reporter').textContent = reporter || 'Field Report';
-      if (document.getElementById('modal-inc-contact')) document.getElementById('modal-inc-contact').textContent = contact || '—';
-      if (document.getElementById('modal-inc-source')) {
-        const s = document.getElementById('modal-inc-source');
-        s.textContent = source || 'Field Report';
-        s.className = source === 'Mobile App' ? 'badge nominal' : 'badge';
+    function saveIncidentNotes(shouldClose = true) {
+      const id = document.getElementById('modal-inc-id').textContent.trim();
+      const notes = document.getElementById('field-notes-area')?.value.trim();
+      if (!notes) {
+        if (shouldClose) closeModal('incident-detail-modal');
+        return;
       }
+
+      const incidents = getIncidents();
+      const idx = incidents.findIndex(i => i.id === id);
+      if (idx !== -1) {
+        const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        incidents[idx].description = `${incidents[idx].description || ''}\n\n[NOTE ${timeNow}]: ${notes}`;
+        saveIncidents(incidents);
+        logAction('Note Added', incidents[idx].title, notes.slice(0, 30) + '...');
+      }
+
+      if (shouldClose) {
+        showToast('Notes saved successfully', 'success');
+        closeModal('incident-detail-modal');
+        if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
+        else location.reload();
+      }
+    }
+
+    function setIncidentDetail(inc) {
+      const title = firstValue(inc.title, `${inc.type || 'Incident'} Report`);
+      const status = firstValue(inc.status, 'Reported');
+      const location = getIncidentLocation(inc);
+      const description = firstValue(inc.description, inc.details, inc.message, 'No description provided.');
+      const reporter = firstValue(inc.reporter, inc.reporterName, inc.name, 'Unknown reporter');
+      const contact = firstValue(inc.contact, inc.phone, inc.mobile, inc.contactInfo, 'No contact provided');
+      const source = firstValue(inc.source, 'Mobile App');
+      const reportingFor = firstValue(inc.reportingFor, inc.reportFor, 'Not provided');
+      const needs = getIncidentNeeds(inc);
+      const media = getIncidentMedia(inc);
+      const medical = firstValue(inc.emergencyProfile, inc.medical, inc.medicalProfile, null);
+      const emergencyContact = firstValue(inc.emergencyContact, inc.iceContact, null);
+
+      setText('modal-inc-title', title);
+      setText('modal-inc-loc', location);
+      setText('modal-inc-time', inc.createdAt || 'Just now');
+      setText('modal-inc-desc', description);
+      setText('modal-inc-reporter', reporter);
+      setText('modal-inc-contact', contact);
+      setText('modal-inc-reporting-for', reportingFor);
+      setText('modal-inc-source', source);
+
+      const needsEl = document.getElementById('modal-inc-needs');
+      if (needsEl) {
+        needsEl.innerHTML = needs.length
+          ? needs.map(item => renderInfoBadge(item, 'nominal')).join('')
+          : renderInfoBadge('None provided', 'default');
+      }
+
+      const mediaEl = document.getElementById('modal-inc-media');
+      if (mediaEl) {
+        if (media.length) {
+          mediaEl.innerHTML = media.map(url => `<img src="${url}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;" alt="Attached media">`).join('');
+        } else {
+          mediaEl.innerHTML = renderInfoBadge('No media attached', 'default');
+        }
+      }
+
+      renderVolunteerList(inc);
+      renderResponseContacts(inc);
+
       const medSection = document.getElementById('emergency-profile-section');
       if (medSection) {
         if (medical) {
           medSection.style.display = 'block';
-          document.getElementById('med-blood').textContent = medical.bloodType || '—';
-          document.getElementById('med-allergies').textContent = medical.allergies || 'None';
-          document.getElementById('med-conditions').textContent = medical.conditions || 'None';
+          setText('med-blood', firstValue(medical.bloodType, medical.blood, '—'));
+          setText('med-allergies', medical.allergies, 'None');
+          setText('med-conditions', medical.conditions, 'None');
           if (emergencyContact) {
-            document.getElementById('med-contact-name').textContent = emergencyContact.name || '—';
-            document.getElementById('med-contact-phone').textContent = emergencyContact.phone || '—';
+            setText('med-contact-name', emergencyContact.name, '—');
+            setText('med-contact-phone', emergencyContact.phone, '—');
           }
         } else {
           medSection.style.display = 'none';
         }
       }
+
       const b = document.getElementById('modal-inc-badge');
-      const map = { 'Critical': ['badge-critical', 'Critical'], 'Reported': ['', 'Reported'], 'Verified': ['nominal', 'Verified'], 'Dispatched': ['warning', 'Dispatched'], 'Resolved': ['success', 'Resolved'], 'Urgent': ['warning', 'Urgent'], 'Hydrological': ['nominal', 'Hydrological'], 'Medical/Rescue': ['warning', 'Medical'] };
-      const [cls, label] = map[status] || ['', status];
-      b.className = 'badge' + (cls ? ' ' + cls : '');
-      b.innerHTML = label;
+      if (b) {
+        const map = {
+          'Critical': ['badge-critical', 'Critical'],
+          'Reported': ['', 'Reported'],
+          'Acknowledged': ['warning', 'Acknowledged'],
+          'Dispatched': ['warning', 'Dispatched'],
+          'Ongoing': ['critical', 'Ongoing'],
+          'Resolved': ['success', 'Resolved'],
+          'Urgent': ['warning', 'Urgent']
+        };
+        const [cls, label] = map[status] || ['', status];
+        b.className = 'badge' + (cls ? ' ' + cls : '');
+        b.innerHTML = (cls ? '<div class="dot" style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block;margin-right:6px;vertical-align:middle;"></div>' : '') + label;
+      }
+    }
+
+    function setText(id, value, fallback = '—') {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value || fallback;
     }
 
     function updateTime() {
@@ -4404,10 +4461,8 @@
       const grid = document.getElementById('nearby-vol-grid');
       if (!loc) { panel.style.display = 'none'; return; }
       panel.style.display = 'block';
-      const volunteers = [
-        { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
-        { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
-      ];
+      const volunteers = [];
+
       grid.innerHTML = volunteers.map(v => `
         <div class="vol-card selected" onclick="this.classList.toggle('selected')">
           <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
@@ -4479,6 +4534,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      seedIncidents();
       renderSOSBanners();
       setInterval(renderSOSBanners, 1000);
       bmBuildList('');

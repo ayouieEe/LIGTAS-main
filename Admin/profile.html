@@ -2908,10 +2908,8 @@
 
       panel.style.display = 'block';
       // Mock volunteer data based on location
-      const volunteers = [
-        { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
-        { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
-      ];
+      const volunteers = [];
+
 
       grid.innerHTML = volunteers.map(v => `
       <div class="vol-card selected" onclick="this.classList.toggle('selected')">

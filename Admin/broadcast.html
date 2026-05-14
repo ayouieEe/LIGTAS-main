@@ -1512,7 +1512,8 @@
                 <div class="form-group">
                   <label>Message</label>
                   <textarea class="input-textarea" rows="4"
-                    placeholder="Type your emergency broadcast message here...">NDRRMC ALERT: Mandatory evacuation issued for riverside communities in San Joaquin and Pinagbuhatan. Proceed to nearest evacuation center immediately. Bring essential documents and medications.</textarea>
+                    placeholder="Type your emergency broadcast message here..."></textarea>
+
                 </div>
                 <div style="display:flex;gap:8px;margin-top:12px">
                   <button class="btn btn-ghost" onclick="showToast('Draft saved','info')">Save Draft</button>
@@ -1528,51 +1529,10 @@
                 <h2>Broadcast Log</h2><span class="badge-pill-muted">Last 24h</span>
               </div>
               <div class="broadcast-log mt-3">
-                <div class="log-item">
-                  <div class="log-time">09:14:22</div>
-                  <div>
-                    <div class="log-msg">Flash flood advisory issued for Pasig River basin communities.</div>
-                    <div class="log-tag orange">Orange Alert</div>
-                  </div>
+                <div id="no-broadcast-logs" style="padding:32px; text-align:center; color:var(--text3); font-size:13px;">
+                  No broadcast history in last 24h
                 </div>
-                <div class="log-item">
-                  <div class="log-time">08:52:10</div>
-                  <div>
-                    <div class="log-msg">Hazmat exclusion zone established at Manggahan Floodway Area, 300m radius.
-                    </div>
-                    <div class="log-tag red">Red Alert</div>
-                  </div>
-                </div>
-                <div class="log-item">
-                  <div class="log-time">08:15:45</div>
-                  <div>
-                    <div class="log-msg">Evacuation centers in District 2 are now open.</div>
-                    <div class="log-tag blue">Blue Info</div>
-                  </div>
-                </div>
-                <div class="log-item">
-                  <div class="log-time">07:40:02</div>
-                  <div>
-                    <div class="log-msg">Heavy rainfall warning raised to Orange. Monitor updates.</div>
-                    <div class="log-tag orange">Orange Alert</div>
-                  </div>
-                </div>
-                <div class="log-item">
-                  <div class="log-time">06:30:11</div>
-                  <div>
-                    <div class="log-msg">Power restoration underway in Ortigas Center. Estimated completion: 2 hours.
-                    </div>
-                    <div class="log-tag blue">Blue Info</div>
-                  </div>
-                </div>
-                <div class="log-item">
-                  <div class="log-time">05:55:00</div>
-                  <div>
-                    <div class="log-msg">Rescue operations ongoing in Rosario. Do not attempt to use flooded roads.
-                    </div>
-                    <div class="log-tag red">Red Alert</div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -2358,15 +2318,11 @@
         setTimeout(() => t.remove(), 300);
       }, 4000);
     }
-    const ZONE_RECIPIENTS = {
-      'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
-      'Manggahan': 4120, 'Pinagbuhatan': 2216,
-      'Rosario': 3842, 'San Joaquin': 1680,
-      'Santolan': 1920, 'Ugong': 480
-    };
+    const ZONE_RECIPIENTS = {};
+
 
     function openBroadcastConfirm(level, zone, message) {
-      const count = ZONE_RECIPIENTS[zone] || 14203;
+      const count = ZONE_RECIPIENTS[zone] || 0;
       document.getElementById('conf-b-count').textContent = '⚠️ This will send to ' + count.toLocaleString() + ' recipients';
       document.getElementById('conf-b-level').textContent = level || '—';
       document.getElementById('conf-b-msg').textContent = message || '(No message entered)';
@@ -2382,7 +2338,7 @@
 
     function updateBroadcastRecipients() {
       const zone = document.getElementById('broadcast-barangay').value;
-      const count = ZONE_RECIPIENTS[zone] || 14203;
+      const count = ZONE_RECIPIENTS[zone] || 0;
       document.getElementById('recipient-count-hint').textContent = 'Estimated reach: ' + count.toLocaleString() + ' residents';
     }
 

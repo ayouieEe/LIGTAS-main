@@ -3171,77 +3171,18 @@
                       onclick="toggleRequestView('history')">History</button>
                   </div>
                 </div>
-                <span class="badge badge-warning" id="pending-count">10 Pending</span>
+                <span class="badge badge-warning" id="pending-count">0 Pending</span>
+
               </div>
               <div class="req-list" id="pending-request-list"
                 style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px">
-                <div class="req-card bc-red"
-                  onclick="window._currentPendingCardBtn=this.querySelector('button'); openAidRequestDetail('pending', 'Structural Fire: Brgy Pinagbuhatan', 'Level 2 alarm reported. 2 units dispatched. Est. 100 civilians in vicinity.', 'Zone 4 (Pinagbuhatan) · 2m ago', 'Critical', 'critical')">
-                  <div class="req-card-head">
-                    <div class="req-card-meta">Zone 4 (Pinagbuhatan) · 2m ago</div><span class="badge badge-critical"
-                      style="font-size:10px">Critical</span>
-                  </div>
-                  <div class="req-card-title">Structural Fire: Brgy Pinagbuhatan</div>
-                  <div class="req-card-desc">Level 2 alarm reported. 2 units dispatched. Est. 100 civilians in vicinity.
-                  </div>
-                  <div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button
-                      class="btn btn-sm btn-primary"
-                      onclick="event.stopPropagation(); openDispatchForRequest('Pinagbuhatan', 'Rescue Operation', 'Zone 4 — Pinagbuhatan', this)">Dispatch
-                      Now</button></div>
+                <div id="no-pending-msg" style="padding:48px 24px; text-align:center; color:var(--text3); font-size:13px;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px; opacity:0.5">
+                    <circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/>
+                  </svg>
+                  <p>No pending aid requests in queue</p>
                 </div>
-                <div class="req-card bc-orange"
-                  onclick="window._currentPendingCardBtn=this.querySelector('button'); openAidRequestDetail('pending', 'Medical Supply Shortage', 'Maybunga Barangay Hall Evacuation Center reporting low stock on first aid kits.', 'Zone 2 (Maybunga) · 11m ago', 'High', 'warning')">
-                  <div class="req-card-head">
-                    <div class="req-card-meta">Zone 2 (Maybunga) · 11m ago</div><span class="badge badge-warning"
-                      style="font-size:10px">High</span>
-                  </div>
-                  <div class="req-card-title">Medical Supply Shortage</div>
-                  <div class="req-card-desc">Maybunga Barangay Hall Evacuation Center reporting low stock on first aid
-                    kits.</div>
-                  <div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button
-                      class="btn btn-sm btn-primary"
-                      onclick="event.stopPropagation(); openDispatchForRequest('Maybunga Barangay Hall', 'Medical Supplies', 'Zone 2 — Maybunga', this)">Dispatch
-                      Now</button></div>
-                </div>
-                <div class="req-card bc-red"
-                  onclick="window._currentPendingCardBtn=this.querySelector('button'); openAidRequestDetail('pending', 'Food Pack Depletion', 'Santolan Multi-Purpose Hall requires 500 food packs immediately.', 'Zone 5 (Santolan) · 20m ago', 'Critical', 'critical')">
-                  <div class="req-card-head">
-                    <div class="req-card-meta">Zone 5 (Santolan) · 20m ago</div><span class="badge badge-critical"
-                      style="font-size:10px">Critical</span>
-                  </div>
-                  <div class="req-card-title">Food Pack Depletion</div>
-                  <div class="req-card-desc">Santolan Multi-Purpose Hall requires 500 food packs immediately.</div>
-                  <div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button
-                      class="btn btn-sm btn-primary"
-                      onclick="event.stopPropagation(); openDispatchForRequest('Rizal High School', 'Food Packs', 'Zone 5 — Santolan', this)">Dispatch
-                      Now</button></div>
-                </div>
-                <div class="req-card bc-blue"
-                  onclick="window._currentPendingCardBtn=this.querySelector('button'); openAidRequestDetail('pending', 'Blanket Request', '100 blankets requested for new evacuees at Oranbo Elementary School.', 'Zone 3 (Oranbo) · 25m ago', 'Low', 'nominal')">
-                  <div class="req-card-head">
-                    <div class="req-card-meta">Zone 3 (Oranbo) · 25m ago</div><span class="badge badge-info"
-                      style="font-size:10px">Low</span>
-                  </div>
-                  <div class="req-card-title">Blanket Request</div>
-                  <div class="req-card-desc">100 blankets requested for new evacuees at Oranbo Elementary School.</div>
-                  <div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button
-                      class="btn btn-sm btn-outline"
-                      onclick="event.stopPropagation(); showToast('Request reviewed','info')">Review</button></div>
-                </div>
-                <div class="req-card bc-orange"
-                  onclick="window._currentPendingCardBtn=this.querySelector('button'); openAidRequestDetail('pending', 'Clean Water Shortage', 'San Antonio Village Court water supply contaminated. Need 200 gallons.', 'Zone 6 (San Antonio) · 30m ago', 'High', 'warning')">
-                  <div class="req-card-head">
-                    <div class="req-card-meta">Zone 6 (San Antonio) · 30m ago</div><span class="badge badge-warning"
-                      style="font-size:10px">High</span>
-                  </div>
-                  <div class="req-card-title">Clean Water Shortage</div>
-                  <div class="req-card-desc">San Antonio Village Court water supply contaminated. Need 200 gallons.
-                  </div>
-                  <div class="req-card-foot"><span style="font-size:11.5px;color:var(--text3)">Waiting ETA</span><button
-                      class="btn btn-sm btn-primary"
-                      onclick="event.stopPropagation(); openDispatchForRequest('San Antonio Village Court', 'Water Supply', 'Zone 6 — San Antonio', this)">Dispatch
-                      Now</button></div>
-                </div>
+
               </div>
               <div class="req-list" id="aided-history-list"
                 style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px;display:none">
@@ -3253,7 +3194,8 @@
                 <div class="panel-head">
                   <h2>Distribution Manager</h2>
                   <span class="badge nominal">
-                    <div class="dot"></div>24 Active Deployments
+                    <div class="dot"></div>0 Active Deployments
+
                   </span>
                 </div>
                 <div class="metrics-row" style="padding:0 18px 14px; grid-template-columns: repeat(2, 1fr); gap: 12px;">
@@ -3262,41 +3204,46 @@
                     <div class="m-card-hint-deduct"
                       onclick="event.stopPropagation(); openRestockFor('Food Packs', 'deduct')">DEDUCT</div>
                     <div class="m-card-label">Food Packs</div>
-                    <div class="m-card-value blue">4.2<span
+                    <div class="m-card-value blue">0<span
                         style="font-size:12px;color:var(--text-micro);margin-left:4px">tons</span></div>
-                    <div class="m-card-sub"><span class="trend-up">↑12%</span> from yesterday</div>
+                    <div class="m-card-sub">No recent activity</div>
+
                   </div>
                   <div class="m-card c-orange" onclick="openRestockFor('Medical Supplies', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
                     <div class="m-card-hint-deduct"
                       onclick="event.stopPropagation(); openRestockFor('Medical Supplies', 'deduct')">DEDUCT</div>
                     <div class="m-card-label">Medical Supplies</div>
-                    <div class="m-card-value orange">112</div>
-                    <div class="m-card-sub"><span class="trend-down">↓8%</span> low stock</div>
+                    <div class="m-card-value orange">0</div>
+                    <div class="m-card-sub">No stock data</div>
+
                   </div>
                   <div class="m-card c-blue" onclick="openRestockFor('Water Supply', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
                     <div class="m-card-hint-deduct"
                       onclick="event.stopPropagation(); openRestockFor('Water Supply', 'deduct')">DEDUCT</div>
                     <div class="m-card-label">Water Supply</div>
-                    <div class="m-card-value blue">850<span
+                    <div class="m-card-value blue">0<span
                         style="font-size:12px;color:var(--text-micro);margin-left:4px">gal</span></div>
-                    <div class="m-card-sub"><span class="trend-down">↓15%</span> usage spike</div>
+                    <div class="m-card-sub">No recent activity</div>
+
                   </div>
                   <div class="m-card c-green" onclick="openRestockFor('Hygiene Kits', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
                     <div class="m-card-hint-deduct"
                       onclick="event.stopPropagation(); openRestockFor('Hygiene Kits', 'deduct')">DEDUCT</div>
                     <div class="m-card-label">Hygiene Kits</div>
-                    <div class="m-card-value green">340</div>
-                    <div class="m-card-sub"><span class="trend-up">↑5%</span> replenished</div>
+                    <div class="m-card-value green">0</div>
+                    <div class="m-card-sub">No recent activity</div>
+
                   </div>
                 </div>
                 <p style="font-size: 11px; color: var(--text3); padding: 0 18px 12px;">Click a resource to RESTOCK, or
                   DEDUCT inventory based on dispatch logs.</p>
                 <div class="map-ph">
                   <div class="map-grid"></div>
-                  <div class="map-truck">🚛 TRUCK-02 EN ROUTE → RIZAL HIGH</div>
+                  <div class="map-truck" style="display:none">🚛 NO ACTIVE CONVOYS</div>
+
                 </div>
                 <div style="padding:0 18px 14px">
                   <button class="btn btn-primary w-full" style="justify-content:center"
@@ -3327,13 +3274,15 @@
                       <circle class="circle-bg" cx="18" cy="18" r="15.9" />
                       <circle class="circle-prog" cx="18" cy="18" r="15.9" stroke-dasharray="78,100" />
                       <text x="18" y="20.5" text-anchor="middle" class="circ-label"
-                        style="font-size:7px;font-family:'DM Mono',monospace">78%</text>
+                        style="font-size:7px;font-family:'DM Mono',monospace">0%</text>
+
                     </svg>
                   </div>
                   <div class="vol-stat-text">
-                    <div class="big">142 <span style="font-size:14px;color:var(--text2);font-weight:400">Active</span>
+                    <div class="big">0 <span style="font-size:14px;color:var(--text2);font-weight:400">Active</span>
                     </div>
-                    <div class="small">of 182 volunteers available</div>
+                    <div class="small">of 0 volunteers available</div>
+
                   </div>
                 </div>
                 <div class="vol-filter-row">
@@ -3355,156 +3304,10 @@
                   </select>
                 </div>
                 <div class="vol-list" id="vol-list" style="flex:1;overflow-y:auto;min-height:0;padding-bottom:12px">
-                  <div class="vol-item" data-role="logistics"
-                    onclick="openVolunteerProfile('Sarah Jenkins', 'Logistics Specialist', 'SJ', '#2f81f7', 'Active', 'En route to Rizal High')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#2f81f7">SJ</div>
-                      <div>
-                        <div class="vol-name">Sarah Jenkins</div>
-                        <div class="vol-role">Logistics Specialist</div>
-                        <div class="vol-loc">📍 En route to Rizal High</div>
-                      </div>
-                    </div>
-                    <div class="status-dot active"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('Sarah Jenkins')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('Sarah Jenkins', 'En route to Rizal High')"><svg width="12"
-                          height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
+                  <div id="no-volunteers-msg" style="padding:32px; text-align:center; color:var(--text3); font-size:12px;">
+                    No volunteers registered in system
                   </div>
-                  <div class="vol-item" data-role="driver"
-                    onclick="openVolunteerProfile('Mark Rivera', 'Heavy Vehicle Op', 'MR', '#3fb950', 'Active', 'Driving TRUCK-02')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#3fb950">MR</div>
-                      <div>
-                        <div class="vol-name">Mark Rivera</div>
-                        <div class="vol-role">Heavy Vehicle Op</div>
-                        <div class="vol-loc">🚛 Driving TRUCK-02</div>
-                      </div>
-                    </div>
-                    <div class="status-dot active"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('Mark Rivera')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('Mark Rivera', 'Driving TRUCK-02')"><svg width="12" height="12"
-                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
-                  </div>
-                  <div class="vol-item" data-role="medical"
-                    onclick="openVolunteerProfile('Elena Santos', 'Medical Team Lead', 'ES', '#f0883e', 'Busy', 'Tending patients (Pasig)')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#f0883e">ES</div>
-                      <div>
-                        <div class="vol-name">Elena Santos</div>
-                        <div class="vol-role">Medical Team Lead</div>
-                        <div class="vol-loc">⚕️ Tending patients (Pasig)</div>
-                      </div>
-                    </div>
-                    <div class="status-dot busy"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('Elena Santos')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('Elena Santos', 'Tending patients (Pasig)')"><svg width="12"
-                          height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
-                  </div>
-                  <div class="vol-item" data-role="comms"
-                    onclick="openVolunteerProfile('David Lee', 'Comms Officer', 'DL', '#bc8cff', 'Active', 'Command Center Base')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#bc8cff">DL</div>
-                      <div>
-                        <div class="vol-name">David Lee</div>
-                        <div class="vol-role">Comms Officer</div>
-                        <div class="vol-loc">📻 Command Center Base</div>
-                      </div>
-                    </div>
-                    <div class="status-dot active"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('David Lee')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('David Lee', 'Command Center Base')"><svg width="12" height="12"
-                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
-                  </div>
-                  <div class="vol-item" data-role="rescue"
-                    onclick="openVolunteerProfile('Maria Garcia', 'Search & Rescue', 'MG', '#f85149', 'Critical', 'Emergency in Palatiw')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#f85149">MG</div>
-                      <div>
-                        <div class="vol-name">Maria Garcia</div>
-                        <div class="vol-role">Search & Rescue</div>
-                        <div class="vol-loc">🚨 Emergency in Palatiw</div>
-                      </div>
-                    </div>
-                    <div class="status-dot critical"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('Maria Garcia')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('Maria Garcia', 'Emergency in Palatiw')"><svg width="12"
-                          height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
-                  </div>
-                  <div class="vol-item" data-role="all"
-                    onclick="openVolunteerProfile('John Doe', 'General Volunteer', 'JD', '#39c5cf', 'Active', 'Packing relief goods')">
-                    <div class="vol-left">
-                      <div class="vol-avatar" style="background:#39c5cf">JD</div>
-                      <div>
-                        <div class="vol-name">John Doe</div>
-                        <div class="vol-role">General Volunteer</div>
-                        <div class="vol-loc">📦 Packing relief goods</div>
-                      </div>
-                    </div>
-                    <div class="status-dot active"></div>
-                    <div class="vol-actions" onclick="event.stopPropagation()"><button class="icon-btn"
-                        onclick="openMessageModal('John Doe')"><svg width="12" height="12" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <rect width="20" height="16" x="2" y="4" rx="2" />
-                          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg></button><button class="icon-btn"
-                        onclick="openVolunteerLocation('John Doe', 'Packing relief goods')"><svg width="12" height="12"
-                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                          stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg></button></div>
-                  </div>
+
                   <div class="vol-item" data-role="medical"
                     onclick="openVolunteerProfile('Anna Smith', 'First Aid Responder', 'AS', '#d29922', 'Offline', 'Off shift')">
                     <div class="vol-left">
@@ -3888,7 +3691,7 @@
                   <div class="vol-avatar-mini" style="background:var(--primary)">RD</div>
                   <div style="flex:1">
                     <div style="font-size:12px;font-weight:500">Ricardo Dalisay</div>
-                    <div style="font-size:10px;color:var(--text3)">📍 0.4km away • En Route</div>
+                    <div style="font-size:10px;color:var(--text3)">📍 0.4km away • Responding</div>
                   </div>
                   <div class="status-dot active"></div>
                 </div>
@@ -3897,9 +3700,9 @@
                   <div class="vol-avatar-mini" style="background:var(--purple)">EG</div>
                   <div style="flex:1">
                     <div style="font-size:12px;font-weight:500">Elena Gomez</div>
-                    <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Dispatched</div>
+                    <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Acknowledged</div>
                   </div>
-                  <div class="status-dot busy"></div>
+                  <div class="status-dot warning"></div>
                 </div>
               </div>
             </div>
@@ -4811,19 +4614,10 @@
 
 
     <script>
-      function logAction(action, target, detail) {
-        const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
-        log.unshift({
-          id: 'LOG-' + Date.now(),
-          timestamp: new Date().toLocaleString('en-PH'),
-          admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-          action,
-          target: target || '—',
-          detail: detail || '—',
-          ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
-        });
-        localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
+      function seedIncidents() {
+        // Handled by app-config.js
       }
+      seedIncidents();
 
       (function applyRole() {
       const badge = document.getElementById('active-role-badge');
@@ -5019,7 +4813,8 @@
         const scope = scopeBtn ? scopeBtn.textContent : 'All';
 
         // Base count
-        let total = 182;
+        let total = 0;
+
 
         // Apply scope logic
         if (scope.includes('Available')) {
@@ -5203,26 +4998,51 @@
         openModal('volunteer-profile-modal');
       }
 
-      function setIncidentDetail(title, status, barangay, timeAgo, description) {
-        document.getElementById('modal-inc-title').textContent = title;
-        document.getElementById('modal-inc-loc').textContent = barangay;
-        document.getElementById('modal-inc-time').textContent = timeAgo;
-        document.getElementById('modal-inc-desc').textContent = description;
+      function setIncidentDetail(inc) {
+        if (typeof inc === 'string') {
+          // Fallback for legacy calls if any
+          setText('modal-inc-title', inc);
+          return;
+        }
+        const title = firstValue(inc.title, `${inc.type || 'Incident'} Report`);
+        const status = firstValue(inc.status, 'Reported');
+        const location = getIncidentLocation(inc);
+        const description = firstValue(inc.description, inc.details, inc.message, 'No description provided.');
+        const reporter = firstValue(inc.reporter, inc.reporterName, inc.name, 'Unknown reporter');
+        const contact = firstValue(inc.contact, inc.phone, inc.mobile, inc.contactInfo, 'No contact provided');
+        const source = firstValue(inc.source, 'Mobile App');
+        const reportingFor = firstValue(inc.reportingFor, inc.reportFor, 'Not provided');
+        const needs = getIncidentNeeds(inc);
+        const media = getIncidentMedia(inc);
+
+        setText('modal-inc-title', title);
+        setText('modal-inc-loc', location);
+        setText('modal-inc-time', inc.createdAt || 'Just now');
+        setText('modal-inc-desc', description);
+        setText('modal-inc-reporter', reporter);
+        setText('modal-inc-contact', contact);
+
+        const needsEl = document.getElementById('modal-inc-needs');
+        if (needsEl) {
+          needsEl.innerHTML = needs.length
+            ? needs.map(item => renderInfoBadge(item, 'nominal')).join('')
+            : renderInfoBadge('None provided', 'default');
+        }
 
         const b = document.getElementById('modal-inc-badge');
-        const map = {
-          'Critical': ['critical', 'Critical'],
-          'Reported': ['', 'Reported'],
-          'Verified': ['nominal', 'Verified'],
-          'Dispatched': ['warning', 'Dispatched'],
-          'Resolved': ['success', 'Resolved'],
-          'Urgent': ['warning', 'Urgent'],
-          'Hydrological': ['nominal', 'Hydrological'],
-          'Medical/Rescue': ['warning', 'Medical']
-        };
-        const [cls, label] = map[status] || ['', status];
-        b.className = 'badge' + (cls ? ' ' + cls : '');
-        b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+        if (b) {
+          const map = {
+            'Critical': ['badge-critical', 'Critical'],
+            'Reported': ['', 'Reported'],
+            'Acknowledged': ['warning', 'Acknowledged'],
+            'Ongoing': ['critical', 'Ongoing'],
+            'Resolved': ['success', 'Resolved'],
+            'Urgent': ['warning', 'Urgent']
+          };
+          const [cls, label] = map[status] || ['', status];
+          b.className = 'badge' + (cls ? ' ' + cls : '');
+          b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+        }
       }
 
       function openMessageModal(name) {
@@ -5244,19 +5064,8 @@
 
       // ZONE_RECIPIENTS is now managed globally in js/app-config.js
       if (!window.ZONE_RECIPIENTS) {
-        window.ZONE_RECIPIENTS = {
-          'all': 811800,
-          'Bagong Ilog': 18200, 'Bagong Katipunan': 1200, 'Bambang': 22000,
-          'Buting': 11500, 'Caniogan': 31000, 'Dela Paz': 15400,
-          'Kalawaan': 32100, 'Kapasigan': 6700, 'Kapitolyo': 14300,
-          'Malinao': 5900, 'Manggahan': 94000, 'Maybunga': 45200,
-          'Oranbo': 4500, 'Palatiw': 22800, 'Pinagbuhatan': 151000,
-          'Pineda': 18900, 'Rosario': 68000, 'Sagad': 8400,
-          'San Antonio': 16500, 'San Joaquin': 15600, 'San Jose': 2300,
-          'San Miguel': 33000, 'San Nicolas': 1800, 'Santa Cruz': 6400,
-          'Santa Lucia': 46200, 'Santa Rosa': 1700, 'Santolan': 52100,
-          'Santo Tomas': 40300, 'Sumilang': 5600, 'Ugong': 28500
-        };
+        window.ZONE_RECIPIENTS = {};
+
       }
       const ZONE_RECIPIENTS = window.ZONE_RECIPIENTS;
       function openBroadcastConfirm(level, zone, message) {
@@ -5496,40 +5305,8 @@
         const existing = localStorage.getItem('ligtas_aided_requests');
         if (existing) return;
 
-        const initialHistory = [
-          {
-            id: 'AID-1715428200000',
-            title: 'Oxygen Tanks Needed',
-            desc: 'Medical tent at Kapitolyo running low on oxygen. Need 5 tanks.',
-            zone: 'Zone 10 (Kapitolyo)',
-            unit: 'VAN-03 (Medical Van, Available)',
-            timestamp: '5/11/2026, 6:50:42 PM'
-          },
-          {
-            id: 'AID-1715427900000',
-            title: 'Portable Toilets',
-            desc: 'Sanitation issue at Manggahan Residences. Requesting 5 portable toilets.',
-            zone: 'Zone 9 (Manggahan)',
-            unit: 'TRUCK-01 (5-ton, Available)',
-            timestamp: '5/11/2026, 6:45:15 PM'
-          },
-          {
-            id: 'AID-1715427600000',
-            title: 'Flashlight Batteries',
-            desc: 'Power outage expected to last. Need 500 AA batteries.',
-            zone: 'Zone 8 (Ugong)',
-            unit: 'TRUCK-02 (3-ton, En Route)',
-            timestamp: '5/11/2026, 6:40:02 PM'
-          },
-          {
-            id: 'AID-1715427300000',
-            title: 'Rescue Boat Fuel',
-            desc: 'Rescue ops halted. Need 50 liters of diesel immediately.',
-            zone: 'Zone 7 (Palatiw)',
-            unit: 'BOAT-04 (Rescue Boat, Available)',
-            timestamp: '5/11/2026, 6:35:55 PM'
-          }
-        ];
+        const initialHistory = [];
+
 
         localStorage.setItem('ligtas_aided_requests', JSON.stringify(initialHistory));
       }
@@ -5558,12 +5335,8 @@
       function initInventory() {
         const inv = localStorage.getItem('ligtas_inventory');
         if (!inv) {
-          localStorage.setItem('ligtas_inventory', JSON.stringify({
-            "Food Packs": 4200,
-            "Medical Supplies": 112,
-            "Water Supply": 850,
-            "Hygiene Kits": 340
-          }));
+          localStorage.setItem('ligtas_inventory', JSON.stringify({}));
+
         }
       }
 

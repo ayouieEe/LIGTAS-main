@@ -1,4 +1,4 @@
-﻿lucide.createIcons();
+lucide.createIcons();
 
 function initMaps() {
     // Google Maps embeds are loaded directly via iframe; no JavaScript init required.
@@ -62,16 +62,17 @@ function updateInventorySummaryCards() {
         if (hydrationPercent >= 100) {
             waterBadge.textContent = 'Good';
             waterBadge.className = 'status-badge status-good';
-            waterValue.textContent = '15.5 Liters';
+            waterValue.textContent = '-- Liters';
         } else if (hydrationPercent >= 50) {
             waterBadge.textContent = 'Low';
             waterBadge.className = 'status-badge status-low';
-            waterValue.textContent = '8.0 Liters';
+            waterValue.textContent = '-- Liters';
         } else {
             waterBadge.textContent = 'Critical';
             waterBadge.className = 'status-badge status-critical';
-            waterValue.textContent = '3.0 Liters';
+            waterValue.textContent = '-- Liters';
         }
+
     }
 
     const foodBadge = document.getElementById('canned-food-badge');
@@ -80,16 +81,17 @@ function updateInventorySummaryCards() {
         if (hydrationPercent >= 100) {
             foodBadge.textContent = 'Good';
             foodBadge.className = 'status-badge status-good';
-            foodValue.textContent = '5 Days Left';
+            foodValue.textContent = '-- Days';
         } else if (hydrationPercent >= 50) {
             foodBadge.textContent = 'Low';
             foodBadge.className = 'status-badge status-low';
-            foodValue.textContent = '3 Days Left';
+            foodValue.textContent = '-- Days';
         } else {
             foodBadge.textContent = 'Critical';
             foodBadge.className = 'status-badge status-critical';
-            foodValue.textContent = '1 Day Left';
+            foodValue.textContent = '-- Days';
         }
+
     }
 
     const medicalBadge = document.getElementById('medical-kit-badge');
@@ -98,16 +100,17 @@ function updateInventorySummaryCards() {
         if (healthPercent >= 100) {
             medicalBadge.textContent = 'Good';
             medicalBadge.className = 'status-badge status-good';
-            medicalValue.textContent = 'Level 2 Kit';
+            medicalValue.textContent = 'Complete';
         } else if (healthPercent >= 50) {
             medicalBadge.textContent = 'Low';
             medicalBadge.className = 'status-badge status-low';
-            medicalValue.textContent = 'Level 1 Kit';
+            medicalValue.textContent = 'Incomplete';
         } else {
             medicalBadge.textContent = 'Critical';
             medicalBadge.className = 'status-badge status-critical';
-            medicalValue.textContent = 'Check Supplies';
+            medicalValue.textContent = 'Empty';
         }
+
     }
 
     const powerBadge = document.getElementById('power-source-badge');
@@ -116,46 +119,26 @@ function updateInventorySummaryCards() {
         if (powerPercent >= 100) {
             powerBadge.textContent = 'Good';
             powerBadge.className = 'status-badge status-good';
-            powerValue.textContent = '100% Charge';
+            powerValue.textContent = '0% Charge';
             powerValue.className = 'text-[17px] font-bold mt-0.5 text-navy';
         } else if (powerPercent >= 50) {
             powerBadge.textContent = 'Low';
             powerBadge.className = 'status-badge status-low';
-            powerValue.textContent = '50% Charge';
+            powerValue.textContent = '0% Charge';
             powerValue.className = 'text-[17px] font-bold mt-0.5 text-amber';
         } else {
             powerBadge.textContent = 'Critical';
             powerBadge.className = 'status-badge status-critical';
-            powerValue.textContent = '12% Charge';
+            powerValue.textContent = '0% Charge';
             powerValue.className = 'text-[17px] font-bold mt-0.5 text-emergency';
         }
+
     }
 }
 
 function showAssemblyDetails(centerId) {
-    const centers = {
-        sports: {
-            title: 'Pasig City Sports Complex',
-            address: 'Caruncho Ave, Pasig City',
-            description: 'Main evacuation center with medical tents, water supply, and food distribution.',
-            mapUrl: 'https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5826,121.0735&daddr=14.5760,121.0835&dirflg=d&output=embed',
-            badgeColor: '#D32F2F',
-        },
-        cityHall: {
-            title: 'Pasig City Hall Evacuation Center',
-            address: 'F. Ortigas Jr Road, Pasig City',
-            description: 'City Hall shelter offering community support, emergency services, and temporary lodging.',
-            mapUrl: 'https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5826,121.0735&daddr=14.5814,121.0740&dirflg=d&output=embed',
-            badgeColor: '#1976D2',
-        },
-        sanAntonio: {
-            title: 'Barangay San Antonio Evacuation Center',
-            address: 'San Antonio, Pasig City',
-            description: 'Barangay evacuation center with first aid, drinking water, and local coordination support.',
-            mapUrl: 'https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5826,121.0735&daddr=14.5810,121.0520&dirflg=d&output=embed',
-            badgeColor: '#388E3C',
-        }
-    };
+    const centers = {};
+
     const center = centers[centerId] || centers.sports;
     const titleEl = document.getElementById('assembly-title');
     const addressEl = document.getElementById('assembly-address');
@@ -170,146 +153,8 @@ function showAssemblyDetails(centerId) {
 
 let currentAssignmentId = null;
 
-const assignmentDetails = {
-    'flood-response': {
-        title: 'Emergency Response Team Needed',
-        summary: 'Flooding in Barangay San Miguel requires immediate volunteer assistance. We need experienced responders for evacuation and first aid support.',
-        location: 'Barangay San Miguel',
-        status: 'URGENT',
-        time: 'Report within 30 minutes',
-        description: 'Coordinate with barangay volunteers, assist with evacuation, provide first aid, and help move affected families to safe assembly points. Bring rain gear, a flashlight, and medical supplies.',
-        tasks: [
-            'Report to Barangay Hall immediately',
-            'Support evacuation and carry essential supplies',
-            'Provide basic first aid to injured residents',
-            'Help document missing persons and family reunification requests'
-        ],
-        coordinator: 'Barangay Emergency Officer'
-    },
-    'supply-distribution': {
-        title: 'Supply Distribution Support',
-        summary: 'Help distribute emergency supplies to affected families. Training will be provided and a 4-hour shift is available tomorrow morning.',
-        location: 'City Hall Distribution Center',
-        status: 'ASSIGNED',
-        time: 'Tomorrow 8:00 AM',
-        description: 'Assist logistics staff in packing and delivering food packs, water, and hygiene kits. Ensure each household receives the correct package and support safe distancing protocols.',
-        tasks: [
-            'Attend brief volunteer orientation at 7:30 AM',
-            'Pack supplies into distribution boxes',
-            'Deliver kits to assigned barangay zones',
-            'Record recipient names and package quantities'
-        ],
-        coordinator: 'City Hall Logistics Team'
-    },
-    'medical-support': {
-        title: 'Medical Assistance Team',
-        summary: 'Support medical personnel at evacuation centers. Basic first aid knowledge helpful but not required. Flexible scheduling available.',
-        location: 'Pasig City Sports Complex',
-        status: 'URGENT',
-        time: 'Immediate to 6 hours',
-        description: 'Assist medical staff in triaging patients, distributing medications, monitoring vital signs, and providing comfort to displaced families. Personal protective equipment will be provided.',
-        tasks: [
-            'Report to medical tent at evacuation center',
-            'Assist with patient intake and vital sign monitoring',
-            'Help distribute medications and first aid supplies',
-            'Provide emotional support to affected families',
-            'Maintain cleanliness of medical area'
-        ],
-        coordinator: 'Dr. Maria Santos, Medical Coordinator'
-    },
-    'road-safety-patrol': {
-        title: 'Road Safety Patrol',
-        summary: 'Help manage traffic flow and ensure safe passage for emergency vehicles near the evacuation route.',
-        location: 'C-5 Road Section',
-        status: 'URGENT',
-        time: 'Immediate',
-        description: 'Support the volunteer traffic management team by guiding vehicles, helping pedestrians cross safely, and keeping evacuation lanes clear for first responders.',
-        tasks: [
-            'Position yourself at assigned traffic points',
-            'Guide vehicles through alternate routes',
-            'Assist pedestrians safely across intersections',
-            'Coordinate with emergency responders for clear access'
-        ],
-        coordinator: 'Traffic Response Unit'
-    },
-    'communication-hotline': {
-        title: 'Hotline Support Volunteer',
-        summary: 'Answer emergency calls and assist with family reunification. Training provided. Can work from command center or remotely.',
-        location: 'Pasig City Emergency Operations Center',
-        status: 'ASSIGNED',
-        time: 'Tomorrow 10:00 AM - 6:00 PM',
-        description: 'Help manage incoming calls from displaced residents seeking family members, provide information about assembly points and services, and connect callers with appropriate resources. Bilingual skills (Filipino/English) preferred.',
-        tasks: [
-            'Attend 30-minute call center orientation',
-            'Answer incoming hotline calls',
-            'Document caller information and family reunification requests',
-            'Provide accurate information about evacuation centers and services',
-            'Transfer critical cases to case managers'
-        ],
-        coordinator: 'Red Cross Command Center'
-    },
-    'shelter-logistics': {
-        title: 'Shelter Logistics & Setup',
-        summary: 'Help set up and organize emergency shelter facilities. Physical tasks involved - good for group volunteering. Starts this evening.',
-        location: 'Barangay San Antonio Hall',
-        status: 'URGENT',
-        time: 'Tonight 6:00 PM',
-        description: 'Assist in setting up cots, organizing supply stations, creating sleeping areas, and establishing sanitation facilities. Heavy lifting and manual work involved. Wear comfortable clothes and closed-toe shoes.',
-        tasks: [
-            'Arrive at shelter site by 6:00 PM',
-            'Assemble cots and bedding stations',
-            'Organize food and water distribution areas',
-            'Set up sanitation and hygiene stations',
-            'Help arrange registration and check-in areas'
-        ],
-        coordinator: 'Barangay San Antonio Emergency Coordinator'
-    },
-    'community-outreach': {
-        title: 'Community Outreach Support',
-        summary: 'Coordinate neighborhood safety checks and share preparedness information with local residents.',
-        location: 'Brgy. Kapitolyo Community Center',
-        status: 'ACCEPTED',
-        time: 'Today 1:00 PM',
-        description: 'Visit households, collect readiness feedback, and distribute city-approved emergency planning materials.',
-        tasks: [
-            'Meet with barangay leaders at the community center',
-            'Conduct safety check-ins for nearby households',
-            'Share emergency contact cards and preparedness tips',
-            'Report any urgent needs to the barangay office'
-        ],
-        coordinator: 'Barangay Kapitolyo Volunteer Lead'
-    },
-    'shelter-checkin': {
-        title: 'Shelter Check-in Team',
-        summary: 'Confirm shelter readiness and assist families arriving to the evacuation site.',
-        location: 'Barangay San Joaquin Evacuation Shelter',
-        status: 'COMPLETED',
-        time: 'Completed',
-        description: 'Review shelter setup, log arrivals, and ensure supplies were stocked and operational for displaced families.',
-        tasks: [
-            'Verify cot assignments and sleeping areas',
-            'Confirm water, food, and hygiene stations are staffed',
-            'Log shelter occupants and their needs',
-            'Report completion to the shelter operations team'
-        ],
-        coordinator: 'Shelter Operations Team'
-    },
-    'hotline-declined': {
-        title: 'Emergency Hotline Training',
-        summary: 'Training to support hotline operations and family reunification calls during emergencies.',
-        location: 'Pasig EOC Training Room',
-        status: 'DECLINED',
-        time: 'Next training window',
-        description: 'Learn call intake procedures and how to route urgent family reunification requests to the appropriate response teams.',
-        tasks: [
-            'Attend a 30-minute hotline protocol briefing',
-            'Practice caller triage scripts',
-            'Review common emergency resources and referral contacts',
-            'Complete a short readiness checklist'
-        ],
-        coordinator: 'Communications Officer'
-    }
-};
+const assignmentDetails = {};
+
 
 function openAssignmentModal(assignmentId) {
     currentAssignmentId = assignmentId;
@@ -902,9 +747,9 @@ function getFirstAidSettings() {
     }
     // Default settings - all essential items checked
     return {
-        'bandages': true,
-        'antiseptics': true,
-        'gauze': true,
+        'bandages': false,
+        'antiseptics': false,
+        'gauze': false,
         'scissors': false,
         'gloves': false,
         'burn-cream': false,

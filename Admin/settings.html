@@ -939,25 +939,10 @@
     }
 
     @keyframes sos-pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.02);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
     }
-        transform: scale(1.02);
-      }
 
-      100% {
-        transform: scale(1);
-      }
-    }
 
     .sos-info {
       display: flex;
@@ -1403,38 +1388,10 @@
       document.querySelectorAll('.sidebar-logo span:not(.version)').forEach(el => el.textContent = config.sysName);
     }
 
-    window.CURRENT_ZONES = {
-      'all': 811800,
-      'Bagong Ilog': 18200, 'Bagong Katipunan': 1200, 'Bambang': 22000,
-      'Buting': 11500, 'Caniogan': 31000, 'Dela Paz': 15400,
-      'Kalawaan': 32100, 'Kapasigan': 6700, 'Kapitolyo': 14300,
-      'Malinao': 5900, 'Manggahan': 94000, 'Maybunga': 45200,
-      'Oranbo': 4500, 'Palatiw': 22800, 'Pinagbuhatan': 151000,
-      'Pineda': 18900, 'Rosario': 68000, 'Sagad': 8400,
-      'San Antonio': 16500, 'San Joaquin': 15600, 'San Jose': 2300,
-      'San Miguel': 33000, 'San Nicolas': 1800, 'Santa Cruz': 6400,
-      'Santa Lucia': 46200, 'Santa Rosa': 1700, 'Santolan': 52100,
-      'Santo Tomas': 40300, 'Sumilang': 5600, 'Ugong': 28500
-    };
+    window.CURRENT_ZONES = {};
+    window.CURRENT_UNITS = [];
+    window.DEFAULT_CATEGORIES = [];
 
-    window.CURRENT_UNITS = [
-      { name: 'Fire Truck', type: 'FIRE' },
-      { name: 'Ambulance', type: 'MED' },
-      { name: 'Police', type: 'SECURITY' },
-      { name: 'Food & Water', type: 'RELIEF' },
-      { name: 'Shelter', type: 'RELIEF' }
-    ];
-
-    window.DEFAULT_CATEGORIES = [
-      { name: 'Fire', group: 'Technological' },
-      { name: 'Flood', group: 'Hydrological' },
-      { name: 'Earthquake', group: 'Geological' },
-      { name: 'Accident', group: 'Medical/Health' },
-      { name: 'Medical', group: 'Medical/Health' },
-      { name: 'Neighbor', group: 'Security/Social' },
-      { name: 'Crime', group: 'Security/Social' },
-      { name: 'Other', group: 'General' }
-    ];
 
     window.CURRENT_CATEGORIES = [...window.DEFAULT_CATEGORIES];
 
@@ -1972,10 +1929,8 @@
 
       if (panel) panel.style.display = 'block';
       // Mock volunteer data based on location
-      const volunteers = [
-        { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
-        { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
-      ];
+      const volunteers = [];
+
 
       if (grid) {
         grid.innerHTML = volunteers.map(v => `
