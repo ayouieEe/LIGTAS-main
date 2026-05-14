@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2675,6 +2675,7 @@
       max-width: 180px;
     }
   </style>
+  <link rel="stylesheet" href="css/modern-ui.css">
 </head>
 
 <body>
@@ -2839,24 +2840,19 @@
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Units Deployed</div>
               <div class="m-card-value green" style="font-size: 22px;">14</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Active logistics</div>
-              <div class="m-card-details" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:12px">
-                <span class="resource-pill">🚒 8 Rescue</span>
-                <span class="resource-pill">🚑 4 Med</span>
-                <span class="resource-pill">📦 2 Log</span>
+              <div class="m-card-details">
+                <span>8 Rescue &bull; 4 Med &bull; 2 Log</span>
+                <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Manage Units</span>
               </div>
-              <span class="card-action-link" style="margin-top:8px"
-                onclick="window.location.href='relief-ops.html'">Manage Units</span>
             </div>
             <div class="m-card c-yellow" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Supply Alerts</div>
               <div class="m-card-value orange" style="font-size: 22px;">3</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Centers low stock</div>
-              <div class="m-card-details" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:12px">
-                <span class="resource-pill">🍱 Food (2)</span>
-                <span class="resource-pill">💧 Water (1)</span>
+              <div class="m-card-details">
+                <span>2 Food &bull; 1 Water</span>
+                <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Restock</span>
               </div>
-              <span class="card-action-link" style="margin-top:8px"
-                onclick="window.location.href='relief-ops.html'">Restock</span>
             </div>
           </div>
 
@@ -2952,8 +2948,7 @@
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='incidents.html'">View All</button>
               </div>
               <div>
-                <div class="dash-incident-mini critical"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Residential Fire: Brgy. Rosario', 'Critical', 'Rosario, Pasig', '2m ago', '3-alarm residential fire affecting 5 houses.', 'Maria Santos', '📱 +63 917-555-1001', 'Field Report')">
+                <div class="dash-incident-mini critical" onclick="openDetailById('INC-S001')">
                   <div class="dim-info">
                     <div class="dim-title">Residential Fire: Brgy. Rosario</div>
                     <div class="dim-loc">Rosario, Pasig City</div>
@@ -2963,8 +2958,7 @@
                   </div>
                   <div class="dim-time">2m</div>
                 </div>
-                <div class="dash-incident-mini nominal"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Flash Flood: Brgy. Santolan', 'Hydrological', 'Santolan, Pasig', '4m ago', 'Pasig River overflow affecting low-lying areas.', 'Juan Dela Cruz', '📱 Citizen App', 'Mobile App')">
+                <div class="dash-incident-mini nominal" onclick="openDetailById('INC-S002')">
                   <div class="dim-info">
                     <div class="dim-title">Flash Flood: Brgy. Santolan</div>
                     <div class="dim-loc">Santolan, Pasig City</div>
@@ -2974,8 +2968,7 @@
                   </div>
                   <div class="dim-time">4m</div>
                 </div>
-                <div class="dash-incident-mini medical"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Medical Emergency: Brgy. Kapitolyo', 'Medical/Rescue', 'Kapitolyo, Pasig', '8m ago', 'Cardiac arrest report in commercial area.', 'Elena Gomez', '📱 Citizen App', 'Mobile App')">
+                <div class="dash-incident-mini medical" onclick="openDetailById('INC-S005')">
                   <div class="dim-info">
                     <div class="dim-title">Medical Emergency: Brgy. Kapitolyo</div>
                     <div class="dim-loc">Kapitolyo, Pasig City</div>
@@ -2985,8 +2978,7 @@
                   </div>
                   <div class="dim-time">8m</div>
                 </div>
-                <div class="dash-incident-mini warning"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Crime Incident: Brgy. Ugong', 'Urgent', 'C-5 Road, Ugong', '12m ago', 'Theft reported in commercial area.', 'Pedro Mendoza', '📱 Citizen App', 'Mobile App')">
+                <div class="dash-incident-mini warning" onclick="openDetailById('INC-S004')">
                   <div class="dim-info">
                     <div class="dim-title">Crime Incident: Brgy. Ugong</div>
                     <div class="dim-loc">C-5 Road, Ugong</div>
@@ -2996,7 +2988,7 @@
                   </div>
                   <div class="dim-time">12m</div>
                 </div>
-                <div class="dash-incident-mini critical">
+                <div class="dash-incident-mini critical" onclick="openDetailById('INC-D001')">
                   <div class="dim-info">
                     <div class="dim-title">Power Outage: Brgy. Oranbo</div>
                     <div class="dim-loc">Oranbo, Pasig City</div>
@@ -3006,7 +2998,7 @@
                   </div>
                   <div class="dim-time">15m</div>
                 </div>
-                <div class="dash-incident-mini nominal">
+                <div class="dash-incident-mini nominal" onclick="openDetailById('INC-S006')">
                   <div class="dim-info">
                     <div class="dim-title">Flood Warning: Brgy. Pinagbuhatan</div>
                     <div class="dim-loc">Pinagbuhatan, Pasig City</div>
@@ -3927,27 +3919,247 @@
     </div>
 
     <!-- LOGOUT CONFIRMATION MODAL -->
-    <div class="modal-backdrop" id="logout-modal">
-      <div class="modal modal-sm">
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="incident-detail-modal">
+      <div class="modal modal-lg">
         <div class="modal-head">
-          <h2>Confirm Logout</h2><button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
+          <h2 id="modal-inc-title">Edit Incident</h2><button class="close-btn"
+            onclick="closeModal('incident-detail-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg></button>
         </div>
-        <div class="modal-body" style="padding:24px;text-align:center">
-          <div
-            style="width:64px;height:64px;background:rgba(59,130,246,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
+        <div class="modal-body">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <span id="modal-inc-badge" class="badge badge-critical">Critical</span>
+            <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">San Joaquin, Pasig</span>
+            <span id="modal-inc-time"
+              style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">2m ago</span>
           </div>
-          <p style="color:var(--text-primary);font-weight:500;margin-bottom:8px">Are you sure you want to log out?</p>
-          <p style="color:var(--text-muted);font-size:13px">Your current administrative session will be ended.</p>
+          <div
+            style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)"
+            id="modal-inc-desc">Incident description loading...</div>
+
+          <div
+            style="display:grid;grid-template-columns:1fr 1fr 0.8fr;gap:16px;margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.03);border-radius:var(--radius);border:1px solid var(--border)">
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+                Reporter Name</div>
+              <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            </div>
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+                Contact Info</div>
+              <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            </div>
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+                Report Source</div>
+              <div id="modal-inc-source" class="badge">Field Report</div>
+            </div>
+          </div>
+
+          <div
+            style="margin-bottom:16px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius)">
+            <div class="form-section-head" style="margin-top:0">Incident Additional Details</div>
+
+            <div style="display:flex;gap:40px;margin-bottom:16px;">
+              <div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  Reporting For</div>
+                <div id="modal-inc-reporting-for" style="font-size:13px;font-weight:500;color:var(--text-primary)">
+                  Myself
+                </div>
+              </div>
+              <div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  Required Assistance</div>
+                <div id="modal-inc-needs" style="display:flex;gap:6px;flex-wrap:wrap;">
+                  <span class="badge"
+                    style="background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)">🚑
+                    Ambulance</span>
+                  <span class="badge"
+                    style="background:rgba(59,130,246,0.1);color:var(--primary);border-color:rgba(59,130,246,0.2)">👮
+                    Police</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;letter-spacing:0.05em">
+                Attached Media</div>
+              <div id="modal-inc-media" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
+                <img
+                  src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80"
+                  style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;"
+                  alt="Attached media">
+              </div>
+            </div>
+          </div>
+
+          <!-- Emergency Profile Section -->
+          <div id="emergency-profile-section"
+            style="display:none;margin-bottom:16px;padding:16px;background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius)">
+            <div class="form-section-head"
+              style="margin-top:0;color:var(--critical);border-color:rgba(239,68,68,0.1)">
+              Emergency Profile: Reporter</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Blood Type
+                </div>
+                <div id="med-blood" style="font-size:13px;font-weight:700;color:var(--critical)">—</div>
+              </div>
+              <div style="grid-column:span 2">
+                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Allergies
+                </div>
+                <div id="med-allergies" style="font-size:12px;color:var(--text-primary)">—</div>
+              </div>
+            </div>
+            <div style="margin-bottom:12px">
+              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Chronic
+                Conditions
+              </div>
+              <div id="med-conditions" style="font-size:12px;color:var(--text-primary)">—</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Emergency
+                  Contact
+                </div>
+                <div id="med-contact-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">—</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Contact Phone
+                </div>
+                <div id="med-contact-phone" style="font-size:12px;color:var(--text-primary)">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <div class="form-section-head" style="margin-top:0">Recommended Volunteers</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div
+                style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+                <div class="vol-avatar-mini" style="background:var(--primary)">RD</div>
+                <div style="flex:1">
+                  <div style="font-size:12px;font-weight:500">Ricardo Dalisay</div>
+                  <div style="font-size:10px;color:var(--text3)">📍 0.4km away • En Route</div>
+                </div>
+                <div class="status-dot active"></div>
+              </div>
+              <div
+                style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+                <div class="vol-avatar-mini" style="background:var(--purple)">EG</div>
+                <div style="flex:1">
+                  <div style="font-size:12px;font-weight:500">Elena Gomez</div>
+                  <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Dispatched</div>
+                </div>
+                <div class="status-dot busy"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="modal-broadcast-wrap"
+            style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden;">
+            <div
+              style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Broadcast to
+                  Public</div>
+                <div style="font-size:12px;color:var(--text3);">Publish as official advisory for residents</div>
+              </div>
+              <label style="position:relative;display:inline-block;width:36px;height:20px;margin:0;">
+                <input type="checkbox" style="opacity:0;width:0;height:0;" id="broadcast-toggle"
+                  onchange="document.getElementById('broadcast-slider').style.background=this.checked?'var(--nominal)':'var(--bg4)';document.getElementById('broadcast-thumb').style.transform=this.checked?'translateX(16px)':'translateX(0)';document.getElementById('broadcast-options').style.display=this.checked?'block':'none';">
+                <span id="broadcast-slider"
+                  style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--bg4);transition:.2s;border-radius:20px;">
+                  <span id="broadcast-thumb"
+                    style="position:absolute;content:'';height:14px;width:14px;left:3px;bottom:3px;background-color:white;transition:.2s;border-radius:50%;transform:translateX(0);"></span>
+                </span>
+              </label>
+            </div>
+            <div id="broadcast-options" style="padding:20px;display:none;">
+              <div style="margin-bottom:16px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Public
+                  Headline</label>
+                <input type="text" placeholder="Official Advisory Headline"
+                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;">
+              </div>
+
+              <div style="margin-bottom:16px;">
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Safety
+                  Message</label>
+                <textarea placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"
+                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;min-height:80px;resize:vertical;"></textarea>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <div>
+                  <label
+                    style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Alert
+                    Level</label>
+                  <select
+                    style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
+                    <option>High Alert</option>
+                    <option>Moderate</option>
+                    <option>Information</option>
+                  </select>
+                </div>
+                <div>
+                  <label
+                    style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Target
+                    Scope</label>
+                  <select
+                    style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
+                    <option>City-Wide</option>
+                    <option>District-Wide</option>
+                    <option>Barangay Level</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-head">Response Actions</div>
+          <div id="modal-response-wrap" style="display:flex;flex-direction:column;gap:12px">
+            <div class="form-group">
+              <label>Assign Response Units (Select multiple)</label>
+              <div class="unit-selector" id="assign-unit-buttons">
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Fire Truck">
+                  <span class="icon">🚒</span> Fire Truck
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Ambulance">
+                  <span class="icon">🚑</span> Ambulance
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Police">
+                  <span class="icon">👮</span> Police
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Food & Water">
+                  <span class="icon">☕</span> Food & Water
+                </div>
+                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Shelter">
+                  <span class="icon">⛺</span> Shelter
+                </div>
+              </div>
+            </div>
+            <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" id="field-notes-area"
+                rows="2" placeholder="Add field update or notes..."></textarea></div>
+          </div>
         </div>
-        <div class="modal-foot" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 24px">
-          <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
-          <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+        <span id="modal-inc-id" style="display:none"></span>
+        <div class="modal-foot" style="justify-content:flex-end;gap:8px" id="dynamic-modal-foot">
+          <!-- Dynamically populated by JS -->
         </div>
       </div>
     </div>
@@ -4149,31 +4361,97 @@
         action, target: target || '—', detail: detail || '—',
         ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
       });
-      localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
+      loca    /* ── INCIDENT MANAGEMENT (MATCHING incidents.html) ── */
+    function getIncidents() {
+      return JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+    }
+    function saveIncidents(arr) {
+      localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
     }
 
-    function confirmBroadcastSend() {
-      closeModal('confirm-broadcast-modal');
-      closeModal('broadcast-modal');
-      showToast('Broadcast sent successfully', 'success');
-      logAction(
-        'Broadcast',
-        document.getElementById('conf-b-level').textContent,
-        document.getElementById('conf-b-msg').textContent.slice(0, 60)
-      );
+    const SEED_INCIDENTS = [
+      { id: 'INC-S001', title: 'Residential Fire: Brgy. Rosario', type: 'Fire', severity: 'Critical', barangay: 'Rosario', description: '3-alarm residential fire affecting 5 houses. BFP Pasig deployed 2 fire trucks.', status: 'Dispatched', createdAt: '2m ago', reporter: 'Maria Santos', contact: '📱 +63 917-555-1001', source: 'Field Report' },
+      { id: 'INC-S002', title: 'Flash Flood: Brgy. Santolan', type: 'Flood', severity: 'Critical', barangay: 'Santolan', description: 'Pasig River overflow affecting low-lying areas. Water level at 17.2m.', status: 'Reported', createdAt: '4m ago', reporter: 'Juan Dela Cruz', contact: '📱 Citizen App', source: 'Mobile App' },
+      { id: 'INC-S003', title: 'Vehicular Accident: C-5 Bagong Ilog', type: 'Accident', severity: 'Critical', barangay: 'Bagong Ilog', description: 'Multi-vehicle collision on C-5. 3 ambulances dispatched.', status: 'Dispatched', createdAt: '8m ago', reporter: 'Brgy. Capt. Reyes', contact: '📧 reyes@pasig.gov.ph', source: 'Admin Portal' },
+      { id: 'INC-S004', title: 'Crime Incident: Brgy. Kapitolyo', type: 'Crime', severity: 'High', barangay: 'Kapitolyo', description: 'Theft reported in commercial area. Police units alerted.', status: 'Reported', createdAt: '12m ago', reporter: 'Pedro Mendoza', contact: '📱 Citizen App', source: 'Mobile App' },
+      { id: 'INC-S005', title: 'Medical Emergency: Brgy. Ugong', type: 'Medical', severity: 'Critical', barangay: 'Ugong', description: 'Cardiac arrest report. Ambulance dispatched.', status: 'Dispatched', createdAt: '15m ago', reporter: 'Elena Gomez', contact: '📱 Citizen App', source: 'Mobile App' },
+      { id: 'INC-S006', title: 'Neighbor Dispute: Brgy. Pinagbuhatan', type: 'Neighbor', severity: 'Medium', barangay: 'Pinagbuhatan', description: 'Noise complaint and verbal altercation. Barangay Tanod requested.', status: 'Reported', createdAt: '20m ago', reporter: 'Aling Nena', contact: '📱 +63 916-555-4004', source: 'Hotline' },
+      { id: 'INC-D001', title: 'Power Outage: Brgy. Oranbo', type: 'Utility', severity: 'Critical', barangay: 'Oranbo', description: 'Major power line failure affecting multiple blocks.', status: 'Reported', createdAt: '15m ago', reporter: 'City Engineers', contact: '📧 maintenance@pasig.gov', source: 'Admin Portal' }
+    ];
+
+    function openDetailById(id) {
+      const incidents = getIncidents();
+      let inc = incidents.find(i => i.id === id);
+      if (!inc) inc = SEED_INCIDENTS.find(i => i.id === id);
+      if (!inc) return;
+
+      document.getElementById('modal-inc-id').textContent = inc.id;
+      setIncidentDetail(inc.title, inc.status, inc.barangay + ', Pasig City', inc.createdAt, inc.description, inc.reporter, inc.contact, inc.source, inc.emergencyProfile, inc.emergencyContact);
+
+      const notesArea = document.getElementById('field-notes-area');
+      if (notesArea) notesArea.value = '';
+
+      const foot = document.getElementById('dynamic-modal-foot');
+      let buttonsHTML = '';
+      const isReported = inc.status === 'Reported';
+
+      const broadcastWrap = document.getElementById('modal-broadcast-wrap');
+      const broadcastToggle = document.getElementById('broadcast-toggle');
+
+      if (broadcastWrap) {
+        if (isReported) {
+          broadcastWrap.style.display = 'block';
+          broadcastWrap.style.pointerEvents = 'auto';
+          broadcastWrap.style.opacity = '1';
+          if (broadcastToggle) broadcastToggle.checked = false;
+        } else {
+          broadcastWrap.style.display = 'none';
+        }
+      }
+
+      if (isReported) {
+        buttonsHTML += `<button class="btn btn-primary" onclick="openDispatchConfirm()">Dispatch Rescue</button>`;
+      } else if (inc.status === 'Dispatched' || inc.status === 'Ongoing') {
+        buttonsHTML += `<button class="btn" style="background:var(--success);color:white;border:none;" onclick="resolveIncident()">Mark as Resolved</button>`;
+      }
+
+      buttonsHTML += `<div style="flex:1"></div>`;
+      if (isReported) buttonsHTML += `<button class="btn btn-ghost" onclick="saveIncidentNotes()">Save Notes</button>`;
+      buttonsHTML += `<button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>`;
+      foot.innerHTML = buttonsHTML;
+
+      openModal('incident-detail-modal');
     }
 
-    function verifyIncident() {
-      const title = document.getElementById('modal-inc-title').textContent;
-      logAction('Verify', title, 'Status set to Verified');
-      showToast('Incident verified', 'success');
+    function toggleUnit(el) { el.classList.toggle('selected'); }
+
+    function openDispatchConfirm() {
+      const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
+      if (selected.length === 0) {
+        showToast('Please select at least one unit to dispatch', 'warning');
+        return;
+      }
+      if (confirm('Dispatch ' + selected.join(' & ') + ' to this scene?')) {
+        executeDispatch();
+      }
+    }
+
+    function executeDispatch() {
+      const id = document.getElementById('modal-inc-id').textContent;
+      logAction('Dispatch', id, 'Rescue units deployed');
+      showToast('Rescue team dispatched!', 'success');
       closeModal('incident-detail-modal');
     }
 
-    function dispatchFromModal() {
-      const title = document.getElementById('modal-inc-title').textContent;
-      logAction('Dispatch', title, 'Rescue team assigned');
-      showToast('Rescue team dispatched', 'success');
+    function resolveIncident() {
+      const id = document.getElementById('modal-inc-id').textContent;
+      logAction('Status Update', id, 'Incident marked as Resolved');
+      showToast('Incident marked as Resolved', 'success');
+      closeModal('incident-detail-modal');
+    }
+
+    function saveIncidentNotes() {
+      showToast('Notes saved successfully', 'success');
       closeModal('incident-detail-modal');
     }
 
@@ -4205,10 +4483,10 @@
         }
       }
       const b = document.getElementById('modal-inc-badge');
-      const map = { 'Critical': ['critical', 'Critical'], 'Reported': ['', 'Reported'], 'Verified': ['nominal', 'Verified'], 'Dispatched': ['warning', 'Dispatched'], 'Resolved': ['success', 'Resolved'], 'Urgent': ['warning', 'Urgent'], 'Hydrological': ['nominal', 'Hydrological'], 'Medical/Rescue': ['warning', 'Medical'] };
+      const map = { 'Critical': ['badge-critical', 'Critical'], 'Reported': ['', 'Reported'], 'Verified': ['nominal', 'Verified'], 'Dispatched': ['warning', 'Dispatched'], 'Resolved': ['success', 'Resolved'], 'Urgent': ['warning', 'Urgent'], 'Hydrological': ['nominal', 'Hydrological'], 'Medical/Rescue': ['warning', 'Medical'] };
       const [cls, label] = map[status] || ['', status];
       b.className = 'badge' + (cls ? ' ' + cls : '');
-      b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+      b.innerHTML = label;
     }
 
     function updateTime() {

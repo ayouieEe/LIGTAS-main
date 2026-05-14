@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2688,6 +2688,7 @@
       max-width: 180px;
     }
   </style>
+  <link rel="stylesheet" href="css/modern-ui.css">
 </head>
 
 <body>
@@ -2942,160 +2943,160 @@
 
 
       <!-- Add Incident -->
-    <!-- Add Incident -->
-    <div class="modal-backdrop" id="add-incident-modal">
-      <div class="modal modal-lg">
-        <div class="modal-head">
-          <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg
-              width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg></button>
-        </div>
-        <div class="modal-body">
-          <div class="form-section-head">Incident Information</div>
-          <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title"
-              placeholder="e.g. Fire in Residential Area"></div>
-          <div class="form-row">
-            <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity">
-                <option>Critical (Red)</option>
-                <option>Urgent (Orange)</option>
-                <option>Warning (Yellow)</option>
-                <option>Stable (Green)</option>
+      <!-- Add Incident -->
+      <div class="modal-backdrop" id="add-incident-modal">
+        <div class="modal modal-lg">
+          <div class="modal-head">
+            <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg
+                width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-section-head">Incident Information</div>
+            <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title"
+                placeholder="e.g. Fire in Residential Area"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity">
+                  <option>Critical (Red)</option>
+                  <option>Urgent (Orange)</option>
+                  <option>Warning (Yellow)</option>
+                  <option>Stable (Green)</option>
+                </select></div>
+              <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type">
+                  <option value="">Select Incident Type...</option>
+                  <optgroup label="Meteorological">
+                    <option>Typhoon</option>
+                    <option>Severe Winds</option>
+                    <option>Tornado</option>
+                  </optgroup>
+                  <optgroup label="Hydrological">
+                    <option>Flood</option>
+                    <option>Flash Flood</option>
+                    <option>Storm Surge</option>
+                  </optgroup>
+                  <optgroup label="Geological">
+                    <option>Earthquake</option>
+                    <option>Landslide</option>
+                    <option>Volcanic Eruption</option>
+                  </optgroup>
+                  <optgroup label="Technological">
+                    <option>Fire</option>
+                    <option>Structural Collapse</option>
+                    <option>Gas Leak</option>
+                    <option>Chemical Spill</option>
+                    <option>Power Outage</option>
+                  </optgroup>
+                  <optgroup label="Medical/Health">
+                    <option>Medical Emergency</option>
+                    <option>Mass Casualty</option>
+                    <option>Disease Outbreak</option>
+                  </optgroup>
+                  <optgroup label="Security/Social">
+                    <option>Civil Disturbance</option>
+                    <option>Bomb Threat</option>
+                    <option>Missing Person</option>
+                  </optgroup>
+                  <optgroup label="Logistical">
+                    <option>Resource Shortage</option>
+                    <option>Center Overflow</option>
+                  </optgroup>
+                  <option>Other</option>
+                </select></div>
+            </div>
+            <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
+                onchange="recommendVolunteers()">
+                <option value="">Select Barangay...</option>
+                <option>Bagong Ilog</option>
+                <option>Bagong Katipunan</option>
+                <option>Bambang</option>
+                <option>Buting</option>
+                <option>Caniogan</option>
+                <option>Dela Paz</option>
+                <option>Kalawaan</option>
+                <option>Kapasigan</option>
+                <option>Kapitolyo</option>
+                <option>Malinao</option>
+                <option>Manggahan</option>
+                <option>Maybunga</option>
+                <option>Oranbo</option>
+                <option>Palatiw</option>
+                <option>Pinagbuhatan</option>
+                <option>Pineda</option>
+                <option>Rosario</option>
+                <option>Sagad</option>
+                <option>San Antonio</option>
+                <option>San Joaquin</option>
+                <option>San Jose</option>
+                <option>San Miguel</option>
+                <option>San Nicolas</option>
+                <option>Santa Cruz</option>
+                <option>Santa Lucia</option>
+                <option>Santa Rosa</option>
+                <option>Santolan</option>
+                <option>Santo Tomas</option>
+                <option>Sumilang</option>
+                <option>Ugong</option>
               </select></div>
-            <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type">
-                <option value="">Select Incident Type...</option>
-                <optgroup label="Meteorological">
-                  <option>Typhoon</option>
-                  <option>Severe Winds</option>
-                  <option>Tornado</option>
-                </optgroup>
-                <optgroup label="Hydrological">
-                  <option>Flood</option>
-                  <option>Flash Flood</option>
-                  <option>Storm Surge</option>
-                </optgroup>
-                <optgroup label="Geological">
-                  <option>Earthquake</option>
-                  <option>Landslide</option>
-                  <option>Volcanic Eruption</option>
-                </optgroup>
-                <optgroup label="Technological">
-                  <option>Fire</option>
-                  <option>Structural Collapse</option>
-                  <option>Gas Leak</option>
-                  <option>Chemical Spill</option>
-                  <option>Power Outage</option>
-                </optgroup>
-                <optgroup label="Medical/Health">
-                  <option>Medical Emergency</option>
-                  <option>Mass Casualty</option>
-                  <option>Disease Outbreak</option>
-                </optgroup>
-                <optgroup label="Security/Social">
-                  <option>Civil Disturbance</option>
-                  <option>Bomb Threat</option>
-                  <option>Missing Person</option>
-                </optgroup>
-                <optgroup label="Logistical">
-                  <option>Resource Shortage</option>
-                  <option>Center Overflow</option>
-                </optgroup>
-                <option>Other</option>
-              </select></div>
-          </div>
-          <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
-              onchange="recommendVolunteers()">
-              <option value="">Select Barangay...</option>
-              <option>Bagong Ilog</option>
-              <option>Bagong Katipunan</option>
-              <option>Bambang</option>
-              <option>Buting</option>
-              <option>Caniogan</option>
-              <option>Dela Paz</option>
-              <option>Kalawaan</option>
-              <option>Kapasigan</option>
-              <option>Kapitolyo</option>
-              <option>Malinao</option>
-              <option>Manggahan</option>
-              <option>Maybunga</option>
-              <option>Oranbo</option>
-              <option>Palatiw</option>
-              <option>Pinagbuhatan</option>
-              <option>Pineda</option>
-              <option>Rosario</option>
-              <option>Sagad</option>
-              <option>San Antonio</option>
-              <option>San Joaquin</option>
-              <option>San Jose</option>
-              <option>San Miguel</option>
-              <option>San Nicolas</option>
-              <option>Santa Cruz</option>
-              <option>Santa Lucia</option>
-              <option>Santa Rosa</option>
-              <option>Santolan</option>
-              <option>Santo Tomas</option>
-              <option>Sumilang</option>
-              <option>Ugong</option>
-            </select></div>
-          <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3"
-              placeholder="Describe the incident in detail..."></textarea></div>
+            <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc"
+                rows="3" placeholder="Describe the incident in detail..."></textarea></div>
 
-          <!-- VOLUNTEER ASSIGNMENT PANEL -->
-          <div class="vol-panel" id="nearby-vol-panel" style="display:none">
-            <div class="vol-header">
-              <h3>Nearby Volunteers Recommended</h3>
-              <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
+            <!-- VOLUNTEER ASSIGNMENT PANEL -->
+            <div class="vol-panel" id="nearby-vol-panel" style="display:none">
+              <div class="vol-header">
+                <h3>Nearby Volunteers Recommended</h3>
+                <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
+              </div>
+              <div class="vol-grid" id="nearby-vol-grid">
+                <!-- Populated by recommendVolunteers() -->
+              </div>
             </div>
-            <div class="vol-grid" id="nearby-vol-grid">
-              <!-- Populated by recommendVolunteers() -->
-            </div>
-          </div>
 
-          <!-- PUBLIC BROADCAST TOGGLE -->
-          <div class="broadcast-section">
-            <div class="toggle-row">
-              <div class="toggle-info">
-                <h3>Broadcast to Public</h3>
-                <p>Publish as official advisory for residents</p>
+            <!-- PUBLIC BROADCAST TOGGLE -->
+            <div class="broadcast-section">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <h3>Broadcast to Public</h3>
+                  <p>Publish as official advisory for residents</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="broadcast-toggle" onchange="toggleBroadcastPanel()">
+                  <span class="slider"></span>
+                </label>
               </div>
-              <label class="switch">
-                <input type="checkbox" id="broadcast-toggle" onchange="toggleBroadcastPanel()">
-                <span class="slider"></span>
-              </label>
-            </div>
-            <div class="broadcast-options" id="broadcast-panel">
-              <div class="form-group"><label>Public Headline</label><input class="input-text"
-                  placeholder="Official Advisory Headline"></div>
-              <div class="form-group"><label>Safety Message</label><textarea class="input-textarea"
-                  placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"></textarea></div>
-              <div class="form-row">
-                <div class="form-group"><label>Alert Level</label><select class="input-select">
-                    <option>High Alert</option>
-                    <option>Caution</option>
-                    <option>Information Only</option>
-                  </select></div>
-                <div class="form-group"><label>Target Scope</label><select class="input-select">
-                    <option>City-Wide</option>
-                    <option>Affected Barangay Only</option>
-                    <option>Affected + Adjacent</option>
-                  </select></div>
-              </div>
-              <label>Distribution Channels</label>
-              <div class="channel-grid-mini">
-                <div class="channel-item"><input type="checkbox" checked> App</div>
-                <div class="channel-item"><input type="checkbox" checked> SMS</div>
-                <div class="channel-item"><input type="checkbox" checked> Facebook</div>
-                <div class="channel-item"><input type="checkbox"> X (Twitter)</div>
+              <div class="broadcast-options" id="broadcast-panel">
+                <div class="form-group"><label>Public Headline</label><input class="input-text"
+                    placeholder="Official Advisory Headline"></div>
+                <div class="form-group"><label>Safety Message</label><textarea class="input-textarea"
+                    placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"></textarea></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Alert Level</label><select class="input-select">
+                      <option>High Alert</option>
+                      <option>Caution</option>
+                      <option>Information Only</option>
+                    </select></div>
+                  <div class="form-group"><label>Target Scope</label><select class="input-select">
+                      <option>City-Wide</option>
+                      <option>Affected Barangay Only</option>
+                      <option>Affected + Adjacent</option>
+                    </select></div>
+                </div>
+                <label>Distribution Channels</label>
+                <div class="channel-grid-mini">
+                  <div class="channel-item"><input type="checkbox" checked> App</div>
+                  <div class="channel-item"><input type="checkbox" checked> SMS</div>
+                  <div class="channel-item"><input type="checkbox" checked> Facebook</div>
+                  <div class="channel-item"><input type="checkbox"> X (Twitter)</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-foot">
-          <button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button>
-          <button class="btn btn-primary" onclick="submitNewIncident()">Create Incident</button>
+          <div class="modal-foot">
+            <button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitNewIncident()">Create Incident</button>
+          </div>
         </div>
       </div>
-    </div>
 
       <script>
         // ── INCIDENT STORE ────────────────────────────────────────────────────────────
@@ -3311,27 +3312,27 @@
           el.classList.toggle('selected');
         }
 
-      function toggleBroadcastPanel() {
-        const panel = document.getElementById('broadcast-panel');
-        const toggle = document.getElementById('broadcast-toggle');
-        panel.classList.toggle('active', toggle.checked);
-      }
+        function toggleBroadcastPanel() {
+          const panel = document.getElementById('broadcast-panel');
+          const toggle = document.getElementById('broadcast-toggle');
+          panel.classList.toggle('active', toggle.checked);
+        }
 
-      function recommendVolunteers() {
-        const loc = document.getElementById('add-inc-loc').value;
-        const panel = document.getElementById('nearby-vol-panel');
-        const grid = document.getElementById('nearby-vol-grid');
+        function recommendVolunteers() {
+          const loc = document.getElementById('add-inc-loc').value;
+          const panel = document.getElementById('nearby-vol-panel');
+          const grid = document.getElementById('nearby-vol-grid');
 
-        if (!loc) { panel.style.display = 'none'; return; }
+          if (!loc) { panel.style.display = 'none'; return; }
 
-        panel.style.display = 'block';
-        // Mock volunteer data based on location
-        const volunteers = [
-          { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
-          { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
-        ];
+          panel.style.display = 'block';
+          // Mock volunteer data based on location
+          const volunteers = [
+            { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
+            { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
+          ];
 
-        grid.innerHTML = volunteers.map(v => `
+          grid.innerHTML = volunteers.map(v => `
     <div class="vol-card selected" onclick="this.classList.toggle('selected')">
       <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
       <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
@@ -3343,69 +3344,69 @@
       </div>
     </div>
   `).join('');
-      }
-
-      function submitNewIncident() {
-        const title = document.getElementById('add-inc-title').value.trim();
-        const broadcast = document.getElementById('broadcast-toggle').checked;
-        const severityInput = document.getElementById('add-inc-severity').value;
-        const type = document.getElementById('add-inc-type').value;
-        const barangay = document.getElementById('add-inc-loc').value;
-        const description = document.getElementById('add-inc-desc').value.trim();
-
-        if (!title || !barangay) {
-          showToast('Please fill in Title and Barangay', 'warning');
-          return;
         }
 
-        // Map severity to simpler form if needed
-        const severity = severityInput.split(' ')[0]; // 'Critical (Red)' -> 'Critical'
+        function submitNewIncident() {
+          const title = document.getElementById('add-inc-title').value.trim();
+          const broadcast = document.getElementById('broadcast-toggle').checked;
+          const severityInput = document.getElementById('add-inc-severity').value;
+          const type = document.getElementById('add-inc-type').value;
+          const barangay = document.getElementById('add-inc-loc').value;
+          const description = document.getElementById('add-inc-desc').value.trim();
 
-        // Read selected volunteer cards
-        const selected = [
-          ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected .vol-name')
-        ].map(el => el.textContent.trim());
+          if (!title || !barangay) {
+            showToast('Please fill in Title and Barangay', 'warning');
+            return;
+          }
 
-        // Save to incident store
-        const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
-        const newInc = {
-          id: 'INC-' + Date.now(),
-          title,
-          type,
-          severity,
-          barangay,
-          description,
-          status: 'Reported',
-          assignedVolunteers: selected,
-          broadcastSent: broadcast,
-          createdAt: new Date().toLocaleString('en-PH'),
-          reporter: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-          source: 'Admin Portal'
-        };
+          // Map severity to simpler form if needed
+          const severity = severityInput.split(' ')[0]; // 'Critical (Red)' -> 'Critical'
 
-        incidents.unshift(newInc);
-        localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+          // Read selected volunteer cards
+          const selected = [
+            ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected .vol-name')
+          ].map(el => el.textContent.trim());
 
-        if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
-        closeModal('add-incident-modal');
+          // Save to incident store
+          const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+          const newInc = {
+            id: 'INC-' + Date.now(),
+            title,
+            type,
+            severity,
+            barangay,
+            description,
+            status: 'Reported',
+            assignedVolunteers: selected,
+            broadcastSent: broadcast,
+            createdAt: new Date().toLocaleString('en-PH'),
+            reporter: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+            source: 'Admin Portal'
+          };
 
-        const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
-        showToast('Incident created' + volMsg, 'success');
+          incidents.unshift(newInc);
+          localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
 
-        logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
+          if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
+          closeModal('add-incident-modal');
 
-        if (broadcast) {
-          logAction('Broadcast', title, 'Public safety advisory published');
+          const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
+          showToast('Incident created' + volMsg, 'success');
+
+          logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
+
+          if (broadcast) {
+            logAction('Broadcast', title, 'Public safety advisory published');
+          }
+
+          // Reset form
+          document.getElementById('add-inc-title').value = '';
+          document.getElementById('add-inc-desc').value = '';
+          document.getElementById('add-inc-loc').value = '';
+          document.getElementById('nearby-vol-panel').style.display = 'none';
+          document.getElementById('broadcast-panel').classList.remove('active');
+          document.getElementById('broadcast-toggle').checked = false;
         }
-
-        // Reset form
-        document.getElementById('add-inc-title').value = '';
-        document.getElementById('add-inc-desc').value = '';
-        document.getElementById('add-inc-loc').value = '';
-        document.getElementById('nearby-vol-panel').style.display = 'none';
-        document.getElementById('broadcast-panel').classList.remove('active');
-        document.getElementById('broadcast-toggle').checked = false;
-      }
       </script>
 
       <!-- Add Evacuee -->
@@ -4052,11 +4053,11 @@
         }
 
         (function applyRole() {
-      const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = 'Admin';
-      const nameEl = document.querySelector('.admin-name');
-      if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
-    })();
+          const badge = document.getElementById('active-role-badge');
+          if (badge) badge.textContent = 'Admin';
+          const nameEl = document.querySelector('.admin-name');
+          if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
+        })();
 
         function renderNotifications() {
           const list = document.getElementById('notif-list');
@@ -4066,18 +4067,18 @@
           const seen = new Set(); const merged = [];
           [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
           const recent = merged.slice(0, 8);
-          const dotColors = { 'Login':'#3B82F6','Logout':'#22C55E','Incident':'#EF4444','Dispatch':'#F59E0B','Broadcast':'#EF4444','Verify':'#22C55E','Status Update':'#3B82F6','Supply Update':'#22C55E','SOS Acknowledged':'#EF4444' };
+          const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
           if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
           list.innerHTML = recent.map((log, i) => {
             const dotColor = dotColors[log.action] || '#64748B';
             const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' — ' + (log.detail || log.details) : '');
-            let timeStr = ''; try { const p = (log.timestamp||'').split(', '); timeStr = p.length>=2 ? p[1].replace(/:\d\d /,' ') : log.timestamp||''; } catch(e){}
-            const bb = i < recent.length-1 ? 'border-bottom:1px solid var(--border);' : '';
+            let timeStr = ''; try { const p = (log.timestamp || '').split(', '); timeStr = p.length >= 2 ? p[1].replace(/:\d\d /, ' ') : log.timestamp || ''; } catch (e) { }
+            const bb = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
             return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${bb}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
-              +`<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
-              +`<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
-              +`<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
-              +`<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
+              + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+              + `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
+              + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
+              + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
           }).join('');
         }
 
@@ -4416,30 +4417,33 @@
       </script>
 
 
-  <!-- LOGOUT CONFIRMATION MODAL -->
-  <div class="modal-backdrop" id="logout-modal">
-    <div class="modal modal-sm">
-      <div class="modal-head">
-        <h2>Confirm Logout</h2>
-        <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
-      </div>
-      <div class="modal-body" style="padding: 24px; text-align: center;">
-        <div style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+      <!-- LOGOUT CONFIRMATION MODAL -->
+      <div class="modal-backdrop" id="logout-modal">
+        <div class="modal modal-sm">
+          <div class="modal-head">
+            <h2>Confirm Logout</h2>
+            <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
+          </div>
+          <div class="modal-body" style="padding: 24px; text-align: center;">
+            <div
+              style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </div>
+            <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log
+              out?</p>
+            <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
+          </div>
+          <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
+            <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+          </div>
         </div>
-        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?</p>
-        <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
       </div>
-      <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
-        <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>
