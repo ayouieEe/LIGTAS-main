@@ -122,7 +122,7 @@ function logAction(action, target, details) {
     timestamp: new Date().toISOString(),
     action: action,
     user: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-    role: localStorage.getItem('ligtas_role') || 'Super Admin',
+    role: localStorage.getItem('ligtas_role') || 'Admin',
     target: target,
     details: details,
     ip: '192.168.1.' + Math.floor(Math.random() * 254 + 1)
@@ -134,30 +134,17 @@ function logAction(action, target, details) {
   return entry;
 }
 
-// ── RBAC Functions ────────────────────────────────────────
+// ── Role Functions ───────────────────────────────────────
 function getCurrentRole() {
-  return localStorage.getItem('ligtas_role') || 'Admin';
+  return 'Admin';
 }
 
-function isSuperAdmin() {
-  return getCurrentRole() === 'Super Admin';
-}
-
-function checkRole() {
-  const superAdminElements = document.querySelectorAll('.super-admin-only');
-  const adminOnlyElements = document.querySelectorAll('.admin-hide-super');
-  const show = isSuperAdmin();
-  superAdminElements.forEach(el => {
-    el.style.display = show ? '' : 'none';
-  });
-  adminOnlyElements.forEach(el => {
-    el.style.display = show ? 'none' : '';
-  });
-  // Update role badge in topbar if present
-  const roleEl = document.querySelector('.admin-role');
-  if (roleEl) {
-    roleEl.textContent = getCurrentRole();
+function logoutUser() {
+  if (typeof logAction === 'function') {
+    logAction('Logout', localStorage.getItem('ligtas_user') || 'Admin', 'Session ended manually');
   }
+  sessionStorage.removeItem('ligtas_session_start');
+  window.location.href = 'login.html';
 }
 
 // ── Utility Functions ─────────────────────────────────────
@@ -236,6 +223,5 @@ function copyToClipboard(text) {
 
 // ── Initialize on DOM Ready ───────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  checkRole();
   populateBarangayDropdowns();
 });

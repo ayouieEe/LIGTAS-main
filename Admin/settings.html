@@ -8,7 +8,15 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <script src="js/app-config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/audit-log.js"></script>
   <style>
+    option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
     :root {
       --bg: #0D0F1A;
       --bg-card: #141720;
@@ -23,6 +31,22 @@
       --success: #22C55E;
       --radius: 4px;
       --sidebar-w: 240px;
+      /* COMPATIBILITY ALIASES */
+      --bg2: #1C1F2E;
+      --bg3: #1C1F2E;
+      --bg4: #242736;
+      --border2: #252837;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --primary: #3B82F6;
+      --primary-dim: rgba(59, 130, 246, 0.1);
+      --red: #EF4444;
+      --red-dim: rgba(239, 68, 68, 0.1);
+      --orange: #F59E0B;
+      --green: #22C55E;
+      --yellow: #EAB308;
+      --teal: #14B8A6;
+      --purple: #8B5CF6;
     }
 
     * {
@@ -77,18 +101,26 @@
     .sidebar-logo svg {
       color: var(--critical);
       width: 18px;
-      height: 18px;
+      height: 18px
     }
 
     .sidebar-logo span {
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 0.05em;
+      color: var(--text-primary)
+    }
+
+    .sidebar-logo .version {
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-micro);
+      margin-left: auto
     }
 
     .nav {
       flex: 1;
-      padding: 12px 10px;
+      padding: 12px 10px
     }
 
     .nav-item {
@@ -98,14 +130,21 @@
       padding: 10px 12px;
       border-radius: var(--radius);
       color: var(--text-muted);
-      transition: all .1s;
-      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
       margin-bottom: 2px;
+      transition: all .1s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      text-decoration: none
     }
 
     .nav-item:hover {
       background: var(--bg-card);
-      color: var(--text-primary);
+      color: var(--text-primary)
     }
 
     .nav-item.active {
@@ -113,13 +152,46 @@
       color: var(--text-primary);
       border-left: 2px solid var(--nominal);
       border-radius: 0 4px 4px 0;
-      padding-left: 10px;
+      padding-left: 10px
+    }
+
+    .nav-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--text-muted)
+    }
+
+    .nav-item.active svg {
+      color: var(--text-primary)
     }
 
     .nav-divider {
       height: 1px;
       background: var(--border);
-      margin: 16px 8px;
+      margin: 16px 8px
+    }
+
+    .sidebar-foot {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success)
+    }
+
+    .sidebar-foot span {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted)
     }
 
     /* TOPBAR */
@@ -268,6 +340,7 @@
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       padding: 10px 20px;
       border-radius: var(--radius);
@@ -285,6 +358,15 @@
 
     .btn-primary:hover {
       background: #2563EB;
+    }
+
+    .btn-danger {
+      background: #EF4444;
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #DC2626
     }
 
     .btn-ghost {
@@ -384,7 +466,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(59, 130, 246, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       padding: 6px 12px;
       border-radius: var(--radius);
@@ -439,25 +521,33 @@
       z-index: 200;
       display: none;
       align-items: center;
-      justify-content: center;
+      justify-content: center
     }
 
     .modal-backdrop.open {
-      display: flex;
+      display: flex
     }
 
     .modal {
       background: #1A1D27;
       border: 1px solid #2E3247;
       border-radius: 12px;
-      width: 480px;
+      width: 520px;
       max-width: 95vw;
       max-height: 90vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-      animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)
+    }
+
+    .modal.modal-sm {
+      width: 420px
+    }
+
+    .modal.modal-lg {
+      width: 760px
     }
 
     @keyframes modal-in {
@@ -478,20 +568,21 @@
       border-bottom: 1px solid #2E3247;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-between
     }
 
     .modal-head h2 {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       color: #F9FAFB;
+      letter-spacing: -0.2px
     }
 
     .modal-body {
       padding: 24px;
       overflow-y: auto;
       flex: 1;
-      background: #1A1D27;
+      background: #1A1D27
     }
 
     .modal-foot {
@@ -501,7 +592,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 12px;
+      gap: 12px
     }
 
     .close-btn {
@@ -515,13 +606,379 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all .15s;
+      transition: all .15s
     }
 
     .close-btn:hover {
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(59, 130, 246, 0.1);
       border-color: #EF4444;
-      color: #EF4444;
+      color: #EF4444
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 14px
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px
+    }
+
+    .input-text,
+    .input-select,
+    .input-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border .15s
+    }
+
+    .input-text:focus,
+    .input-select:focus,
+    .input-textarea:focus {
+      border-color: var(--primary);
+      background: var(--bg4)
+    }
+
+    .input-text::placeholder,
+    .input-textarea::placeholder {
+      color: var(--text3)
+    }
+
+    .input-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 30px
+    }
+
+    .input-textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .form-hint {
+      font-size: 11.5px;
+      color: var(--text3);
+      margin-top: 4px
+    }
+
+    .form-section-head {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text3);
+      margin: 20px 0 12px;
+    }
+
+    /* NEARBY VOLUNTEERS PANEL */
+    .vol-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .vol-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .vol-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .vol-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .vol-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .vol-card:hover {
+      border-color: var(--primary);
+    }
+
+    .vol-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-dim);
+    }
+
+    .vol-card-checkbox {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .vol-avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .vol-info {
+      flex: 1;
+    }
+
+    .vol-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .vol-meta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+
+    .vol-skill-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg4);
+      color: var(--text2);
+      margin-right: 4px;
+    }
+
+    .rec-badge {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    /* BROADCAST TOGGLE & PANEL */
+    .broadcast-section {
+      background: rgba(47, 129, 247, 0.05);
+      border: 1px solid rgba(47, 129, 247, 0.2);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-info h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .toggle-info p {
+      font-size: 11.5px;
+      color: var(--text3);
+      margin: 2px 0 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg4);
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: var(--primary);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(16px);
+    }
+
+    .broadcast-options {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .broadcast-options.active {
+      display: block;
+    }
+
+    .channel-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .sos-user {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--critical);
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .sos-location {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
+    }
+
+    @keyframes pulse-red {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    @keyframes sos-pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .sos-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sos-user {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--critical);
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .sos-location {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
     }
   </style>
 </head>
@@ -536,32 +993,119 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
         <span>LIGTAS</span>
-        <div class="role-badge">Admin</div>
+        <span class="version">v2.4</span>
+        <div id="active-role-badge" class="role-badge">Admin</div>
       </div>
       <nav class="nav">
-        <a href="index.html" class="nav-item">Dashboard</a>
-        <a href="incidents.html" class="nav-item">Incidents</a>
-        <a href="centers.html" class="nav-item">Centers</a>
-        <a href="relief-ops.html" class="nav-item">Relief Ops</a>
-        <a href="broadcast.html" class="nav-item">Broadcast</a>
+        <a href="index.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="7" x="3" y="3" rx="1" />
+            <rect width="7" height="7" x="14" y="3" rx="1" />
+            <rect width="7" height="7" x="14" y="14" rx="1" />
+            <rect width="7" height="7" x="3" y="14" rx="1" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="incidents.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+          </svg>
+          Incidents
+        </a>
+        <a href="centers.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Centers
+        </a>
+        <a href="relief-ops.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16.5 9.4 7.5 4.21" />
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.29 7 12 12 20.71 7" />
+            <line x1="12" x2="12" y1="22" y2="12" />
+          </svg>
+          Relief Ops
+        </a>
+        <a href="broadcast.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9" />
+            <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5" />
+            <circle cx="12" cy="12" r="2" />
+            <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5" />
+            <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1" />
+          </svg>
+          Broadcast
+        </a>
         <div class="nav-divider"></div>
-        <a href="profile.html" class="nav-item">Admin Profile</a>
-        <a href="settings.html" class="nav-item active">System Settings</a>
-        <a href="audit-logs.html" class="nav-item">Audit Logs</a>
+        <a href="profile.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          Admin Profile
+        </a>
+        <a href="settings.html" class="nav-item active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          System Settings
+        </a>
+        <a href="audit-logs.html" class="nav-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            <path d="M12 11h4" />
+            <path d="M12 16h4" />
+            <path d="M8 11h.01" />
+            <path d="M8 16h.01" />
+          </svg>
+          Audit Logs
+        </a>
       </nav>
+      <div class="sidebar-foot">
+        <div class="pulse"></div>
+        <span>System Online</span>
+      </div>
     </aside>
 
     <div class="main-wrap">
       <header class="topbar">
         <h1>System Configuration</h1>
-        <div style="display: flex; align-items: center;">
+        <div style="display:flex;align-items:center;gap:12px;">
           <div id="sos-banner-container"></div>
-          <div class="admin-chip" style="display: flex; align-items: center; gap: 8px; cursor: pointer;"
-            onclick="window.location.href='profile.html'">
-            <div
-              style="width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 10px;">
-              CR</div>
-            <span style="font-size: 13px;">Cmdr. Reyes</span>
+          <button class="btn btn-danger" id="report-incident-btn" onclick="openModal('add-incident-modal')"
+            style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:var(--critical);padding:8px 14px;font-size:12px;gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Report Incident
+          </button>
+          <button style="position:relative;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-muted);"
+            onclick="renderNotifications();openModal('notif-modal')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>
+            </svg>
+            <div class="notif-dot" style="position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--critical);border-radius:50%;display:none;"></div>
+          </button>
+          <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="window.location.href='profile.html'">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-elevated);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-primary);">CR</div>
+            <span class="admin-name" style="font-size:13px;font-weight:500;">Cmdr. Reyes</span>
           </div>
         </div>
       </header>
@@ -592,26 +1136,14 @@
                   <label>Organization / City</label>
                   <input type="text" class="input-text" id="set-org-name" value="Pasig City Command Center">
                 </div>
-                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                  <div class="form-group">
-                    <label>System Version</label>
-                    <input type="text" class="input-text" id="set-version" value="v2.4" readonly style="opacity: 0.6">
-                  </div>
-                  <div class="form-group">
-                    <label>Maintenance Mode</label>
-                    <select class="input-select" id="set-maint">
-                      <option value="off">Off (Online)</option>
-                      <option value="on">On (Restricted Access)</option>
-                    </select>
-                  </div>
-                </div>
+
               </div>
             </section>
 
             <section id="thresholds" class="settings-section">
               <div class="section-head">
                 <h2>Thresholds & Alerts</h2>
-                <p>Define automated status transitions and alert priorities.</p>
+                <p>Define automated status transitions for centers.</p>
               </div>
               <div class="panel">
                 <div class="form-group">
@@ -631,13 +1163,6 @@
                       oninput="updateVal('warn-val', this.value)">
                     <span class="threshold-val" id="warn-val" style="color: var(--warning)">70%</span>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label>SOS Alert Priority</label>
-                  <select class="input-select">
-                    <option>Always Immediate (Bypass Filter)</option>
-                    <option>Smart Filter (Based on keywords)</option>
-                  </select>
                 </div>
               </div>
             </section>
@@ -681,7 +1206,7 @@
             <section id="territory" class="settings-section">
               <div class="section-head">
                 <h2>Territorial Registry</h2>
-                <p>Manage Barangays, Zones, and their population data.</p>
+                <p>Live Territorial Registry & Population Census (Auto-Synced)</p>
               </div>
               <div class="panel">
                 <div class="unit-list" id="zone-list-container">
@@ -693,9 +1218,11 @@
             </section>
 
             <div
-              style="position: sticky; bottom: 24px; padding-top: 20px; background: linear-gradient(transparent, var(--bg) 20%);">
+              style="position: sticky; bottom: 24px; padding-top: 20px; background: linear-gradient(transparent, var(--bg) 20%); display: flex; gap: 10px;">
+              <button class="btn btn-ghost" onclick="resetSettings()"
+                style="flex: 1; justify-content: center; background: var(--bg-card)">Restore Defaults</button>
               <button class="btn btn-primary" onclick="saveSettings()"
-                style="width: 100%; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);">Save All
+                style="flex: 2; justify-content: center; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);">Save All
                 Changes</button>
             </div>
 
@@ -705,9 +1232,136 @@
     </div>
   </div>
 
+  <!-- Notifications Modal -->
+  <div class="modal-backdrop" id="notif-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Notifications</h2><button class="close-btn" onclick="closeModal('notif-modal')">&#x2715;</button>
+      </div>
+      <div class="modal-body" style="padding:0" id="notif-list"></div>
+      <div class="modal-foot"><button class="btn btn-ghost" style="width:100%;justify-content:center"
+          onclick="sessionStorage.setItem('ligtas_last_read', JSON.parse(localStorage.getItem('ligtas_audit')||'[]').length); updateNotifDot(); closeModal('notif-modal');showToast('All notifications marked as read')">Mark All as Read</button></div>
+    </div>
+  </div>
+
   <div id="toast-wrap"></div>
 
+  <!-- Modals -->
+  <div class="modal-backdrop" id="add-unit-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Add Response Unit</h2><button class="close-btn" onclick="closeModal('add-unit-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>Unit Name</label><input type="text" id="new-unit-name" class="input-text"
+            placeholder="e.g. Fire Truck 01"></div>
+        <div class="form-group"><label>Unit Type</label><select id="new-unit-type" class="input-select">
+            <option>FIRE</option>
+            <option>MED</option>
+            <option>SECURITY</option>
+            <option>RELIEF</option>
+            <option>RESCUE</option>
+          </select></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-unit-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddUnit()">Add Unit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="add-category-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Add Incident Type</h2><button class="close-btn" onclick="closeModal('add-category-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>Type Name</label><input type="text" id="new-cat-name" class="input-text"
+            placeholder="e.g. Tsunami"></div>
+        <div class="form-group"><label>Category Group</label><select id="new-cat-group" class="input-select">
+            <option>Technological</option>
+            <option>Hydrological</option>
+            <option>Geological</option>
+            <option>Medical/Health</option>
+            <option>Security/Social</option>
+            <option>Meteorological</option>
+            <option>General</option>
+          </select></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-category-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddCategory()">Add Type</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="add-zone-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Add Barangay / Zone</h2><button class="close-btn" onclick="closeModal('add-zone-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label>Barangay Name</label><input type="text" id="new-zone-name" class="input-text"
+            placeholder="e.g. San Lorenzo"></div>
+        <div class="form-group"><label>Initial Population</label><input type="number" id="new-zone-count"
+            class="input-text" value="0"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-zone-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitAddZone()">Add Barangay</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="confirm-delete-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Confirm Removal</h2><button class="close-btn" onclick="closeModal('confirm-delete-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; line-height: 1.5; color: var(--text-primary)">Are you sure you want to remove <span
+            id="delete-item-name" style="font-weight: 600; color: var(--critical)"></span>?</p>
+        <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px">This action will take effect after you
+          click "Save All Changes".</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('confirm-delete-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmRemoval()"
+          style="background: var(--critical); border-color: var(--critical)">Remove Now</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+
+
+
+    let pendingDelete = null;
+    function requestRemoval(type, id, name) {
+      pendingDelete = { type, id, name };
+      document.getElementById('delete-item-name').textContent = name;
+      openModal('confirm-delete-modal');
+    }
+
+    function confirmRemoval() {
+      if (!pendingDelete) return;
+      const { type, id } = pendingDelete;
+      if (type === 'unit') {
+        window.CURRENT_UNITS.splice(id, 1);
+        renderUnits();
+      } else if (type === 'category') {
+        window.CURRENT_CATEGORIES.splice(id, 1);
+        renderCategories();
+      } else if (type === 'zone') {
+        delete window.CURRENT_ZONES[id];
+        updateTotalCount();
+        renderZones();
+      }
+      closeModal('confirm-delete-modal');
+      pendingDelete = null;
+      showToast('Item removed from pending list', 'info');
+    }
+
     function updateVal(id, val) {
       document.getElementById(id).textContent = val + '%';
     }
@@ -719,14 +1373,7 @@
       });
     }
 
-    function showToast(msg) {
-      const wrap = document.getElementById('toast-wrap');
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = msg;
-      wrap.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
+
 
     function saveSettings() {
       const config = {
@@ -735,7 +1382,7 @@
         critThreshold: parseInt(document.getElementById('crit-val').textContent),
         warnThreshold: parseInt(document.getElementById('warn-val').textContent),
         categories: window.CURRENT_CATEGORIES,
-        maintMode: document.getElementById('set-maint').value,
+
         lastUpdated: new Date().toISOString()
       };
 
@@ -754,37 +1401,35 @@
     }
 
     window.CURRENT_ZONES = {
-      'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
-      'Manggahan': 4120, 'Pinagbuhatan': 2216,
-      'Rosario': 3842, 'San Joaquin': 1680,
-      'Santolan': 1920, 'Ugong': 480
+      'all': 811800,
+      'Bagong Ilog': 18200, 'Bagong Katipunan': 1200, 'Bambang': 22000,
+      'Buting': 11500, 'Caniogan': 31000, 'Dela Paz': 15400,
+      'Kalawaan': 32100, 'Kapasigan': 6700, 'Kapitolyo': 14300,
+      'Malinao': 5900, 'Manggahan': 94000, 'Maybunga': 45200,
+      'Oranbo': 4500, 'Palatiw': 22800, 'Pinagbuhatan': 151000,
+      'Pineda': 18900, 'Rosario': 68000, 'Sagad': 8400,
+      'San Antonio': 16500, 'San Joaquin': 15600, 'San Jose': 2300,
+      'San Miguel': 33000, 'San Nicolas': 1800, 'Santa Cruz': 6400,
+      'Santa Lucia': 46200, 'Santa Rosa': 1700, 'Santolan': 52100,
+      'Santo Tomas': 40300, 'Sumilang': 5600, 'Ugong': 28500
     };
 
     window.CURRENT_UNITS = [
-      { name: 'Fire Unit Alpha', type: 'FIRE' },
-      { name: 'Rescue Team Bravo', type: 'RESCUE' },
-      { name: 'Medical Team Charlie', type: 'MED' }
+      { name: 'Fire Truck', type: 'FIRE' },
+      { name: 'Ambulance', type: 'MED' },
+      { name: 'Police', type: 'SECURITY' },
+      { name: 'Food & Water', type: 'RELIEF' },
+      { name: 'Shelter', type: 'RELIEF' }
     ];
 
     window.DEFAULT_CATEGORIES = [
-      { name: 'Typhoon', group: 'Meteorological' },
-      { name: 'Severe Winds', group: 'Meteorological' },
-      { name: 'Flood', group: 'Hydrological' },
-      { name: 'Flash Flood', group: 'Hydrological' },
-      { name: 'Earthquake', group: 'Geological' },
-      { name: 'Landslide', group: 'Geological' },
       { name: 'Fire', group: 'Technological' },
-      { name: 'Gas Leak', group: 'Technological' },
-      { name: 'Power Outage', group: 'Technological' },
-      { name: 'Medical Emergency', group: 'Medical/Health' },
+      { name: 'Flood', group: 'Hydrological' },
+      { name: 'Earthquake', group: 'Geological' },
       { name: 'Accident', group: 'Medical/Health' },
-      { name: 'Mass Casualty', group: 'Medical/Health' },
+      { name: 'Medical', group: 'Medical/Health' },
+      { name: 'Neighbor', group: 'Security/Social' },
       { name: 'Crime', group: 'Security/Social' },
-      { name: 'Neighbor Dispute', group: 'Security/Social' },
-      { name: 'Civil Disturbance', group: 'Security/Social' },
-      { name: 'Missing Person', group: 'Security/Social' },
-      { name: 'Resource Shortage', group: 'Logistical' },
-      { name: 'Center Overflow', group: 'Logistical' },
       { name: 'Other', group: 'General' }
     ];
 
@@ -804,19 +1449,27 @@
             <span>${cat.name}</span>
             <span class="unit-tag">${cat.group.toUpperCase()}</span>
           </div>
-          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeCategoryItem(${index})">Remove</button>
+          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="requestRemoval('category', ${index}, '${cat.name}')">Remove</button>
         `;
         container.appendChild(div);
       });
     }
 
-    function removeCategoryItem(index) {
-      window.CURRENT_CATEGORIES.splice(index, 1);
-      renderCategories();
-    }
+
 
     function addCategoryItem() {
-      triggerAddCategory();
+      openModal('add-category-modal');
+    }
+
+    function submitAddCategory() {
+      const name = document.getElementById('new-cat-name').value;
+      const group = document.getElementById('new-cat-group').value;
+      if (name) {
+        window.CURRENT_CATEGORIES.push({ name, group });
+        renderCategories();
+        closeModal('add-category-modal');
+        document.getElementById('new-cat-name').value = '';
+      }
     }
 
     function renderUnits() {
@@ -832,36 +1485,54 @@
             <span>${unit.name}</span>
             <span class="unit-tag">${unit.type}</span>
           </div>
-          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeUnit(${index})">Remove</button>
+          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="requestRemoval('unit', ${index}, '${unit.name}')">Remove</button>
         `;
         container.appendChild(div);
       });
     }
 
-    function removeUnit(index) {
-      window.CURRENT_UNITS.splice(index, 1);
-      renderUnits();
-    }
+
 
     function addUnit() {
-      triggerAddUnit();
+      openModal('add-unit-modal');
+    }
+
+    function submitAddUnit() {
+      const name = document.getElementById('new-unit-name').value;
+      const type = document.getElementById('new-unit-type').value;
+      if (name) {
+        window.CURRENT_UNITS.push({ name, type });
+        renderUnits();
+        closeModal('add-unit-modal');
+        document.getElementById('new-unit-name').value = '';
+      }
     }
 
     function renderZones() {
-      const container = document.getElementById('zone-list-container');
+      const container = document.getElementById("zone-list-container");
       if (!container) return;
 
-      container.innerHTML = '';
+      container.innerHTML = "";
       Object.entries(window.CURRENT_ZONES).forEach(([name, count]) => {
-        if (name === 'all') return;
-        const div = document.createElement('div');
-        div.className = 'unit-item';
+        if (name === "all") return;
+        const div = document.createElement("div");
+        div.className = "unit-item";
+        div.style.background = "rgba(59, 130, 246, 0.03)";
         div.innerHTML = `
-          <div class="unit-info">
-            <strong>${name}</strong>
-            <input type="number" class="input-text" style="width: 80px; padding: 4px 8px; font-size: 11px" value="${count}" onchange="updateZoneCount('${name}', this.value)">
+          <div class="unit-info" style="width: 100%">
+            <div style="display: flex; flex-direction: column;">
+              <strong style="color: var(--text-primary);">${name}</strong>
+              <span style="font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                <div class="pulse" style="width: 4px; height: 4px; background: var(--success);"></div> 
+                Live Registry Link Active
+              </span>
+            </div>
+            <div style="margin-left: auto; text-align: right; margin-right: 16px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; color: var(--nominal);">${count.toLocaleString()}</div>
+              <div style="font-size: 9px; color: var(--text-micro); text-transform: uppercase; letter-spacing: 0.05em;">Residents</div>
+            </div>
+            <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="requestRemoval('zone', '${name}', '${name}')">Remove</button>
           </div>
-          <button class="btn btn-ghost" style="padding: 4px 8px; font-size: 10px" onclick="removeZone('${name}')">Remove</button>
         `;
         container.appendChild(div);
       });
@@ -872,11 +1543,7 @@
       updateTotalCount();
     }
 
-    function removeZone(name) {
-      delete window.CURRENT_ZONES[name];
-      updateTotalCount();
-      renderZones();
-    }
+
 
     function updateTotalCount() {
       let total = 0;
@@ -887,7 +1554,29 @@
     }
 
     function addZone() {
-      triggerAddZone();
+      openModal('add-zone-modal');
+    }
+
+    function submitAddZone() {
+      const name = document.getElementById('new-zone-name').value;
+      const count = parseInt(document.getElementById('new-zone-count').value) || 0;
+      if (name && !window.CURRENT_ZONES[name]) {
+        window.CURRENT_ZONES[name] = count;
+        updateTotalCount();
+        renderZones();
+        closeModal('add-zone-modal');
+        document.getElementById('new-zone-name').value = '';
+        document.getElementById('new-zone-count').value = '0';
+      }
+    }
+
+    function resetSettings() {
+      if (confirm('Are you sure you want to restore default settings? This will overwrite your current configuration.')) {
+        localStorage.removeItem('ligtas_config');
+        localStorage.removeItem('ligtas_units');
+        localStorage.removeItem('ligtas_zones');
+        location.reload();
+      }
     }
 
     function loadSettings() {
@@ -931,9 +1620,7 @@
         renderCategories();
       }
 
-      if (config.maintMode) {
-        document.getElementById('set-maint').value = config.maintMode;
-      }
+
 
       // Apply system name to sidebar
       if (config.sysName) {
@@ -941,181 +1628,453 @@
       }
     }
 
-    window.onload = () => {
-      loadSettings();
-      renderSOSBanners();
-    };
+    function openModal(id) { const el = document.getElementById(id); if (el) el.classList.add('open'); }
+    function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('open'); }
+    document.addEventListener('click', e => { if (e.target.classList.contains('modal-backdrop')) e.target.classList.remove('open'); });
 
+    function showToast(msg, type = 'info') {
+      const wrap = document.getElementById('toast-wrap');
+      if (!wrap) return;
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.style.cssText = "display:flex;align-items:center;gap:12px;padding:12px 18px;background:#1A1D27;border:1px solid #2E3247;border-radius:8px;color:#F9FAFB;font-size:13px;font-weight:500;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);margin-top:10px;";
+      if (type === 'success') { t.style.borderColor = '#22C55E'; t.style.color = '#22C55E'; }
+      t.innerHTML = `<span>${msg}</span>`;
+      wrap.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 3200);
+    }
+
+    function renderNotifications() {
+      const list = document.getElementById('notif-list');
+      if (!list) return;
+      const logsA = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const logsB = JSON.parse(localStorage.getItem('ligtas_audit_logs') || '[]');
+      const seen = new Set(); const merged = [];
+      [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
+      const recent = merged.slice(0, 8);
+      const dotColors = { 'Login':'#3B82F6','Logout':'#22C55E','Incident':'#EF4444','Dispatch':'#F59E0B','Broadcast':'#EF4444','Verify':'#22C55E','Status Update':'#3B82F6','Supply Update':'#22C55E','SOS Acknowledged':'#EF4444' };
+      if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
+      list.innerHTML = recent.map((log, i) => {
+        const dotColor = dotColors[log.action] || '#64748B';
+        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' — ' + (log.detail || log.details) : '');
+        let timeStr = ''; try { const p = (log.timestamp||'').split(', '); timeStr = p.length>=2 ? p[1].replace(/:\d\d /,' ') : log.timestamp||''; } catch(e){}
+        const bb = i < recent.length-1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${bb}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
+          +`<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+          +`<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
+          +`<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
+          +`<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
+      }).join('');
+    }
+
+    function updateNotifDot() {
+      const logs = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const lastRead = parseInt(sessionStorage.getItem('ligtas_last_read') || '0');
+      const dot = document.querySelector('.notif-dot');
+      if (dot) dot.style.display = logs.length > lastRead ? 'block' : 'none';
+    }
+
+    (function applyRole() {
+      const badge = document.querySelector('.role-badge');
+      if (badge) badge.textContent = 'Admin';
+      const nameEl = document.querySelector('.admin-name');
+      if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
+    })();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      if (typeof renderSOSBanners === 'function') renderSOSBanners();
+      updateNotifDot();
+    });
+  </script>
+
+  <!-- UNIVERSAL SOS MODAL -->
+  <div class="modal-backdrop" id="sos-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>
+          <div class="sos-icon-pulse"></div> SOS Alert
+        </h2>
+        <button class="close-btn" onclick="closeModal('sos-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="sos-detail-card"
+          style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 16px;">
+          <label style="color: var(--critical)">Distress Signal From</label>
+          <div id="sos-detail-name"
+            style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">-</div>
+          <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">-</div>
+          <label>GPS COORDINATES</label>
+          <div id="sos-detail-coords"
+            style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--primary);">-</div>
+        </div>
+        <p style="font-size: 11px; color: var(--text-micro); margin-top: 16px; line-height: 1.4;">
+          Distress signal received via LIGTAS Mobile App. High accuracy GPS fix established. Immediate dispatch of
+          nearest rescue unit recommended.
+        </p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('sos-modal')">Ignore</button>
+        <button class="btn btn-primary" style="background: var(--critical); border-color: var(--critical);"
+          onclick="acknowledgeSOS()">Acknowledge & Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* UNIVERSAL SOS LOGIC */
     function renderSOSBanners() {
       const container = document.getElementById('sos-banner-container');
+      if (!container) return;
       const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
-      if (queue.length > 0) {
+      if (queue.length === 0) { container.innerHTML = ''; return; }
+
+      if (queue.length === 1) {
+        const sos = queue[0];
         container.innerHTML = `
-          <div class="sos-banner" onclick="window.location.href='incidents.html'">
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)">
             <div class="sos-icon-pulse"></div>
-            <span style="font-size: 11px; font-weight: 600; color: var(--critical)">${queue.length} ACTIVE SOS</span>
+            <div class="sos-info">
+              <div class="sos-user">${sos.name}</div>
+              <div class="sos-location">${sos.location}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)" style="border-width: 2px;">
+            <div class="sos-icon-pulse"></div>
+            <div class="sos-info">
+              <div class="sos-user" style="color: var(--critical); font-weight: 700;">${queue.length} ACTIVE SOS ALERTS</div>
+              <div class="sos-location">Priority Dispatch Required</div>
+            </div>
           </div>
         `;
       }
     }
 
-    // Modal Handling
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
+    let currentSOSIndex = -1;
+    function openSOSDetailByIndex(index) {
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      currentSOSIndex = index;
+      const sos = queue[index];
+      if (!sos) return;
+
+      const nameEl = document.getElementById('sos-detail-name');
+      const locEl = document.getElementById('sos-detail-loc');
+      const coordsEl = document.getElementById('sos-detail-coords');
+      if (nameEl) nameEl.textContent = sos.name;
+      if (locEl) locEl.textContent = sos.location;
+      if (coordsEl) coordsEl.textContent = sos.coords;
+
+      const head = document.querySelector('#sos-modal .modal-head h2');
+      if (head) head.innerHTML = `<div class="sos-icon-pulse"></div> Alert ${index + 1} of ${queue.length}`;
+
+      openModal('sos-modal');
+    }
+
+    function acknowledgeSOS() {
+      if (currentSOSIndex === -1) return;
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      const ackSOS = queue[currentSOSIndex];
+      if (!ackSOS) return;
+
+      if (typeof logAction === 'function') {
+        logAction('SOS Acknowledged', ackSOS.name, 'Emergency response dispatched to ' + ackSOS.location);
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
+      }
+
+      queue.splice(currentSOSIndex, 1);
+      localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue));
+      closeModal('sos-modal');
+      renderSOSBanners();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSOSBanners();
+      setInterval(renderSOSBanners, 1000);
+    });
+  </script>
+  <!-- Add Incident -->
+  <div class="modal-backdrop" id="add-incident-modal">
+    <div class="modal modal-lg">
+      <div class="modal-head">
+        <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg width="12"
+            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-section-head">Incident Information</div>
+        <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title"
+            placeholder="e.g. Fire in Residential Area"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity">
+              <option>Critical (Red)</option>
+              <option>Urgent (Orange)</option>
+              <option>Warning (Yellow)</option>
+              <option>Stable (Green)</option>
+            </select></div>
+          <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type">
+              <option value="">Select Incident Type...</option>
+              <optgroup label="Meteorological">
+                <option>Typhoon</option>
+                <option>Severe Winds</option>
+                <option>Tornado</option>
+              </optgroup>
+              <optgroup label="Hydrological">
+                <option>Flood</option>
+                <option>Flash Flood</option>
+                <option>Storm Surge</option>
+              </optgroup>
+              <optgroup label="Geological">
+                <option>Earthquake</option>
+                <option>Landslide</option>
+                <option>Volcanic Eruption</option>
+              </optgroup>
+              <optgroup label="Technological">
+                <option>Fire</option>
+                <option>Structural Collapse</option>
+                <option>Gas Leak</option>
+                <option>Chemical Spill</option>
+                <option>Power Outage</option>
+              </optgroup>
+              <optgroup label="Medical/Health">
+                <option>Medical Emergency</option>
+                <option>Mass Casualty</option>
+                <option>Disease Outbreak</option>
+              </optgroup>
+              <optgroup label="Security/Social">
+                <option>Civil Disturbance</option>
+                <option>Bomb Threat</option>
+                <option>Missing Person</option>
+              </optgroup>
+              <optgroup label="Logistical">
+                <option>Resource Shortage</option>
+                <option>Center Overflow</option>
+              </optgroup>
+              <option>Other</option>
+            </select></div>
+        </div>
+        <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
+            onchange="recommendVolunteers()">
+            <option value="">Select Barangay...</option>
+            <option>Bagong Ilog</option>
+            <option>Bagong Katipunan</option>
+            <option>Bambang</option>
+            <option>Buting</option>
+            <option>Caniogan</option>
+            <option>Dela Paz</option>
+            <option>Kalawaan</option>
+            <option>Kapasigan</option>
+            <option>Kapitolyo</option>
+            <option>Malinao</option>
+            <option>Manggahan</option>
+            <option>Maybunga</option>
+            <option>Oranbo</option>
+            <option>Palatiw</option>
+            <option>Pinagbuhatan</option>
+            <option>Pineda</option>
+            <option>Rosario</option>
+            <option>Sagad</option>
+            <option>San Antonio</option>
+            <option>San Joaquin</option>
+            <option>San Jose</option>
+            <option>San Miguel</option>
+            <option>San Nicolas</option>
+            <option>Santa Cruz</option>
+            <option>Santa Lucia</option>
+            <option>Santa Rosa</option>
+            <option>Santolan</option>
+            <option>Santo Tomas</option>
+            <option>Sumilang</option>
+            <option>Ugong</option>
+          </select></div>
+        <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3"
+            placeholder="Describe the incident in detail..."></textarea></div>
+
+        <!-- VOLUNTEER ASSIGNMENT PANEL -->
+        <div class="vol-panel" id="nearby-vol-panel" style="display:none">
+          <div class="vol-header">
+            <h3>Nearby Volunteers Recommended</h3>
+            <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
+          </div>
+          <div class="vol-grid" id="nearby-vol-grid">
+            <!-- Populated by recommendVolunteers() -->
+          </div>
+        </div>
+
+        <!-- PUBLIC BROADCAST TOGGLE -->
+        <div class="broadcast-section">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <h3>Broadcast to Public</h3>
+              <p>Publish as official advisory for residents</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="broadcast-toggle" onchange="toggleBroadcastPanel()">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="broadcast-options" id="broadcast-panel">
+            <div class="form-group"><label>Public Headline</label><input class="input-text"
+                placeholder="Official Advisory Headline"></div>
+            <div class="form-group"><label>Safety Message</label><textarea class="input-textarea"
+                placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"></textarea></div>
+            <div class="form-row">
+              <div class="form-group"><label>Alert Level</label><select class="input-select">
+                  <option>High Alert</option>
+                  <option>Caution</option>
+                  <option>Information Only</option>
+                </select></div>
+              <div class="form-group"><label>Target Scope</label><select class="input-select">
+                  <option>City-Wide</option>
+                  <option>Affected Barangay Only</option>
+                  <option>Affected + Adjacent</option>
+                </select></div>
+            </div>
+            <label>Distribution Channels</label>
+            <div class="channel-grid-mini">
+              <div class="channel-item"><input type="checkbox" checked> App</div>
+              <div class="channel-item"><input type="checkbox" checked> SMS</div>
+              <div class="channel-item"><input type="checkbox" checked> Facebook</div>
+              <div class="channel-item"><input type="checkbox"> X (Twitter)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitNewIncident()">Create Incident</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleBroadcastPanel() {
+      const panel = document.getElementById('broadcast-panel');
+      const toggle = document.getElementById('broadcast-toggle');
+      if (panel && toggle) panel.classList.toggle('active', toggle.checked);
+    }
+
+    function recommendVolunteers() {
+      const loc = document.getElementById('add-inc-loc').value;
+      const panel = document.getElementById('nearby-vol-panel');
+      const grid = document.getElementById('nearby-vol-grid');
+
+      if (!loc) { if (panel) panel.style.display = 'none'; return; }
+
+      if (panel) panel.style.display = 'block';
+      // Mock volunteer data based on location
+      const volunteers = [
+        { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
+        { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
+      ];
+
+      if (grid) {
+        grid.innerHTML = volunteers.map(v => `
+          <div class="vol-card selected" onclick="this.classList.toggle('selected')">
+            <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
+            <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
+            <div class="vol-info">
+              ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
+              <div class="vol-name">${v.name}</div>
+              <div class="vol-meta">📍 ${v.dist} away • ${v.time} ETA</div>
+              <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
+            </div>
+          </div>
+        `).join('');
       }
     }
 
-    function closeModal(id) {
-      const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
+    function submitNewIncident() {
+      const title = document.getElementById('add-inc-title').value.trim();
+      const broadcast = document.getElementById('broadcast-toggle').checked;
+      const severityInput = document.getElementById('add-inc-severity').value;
+      const type = document.getElementById('add-inc-type').value;
+      const barangay = document.getElementById('add-inc-loc').value;
+      const description = document.getElementById('add-inc-desc').value.trim();
+
+      if (!title || !barangay) {
+        if (typeof showToast === 'function') showToast('Please fill in Title and Barangay', 'warning');
+        return;
       }
-    }
 
-    // Modal Action Handlers
-    function triggerAddCategory() {
-      document.getElementById('modal-cat-name').value = '';
-      document.getElementById('modal-cat-group').value = 'General';
-      openModal('add-category-modal');
-    }
+      // Map severity to simpler form if needed
+      const severity = severityInput.split(' ')[0]; // 'Critical (Red)' -> 'Critical'
 
-    function confirmAddCategory() {
-      const name = document.getElementById('modal-cat-name').value;
-      const group = document.getElementById('modal-cat-group').value;
-      if (name) {
-        window.CURRENT_CATEGORIES.push({ name, group });
-        renderCategories();
-        closeModal('add-category-modal');
+      // Read selected volunteer cards
+      const selected = [
+        ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected .vol-name')
+      ].map(el => el.textContent.trim());
+
+      // Save to incident store
+      const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+      const newInc = {
+        id: 'INC-' + Date.now(),
+        title,
+        type,
+        severity,
+        barangay,
+        description,
+        status: 'Reported',
+        assignedVolunteers: selected,
+        broadcastSent: broadcast,
+        createdAt: new Date().toLocaleString('en-PH'),
+        reporter: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+        source: 'Admin Portal'
+      };
+
+      incidents.unshift(newInc);
+      localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+
+      closeModal('add-incident-modal');
+
+      const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
+      if (typeof showToast === 'function') showToast('Incident created' + volMsg, 'success');
+
+      if (typeof logAction === 'function') {
+        logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
       }
-    }
 
-    function triggerAddUnit() {
-      document.getElementById('modal-unit-name').value = '';
-      document.getElementById('modal-unit-type').value = 'RESCUE';
-      openModal('add-unit-modal');
-    }
-
-    function confirmAddUnit() {
-      const name = document.getElementById('modal-unit-name').value;
-      const type = document.getElementById('modal-unit-type').value;
-      if (name) {
-        window.CURRENT_UNITS.push({ name, type: type.toUpperCase() });
-        renderUnits();
-        closeModal('add-unit-modal');
+      if (broadcast && typeof logAction === 'function') {
+        logAction('Broadcast', title, 'Public safety advisory published');
       }
-    }
 
-    function triggerAddZone() {
-      document.getElementById('modal-zone-name').value = '';
-      document.getElementById('modal-zone-count').value = '0';
-      openModal('add-zone-modal');
-    }
-
-    function confirmAddZone() {
-      const name = document.getElementById('modal-zone-name').value;
-      const count = parseInt(document.getElementById('modal-zone-count').value) || 0;
-      if (name) {
-        window.CURRENT_ZONES[name] = count;
-        updateTotalCount();
-        renderZones();
-        closeModal('add-zone-modal');
-      }
+      // Reset form
+      document.getElementById('add-inc-title').value = '';
+      document.getElementById('add-inc-desc').value = '';
+      document.getElementById('add-inc-loc').value = '';
+      document.getElementById('nearby-vol-panel').style.display = 'none';
+      document.getElementById('broadcast-panel').classList.remove('active');
+      document.getElementById('broadcast-toggle').checked = false;
     }
   </script>
 
-  <!-- MODALS -->
-  <div class="modal-backdrop" id="add-category-modal">
-    <div class="modal">
+  <!-- LOGOUT CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="logout-modal">
+    <div class="modal modal-sm">
       <div class="modal-head">
-        <h2>Add Incident Type</h2>
-        <button class="close-btn" onclick="closeModal('add-category-modal')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M18 6L6 18M6 6l12 12" />
+        <h2>Confirm Logout</h2>
+        <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px; text-align: center;">
+        <div style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
           </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Type Name</label>
-          <input type="text" class="input-text" id="modal-cat-name" placeholder="e.g. Tsunami">
         </div>
-        <div class="form-group">
-          <label>Category Group</label>
-          <select class="input-select" id="modal-cat-group">
-            <option>Meteorological</option>
-            <option>Hydrological</option>
-            <option>Geological</option>
-            <option>Technological</option>
-            <option>General</option>
-          </select>
-        </div>
+        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?</p>
+        <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
       </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal('add-category-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="confirmAddCategory()">Add Type</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="add-unit-modal">
-    <div class="modal">
-      <div class="modal-head">
-        <h2>Add Response Unit</h2>
-        <button class="close-btn" onclick="closeModal('add-unit-modal')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Unit Name</label>
-          <input type="text" class="input-text" id="modal-unit-name" placeholder="e.g. Rescue Team Delta">
-        </div>
-        <div class="form-group">
-          <label>Unit Type</label>
-          <select class="input-select" id="modal-unit-type">
-            <option value="RESCUE">Rescue Team</option>
-            <option value="FIRE">Fire Station</option>
-            <option value="MED">Medical Team</option>
-            <option value="POLICE">Police Unit</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal('add-unit-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="confirmAddUnit()">Add Unit</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="add-zone-modal">
-    <div class="modal">
-      <div class="modal-head">
-        <h2>Add Barangay Zone</h2>
-        <button class="close-btn" onclick="closeModal('add-zone-modal')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Barangay Name</label>
-          <input type="text" class="input-text" id="modal-zone-name" placeholder="e.g. Pinagbuhatan">
-        </div>
-        <div class="form-group">
-          <label>Initial Resident Count</label>
-          <input type="number" class="input-text" id="modal-zone-count" value="0">
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal('add-zone-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="confirmAddZone()">Add Zone</button>
+      <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
+        <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
       </div>
     </div>
   </div>

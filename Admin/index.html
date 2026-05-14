@@ -1,15 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LIGTAS — Admin Command Center</title>
+  <title>LIGTAS â€” Admin Command Center</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <script src="js/app-config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/audit-log.js"></script>
   <style>
+    option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
     :root {
       --bg: #0D0F1A;
       --bg-card: #141720;
@@ -27,8 +34,22 @@
       --radius: 4px;
       --radius-lg: 6px;
       --sidebar-w: 240px;
-      --bg2: #161B22;
-      --border2: rgba(255, 255, 255, 0.1);
+      /* COMPATIBILITY ALIASES */
+      --bg2: #1C1F2E;
+      --bg3: #1C1F2E;
+      --bg4: #242736;
+      --border2: #252837;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --primary: #3B82F6;
+      --primary-dim: rgba(59, 130, 246, 0.1);
+      --red: #EF4444;
+      --red-dim: rgba(239, 68, 68, 0.1);
+      --orange: #F59E0B;
+      --green: #22C55E;
+      --yellow: #EAB308;
+      --teal: #14B8A6;
+      --purple: #8B5CF6;
     }
 
     * {
@@ -236,7 +257,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(59, 130, 246, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       padding: 6px 12px;
       border-radius: var(--radius);
@@ -604,6 +625,7 @@
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       padding: 8px 14px;
       border-radius: var(--radius);
@@ -622,6 +644,15 @@
 
     .btn-primary:hover {
       background: #2563EB
+    }
+
+    .btn-danger {
+      background: #EF4444;
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #DC2626
     }
 
     .btn-danger-ghost {
@@ -657,6 +688,7 @@
     .badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 2px 8px;
       border-radius: 4px;
       font-size: 11px;
@@ -699,12 +731,38 @@
     }
 
     .badge-pill-warning {
-      background: var(--bg-elevated);
-      border: 1px solid var(--warning);
+      background: rgba(245, 158, 11, .15);
       color: var(--warning);
       padding: 2px 8px;
       border-radius: 10px;
       font-size: 11px
+    }
+
+    .resource-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .resource-pill:hover {
+      border-color: var(--nominal);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .resource-pill.active {
+      background: var(--nominal);
+      border-color: var(--nominal);
+      color: #fff;
     }
 
     /* TABLE */
@@ -1282,8 +1340,8 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(13, 15, 26, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(6px);
       z-index: 200;
       display: none;
       align-items: center;
@@ -1295,30 +1353,31 @@
     }
 
     .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      background: #1A1D27;
+      border: 1px solid #2E3247;
+      border-radius: 12px;
       width: 520px;
       max-width: 95vw;
       max-height: 90vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: modal-in .1s ease
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)
     }
 
     .modal.modal-sm {
-      width: 400px
+      width: 420px
     }
 
     .modal.modal-lg {
-      width: 800px
+      width: 760px
     }
 
     @keyframes modal-in {
       from {
         opacity: 0;
-        transform: scale(.98) translateY(4px)
+        transform: scale(.97) translateY(12px)
       }
 
       to {
@@ -1328,30 +1387,32 @@
     }
 
     .modal-head {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      background: #0F1117;
+      border-bottom: 1px solid #2E3247;
       display: flex;
       align-items: center;
       justify-content: space-between
     }
 
     .modal-head h2 {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-primary)
+      color: #F9FAFB;
+      letter-spacing: -0.2px
     }
 
     .modal-body {
       padding: 24px;
       overflow-y: auto;
-      flex: 1
+      flex: 1;
+      background: #1A1D27
     }
 
     .modal-foot {
       padding: 16px 24px;
-      border-top: 1px solid var(--border);
+      background: #0F1117;
+      border-top: 1px solid #2E3247;
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -1359,37 +1420,41 @@
     }
 
     .close-btn {
-      width: 24px;
-      height: 24px;
-      border-radius: var(--radius);
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #242736;
+      border: 1px solid #2E3247;
+      color: #6B7280;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: all .1s
+      transition: all .15s
     }
 
     .close-btn:hover {
-      background: var(--bg-elevated);
-      border-color: var(--text-micro);
-      color: var(--text-primary)
+      background: rgba(59, 130, 246, 0.1);
+      border-color: #EF4444;
+      color: #EF4444
     }
 
     /* FORMS */
     .form-group {
-      margin-bottom: 20px
+      margin-bottom: 14px
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0
     }
 
     label {
       display: block;
       font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: #6B7280;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.05em;
       margin-bottom: 8px
     }
 
@@ -1397,48 +1462,282 @@
     .input-select,
     .input-textarea {
       width: 100%;
-      padding: 10px 12px;
-      background: var(--bg);
+      padding: 8px 12px;
+      background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      color: var(--text-primary);
-      font-size: 13px;
+      color: var(--text);
+      font-size: 13.5px;
       font-family: inherit;
       outline: none;
-      transition: all .1s
+      transition: border .15s
     }
 
     .input-text:focus,
     .input-select:focus,
     .input-textarea:focus {
-      border-color: var(--nominal);
-      background: var(--bg-elevated)
+      border-color: var(--primary);
+      background: var(--bg4)
     }
 
     .input-text::placeholder,
     .input-textarea::placeholder {
-      color: var(--text-micro)
+      color: var(--text3)
+    }
+
+    .input-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238b949e' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 16px;
+      padding-right: 30px
+    }
+
+    .input-textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px
+      gap: 12px
     }
 
     .form-hint {
-      font-size: 11px;
-      color: var(--text-micro);
-      margin-top: 6px
+      font-size: 11.5px;
+      color: var(--text3);
+      margin-top: 4px
     }
 
     .form-section {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
-      margin: 24px 0 12px
+      letter-spacing: .6px;
+      color: var(--text3);
+      margin: 16px 0 10px
+    }
+
+    .form-section-head {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text3);
+      margin: 20px 0 12px;
+    }
+
+    /* NEARBY VOLUNTEERS PANEL */
+    .vol-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .vol-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .vol-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .vol-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .vol-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .vol-card:hover {
+      border-color: var(--primary);
+    }
+
+    .vol-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-dim);
+    }
+
+    .vol-card-checkbox {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .vol-avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .vol-info {
+      flex: 1;
+    }
+
+    .vol-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .vol-meta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+
+    .vol-skill-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg4);
+      color: var(--text2);
+      margin-right: 4px;
+    }
+
+    .rec-badge {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    /* BROADCAST TOGGLE & PANEL */
+    .broadcast-section {
+      background: rgba(47, 129, 247, 0.05);
+      border: 1px solid rgba(47, 129, 247, 0.2);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-info h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .toggle-info p {
+      font-size: 11.5px;
+      color: var(--text3);
+      margin: 2px 0 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg4);
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: var(--primary);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(16px);
+    }
+
+    .broadcast-options {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .broadcast-options.active {
+      display: block;
+    }
+
+    .channel-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text2);
     }
 
     /* PROFILE */
@@ -2049,6 +2348,7 @@
     .social-platform-tag {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
       padding: 2px 8px;
       border-radius: 4px;
@@ -2107,6 +2407,7 @@
     .audit-action-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 2px 8px;
       border-radius: 4px;
       font-size: 11px;
@@ -2157,6 +2458,7 @@
     .role-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 2px 8px;
       border-radius: 4px;
       font-size: 10.5px;
@@ -2405,15 +2707,6 @@
       flex: 1;
     }
 
-    /* ROLE VISIBILITY */
-    .super-admin-only {
-      display: none !important;
-    }
-
-    body.role-super .super-admin-only {
-      display: flex !important;
-    }
-
     .role-badge {
       font-size: 9px;
       font-weight: 700;
@@ -2426,9 +2719,84 @@
       margin-left: 8px;
     }
 
-    body.role-super .role-badge {
-      background: rgba(239, 68, 68, 0.1);
+    /* UNIVERSAL SOS STYLES */
+    .sos-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: sos-pulse 2s infinite;
+      max-width: 300px;
+      margin-right: 8px;
+    }
+
+    .sos-banner:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .sos-icon-pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--critical);
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse-red {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    @keyframes sos-pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .sos-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sos-user {
+      font-size: 11px;
+      font-weight: 700;
       color: var(--critical);
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .sos-location {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
     }
   </style>
 </head>
@@ -2515,7 +2883,7 @@
           </svg>
           System Settings
         </a>
-        <a href="audit-logs.html" class="nav-item super-admin-only">
+        <a href="audit-logs.html" class="nav-item">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -2579,7 +2947,7 @@
               <div class="m-card-value red" style="font-size: 22px;">8</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Immediate threats</div>
               <div class="m-card-details">
-                <span>3 Fire • 2 Flood • 3 Med</span>
+                <span>3 Fire â€¢ 2 Flood â€¢ 3 Med</span>
                 <span class="card-action-link" onclick="window.location.href='incidents.html'">View Reports</span>
               </div>
             </div>
@@ -2588,7 +2956,7 @@
               <div class="m-card-value blue" style="font-size: 22px;">74%</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">City-wide capacity</div>
               <div class="m-card-details">
-                <span>Z1: 96% • Z5: 38% • Z7: 88%</span>
+                <span>Z1: 96% â€¢ Z5: 38% â€¢ Z7: 88%</span>
                 <span class="card-action-link" onclick="window.location.href='centers.html'">View Capacity</span>
               </div>
             </div>
@@ -2596,19 +2964,24 @@
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Units Deployed</div>
               <div class="m-card-value green" style="font-size: 22px;">14</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Active logistics</div>
-              <div class="m-card-details">
-                <span>8 Rescue • 4 Med • 2 Log</span>
-                <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Manage Units</span>
+              <div class="m-card-details" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:12px">
+                <span class="resource-pill">🚒 8 Rescue</span>
+                <span class="resource-pill">🚑 4 Med</span>
+                <span class="resource-pill">📦 2 Log</span>
               </div>
+              <span class="card-action-link" style="margin-top:8px"
+                onclick="window.location.href='relief-ops.html'">Manage Units</span>
             </div>
             <div class="m-card c-yellow" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Supply Alerts</div>
               <div class="m-card-value orange" style="font-size: 22px;">3</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Centers low stock</div>
-              <div class="m-card-details">
-                <span>Food (2) • Water (1)</span>
-                <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Restock</span>
+              <div class="m-card-details" style="display:flex;gap:4px;flex-wrap:wrap;margin-top:12px">
+                <span class="resource-pill">🍱 Food (2)</span>
+                <span class="resource-pill">💧 Water (1)</span>
               </div>
+              <span class="card-action-link" style="margin-top:8px"
+                onclick="window.location.href='relief-ops.html'">Restock</span>
             </div>
           </div>
 
@@ -2616,11 +2989,11 @@
           <div class="weather-panel">
             <div class="weather-card">
               <div class="weather-header">
-                <h3>Weather Intelligence — Pasig City</h3><span class="weather-update">Updated 5m ago</span>
+                <h3>Weather Intelligence &mdash; Pasig City</h3><span class="weather-update">Updated 5m ago</span>
               </div>
               <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:20px">
                 <div>
-                  <div class="weather-temp">31°</div>
+                  <div class="weather-temp">31&deg;</div>
                   <div class="weather-desc">Partly Cloudy, Thunderstorms Expected</div>
                 </div>
               </div>
@@ -2637,7 +3010,7 @@
                 <div class="weather-metric-divider"></div>
                 <div class="weather-metric-item">
                   <div class="weather-metric-label">Feels Like</div>
-                  <div class="weather-metric-val">38°C</div>
+                  <div class="weather-metric-val">38&deg;C</div>
                 </div>
                 <div class="weather-metric-divider"></div>
                 <div class="weather-metric-item">
@@ -2683,12 +3056,12 @@
                   <div class="weather-metric-divider"></div>
                   <div class="weather-metric-item">
                     <div class="weather-metric-label">Flow Rate</div>
-                    <div class="weather-metric-val">285 m³/s</div>
+                    <div class="weather-metric-val">285 mÂ³/s</div>
                   </div>
                   <div class="weather-metric-divider"></div>
                   <div class="weather-metric-item">
                     <div class="weather-metric-label">Trend</div>
-                    <div class="weather-metric-val" style="color:var(--warning)">↑ Rising</div>
+                    <div class="weather-metric-val" style="color:var(--warning)">â†‘ Rising</div>
                   </div>
                 </div>
               </div>
@@ -2703,7 +3076,7 @@
               </div>
               <div>
                 <div class="dash-incident-mini critical"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Residential Fire: Brgy. Rosario', 'Critical', 'Rosario, Pasig', '2m ago', '3-alarm residential fire affecting 5 houses.', 'Maria Santos', '📱 +63 917-555-1001', 'Field Report')">
+                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Residential Fire: Brgy. Rosario', 'Critical', 'Rosario, Pasig', '2m ago', '3-alarm residential fire affecting 5 houses.', 'Maria Santos', 'ðŸ“± +63 917-555-1001', 'Field Report')">
                   <div class="dim-info">
                     <div class="dim-title">Residential Fire: Brgy. Rosario</div>
                     <div class="dim-loc">Rosario, Pasig City</div>
@@ -2714,7 +3087,7 @@
                   <div class="dim-time">2m</div>
                 </div>
                 <div class="dash-incident-mini nominal"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Flash Flood: Brgy. Santolan', 'Hydrological', 'Santolan, Pasig', '4m ago', 'Pasig River overflow affecting low-lying areas.', 'Juan Dela Cruz', '📱 Citizen App', 'Mobile App')">
+                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Flash Flood: Brgy. Santolan', 'Hydrological', 'Santolan, Pasig', '4m ago', 'Pasig River overflow affecting low-lying areas.', 'Juan Dela Cruz', 'ðŸ“± Citizen App', 'Mobile App')">
                   <div class="dim-info">
                     <div class="dim-title">Flash Flood: Brgy. Santolan</div>
                     <div class="dim-loc">Santolan, Pasig City</div>
@@ -2725,7 +3098,7 @@
                   <div class="dim-time">4m</div>
                 </div>
                 <div class="dash-incident-mini medical"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Medical Emergency: Brgy. Kapitolyo', 'Medical/Rescue', 'Kapitolyo, Pasig', '8m ago', 'Cardiac arrest report in commercial area.', 'Elena Gomez', '📱 Citizen App', 'Mobile App')">
+                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Medical Emergency: Brgy. Kapitolyo', 'Medical/Rescue', 'Kapitolyo, Pasig', '8m ago', 'Cardiac arrest report in commercial area.', 'Elena Gomez', 'ðŸ“± Citizen App', 'Mobile App')">
                   <div class="dim-info">
                     <div class="dim-title">Medical Emergency: Brgy. Kapitolyo</div>
                     <div class="dim-loc">Kapitolyo, Pasig City</div>
@@ -2736,7 +3109,7 @@
                   <div class="dim-time">8m</div>
                 </div>
                 <div class="dash-incident-mini warning"
-                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Crime Incident: Brgy. Ugong', 'Urgent', 'C-5 Road, Ugong', '12m ago', 'Theft reported in commercial area.', 'Pedro Mendoza', '📱 Citizen App', 'Mobile App')">
+                  onclick="openModal('incident-detail-modal'); setIncidentDetail('Crime Incident: Brgy. Ugong', 'Urgent', 'C-5 Road, Ugong', '12m ago', 'Theft reported in commercial area.', 'Pedro Mendoza', 'ðŸ“± Citizen App', 'Mobile App')">
                   <div class="dim-info">
                     <div class="dim-title">Crime Incident: Brgy. Ugong</div>
                     <div class="dim-loc">C-5 Road, Ugong</div>
@@ -2826,17 +3199,17 @@
                   <div
                     style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--critical)">
                     <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Food Pack Depletion</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Rizal HS Gymnasium, Santolan · 20m ago</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Rizal HS Gymnasium, Santolan Â· 20m ago</div>
                   </div>
                   <div
                     style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--critical)">
                     <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Medical Kits Needed</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Pasig City Sports Center · 35m ago</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Pasig City Sports Center Â· 35m ago</div>
                   </div>
                   <div
                     style="background:var(--bg-elevated);border-radius:var(--radius);padding:12px;border-left:2px solid var(--border)">
                     <div style="font-size:13px;font-weight:500;color:var(--text-primary)">Clean Water Shortage</div>
-                    <div style="font-size:12px;color:var(--text-muted)">Manggahan Covered Court · 45m ago</div>
+                    <div style="font-size:12px;color:var(--text-muted)">Manggahan Covered Court Â· 45m ago</div>
                   </div>
                 </div>
                 <button class="btn btn-ghost w-full mt-3" style="justify-content:center"
@@ -2918,78 +3291,16 @@
 
     <!-- ====== MODALS ====== -->
 
-    <!-- SOS Alert Modal -->
-    <div class="modal-backdrop" id="sos-modal">
-      <div class="modal modal-sm" style="border: 1px solid var(--critical)">
-        <div class="modal-head" style="background: rgba(239, 68, 68, 0.05)">
-          <h2 style="color: var(--critical); display: flex; align-items: center; gap: 8px">
-            <div class="sos-icon-pulse"></div>
-            Emergency SOS Signal
-          </h2>
-          <button class="close-btn" onclick="closeSOS()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div style="text-align: center; margin-bottom: 20px">
-            <div
-              style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: var(--critical)">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-            </div>
-            <h3 id="sos-detail-name" style="font-size: 18px; font-weight: 600; margin-bottom: 4px">---</h3>
-            <p id="sos-detail-time"
-              style="font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace">REPORTED JUST
-              NOW</p>
-          </div>
 
-          <div class="form-group">
-            <label>Current Coordinates</label>
-            <div
-              style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius); font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-primary); border: 1px solid var(--border)">
-              <span id="sos-detail-coords">14.5764° N, 121.0851° E</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Location Profile</label>
-            <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-primary); line-height: 1.5">---</div>
-          </div>
-
-          <div
-            style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: var(--radius); margin-top: 16px">
-            <div
-              style="font-size: 10px; font-weight: 600; color: var(--warning); text-transform: uppercase; margin-bottom: 4px">
-              Dispatcher Note</div>
-            <div style="font-size: 12px; color: var(--text-primary)">User app tracking is live. Visual contact via city
-              CCTV is recommended for this sector.</div>
-          </div>
-        </div>
-        <div class="modal-foot">
-          <button class="btn btn-ghost" onclick="closeSOS()" style="flex: 1; justify-content: center">Dismiss</button>
-          <button class="btn btn-primary" onclick="acknowledgeSOS()"
-            style="flex: 1; justify-content: center; background: var(--critical); border-color: var(--critical)">Acknowledge</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Add Incident -->
     <div class="modal-backdrop" id="add-incident-modal">
       <div class="modal modal-lg">
         <div class="modal-head">
-          <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
-          </button>
+          <h2>Report New Incident</h2><button class="close-btn" onclick="closeModal('add-incident-modal')"><svg
+              width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg></button>
         </div>
         <div class="modal-body">
           <div class="form-section-head">Incident Information</div>
@@ -3007,29 +3318,33 @@
                 <optgroup label="Meteorological">
                   <option>Typhoon</option>
                   <option>Severe Winds</option>
+                  <option>Tornado</option>
                 </optgroup>
                 <optgroup label="Hydrological">
                   <option>Flood</option>
                   <option>Flash Flood</option>
+                  <option>Storm Surge</option>
                 </optgroup>
                 <optgroup label="Geological">
                   <option>Earthquake</option>
                   <option>Landslide</option>
+                  <option>Volcanic Eruption</option>
                 </optgroup>
                 <optgroup label="Technological">
                   <option>Fire</option>
+                  <option>Structural Collapse</option>
                   <option>Gas Leak</option>
+                  <option>Chemical Spill</option>
                   <option>Power Outage</option>
                 </optgroup>
                 <optgroup label="Medical/Health">
                   <option>Medical Emergency</option>
-                  <option>Accident</option>
                   <option>Mass Casualty</option>
+                  <option>Disease Outbreak</option>
                 </optgroup>
                 <optgroup label="Security/Social">
-                  <option>Crime</option>
-                  <option>Neighbor Dispute</option>
                   <option>Civil Disturbance</option>
+                  <option>Bomb Threat</option>
                   <option>Missing Person</option>
                 </optgroup>
                 <optgroup label="Logistical">
@@ -3042,13 +3357,35 @@
           <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
               onchange="recommendVolunteers()">
               <option value="">Select Barangay...</option>
+              <option>Bagong Ilog</option>
+              <option>Bagong Katipunan</option>
+              <option>Bambang</option>
+              <option>Buting</option>
               <option>Caniogan</option>
+              <option>Dela Paz</option>
+              <option>Kalawaan</option>
+              <option>Kapasigan</option>
               <option>Kapitolyo</option>
+              <option>Malinao</option>
               <option>Manggahan</option>
+              <option>Maybunga</option>
+              <option>Oranbo</option>
+              <option>Palatiw</option>
               <option>Pinagbuhatan</option>
+              <option>Pineda</option>
               <option>Rosario</option>
+              <option>Sagad</option>
+              <option>San Antonio</option>
               <option>San Joaquin</option>
+              <option>San Jose</option>
+              <option>San Miguel</option>
+              <option>San Nicolas</option>
+              <option>Santa Cruz</option>
+              <option>Santa Lucia</option>
+              <option>Santa Rosa</option>
               <option>Santolan</option>
+              <option>Santo Tomas</option>
+              <option>Sumilang</option>
               <option>Ugong</option>
             </select></div>
           <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3"
@@ -3057,8 +3394,8 @@
           <!-- VOLUNTEER ASSIGNMENT PANEL -->
           <div class="vol-panel" id="nearby-vol-panel" style="display:none">
             <div class="vol-header">
-              <label>Nearby Volunteers Recommended</label>
-              <span class="badge-pill-muted" id="vol-radius-lbl">Within 1.5km radius</span>
+              <h3>Nearby Volunteers Recommended</h3>
+              <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
             </div>
             <div class="vol-grid" id="nearby-vol-grid">
               <!-- Populated by recommendVolunteers() -->
@@ -3069,8 +3406,8 @@
           <div class="broadcast-section">
             <div class="toggle-row">
               <div class="toggle-info">
-                <label style="margin-bottom:2px">Broadcast to Public</label>
-                <p style="font-size:12px;color:var(--text-muted)">Publish as official advisory for residents</p>
+                <h3>Broadcast to Public</h3>
+                <p>Publish as official advisory for residents</p>
               </div>
               <label class="switch">
                 <input type="checkbox" id="broadcast-toggle" onchange="toggleBroadcastPanel()">
@@ -3135,12 +3472,12 @@
         grid.innerHTML = volunteers.map(v => `
     <div class="vol-card selected" onclick="this.classList.toggle('selected')">
       <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
-      <div class="vol-avatar-mini" style="background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-muted)">${v.name.split(' ').map(n => n[0]).join('')}</div>
+      <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
       <div class="vol-info">
-        ${v.rec ? '<span class="badge-pill-muted" style="margin-bottom:4px">Recommended</span>' : ''}
-        <div class="vol-name" style="font-size:13px;font-weight:500">${v.name}</div>
-        <div class="vol-meta" style="font-size:11px;color:var(--text-muted)">📍 ${v.dist} away • ${v.time} ETA</div>
-        <div style="margin-top:4px">${v.skills.map(s => `<span class="badge" style="font-size:10px;padding:1px 6px;margin-right:4px">${s}</span>`).join('')}</div>
+        ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
+        <div class="vol-name">${v.name}</div>
+        <div class="vol-meta">ðŸ“ ${v.dist} away â€¢ ${v.time} ETA</div>
+        <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
       </div>
     </div>
   `).join('');
@@ -3169,7 +3506,7 @@
 
         closeModal('add-incident-modal');
 
-        const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
+        const volMsg = selected.length ? ' â€” ' + selected.join(' & ') + ' assigned' : '';
         showToast('Incident created' + volMsg, 'success');
 
         logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
@@ -3215,7 +3552,7 @@
           <div class="form-group"><label>Health Status</label><select class="input-select">
               <option>Stable</option>
               <option>Needs Medical Attention</option>
-              <option>Urgent — Requires Immediate Care</option>
+              <option>Urgent â€” Requires Immediate Care</option>
               <option>Critical Condition</option>
             </select></div>
           <div class="form-group"><label>Special Needs / Notes</label><input class="input-text"
@@ -3305,13 +3642,13 @@
             <div
               style="font-size:10px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.05em">
               Reporter Name</div>
-            <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">â€”</div>
           </div>
           <div>
             <div
               style="font-size:10px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;letter-spacing:0.05em">
               Contact Info</div>
-            <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+            <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">â€”</div>
           </div>
           <div>
             <div
@@ -3330,29 +3667,29 @@
             <div>
               <div style="font-size:9px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Blood Type
               </div>
-              <div id="med-blood" style="font-size:13px;font-weight:700;color:var(--critical)">—</div>
+              <div id="med-blood" style="font-size:13px;font-weight:700;color:var(--critical)">â€”</div>
             </div>
             <div style="grid-column:span 2">
               <div style="font-size:9px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Allergies
               </div>
-              <div id="med-allergies" style="font-size:12px;color:var(--text-primary)">—</div>
+              <div id="med-allergies" style="font-size:12px;color:var(--text-primary)">â€”</div>
             </div>
           </div>
           <div style="margin-bottom:12px">
             <div style="font-size:9px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Chronic
               Conditions</div>
-            <div id="med-conditions" style="font-size:12px;color:var(--text-primary)">—</div>
+            <div id="med-conditions" style="font-size:12px;color:var(--text-primary)">â€”</div>
           </div>
           <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px">
             <div>
               <div style="font-size:9px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Emergency
                 Contact</div>
-              <div id="med-contact-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">—</div>
+              <div id="med-contact-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">â€”</div>
             </div>
             <div>
               <div style="font-size:9px;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px">Contact
                 Phone</div>
-              <div id="med-contact-phone" style="font-size:12px;color:var(--text-primary)">—</div>
+              <div id="med-contact-phone" style="font-size:12px;color:var(--text-primary)">â€”</div>
             </div>
           </div>
         </div>
@@ -3368,7 +3705,7 @@
                   RD</div>
                 <div style="flex:1">
                   <div style="font-size:12px;font-weight:500;color:var(--text-primary)">Ricardo Dalisay</div>
-                  <div style="font-size:11px;color:var(--text-muted)">📍 0.4km away • En Route</div>
+                  <div style="font-size:11px;color:var(--text-muted)">ðŸ“ 0.4km away â€¢ En Route</div>
                 </div>
                 <div class="status-dot active" style="width:6px;height:6px;background:var(--success)"></div>
               </div>
@@ -3379,7 +3716,7 @@
                   EG</div>
                 <div style="flex:1">
                   <div style="font-size:12px;font-weight:500;color:var(--text-primary)">Elena Gomez</div>
-                  <div style="font-size:11px;color:var(--text-muted)">📍 0.9km away • Dispatched</div>
+                  <div style="font-size:11px;color:var(--text-muted)">ðŸ“ 0.9km away â€¢ Dispatched</div>
                 </div>
                 <div class="status-dot busy" style="width:6px;height:6px;background:var(--warning)"></div>
               </div>
@@ -3395,7 +3732,7 @@
                 </span>
                 <span style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono'">14:24 PM</span>
               </div>
-              <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text-primary)">⚠️ Major Road
+              <div style="font-size:13px;font-weight:500;margin-bottom:4px;color:var(--text-primary)">âš ï¸ Major Road
                 Closure: Ortigas Ave</div>
               <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5">Traffic rerouted
                 via Meralco Ave. Avoid area.</div>
@@ -3460,11 +3797,11 @@
           <div class="form-group"><label>Total Bed Capacity</label><input class="input-text" type="number"
               placeholder="500"></div>
           <div class="form-group"><label>Zone</label><select class="input-select">
-              <option>Zone 1 — Kapitolyo</option>
-              <option>Zone 2 — Rosario</option>
-              <option>Zone 4 — Pinagbuhatan</option>
-              <option>Zone 5 — Santolan</option>
-              <option>Zone 7 — Manggahan</option>
+              <option>Zone 1 â€” Kapitolyo</option>
+              <option>Zone 2 â€” Rosario</option>
+              <option>Zone 4 â€” Pinagbuhatan</option>
+              <option>Zone 5 â€” Santolan</option>
+              <option>Zone 7 â€” Manggahan</option>
             </select></div>
         </div>
         <div class="form-row">
@@ -3528,8 +3865,8 @@
           <div class="form-group"><label>Quantity / Load</label><input class="input-text"
               placeholder="e.g. 500 packs / 3 tons"></div>
           <div class="form-group"><label>Priority</label><select class="input-select">
-              <option>Critical — Immediate</option>
-              <option>High — Within 1 hour</option>
+              <option>Critical â€” Immediate</option>
+              <option>High â€” Within 1 hour</option>
               <option>Normal</option>
             </select></div>
         </div>
@@ -3549,18 +3886,26 @@
   <div class="modal-backdrop" id="broadcast-modal">
     <div class="modal modal-sm">
       <div class="modal-head">
-        <h2>Send Emergency Broadcast</h2><button class="close-btn" onclick="closeModal('broadcast-modal')"><svg
-            width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <h2>Send Weather Alert</h2><button class="close-btn" onclick="closeModal('broadcast-modal')"><svg width="12"
+            height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M18 6L6 18M6 6l12 12" />
           </svg></button>
       </div>
       <div class="modal-body">
-        <div class="form-group"><label>Alert Level</label><select class="input-select" id="bm-level-idx">
-            <option>🔴 Red — Immediate Evacuation</option>
-            <option>🟠 Orange — High Threat</option>
-            <option>🟡 Yellow — Precautionary</option>
-            <option>🔵 Blue — Informational</option>
-          </select></div>
+        <div class="form-row">
+          <div class="form-group"><label>Alert Level</label><select class="input-select" id="bm-level-idx">
+              <option>🔴 Red — Immediate Evacuation</option>
+              <option>🟠 Orange — High Threat</option>
+              <option>🟡 Yellow — Precautionary</option>
+              <option>🔵 Blue — Informational</option>
+            </select></div>
+          <div class="form-group"><label>Weather Type</label><select class="input-select">
+              <option>Heavy Rainfall</option>
+              <option>Severe Tropical Storm</option>
+              <option>Typhoon Alert</option>
+              <option>Thunderstorm Advisory</option>
+            </select></div>
+        </div>
         <div class="form-group"><label>Target Zone</label><select class="input-select" id="bm-zone-idx">
             <option value="all">All Zones</option>
             <option value="Kapitolyo">Zone 1 — Kapitolyo</option>
@@ -3568,13 +3913,33 @@
             <option value="Santolan">Zone 5 — Santolan</option>
             <option value="Manggahan">Zone 7 — Manggahan</option>
           </select></div>
-        <div class="form-group"><label>Message</label><textarea class="input-textarea" id="bm-msg-idx" rows="4"
-            placeholder="Type emergency message..."></textarea></div>
+        <div class="form-group"><label>Expected Impact</label><select class="input-select">
+            <option>Low-lying areas flooding</option>
+            <option>Power & Water interruptions</option>
+            <option>Flash floods & Landslides</option>
+            <option>Hazardous travel conditions</option>
+          </select></div>
+        <div class="form-group"><label>Citizen Instruction</label><select class="input-select">
+            <option>Stay indoors and monitor updates</option>
+            <option>Secure lightweight structures</option>
+            <option>Prepare emergency go-bags</option>
+            <option>Evacuate to designated centers</option>
+          </select></div>
+        <div class="form-group"><label>Broadcast Message</label><textarea class="input-textarea" id="bm-msg-idx"
+            rows="3" placeholder="Type additional details for citizens..."></textarea></div>
+        <div class="form-group">
+          <label>Emergency Hotlines to Include</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <div class="resource-pill active">📞 911 Central</div>
+            <div class="resource-pill">🚑 Red Cross</div>
+            <div class="resource-pill">🛡️ Pasig Rescue</div>
+          </div>
+        </div>
       </div>
       <div class="modal-foot"><button class="btn btn-ghost"
           onclick="closeModal('broadcast-modal')">Cancel</button><button class="btn btn-primary"
           onclick="openBroadcastConfirm(document.getElementById('bm-level-idx').value,document.getElementById('bm-zone-idx').value,document.getElementById('bm-msg-idx').value)">Confirm
-          &amp; Send Broadcast</button></div>
+          &amp; Send Weather Alert</button></div>
     </div>
   </div>
 
@@ -3651,16 +4016,16 @@
             value="e.reyes@ndrrmc.gov.ph"></div>
         <div class="form-group"><label>Contact Number</label><input class="input-text" value="+63 917 555 0001"></div>
         <div class="form-group"><label>Assigned Region</label><select class="input-select">
-            <option selected>NCR — National Capital Region</option>
+            <option selected>NCR â€” National Capital Region</option>
             <option>Region III</option>
             <option>Region IV-A</option>
           </select></div>
         <div class="form-section">Change Password</div>
         <div class="form-row">
           <div class="form-group"><label>New Password</label><input class="input-text" type="password"
-              placeholder="••••••••"></div>
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
           <div class="form-group"><label>Confirm Password</label><input class="input-text" type="password"
-              placeholder="••••••••"></div>
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"></div>
         </div>
       </div>
       <div class="modal-foot"><button class="btn btn-ghost"
@@ -3680,7 +4045,7 @@
           showToast('Copied: ' + text, 'info');
         })
         .catch(() => {
-          showToast('Copy failed — try manually', 'error');
+          showToast('Copy failed â€” try manually', 'error');
         });
     }
 
@@ -3691,65 +4056,60 @@
         timestamp: new Date().toLocaleString('en-PH'),
         admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
         action,
-        target: target || '—',
-        detail: detail || '—',
+        target: target || 'â€”',
+        detail: detail || 'â€”',
         ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
       });
       localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
     }
 
     (function applyRole() {
-      const role = localStorage.getItem('ligtas_role') || 'Admin';
       const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = role;
-
-      if (role.toLowerCase().includes('super')) {
-        document.body.classList.add('role-super');
-      }
+      if (badge) badge.textContent = 'Admin';
       const nameEl = document.querySelector('.admin-name');
-      if (nameEl) {
-        nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
-      }
+      if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
     })();
 
     function renderNotifications() {
       const list = document.getElementById('notif-list');
       if (!list) return;
 
-      const logs = JSON.parse(
-        localStorage.getItem('ligtas_audit') || '[]'
-      );
-      const recent = logs.slice(0, 5);
+      const logsA = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const logsB = JSON.parse(localStorage.getItem('ligtas_audit_logs') || '[]');
+      const seen = new Set(); const merged = [];
+      [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
+      const recent = merged.slice(0, 8);
 
-      const dotColor = {
-        'Login': 'blue', 'Incident': 'red',
-        'Dispatch': 'orange', 'Broadcast': 'yellow',
-        'Verify': 'green', 'Status Update': 'blue',
-        'Supply Update': 'green'
+      const dotColors = {
+        'Login': '#3B82F6', 'Logout': '#22C55E',
+        'Incident': '#EF4444', 'Dispatch': '#F59E0B',
+        'Broadcast': '#EF4444', 'Verify': '#22C55E',
+        'Status Update': '#3B82F6', 'Supply Update': '#22C55E',
+        'SOS Acknowledged': '#EF4444'
       };
 
       if (recent.length === 0) {
-        list.innerHTML =
-          '<div class="empty-state">' +
-          'No recent activity</div>';
+        list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>';
         return;
       }
 
-      list.innerHTML = recent.map(log => {
-        const color = dotColor[log.action] || 'green';
-        return '<div class="feed-item">' +
-          '<div class="feed-dot ' + color + '"></div>' +
-          '<div style="flex:1">' +
-          '<div class="feed-title">' +
-          log.action + '</div>' +
-          '<div class="feed-desc">' +
-          log.target + ' — ' + log.detail +
-          '</div></div>' +
-          '<div style="font-size:10px;' +
-          'color:var(--text-micro);' +
-          'font-family:IBM Plex Mono,monospace">' +
-          log.timestamp.split(',')[1]?.trim() || '' +
-          '</div></div>';
+      list.innerHTML = recent.map((log, i) => {
+        const dotColor = dotColors[log.action] || '#64748B';
+        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' â€” ' + (log.detail || log.details) : '');
+        let timeStr = '';
+        try {
+          const parts = (log.timestamp || '').split(', ');
+          timeStr = parts.length >= 2 ? parts[1].replace(/:\d\d /, ' ') : log.timestamp || '';
+        } catch (e) { }
+        const borderBottom = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${borderBottom}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
+          + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+          + `<div style="flex:1;min-width:0;">`
+          + `<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;line-height:1.2;">${log.action}</div>`
+          + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div>`
+          + `</div>`
+          + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div>`
+          + `</div>`;
       }).join('');
     }
 
@@ -3768,61 +4128,7 @@
     }
     updateNotifDot();
 
-    // SOS ALERT SYSTEM
-    let currentSOS = null;
 
-    function showSOSAlert(data) {
-      currentSOS = data;
-      const container = document.getElementById('sos-banner-container');
-      if (!container) return;
-
-      container.innerHTML = `
-          <div class="sos-banner" onclick="openSOSDetail()">
-            <div class="sos-icon-pulse"></div>
-            <div class="sos-info">
-              <div class="sos-user">${data.name} — SOS</div>
-              <div class="sos-location">${data.location}</div>
-            </div>
-          </div>
-        `;
-
-      // Play alert sound (optional/simulated)
-      console.log('🚨 EMERGENCY SOS RECEIVED:', data);
-    }
-
-    function openSOSDetail() {
-      if (!currentSOS) return;
-      document.getElementById('sos-detail-name').textContent = currentSOS.name;
-      document.getElementById('sos-detail-loc').textContent = currentSOS.location;
-      document.getElementById('sos-detail-coords').textContent = currentSOS.coords;
-      openModal('sos-modal');
-    }
-
-    function closeSOS() {
-      closeModal('sos-modal');
-    }
-
-    function acknowledgeSOS() {
-      if (!currentSOS) return;
-      logAction('SOS Acknowledged', currentSOS.name, 'Emergency response dispatched to ' + currentSOS.location);
-      showToast('SOS Acknowledged — Units Dispatched', 'success');
-
-      // Remove banner
-      document.getElementById('sos-banner-container').innerHTML = '';
-      closeModal('sos-modal');
-      currentSOS = null;
-    }
-
-    // Simulate Incoming SOS after 5 seconds
-    setTimeout(() => {
-      if (!currentSOS) {
-        showSOSAlert({
-          name: 'Sarah Jenkins',
-          location: 'Blk 12, Brgy. Pinagbuhatan (Riverside Area)',
-          coords: '14.5582° N, 121.0921° E'
-        });
-      }
-    }, 5000);
   </script>
   <script>
     const pages = { dashboard: 'Dashboard Overview', incidents: 'Incident Management', centers: 'Evacuation Centers', relief: 'Relief Operations', broadcast: 'Emergency Broadcast', profile: 'Admin Profile' };
@@ -3844,8 +4150,8 @@
     function showToast(msg, type = 'info') {
 
       const t = document.createElement('div');
-      const icons = { success: '✓', info: 'ℹ', error: '✕', warning: '⚠' };
-      t.className = `toast ${type}`; t.innerHTML = `<span>${icons[type] || 'ℹ'}</span><span>${msg}</span>`;
+      const icons = { success: 'âœ“', info: 'â„¹', error: 'âœ•', warning: 'âš ' };
+      t.className = `toast ${type}`; t.innerHTML = `<span>${icons[type] || 'â„¹'}</span><span>${msg}</span>`;
       document.getElementById('toast-wrap').appendChild(t);
       setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; t.style.transition = '.2s'; setTimeout(() => t.remove(), 200) }, 3200);
     }
@@ -3871,7 +4177,7 @@
         document.getElementById('modal-inc-reporter').textContent = reporter || 'Field Report';
       }
       if (document.getElementById('modal-inc-contact')) {
-        document.getElementById('modal-inc-contact').textContent = contact || '—';
+        document.getElementById('modal-inc-contact').textContent = contact || 'â€”';
       }
       if (document.getElementById('modal-inc-source')) {
         const s = document.getElementById('modal-inc-source');
@@ -3884,12 +4190,12 @@
       if (medSection) {
         if (medical) {
           medSection.style.display = 'block';
-          document.getElementById('med-blood').textContent = medical.bloodType || '—';
+          document.getElementById('med-blood').textContent = medical.bloodType || 'â€”';
           document.getElementById('med-allergies').textContent = medical.allergies || 'None';
           document.getElementById('med-conditions').textContent = medical.conditions || 'None';
           if (emergencyContact) {
-            document.getElementById('med-contact-name').textContent = emergencyContact.name || '—';
-            document.getElementById('med-contact-phone').textContent = emergencyContact.phone || '—';
+            document.getElementById('med-contact-name').textContent = emergencyContact.name || 'â€”';
+            document.getElementById('med-contact-phone').textContent = emergencyContact.phone || 'â€”';
           }
         } else {
           medSection.style.display = 'none';
@@ -3923,10 +4229,17 @@
     // ZONE_RECIPIENTS is now managed globally in js/app-config.js
     if (!window.ZONE_RECIPIENTS) {
       window.ZONE_RECIPIENTS = {
-        'all': 14203, 'Caniogan': 1840, 'Kapitolyo': 2105,
-        'Manggahan': 4120, 'Pinagbuhatan': 2216,
-        'Rosario': 3842, 'San Joaquin': 1680,
-        'Santolan': 1920, 'Ugong': 480
+        'all': 811800,
+        'Bagong Ilog': 18200, 'Bagong Katipunan': 1200, 'Bambang': 22000,
+        'Buting': 11500, 'Caniogan': 31000, 'Dela Paz': 15400,
+        'Kalawaan': 32100, 'Kapasigan': 6700, 'Kapitolyo': 14300,
+        'Malinao': 5900, 'Manggahan': 94000, 'Maybunga': 45200,
+        'Oranbo': 4500, 'Palatiw': 22800, 'Pinagbuhatan': 151000,
+        'Pineda': 18900, 'Rosario': 68000, 'Sagad': 8400,
+        'San Antonio': 16500, 'San Joaquin': 15600, 'San Jose': 2300,
+        'San Miguel': 33000, 'San Nicolas': 1800, 'Santa Cruz': 6400,
+        'Santa Lucia': 46200, 'Santa Rosa': 1700, 'Santolan': 52100,
+        'Santo Tomas': 40300, 'Sumilang': 5600, 'Ugong': 28500
       };
     }
     const ZONE_RECIPIENTS = window.ZONE_RECIPIENTS;
@@ -3961,138 +4274,164 @@
       const now = new Date();
       const d = now.toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
       const t = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-      document.getElementById('live-time').textContent = d + ' · ' + t;
+      document.getElementById('live-time').textContent = d + ' Â· ' + t;
     }
     setInterval(updateTime, 1000); updateTime();
     document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')) });
 
-    // SOS ALERT SYSTEM - MULTI-REPORT HANDLING
-    let sosQueue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
-    let currentSOSIndex = -1;
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderSOSBanners === 'function') renderSOSBanners();
 
-    function showSOSAlert(data) {
-      // Prevent duplicates by ID or name+location
-      const exists = sosQueue.some(s => s.id === data.id || (s.name === data.name && s.location === data.location));
-      if (!exists) {
-        data.id = data.id || 'SOS-' + Date.now();
-        data.status = 'Pending';
-        sosQueue.unshift(data);
-        localStorage.setItem('ligtas_sos_queue', JSON.stringify(sosQueue));
-      }
-      renderSOSBanners();
-      console.log('🚨 EMERGENCY SOS RECEIVED:', data);
-    }
+    });
+  </script>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderSOSBanners === 'function') renderSOSBanners();
+      if (typeof updateNotifDot === "function") updateNotifDot();
+    });
+  </script>
+
+
+  <!-- UNIVERSAL SOS MODAL -->
+  <div class="modal-backdrop" id="sos-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>
+          <div class="sos-icon-pulse"></div> SOS Alert
+        </h2>
+        <button class="close-btn" onclick="closeModal('sos-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="sos-detail-card"
+          style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 16px;">
+          <label style="color: var(--critical)">Distress Signal From</label>
+          <div id="sos-detail-name"
+            style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">-</div>
+          <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">-</div>
+          <label>GPS COORDINATES</label>
+          <div id="sos-detail-coords"
+            style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--primary);">-</div>
+        </div>
+        <p style="font-size: 11px; color: var(--text-micro); margin-top: 16px; line-height: 1.4;">
+          Distress signal received via LIGTAS Mobile App. High accuracy GPS fix established. Immediate dispatch of
+          nearest rescue unit recommended.
+        </p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('sos-modal')">Ignore</button>
+        <button class="btn btn-primary" style="background: var(--critical); border-color: var(--critical);"
+          onclick="acknowledgeSOS()">Acknowledge & Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* UNIVERSAL SOS LOGIC */
     function renderSOSBanners() {
       const container = document.getElementById('sos-banner-container');
       if (!container) return;
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      if (queue.length === 0) { container.innerHTML = ''; return; }
 
-      if (sosQueue.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
-
-      // Show top 3 or a "Multiple Alerts" pill if too many
-      const visibleAlerts = sosQueue.slice(0, 2);
-      let html = '';
-
-      visibleAlerts.forEach((sos, index) => {
-        html += `
-            <div class="sos-banner" onclick="openSOSDetailByIndex(${index})">
-              <div class="sos-icon-pulse"></div>
-              <div class="sos-info">
-                <div class="sos-user">${sos.name}</div>
-                <div class="sos-location">${sos.location}</div>
-              </div>
+      if (queue.length === 1) {
+        const sos = queue[0];
+        container.innerHTML = `
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)">
+            <div class="sos-icon-pulse"></div>
+            <div class="sos-info">
+              <div class="sos-user">${sos.name}</div>
+              <div class="sos-location">${sos.location}</div>
             </div>
-          `;
-      });
-
-      if (sosQueue.length > 2) {
-        html += `
-            <div class="sos-banner" style="background: var(--bg-elevated); animation: none; border-color: var(--critical)" onclick="openSOSDetailByIndex(0)">
-              <div class="sos-info">
-                <div class="sos-user" style="color: var(--text-primary)">+${sosQueue.length - 2} MORE ALERTS</div>
-                <div class="sos-location">Critical Priority Queue</div>
-              </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)" style="border-width: 2px;">
+            <div class="sos-icon-pulse"></div>
+            <div class="sos-info">
+              <div class="sos-user" style="color: var(--critical); font-weight: 700;">${queue.length} ACTIVE SOS ALERTS</div>
+              <div class="sos-location">Priority Dispatch Required</div>
             </div>
-          `;
+          </div>
+        `;
       }
-
-      container.innerHTML = html;
     }
 
+    let currentSOSIndex = -1;
     function openSOSDetailByIndex(index) {
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
       currentSOSIndex = index;
-      const sos = sosQueue[index];
+      const sos = queue[index];
       if (!sos) return;
 
-      document.getElementById('sos-detail-name').textContent = sos.name;
-      document.getElementById('sos-detail-loc').textContent = sos.location;
-      document.getElementById('sos-detail-coords').textContent = sos.coords;
+      const nameEl = document.getElementById('sos-detail-name');
+      const locEl = document.getElementById('sos-detail-loc');
+      const coordsEl = document.getElementById('sos-detail-coords');
+      if (nameEl) nameEl.textContent = sos.name;
+      if (locEl) locEl.textContent = sos.location;
+      if (coordsEl) coordsEl.textContent = sos.coords;
 
-      // Update modal styling if multiple
       const head = document.querySelector('#sos-modal .modal-head h2');
-      head.innerHTML = `
-          <div class="sos-icon-pulse"></div>
-          Alert ${index + 1} of ${sosQueue.length}
-        `;
+      if (head) head.innerHTML = `<div class="sos-icon-pulse"></div> Alert ${index + 1} of ${queue.length}`;
 
       openModal('sos-modal');
     }
 
-    function closeSOS() {
-      closeModal('sos-modal');
-    }
-
     function acknowledgeSOS() {
       if (currentSOSIndex === -1) return;
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      const ackSOS = queue[currentSOSIndex];
+      if (!ackSOS) return;
 
-      const ackSOS = sosQueue[currentSOSIndex];
-      logAction('SOS Acknowledged', ackSOS.name, 'Emergency response dispatched to ' + ackSOS.location);
-      showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
+      if (typeof logAction === 'function') {
+        logAction('SOS Acknowledged', ackSOS.name, 'Emergency response dispatched to ' + ackSOS.location);
+      }
 
-      // Remove from queue
-      sosQueue.splice(currentSOSIndex, 1);
-      localStorage.setItem('ligtas_sos_queue', JSON.stringify(sosQueue));
+      if (typeof showToast === 'function') {
+        showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
+      }
 
+      queue.splice(currentSOSIndex, 1);
+      localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue));
       closeModal('sos-modal');
       renderSOSBanners();
-
-      // Automatically show next if exists
-      if (sosQueue.length > 0) {
-        setTimeout(() => {
-          openSOSDetailByIndex(0);
-        }, 600);
-      }
     }
 
-    // Initialize from storage
-    renderSOSBanners();
-
-    // Simulate Multiple SOS reports for testing
-    setTimeout(() => {
-      if (sosQueue.length === 0) {
-        showSOSAlert({ id: 'SOS-1', name: 'Sarah Jenkins', location: 'Pinagbuhatan', coords: '14.5582° N, 121.0921° E' });
-
-        setTimeout(() => {
-          showSOSAlert({ id: 'SOS-2', name: 'Mark Anthony', location: 'Caniogan Riverside', coords: '14.5621° N, 121.0855° E' });
-        }, 2000);
-
-        setTimeout(() => {
-          showSOSAlert({ id: 'SOS-3', name: 'Resident 092', location: 'Kapitolyo Zone 4', coords: '14.5710° N, 121.0612° E' });
-        }, 4000);
-
-        setTimeout(() => {
-          showSOSAlert({ id: 'SOS-4', name: 'Lito Lapid', location: 'Santolan Market', coords: '14.6120° N, 121.0999° E' });
-        }, 5000);
-
-        setTimeout(() => {
-          showSOSAlert({ id: 'SOS-5', name: 'Barangay Watch', location: 'Manggahan Bridge', coords: '14.5900° N, 121.0800° E' });
-        }, 6000);
-      }
-    }, 5000);
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSOSBanners();
+      setInterval(renderSOSBanners, 1000);
+    });
   </script>
+
+
+  <!-- LOGOUT CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="logout-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Confirm Logout</h2>
+        <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px; text-align: center;">
+        <div
+          style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </div>
+        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?
+        </p>
+        <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
+      </div>
+      <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
+        <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

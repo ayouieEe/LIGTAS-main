@@ -9,7 +9,14 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
   <script src="js/app-config.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/audit-log.js"></script>
   <style>
+    option {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
     :root {
       --bg: #0D0F1A;
       --bg-card: #141720;
@@ -27,8 +34,22 @@
       --radius: 4px;
       --radius-lg: 6px;
       --sidebar-w: 240px;
-      --bg2: #161B22;
-      --border2: rgba(255, 255, 255, 0.1);
+      /* COMPATIBILITY ALIASES */
+      --bg2: #1C1F2E;
+      --bg3: #1C1F2E;
+      --bg4: #242736;
+      --border2: #252837;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --primary: #3B82F6;
+      --primary-dim: rgba(59, 130, 246, 0.1);
+      --red: #EF4444;
+      --red-dim: rgba(239, 68, 68, 0.1);
+      --orange: #F59E0B;
+      --green: #22C55E;
+      --yellow: #EAB308;
+      --teal: #14B8A6;
+      --purple: #8B5CF6;
     }
 
     * {
@@ -219,7 +240,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(59, 130, 246, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.2);
       padding: 6px 12px;
       border-radius: var(--radius);
@@ -534,6 +555,7 @@
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       padding: 8px 14px;
       border-radius: var(--radius);
@@ -552,6 +574,15 @@
 
     .btn-primary:hover {
       background: #2563EB
+    }
+
+    .btn-danger {
+      background: #EF4444;
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #DC2626
     }
 
     .btn-danger-ghost {
@@ -587,6 +618,7 @@
     .badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 2px 8px;
       border-radius: 20px;
       font-size: 11px;
@@ -1194,8 +1226,8 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, .65);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(6px);
       z-index: 200;
       display: none;
       align-items: center;
@@ -1207,30 +1239,31 @@
     }
 
     .modal {
-      background: var(--bg2);
-      border: 1px solid var(--border2);
-      border-radius: var(--radius-lg);
+      background: #1A1D27;
+      border: 1px solid #2E3247;
+      border-radius: 12px;
       width: 520px;
       max-width: 95vw;
       max-height: 90vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: modal-in .18s ease
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)
     }
 
     .modal.modal-sm {
-      width: 400px
+      width: 420px
     }
 
     .modal.modal-lg {
-      width: 620px
+      width: 760px
     }
 
     @keyframes modal-in {
       from {
         opacity: 0;
-        transform: scale(.96) translateY(8px)
+        transform: scale(.97) translateY(12px)
       }
 
       to {
@@ -1240,40 +1273,45 @@
     }
 
     .modal-head {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
+      padding: 18px 24px;
+      background: #0F1117;
+      border-bottom: 1px solid #2E3247;
       display: flex;
       align-items: center;
       justify-content: space-between
     }
 
     .modal-head h2 {
-      font-size: 15px;
-      font-weight: 500
+      font-size: 16px;
+      font-weight: 600;
+      color: #F9FAFB;
+      letter-spacing: -0.2px
     }
 
     .modal-body {
-      padding: 20px;
+      padding: 24px;
       overflow-y: auto;
-      flex: 1
+      flex: 1;
+      background: #1A1D27
     }
 
     .modal-foot {
-      padding: 14px 20px;
-      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      background: #0F1117;
+      border-top: 1px solid #2E3247;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px
+      gap: 12px
     }
 
     .close-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text2);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #242736;
+      border: 1px solid #2E3247;
+      color: #6B7280;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1282,9 +1320,9 @@
     }
 
     .close-btn:hover {
-      background: var(--red-dim);
-      border-color: rgba(248, 81, 73, .3);
-      color: var(--red)
+      background: rgba(59, 130, 246, 0.1);
+      border-color: #EF4444;
+      color: #EF4444
     }
 
     /* FORMS */
@@ -1298,10 +1336,12 @@
 
     label {
       display: block;
-      font-size: 12.5px;
-      font-weight: 500;
-      color: var(--text2);
-      margin-bottom: 6px
+      font-size: 11px;
+      font-weight: 700;
+      color: #6B7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px
     }
 
     .input-text,
@@ -1359,13 +1399,222 @@
       margin-top: 4px
     }
 
-    .form-section {
+    .form-section-head {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: .6px;
+      letter-spacing: 0.05em;
       color: var(--text3);
-      margin: 16px 0 10px
+      margin: 20px 0 12px;
+    }
+
+    /* NEARBY VOLUNTEERS PANEL */
+    .vol-panel {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .vol-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .vol-header h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .vol-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .vol-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .vol-card:hover {
+      border-color: var(--primary);
+    }
+
+    .vol-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-dim);
+    }
+
+    .vol-card-checkbox {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .vol-avatar-mini {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    .vol-info {
+      flex: 1;
+    }
+
+    .vol-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .vol-meta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 4px;
+    }
+
+    .vol-skill-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--bg4);
+      color: var(--text2);
+      margin-right: 4px;
+    }
+
+    .rec-badge {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+
+    /* BROADCAST TOGGLE & PANEL */
+    .broadcast-section {
+      background: rgba(47, 129, 247, 0.05);
+      border: 1px solid rgba(47, 129, 247, 0.2);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toggle-info h3 {
+      font-size: 13.5px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .toggle-info p {
+      font-size: 11.5px;
+      color: var(--text3);
+      margin: 2px 0 0;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg4);
+      transition: .4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: var(--primary);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(16px);
+    }
+
+    .broadcast-options {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .broadcast-options.active {
+      display: block;
+    }
+
+    .channel-grid-mini {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .channel-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text2);
     }
 
     /* PROFILE */
@@ -1837,6 +2086,7 @@
     .audit-action-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       padding: 3px 10px;
       border-radius: 20px;
       font-size: 11.5px;
@@ -2127,15 +2377,6 @@
       flex: 1;
     }
 
-    /* ROLE VISIBILITY */
-    .super-admin-only {
-      display: none !important;
-    }
-
-    body.role-super .super-admin-only {
-      display: flex !important;
-    }
-
     .role-badge {
       font-size: 9px;
       font-weight: 700;
@@ -2148,9 +2389,84 @@
       margin-left: 8px;
     }
 
-    body.role-super .role-badge {
-      background: rgba(239, 68, 68, 0.1);
+    /* UNIVERSAL SOS STYLES */
+    .sos-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 6px 12px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: sos-pulse 2s infinite;
+      max-width: 300px;
+      margin-right: 8px;
+    }
+
+    .sos-banner:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .sos-icon-pulse {
+      width: 8px;
+      height: 8px;
+      background: var(--critical);
+      border-radius: 50%;
+      box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+      animation: pulse-red 2s infinite;
+    }
+
+    @keyframes pulse-red {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+
+    @keyframes sos-pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .sos-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sos-user {
+      font-size: 11px;
+      font-weight: 700;
       color: var(--critical);
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .sos-location {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
     }
   </style>
 </head>
@@ -2237,7 +2553,7 @@
           </svg>
           System Settings
         </a>
-        <a href="audit-logs.html" class="nav-item active super-admin-only">
+        <a href="audit-logs.html" class="nav-item active">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
             <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -2260,7 +2576,7 @@
     <div class="main-wrap">
       <header class="topbar">
         <div class="topbar-left">
-          <h1 id="page-title">Audit Logs (Super Admin)</h1>
+          <h1 id="page-title">Audit Logs</h1>
           <span class="breadcrumb" id="live-time"></span>
         </div>
         <div class="topbar-right">
@@ -2362,66 +2678,7 @@
 
   <!-- ====== MODALS ====== -->
 
-  <!-- SOS Alert Modal -->
-  <div class="modal-backdrop" id="sos-modal">
-    <div class="modal modal-sm" style="border: 1px solid var(--critical)">
-      <div class="modal-head" style="background: rgba(239, 68, 68, 0.05)">
-        <h2 style="color: var(--critical); display: flex; align-items: center; gap: 8px">
-          <div class="sos-icon-pulse"></div>
-          Emergency SOS Signal
-        </h2>
-        <button class="close-btn" onclick="closeSOS()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div style="text-align: center; margin-bottom: 20px">
-          <div
-            style="width: 48px; height: 48px; background: rgba(239, 68, 68, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: var(--critical)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-          </div>
-          <h3 id="sos-detail-name" style="font-size: 18px; font-weight: 600; margin-bottom: 4px">---</h3>
-          <p id="sos-detail-time"
-            style="font-size: 11px; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace">REPORTED JUST NOW
-          </p>
-        </div>
 
-        <div class="form-group">
-          <label>Current Coordinates</label>
-          <div
-            style="background: var(--bg-elevated); padding: 10px; border-radius: var(--radius); font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text-primary); border: 1px solid var(--border)">
-            <span id="sos-detail-coords">14.5764° N, 121.0851° E</span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Location Profile</label>
-          <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-primary); line-height: 1.5">---</div>
-        </div>
-
-        <div
-          style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: var(--radius); margin-top: 16px">
-          <div
-            style="font-size: 10px; font-weight: 600; color: var(--warning); text-transform: uppercase; margin-bottom: 4px">
-            Dispatcher Note</div>
-          <div style="font-size: 12px; color: var(--text-primary)">User app tracking is live. Visual contact via city
-            CCTV is recommended for this sector.</div>
-        </div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeSOS()" style="flex: 1; justify-content: center">Dismiss</button>
-        <button class="btn btn-primary" onclick="acknowledgeSOS()"
-          style="flex: 1; justify-content: center; background: var(--critical); border-color: var(--critical)">Acknowledge</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Add Incident -->
   <div class="modal-backdrop" id="add-incident-modal">
@@ -2487,13 +2744,35 @@
         <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
             onchange="recommendVolunteers()">
             <option value="">Select Barangay...</option>
+            <option>Bagong Ilog</option>
+            <option>Bagong Katipunan</option>
+            <option>Bambang</option>
+            <option>Buting</option>
             <option>Caniogan</option>
+            <option>Dela Paz</option>
+            <option>Kalawaan</option>
+            <option>Kapasigan</option>
             <option>Kapitolyo</option>
+            <option>Malinao</option>
             <option>Manggahan</option>
+            <option>Maybunga</option>
+            <option>Oranbo</option>
+            <option>Palatiw</option>
             <option>Pinagbuhatan</option>
+            <option>Pineda</option>
             <option>Rosario</option>
+            <option>Sagad</option>
+            <option>San Antonio</option>
             <option>San Joaquin</option>
+            <option>San Jose</option>
+            <option>San Miguel</option>
+            <option>San Nicolas</option>
+            <option>Santa Cruz</option>
+            <option>Santa Lucia</option>
+            <option>Santa Rosa</option>
             <option>Santolan</option>
+            <option>Santo Tomas</option>
+            <option>Sumilang</option>
             <option>Ugong</option>
           </select></div>
         <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc" rows="3"
@@ -2578,22 +2857,34 @@
       ];
 
       grid.innerHTML = volunteers.map(v => `
-    <div class="vol-card selected" onclick="this.classList.toggle('selected')">
-      <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
-      <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
-      <div class="vol-info">
-        ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
-        <div class="vol-name">${v.name}</div>
-        <div class="vol-meta">📍 ${v.dist} away • ${v.time} ETA</div>
-        <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
+      <div class="vol-card selected" onclick="this.classList.toggle('selected')">
+        <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
+        <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
+        <div class="vol-info">
+          ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
+          <div class="vol-name">${v.name}</div>
+          <div class="vol-meta">📍 ${v.dist} away • ${v.time} ETA</div>
+          <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
     }
 
     function submitNewIncident() {
-      const title = document.getElementById('add-inc-title').value;
+      const title = document.getElementById('add-inc-title').value.trim();
       const broadcast = document.getElementById('broadcast-toggle').checked;
+      const severityInput = document.getElementById('add-inc-severity').value;
+      const type = document.getElementById('add-inc-type').value;
+      const barangay = document.getElementById('add-inc-loc').value;
+      const description = document.getElementById('add-inc-desc').value.trim();
+
+      if (!title || !barangay) {
+        showToast('Please fill in Title and Barangay', 'warning');
+        return;
+      }
+
+      // Map severity to simpler form if needed
+      const severity = severityInput.split(' ')[0]; // 'Critical (Red)' -> 'Critical'
 
       // Read selected volunteer cards
       const selected = [
@@ -2602,14 +2893,22 @@
 
       // Save to incident store
       const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
-      incidents.unshift({
+      const newInc = {
         id: 'INC-' + Date.now(),
         title,
+        type,
+        severity,
+        barangay,
+        description,
         status: 'Reported',
         assignedVolunteers: selected,
         broadcastSent: broadcast,
-        createdAt: new Date().toLocaleString('en-PH')
-      });
+        createdAt: new Date().toLocaleString('en-PH'),
+        reporter: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+        source: 'Admin Portal'
+      };
+
+      incidents.unshift(newInc);
       localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
 
       closeModal('add-incident-modal');
@@ -2622,6 +2921,14 @@
       if (broadcast) {
         logAction('Broadcast', title, 'Public safety advisory published');
       }
+
+      // Reset form
+      document.getElementById('add-inc-title').value = '';
+      document.getElementById('add-inc-desc').value = '';
+      document.getElementById('add-inc-loc').value = '';
+      document.getElementById('nearby-vol-panel').style.display = 'none';
+      document.getElementById('broadcast-panel').classList.remove('active');
+      document.getElementById('broadcast-toggle').checked = false;
     }
   </script>
 
@@ -3046,82 +3353,53 @@
   <div id="toast-wrap"></div>
 
   <script>
-    function logAction(action, target, detail) {
-      const log = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
-      log.unshift({
-        id: 'LOG-' + Date.now(),
-        timestamp: new Date().toLocaleString('en-PH'),
-        admin: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-        action,
-        target: target || '—',
-        detail: detail || '—',
-        ip: '192.168.1.' + Math.floor(Math.random() * 50 + 10)
-      });
-      localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
-    }
-
-    (function applyRole() {
-      const role = localStorage.getItem('ligtas_role') || 'Admin';
-      const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = role;
-
-      if (role.toLowerCase().includes('super')) {
-        document.body.classList.add('role-super');
-      }
-      const nameEl = document.querySelector('.admin-name');
-      if (nameEl) {
-        nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
-      }
-    })();
-
-    if (!document.body.classList.contains('role-super')) {
-      window.location.href = 'index.html';
-    }
 
     function renderNotifications() {
       const list = document.getElementById('notif-list');
       if (!list) return;
 
-      const logs = JSON.parse(
-        localStorage.getItem('ligtas_audit') || '[]'
-      );
-      const recent = logs.slice(0, 5);
+      const logsA = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const logsB = JSON.parse(localStorage.getItem('ligtas_audit_logs') || '[]');
+      const seen = new Set(); const merged = [];
+      [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
+      const recent = merged.slice(0, 8);
 
-      const dotColor = {
-        'Login': 'blue', 'Incident': 'red',
-        'Dispatch': 'orange', 'Broadcast': 'yellow',
-        'Verify': 'green', 'Status Update': 'blue',
-        'Supply Update': 'green'
+      const dotColors = {
+        'Login': '#3B82F6', 'Logout': '#22C55E',
+        'Incident': '#EF4444', 'Dispatch': '#F59E0B',
+        'Broadcast': '#EF4444', 'Verify': '#22C55E',
+        'Status Update': '#3B82F6', 'Supply Update': '#22C55E',
+        'SOS Acknowledged': '#EF4444'
       };
 
       if (recent.length === 0) {
-        list.innerHTML =
-          '<div class="empty-state">' +
-          'No recent activity</div>';
+        list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>';
         return;
       }
 
-      list.innerHTML = recent.map(log => {
-        const color = dotColor[log.action] || 'green';
-        return '<div class="feed-item">' +
-          '<div class="feed-dot ' + color + '"></div>' +
-          '<div style="flex:1">' +
-          '<div class="feed-title">' +
-          log.action + '</div>' +
-          '<div class="feed-desc">' +
-          log.target + ' — ' + log.detail +
-          '</div></div>' +
-          '<div style="font-size:10px;' +
-          'color:var(--text-micro);' +
-          'font-family:IBM Plex Mono,monospace">' +
-          log.timestamp.split(',')[1]?.trim() || '' +
-          '</div></div>';
+      list.innerHTML = recent.map((log, i) => {
+        const dotColor = dotColors[log.action] || '#64748B';
+        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' — ' + (log.detail || log.details) : '');
+        let timeStr = '';
+        try {
+          const parts = (log.timestamp || '').split(', ');
+          timeStr = parts.length >= 2 ? parts[1].replace(/:\d\d /, ' ') : log.timestamp || '';
+        } catch(e) {}
+        const borderBottom = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${borderBottom}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
+          + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+          + `<div style="flex:1;min-width:0;">`
+          + `<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;line-height:1.2;">${log.action}</div>`
+          + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div>`
+          + `</div>`
+          + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div>`
+          + `</div>`;
       }).join('');
     }
 
     function updateNotifDot() {
       const logs = JSON.parse(
-        localStorage.getItem('ligtas_audit') || '[]'
+        localStorage.getItem('ligtas_audit_logs') || '[]'
       );
       const lastRead = parseInt(
         sessionStorage.getItem('ligtas_last_read') || '0'
@@ -3137,34 +3415,21 @@
   <script>
     const pages = { dashboard: 'Dashboard Overview', incidents: 'Incident Management', centers: 'Evacuation Centers', relief: 'Relief Operations', broadcast: 'Emergency Broadcast', profile: 'Admin Profile' };
 
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.add('open');
-      } else {
-        console.error('Modal with ID ' + id + ' not found');
-      }
-    }
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('open');
-    }
+
+
     document.querySelectorAll('.modal-backdrop').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open') }) });
 
-    function showToast(msg, type = 'info') {
-      const t = document.createElement('div');
-      const icons = { success: '✓', info: 'ℹ', error: '✕', warning: '⚠' };
-      t.className = `toast ${type}`; t.innerHTML = `<span>${icons[type] || 'ℹ'}</span><span>${msg}</span>`;
-      document.getElementById('toast-wrap').appendChild(t);
-      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; t.style.transition = '.2s'; setTimeout(() => t.remove(), 200) }, 3200);
-    }
+
 
     // ── AUDIT LOG PAGE LOGIC ──────────────────────────────────────────────────────
 
     let _auditAll = [];
 
     function loadAuditLogs() {
-      _auditAll = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      // Use unified getAuditLogs() from audit-log.js (merges both storage keys)
+      _auditAll = (typeof getAuditLogs === 'function')
+        ? getAuditLogs()
+        : JSON.parse(localStorage.getItem('ligtas_audit') || localStorage.getItem('ligtas_audit_logs') || '[]');
       renderAuditTable(_auditAll);
       document.getElementById('audit-count').textContent = _auditAll.length + ' entries';
     }
@@ -3183,13 +3448,16 @@
           'Broadcast': 'critical', 'Verify': 'success',
           'Status Update': 'success'
         }[e.action] || '';
+        // Normalise field names — support both old and new log entries
+        const adminName = e.admin || e.user || '—';
+        const detailText = e.detail || e.details || '—';
         return `<tr>
       <td class="mono" style="font-size:11px;color:var(--text-muted)">${e.id}</td>
       <td class="mono" style="font-size:11px">${e.timestamp}</td>
-      <td style="font-weight:500">${e.admin}</td>
+      <td style="font-weight:500">${adminName}</td>
       <td><span class="badge ${actionColor}">${e.action}</span></td>
       <td>${e.target}</td>
-      <td style="font-size:12px;color:var(--text-muted)">${e.detail}</td>
+      <td style="font-size:12px;color:var(--text-muted)">${detailText}</td>
       <td class="mono" style="font-size:11px;color:var(--text-muted)">${e.ip}</td>
     </tr>`;
       }).join('');
@@ -3301,71 +3569,144 @@
       b.className = 'badge' + (cls ? ' ' + cls : '');
       b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
     }
+  </script>
 
-    function updateTime() {
-      const now = new Date();
-      const d = now.toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
-      const t = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      document.getElementById('live-time').textContent = d + ' · ' + t;
-    }
-    setInterval(updateTime, 1000); updateTime();
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')) });
-
-    // Auto-load on page ready
-    document.addEventListener('DOMContentLoaded', loadAuditLogs);
-
-    // SOS ALERT SYSTEM
-    let currentSOS = null;
-
-    function showSOSAlert(data) {
-      currentSOS = data;
-      const container = document.getElementById('sos-banner-container');
-      if (!container) return;
-
-      container.innerHTML = `
-    <div class="sos-banner" onclick="openSOSDetail()">
-      <div class="sos-icon-pulse"></div>
-      <div class="sos-info">
-        <div class="sos-user">${data.name} — SOS</div>
-        <div class="sos-location">${data.location}</div>
+  <!-- UNIVERSAL SOS MODAL -->
+  <div class="modal-backdrop" id="sos-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>
+          <div class="sos-icon-pulse"></div> SOS Alert
+        </h2>
+        <button class="close-btn" onclick="closeModal('sos-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="sos-detail-card"
+          style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.1); border-radius: 8px; padding: 16px;">
+          <label style="color: var(--critical)">Distress Signal From</label>
+          <div id="sos-detail-name"
+            style="font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">-</div>
+          <div id="sos-detail-loc" style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">-</div>
+          <label>GPS COORDINATES</label>
+          <div id="sos-detail-coords"
+            style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--primary);">-</div>
+        </div>
+        <p style="font-size: 11px; color: var(--text-micro); margin-top: 16px; line-height: 1.4;">
+          Distress signal received via LIGTAS Mobile App. High accuracy GPS fix established. Immediate dispatch of
+          nearest rescue unit recommended.
+        </p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('sos-modal')">Ignore</button>
+        <button class="btn btn-primary" style="background: var(--critical); border-color: var(--critical);"
+          onclick="acknowledgeSOS()">Acknowledge & Dispatch</button>
       </div>
     </div>
-  `;
-      console.log('🚨 EMERGENCY SOS RECEIVED:', data);
+  </div>
+
+  <script>
+    /* UNIVERSAL SOS LOGIC */
+    function renderSOSBanners() {
+      const container = document.getElementById('sos-banner-container');
+      if (!container) return;
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      if (queue.length === 0) { container.innerHTML = ''; return; }
+
+      if (queue.length === 1) {
+        const sos = queue[0];
+        container.innerHTML = `
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)">
+            <div class="sos-icon-pulse"></div>
+            <div class="sos-info">
+              <div class="sos-user">${sos.name}</div>
+              <div class="sos-location">${sos.location}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="sos-banner" onclick="openSOSDetailByIndex(0)" style="border-width: 2px;">
+            <div class="sos-icon-pulse"></div>
+            <div class="sos-info">
+              <div class="sos-user" style="color: var(--critical); font-weight: 700;">${queue.length} ACTIVE SOS ALERTS</div>
+              <div class="sos-location">Priority Dispatch Required</div>
+            </div>
+          </div>
+        `;
+      }
     }
 
-    function openSOSDetail() {
-      if (!currentSOS) return;
-      document.getElementById('sos-detail-name').textContent = currentSOS.name;
-      document.getElementById('sos-detail-loc').textContent = currentSOS.location;
-      document.getElementById('sos-detail-coords').textContent = currentSOS.coords;
+    let currentSOSIndex = -1;
+    function openSOSDetailByIndex(index) {
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      currentSOSIndex = index;
+      const sos = queue[index];
+      if (!sos) return;
+
+      const nameEl = document.getElementById('sos-detail-name');
+      const locEl = document.getElementById('sos-detail-loc');
+      const coordsEl = document.getElementById('sos-detail-coords');
+      if (nameEl) nameEl.textContent = sos.name;
+      if (locEl) locEl.textContent = sos.location;
+      if (coordsEl) coordsEl.textContent = sos.coords;
+
+      const head = document.querySelector('#sos-modal .modal-head h2');
+      if (head) head.innerHTML = `<div class="sos-icon-pulse"></div> Alert ${index + 1} of ${queue.length}`;
+
       openModal('sos-modal');
     }
 
-    function closeSOS() {
-      closeModal('sos-modal');
-    }
-
     function acknowledgeSOS() {
-      if (!currentSOS) return;
-      logAction('SOS Acknowledged', currentSOS.name, 'Emergency response dispatched to ' + currentSOS.location);
-      showToast('SOS Acknowledged — Units Dispatched', 'success');
-      document.getElementById('sos-banner-container').innerHTML = '';
+      if (currentSOSIndex === -1) return;
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      const ackSOS = queue[currentSOSIndex];
+      if (!ackSOS) return;
+
+      if (typeof logAction === 'function') {
+        logAction('SOS Acknowledged', ackSOS.name, 'Emergency response dispatched to ' + ackSOS.location);
+      }
+
+      if (typeof showToast === 'function') {
+        showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
+      }
+
+      queue.splice(currentSOSIndex, 1);
+      localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue));
       closeModal('sos-modal');
-      currentSOS = null;
+      renderSOSBanners();
     }
 
-    // Simulate SOS after 5s
-    setTimeout(() => {
-      if (!currentSOS) {
-        showSOSAlert({
-          name: 'Sarah Jenkins',
-          location: 'Blk 12, Brgy. Pinagbuhatan (Riverside Area)',
-          coords: '14.5582° N, 121.0921° E'
-        });
-      }
-    }, 5000);
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSOSBanners();
+      setInterval(renderSOSBanners, 1000);
+      if (typeof loadAuditLogs === 'function') loadAuditLogs();
+    });
   </script>
+
+  <!-- LOGOUT CONFIRMATION MODAL -->
+  <div class="modal-backdrop" id="logout-modal">
+    <div class="modal modal-sm">
+      <div class="modal-head">
+        <h2>Confirm Logout</h2>
+        <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px; text-align: center;">
+        <div style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </div>
+        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?</p>
+        <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
+      </div>
+      <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
+        <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
