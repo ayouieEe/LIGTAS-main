@@ -498,7 +498,7 @@
                                     <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
                                 </div>
                             </div>
-                            <a href="#"
+                            <a href="#" id="add-video-btn"
                                 class="text-[13px] font-medium text-emergency flex items-center gap-1.5 hover:underline">
                                 <i data-lucide="video" class="w-4 h-4"></i> Add Video
                             </a>
@@ -637,17 +637,17 @@
                     </div>
 
                     <div class="flex gap-2 mb-8">
-                        <button
+                        <button id="received-dispatch-btn"
                             class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
                             <i data-lucide="phone" class="w-5 h-5 text-navy"></i>
                             <span class="text-[11px] font-medium text-navy">Dispatch</span>
                         </button>
-                        <button
+                        <button id="received-share-btn"
                             class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
                             <i data-lucide="share" class="w-5 h-5 text-navy"></i>
                             <span class="text-[11px] font-medium text-navy">Share</span>
                         </button>
-                        <button
+                        <button id="received-report-btn"
                             class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
                             <i data-lucide="file-text" class="w-5 h-5 text-navy"></i>
                             <span class="text-[11px] font-medium text-navy">Report</span>
@@ -848,16 +848,11 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-2 mb-8">
-                        <button
-                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
+                    <div class="mb-8">
+                        <button id="resolved-share-btn"
+                            class="w-full h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
                             <i data-lucide="share" class="w-5 h-5 text-navy"></i>
                             <span class="text-[11px] font-medium text-navy">Share</span>
-                        </button>
-                        <button
-                            class="flex-1 h-[60px] bg-white border border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 hover:bg-gray-50 transition-colors shadow-sm active:scale-95">
-                            <i data-lucide="file-text" class="w-5 h-5 text-navy"></i>
-                            <span class="text-[11px] font-medium text-navy">Full Report</span>
                         </button>
                     </div>
 
@@ -920,6 +915,81 @@
                         class="w-full h-14 bg-white text-deep rounded-2xl font-bold text-[16px] active:scale-95 transition-transform shadow-xl shadow-black/20"
                         id="sos-close-btn">Close</button>
                 </div>
+            </div>
+        </div>
+        
+        <!-- ADD VIDEO MODAL -->
+        <div id="video-modal" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate">
+                    <i data-lucide="video" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-[20px] font-bold text-navy mb-2">Add Video Evidence</h2>
+                <p class="text-[14px] text-slate leading-relaxed mb-6">Select a video from your gallery or record a new one to help responders understand the situation.</p>
+                <div class="space-y-3">
+                    <button class="w-full h-12 rounded-xl bg-emergency text-white font-semibold text-[14px] flex items-center justify-center gap-2 active:scale-95 transition-transform" onclick="this.closest('#video-modal').classList.add('hidden'); this.closest('#video-modal').classList.remove('flex');">
+                        <i data-lucide="camera" class="w-4 h-4"></i> Record Video
+                    </button>
+                    <button class="w-full h-12 rounded-xl bg-white border border-gray-200 text-navy font-semibold text-[14px] flex items-center justify-center gap-2 active:scale-95 transition-transform" onclick="this.closest('#video-modal').classList.add('hidden'); this.closest('#video-modal').classList.remove('flex');">
+                        <i data-lucide="image" class="w-4 h-4"></i> Choose from Gallery
+                    </button>
+                    <button class="w-full py-2 text-[14px] text-slate font-medium hover:text-navy transition-colors" id="close-video-modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISPATCH MODAL -->
+        <div id="dispatch-modal" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                <div class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-flood">
+                    <i data-lucide="truck" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-[20px] font-bold text-navy mb-2">Dispatch Status</h2>
+                <p class="text-[14px] text-slate leading-relaxed mb-6">Responders from BFP Pasig Station 4 are currently en route to your location. Estimated arrival: 5-8 minutes.</p>
+                <div class="space-y-3">
+                    <button class="w-full h-12 rounded-xl bg-flood text-white font-semibold text-[14px] flex items-center justify-center gap-2 active:scale-95 transition-transform" onclick="window.location.href='tel:911'">
+                        <i data-lucide="phone" class="w-4 h-4"></i> Call Dispatcher
+                    </button>
+                    <button class="w-full py-2 text-[14px] text-slate font-medium hover:text-navy transition-colors" onclick="document.getElementById('dispatch-modal').classList.add('hidden'); document.getElementById('dispatch-modal').classList.remove('flex');">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHARE MODAL -->
+        <div id="share-modal" class="absolute inset-0 bg-black/40 backdrop-blur-sm z-[100] items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl p-6 text-center w-full max-w-[340px] shadow-xl transform transition-all">
+                <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-navy">
+                    <i data-lucide="share-2" class="w-8 h-8"></i>
+                </div>
+                <h2 class="text-[20px] font-bold text-navy mb-2">Share Report</h2>
+                <p class="text-[14px] text-slate leading-relaxed mb-6">Share this incident report with your contacts or on social media to keep others informed.</p>
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center group-active:scale-90 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate">Facebook</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center group-active:scale-90 transition-transform">
+                            <i data-lucide="message-circle" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate">WhatsApp</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 cursor-pointer group">
+                        <div class="w-12 h-12 rounded-full bg-gray-900 text-white flex items-center justify-center group-active:scale-90 transition-transform">
+                            <i data-lucide="copy" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-[10px] font-medium text-slate">Copy Link</span>
+                    </div>
+                </div>
+                <button class="w-full h-12 rounded-xl bg-gray-50 border border-gray-200 text-navy font-semibold text-[14px] active:scale-95 transition-transform" onclick="document.getElementById('share-modal').classList.add('hidden'); document.getElementById('share-modal').classList.remove('flex');">
+                    Cancel
+                </button>
             </div>
         </div>
 
@@ -1363,6 +1433,57 @@
         goToStep(1);
 
         // If navigated here from profile "View All", show history screen
+        // ── Video Modal logic ─────────────────────────────────────────────
+        const addVideoBtn = document.getElementById('add-video-btn');
+        const videoModal = document.getElementById('video-modal');
+        const closeVideoModalBtn = document.getElementById('close-video-modal');
+
+        if (addVideoBtn && videoModal) {
+            addVideoBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                videoModal.classList.remove('hidden');
+                videoModal.classList.add('flex');
+            });
+        }
+
+        if (closeVideoModalBtn && videoModal) {
+            closeVideoModalBtn.addEventListener('click', () => {
+                videoModal.classList.add('hidden');
+                videoModal.classList.remove('flex');
+            });
+        }
+
+        // ── Dispatch and Share Modal Logic ────────────────────────────────
+        const dispatchModal = document.getElementById('dispatch-modal');
+        const shareModal = document.getElementById('share-modal');
+        const receivedDispatchBtn = document.getElementById('received-dispatch-btn');
+        const receivedShareBtn = document.getElementById('received-share-btn');
+        const receivedReportBtn = document.getElementById('received-report-btn');
+        const resolvedShareBtn = document.getElementById('resolved-share-btn');
+
+        if (receivedDispatchBtn && dispatchModal) {
+            receivedDispatchBtn.addEventListener('click', () => {
+                dispatchModal.classList.remove('hidden');
+                dispatchModal.classList.add('flex');
+            });
+        }
+
+        if ((receivedShareBtn || resolvedShareBtn) && shareModal) {
+            const shareTrigger = (e) => {
+                shareModal.classList.remove('hidden');
+                shareModal.classList.add('flex');
+            };
+            if (receivedShareBtn) receivedShareBtn.addEventListener('click', shareTrigger);
+            if (resolvedShareBtn) resolvedShareBtn.addEventListener('click', shareTrigger);
+        }
+
+        if (receivedReportBtn) {
+            receivedReportBtn.addEventListener('click', () => {
+                showScreen('create-report-flow');
+                goToStep(1);
+            });
+        }
+
         if (window.location.hash === '#history') {
             showScreen('report-history-flow');
         }
