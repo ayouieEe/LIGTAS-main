@@ -1210,6 +1210,20 @@ function declineAssignment(assignmentId) {
     console.log('Declined assignment:', assignmentId);
 }
 
+function completeAssignment(assignmentId) {
+    const currentStatus = getAssignmentStatus(assignmentId);
+    if (currentStatus !== 'accepted') {
+        showToast('Only accepted assignments can be marked as done.');
+        return;
+    }
+
+    setAssignmentStatus(assignmentId, 'completed');
+    closeModal('assignment-modal');
+    showScreen('screen-volunteer');
+    showToast('Assignment marked as completed!');
+    console.log('Completed assignment:', assignmentId);
+}
+
 function viewAssignmentDetails(assignmentId) {
     closeModal('assignment-modal');
     showAssignmentDetailPage(assignmentId);
@@ -1233,6 +1247,7 @@ window.toggleCheck = toggleCheck;
 window.openAssignmentModal = openAssignmentModal;
 window.acceptAssignment = acceptAssignment;
 window.declineAssignment = declineAssignment;
+window.completeAssignment = completeAssignment;
 window.viewAssignmentDetails = viewAssignmentDetails;
 window.markMyselfSafe = markMyselfSafe;
 window.checkVolunteerStatus = checkVolunteerStatus;
