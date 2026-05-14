@@ -1638,12 +1638,16 @@
                         Decline
                     </button>
                 </div>
-                <div id="assignment-modal-buttons-accepted" class="flex gap-3 w-full hidden">
-                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-green-600 hover:bg-green-700 text-white transition-colors flex items-center justify-center gap-2" onclick="showAssignmentDetailPage(currentAssignmentId); closeModal('assignment-modal')">
-                        <i data-lucide="check" class="w-4 h-4"></i>
-                        View Details
+                <div id="assignment-modal-buttons-accepted" class="flex gap-3 w-full hidden flex-col">
+                    <button type="button" class="w-full py-3 px-4 rounded-xl font-semibold text-[14px] bg-green-600 hover:bg-green-700 text-white transition-colors flex items-center justify-center gap-2" onclick="completeAssignment(currentAssignmentId)">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        Mark as Done
                     </button>
-                    <button type="button" class="flex-1 py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-300 hover:bg-gray-400 text-gray-800 transition-colors" onclick="closeModal('assignment-modal')">
+                    <button type="button" class="w-full py-3 px-4 rounded-xl font-semibold text-[14px] bg-blue-600 hover:bg-blue-700 text-white transition-colors flex items-center justify-center gap-2" onclick="showAssignmentDetailPage(currentAssignmentId); closeModal('assignment-modal')">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                        View Full Details
+                    </button>
+                    <button type="button" class="w-full py-3 px-4 rounded-xl font-semibold text-[14px] bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors" onclick="closeModal('assignment-modal')">
                         Close
                     </button>
                 </div>
