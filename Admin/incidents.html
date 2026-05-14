@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2955,7 +2955,7 @@
           <div class="modal-body">
             <div class="form-section-head">Incident Information</div>
             <div class="form-group"><label>Incident Title</label><input class="input-text" id="add-inc-title"
-                placeholder="e.g. Fire in Residential Area"></div>
+                placeholder="e.g. Fire in Residential Area" oninput="recommendAdminResponders()"></div>
             <div class="form-row">
               <div class="form-group"><label>Severity</label><select class="input-select" id="add-inc-severity">
                   <option>Critical (Red)</option>
@@ -2963,7 +2963,8 @@
                   <option>Warning (Yellow)</option>
                   <option>Stable (Green)</option>
                 </select></div>
-              <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type">
+              <div class="form-group"><label>Incident Type</label><select class="input-select" id="add-inc-type"
+                  onchange="recommendAdminResponders()">
                   <option value="">Select Incident Type...</option>
                   <optgroup label="Meteorological">
                     <option>Typhoon</option>
@@ -3005,7 +3006,7 @@
                 </select></div>
             </div>
             <div class="form-group"><label>Location / Barangay</label><select class="input-select" id="add-inc-loc"
-                onchange="recommendVolunteers()">
+                onchange="recommendAdminResponders()">
                 <option value="">Select Barangay...</option>
                 <option>Bagong Ilog</option>
                 <option>Bagong Katipunan</option>
@@ -3039,17 +3040,33 @@
                 <option>Ugong</option>
               </select></div>
             <div class="form-group"><label>Description</label><textarea class="input-textarea" id="add-inc-desc"
-                rows="3" placeholder="Describe the incident in detail..."></textarea></div>
+                rows="3" placeholder="Describe the incident in detail..."
+                oninput="recommendAdminResponders()"></textarea></div>
 
-            <!-- VOLUNTEER ASSIGNMENT PANEL -->
+            <!-- NEARBY RESPONDER CONTACT PANEL -->
+            <div class="vol-panel" id="nearby-responder-panel" style="display:none">
+              <div class="vol-header">
+                <h3>Nearby Rescuers / Units to Call</h3>
+                <span class="badge badge-gray" id="responder-match-lbl">Based on incident details</span>
+              </div>
+              <div id="nearby-responder-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <!-- Populated by recommendAdminResponders() -->
+              </div>
+              <div class="form-hint" style="margin-top:10px">Call the listed responders before creating the report.
+                Admin-created reports will move straight to Status Reports.</div>
+            </div>
+
+            <!-- INDIVIDUAL VOLUNTEER RECOMMENDATION PANEL -->
             <div class="vol-panel" id="nearby-vol-panel" style="display:none">
               <div class="vol-header">
-                <h3>Nearby Volunteers Recommended</h3>
+                <h3>Recommended Individual Volunteers</h3>
                 <span class="badge badge-gray" id="vol-radius-lbl">Within 1.5km radius</span>
               </div>
               <div class="vol-grid" id="nearby-vol-grid">
-                <!-- Populated by recommendVolunteers() -->
+                <!-- Populated by recommendAdminResponders() -->
               </div>
+              <div class="form-hint" style="margin-top:10px">Use volunteers for support roles. Official rescuers and
+                units should still be contacted first.</div>
             </div>
 
             <!-- PUBLIC BROADCAST TOGGLE -->
@@ -3093,7 +3110,7 @@
           </div>
           <div class="modal-foot">
             <button class="btn btn-ghost" onclick="closeModal('add-incident-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="submitNewIncident()">Create Incident</button>
+            <button class="btn btn-primary" onclick="submitNewIncident()">Create &amp; Acknowledge</button>
           </div>
         </div>
       </div>
@@ -3125,6 +3142,7 @@
         // badge class map for lifecycle status
         const LIFECYCLE_BADGE = {
           'Reported': 'badge',
+          'Acknowledged': 'badge warning',
           'Dispatched': 'badge warning',
           'Ongoing': 'badge critical',
           'Resolved': 'badge success'
@@ -3199,12 +3217,12 @@
           </tr>`;
             if (inc.status === 'Resolved') {
               resolvedHTML += rowHTML;
-            } else if (inc.status !== 'Dispatched') {
-              // Only show Reported/Ongoing in main table. Dispatched are in side feed.
+            } else if (inc.status !== 'Dispatched' && inc.status !== 'Acknowledged' && inc.status !== 'Ongoing') {
+              // Only show newly reported incidents in main table. Acknowledged/Ongoing reports move to the side feed.
               activeHTML += rowHTML;
             }
 
-            if (inc.status === 'Dispatched' || inc.status === 'Ongoing') {
+            if (inc.status === 'Acknowledged' || inc.status === 'Dispatched' || inc.status === 'Ongoing') {
               const feedCls = inc.status === 'Ongoing' ? 'critical' : 'nominal';
               feedHTML += `
               <div class="feed-item ${feedCls}">
@@ -3212,7 +3230,7 @@
                   <div class="feed-title">${inc.status}</div>
                   <div class="feed-desc">${inc.title} · ${inc.barangay}</div>
                 </div>
-                <button class="btn btn-sm btn-ghost" onclick="openDetailById('${inc.id}')">Edit</button>
+                <button class="btn btn-sm btn-ghost" onclick="openStatusReportById('${inc.id}')">View</button>
               </div>`;
             }
           });
@@ -3234,8 +3252,8 @@
 
           const emptyFeed = `<div class="empty-state">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <p style="font-size:12px; font-weight:500;">No active dispatch reports</p>
-          <p style="font-size:11px; opacity:0.6;">Ongoing missions will appear here for status tracking.</p>
+          <p style="font-size:12px; font-weight:500;">No acknowledged reports</p>
+          <p style="font-size:11px; opacity:0.6;">Acknowledged reports will appear here for status tracking.</p>
         </div>`;
 
           activeTbody.innerHTML = activeHTML || emptyActive;
@@ -3243,16 +3261,23 @@
           if (statusFeed) statusFeed.innerHTML = feedHTML || emptyFeed;
         }
 
-        function openDetailById(id) {
+        function openDetailById(id, mode = 'incident') {
           const incidents = getIncidents();
           const inc = incidents.find(i => i.id === id);
           if (!inc) return;
 
+          const isStatusReport = mode === 'statusReport';
           document.getElementById('modal-inc-id').textContent = inc.id;
-          setIncidentDetail(inc.title, inc.status, inc.barangay + ', Pasig City', inc.createdAt, inc.description, inc.reporter, inc.contact, inc.source, inc.emergencyProfile, inc.emergencyContact);
+          setIncidentDetail(inc, mode);
 
           const notesArea = document.getElementById('field-notes-area');
-          if (notesArea) notesArea.value = '';
+          if (notesArea) {
+            notesArea.value = firstValue(inc.latestStatusNote, inc.fieldNotes, '');
+            notesArea.placeholder = isStatusReport ? 'Status report details are read-only.' : 'Add call notes, responder updates, or field status...';
+            notesArea.disabled = isStatusReport;
+            notesArea.style.opacity = isStatusReport ? '0.65' : '1';
+            notesArea.style.cursor = isStatusReport ? 'not-allowed' : 'text';
+          }
 
           const foot = document.getElementById('dynamic-modal-foot');
           let buttonsHTML = '';
@@ -3263,7 +3288,7 @@
           const broadcastToggle = document.getElementById('broadcast-toggle');
 
           if (broadcastWrap) {
-            if (isReported) {
+            if (isReported && !isStatusReport) {
               broadcastWrap.style.display = 'block';
               broadcastWrap.style.pointerEvents = 'auto';
               broadcastWrap.style.opacity = '1';
@@ -3287,25 +3312,53 @@
           }
 
           if (responseWrap) {
-            responseWrap.style.pointerEvents = isReported ? 'auto' : 'none';
-            responseWrap.style.opacity = isReported ? '1' : '0.6';
+            responseWrap.style.pointerEvents = (isReported || isStatusReport) ? 'auto' : 'none';
+            responseWrap.style.opacity = (isReported || isStatusReport) ? '1' : '0.6';
           }
 
-          if (isReported) {
-            buttonsHTML += `<button class="btn btn-primary" onclick="openDispatchConfirm()">Dispatch Rescue</button>`;
-          } else if (inc.status === 'Dispatched' || inc.status === 'Ongoing') {
+          if (isStatusReport) {
+            if (inc.status === 'Acknowledged' || inc.status === 'Dispatched' || inc.status === 'Ongoing') {
+              buttonsHTML += `<button class="btn" style="background:var(--success);color:white;border:none;" onclick="resolveIncident()">Mark as Resolved</button>`;
+            }
+          } else if (isReported) {
+            buttonsHTML += `<button class="btn btn-primary" onclick="acknowledgeIncident()">Acknowledge</button>`;
+          } else if (inc.status === 'Acknowledged' || inc.status === 'Dispatched' || inc.status === 'Ongoing') {
             buttonsHTML += `<button class="btn" style="background:var(--success);color:white;border:none;" onclick="resolveIncident()">Mark as Resolved</button>`;
           }
 
           buttonsHTML += `<div style="flex:1"></div>`;
-          if (isReported) buttonsHTML += `<button class="btn btn-ghost" onclick="saveIncidentNotes()">Save Notes</button>`;
+          if (isReported && !isStatusReport) buttonsHTML += `<button class="btn btn-ghost" onclick="saveIncidentNotes()">Save Notes</button>`;
           buttonsHTML += `<button class="btn btn-ghost" onclick="closeModal('incident-detail-modal')">Close</button>`;
           foot.innerHTML = buttonsHTML;
 
-          // Reset unit selection
-          document.querySelectorAll('#assign-unit-buttons .unit-pill').forEach(btn => btn.classList.remove('selected'));
-
           openModal('incident-detail-modal');
+        }
+
+        function openStatusReportById(id) {
+          openDetailById(id, 'statusReport');
+        }
+
+        function saveStatusReportUpdate() {
+          const id = document.getElementById('modal-inc-id').textContent.trim();
+          const incidents = getIncidents();
+          const idx = incidents.findIndex(i => i.id === id);
+          if (idx === -1) return;
+
+          const notes = document.getElementById('field-notes-area')?.value.trim() || '';
+          const responseContacts = getResponseContacts(incidents[idx]);
+
+          incidents[idx].responseContacts = responseContacts;
+          if (notes) {
+            const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            incidents[idx].latestStatusNote = notes;
+            incidents[idx].description = `${incidents[idx].description || ''}\n\n[STATUS ${timeNow}]: ${notes}`;
+          }
+
+          saveIncidents(incidents);
+          renderIncidentsTable();
+          logAction('Status Report Update', incidents[idx].title, notes ? `Status note saved: ${notes.slice(0, 30)}...` : 'Response contacts reviewed');
+          showToast('Status report updated', 'success');
+          closeModal('incident-detail-modal');
         }
 
         function toggleUnit(el) {
@@ -3318,35 +3371,167 @@
           panel.classList.toggle('active', toggle.checked);
         }
 
-        function recommendVolunteers() {
-          const loc = document.getElementById('add-inc-loc').value;
-          const panel = document.getElementById('nearby-vol-panel');
-          const grid = document.getElementById('nearby-vol-grid');
+        function inferAdminIncidentNeeds(type, title, description) {
+          const text = `${type || ''} ${title || ''} ${description || ''}`.toLowerCase();
+          const needs = new Set();
 
-          if (!loc) { panel.style.display = 'none'; return; }
+          const has = (...terms) => terms.some(term => text.includes(term));
 
-          panel.style.display = 'block';
-          // Mock volunteer data based on location
-          const volunteers = [
-            { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], color: '#2f81f7', rec: true },
-            { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Rescue'], color: '#bc8cff', rec: false }
+          if (has('fire', 'gas leak', 'chemical', 'smoke', 'explosion')) needs.add('Fire Truck');
+          if (has('medical', 'casualty', 'injured', 'injury', 'ambulance', 'collapse', 'earthquake', 'landslide', 'accident')) needs.add('Ambulance');
+          if (has('crime', 'police', 'civil disturbance', 'bomb', 'missing person', 'threat', 'security', 'theft', 'violence')) needs.add('Police');
+          if (has('flood', 'flash flood', 'storm surge', 'earthquake', 'landslide', 'center overflow', 'evacuation')) needs.add('Shelter');
+          if (has('flood', 'resource shortage', 'food', 'water', 'relief', 'evacuation', 'center overflow')) needs.add('Food & Water');
+
+          if (!needs.size && type) needs.add('Barangay Response');
+          return Array.from(needs);
+        }
+
+        function buildAdminIncidentDraft() {
+          const title = document.getElementById('add-inc-title')?.value.trim() || '';
+          const severityInput = document.getElementById('add-inc-severity')?.value || '';
+          const type = document.getElementById('add-inc-type')?.value || '';
+          const barangay = document.getElementById('add-inc-loc')?.value || '';
+          const description = document.getElementById('add-inc-desc')?.value.trim() || '';
+          const severity = severityInput ? severityInput.split(' ')[0] : '';
+
+          return {
+            id: 'INC-DRAFT',
+            title: title || `${type || 'Incident'} Report`,
+            type,
+            severity,
+            barangay,
+            location: barangay,
+            description,
+            needs: inferAdminIncidentNeeds(type, title, description),
+            reporter: localStorage.getItem('ligtas_user') || 'Admin',
+            contact: 'Admin Portal',
+            source: 'Admin Portal'
+          };
+        }
+
+        function renderAdminResponderCard(contact) {
+          const phone = typeof getCallableNumber === 'function' ? getCallableNumber(contact.phone) : String(contact.phone || '').replace(/[^\d+]/g, '');
+          const callButton = typeof renderCallButton === 'function'
+            ? renderCallButton('Call', phone, 'ghost')
+            : `<a class="btn btn-ghost" href="tel:${phone}">☎ Call</a>`;
+
+          return `
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+                  <span class="badge">${escapeHTML(contact.unit || 'Response')}</span>
+                  <span style="font-size:10px;color:var(--text3);">${escapeHTML(contact.distance || '')}</span>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.35;">${escapeHTML(contact.name || 'Emergency Contact')}</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px;">${escapeHTML(contact.role || '')}</div>
+                <div style="font-size:11px;color:var(--nominal);margin-top:4px;">${escapeHTML(contact.phone || 'No phone number')}</div>
+              </div>
+              ${callButton}
+            </div>
+          `;
+        }
+
+        function getAdminVolunteerRecommendations(draft) {
+          const barangay = draft.barangay || 'Pasig';
+          const needs = (draft.needs || []).map(item => item.toLowerCase());
+          const type = String(draft.type || '').toLowerCase();
+
+          const pool = [
+            { name: 'Ricardo Dalisay', dist: '0.4km', time: '5m', skills: ['First Aid', 'Search'], phone: '+63 917 555 3001', color: '#2f81f7' },
+            { name: 'Elena Gomez', dist: '0.9km', time: '12m', skills: ['Medical', 'Triage'], phone: '+63 917 555 3002', color: '#8b5cf6' },
+            { name: 'Marco Reyes', dist: '1.1km', time: '14m', skills: ['Traffic Control', 'Security'], phone: '+63 917 555 3003', color: '#f59e0b' },
+            { name: 'Ana Santos', dist: '1.3km', time: '16m', skills: ['Evacuation', 'Relief'], phone: '+63 917 555 3004', color: '#22c55e' },
+            { name: 'Paolo Cruz', dist: '1.5km', time: '18m', skills: ['Fire Safety', 'Crowd Control'], phone: '+63 917 555 3005', color: '#ef4444' }
           ];
 
-          grid.innerHTML = volunteers.map(v => `
-    <div class="vol-card selected" onclick="this.classList.toggle('selected')">
-      <input type="checkbox" class="vol-card-checkbox" checked onclick="event.stopPropagation()">
-      <div class="vol-avatar-mini" style="background:${v.color}">${v.name.split(' ').map(n => n[0]).join('')}</div>
-      <div class="vol-info">
-        ${v.rec ? '<span class="rec-badge">Recommended</span>' : ''}
-        <div class="vol-name">${v.name}</div>
-        <div class="vol-meta">📍 ${v.dist} away • ${v.time} ETA</div>
-        <div>${v.skills.map(s => `<span class="vol-skill-badge">${s}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
+          return pool
+            .map(vol => {
+              let score = 0;
+              const skillText = vol.skills.join(' ').toLowerCase();
+
+              if (needs.some(need => skillText.includes('medical') || need.includes('ambulance'))) score += vol.skills.includes('Medical') || vol.skills.includes('First Aid') ? 3 : 0;
+              if (needs.some(need => need.includes('police'))) score += skillText.includes('security') || skillText.includes('traffic') ? 3 : 0;
+              if (needs.some(need => need.includes('fire'))) score += skillText.includes('fire') || skillText.includes('crowd') ? 3 : 0;
+              if (needs.some(need => need.includes('shelter') || need.includes('food') || need.includes('water'))) score += skillText.includes('evacuation') || skillText.includes('relief') ? 3 : 0;
+              if (type.includes('medical') && skillText.includes('medical')) score += 2;
+              if (type.includes('fire') && skillText.includes('fire')) score += 2;
+              if (type.includes('flood') && skillText.includes('evacuation')) score += 2;
+
+              return { ...vol, barangay, score };
+            })
+            .sort((a, b) => b.score - a.score || parseFloat(a.dist) - parseFloat(b.dist))
+            .slice(0, 4);
+        }
+
+        function renderAdminVolunteerCard(vol, index) {
+          const recommended = index === 0 ? '<span class="vol-rec-badge">Recommended</span>' : '';
+          return `
+            <div class="vol-card ${index === 0 ? 'selected' : ''}" data-volunteer="${escapeHTML(vol.name)}" onclick="this.classList.toggle('selected')">
+              <div class="vol-card-main">
+                <div class="vol-avatar" style="background:${escapeHTML(vol.color || '#3B82F6')}">${escapeHTML(vol.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase())}</div>
+                <div>
+                  ${recommended}
+                  <div class="vol-name">${escapeHTML(vol.name)}</div>
+                  <div class="vol-meta">📍 ${escapeHTML(vol.dist)} away • ${escapeHTML(vol.time)} ETA</div>
+                  <div>${vol.skills.map(s => `<span class="vol-skill-badge">${escapeHTML(s)}</span>`).join('')}</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        function renderAdminVolunteers(draft, hasEnoughInfo) {
+          const panel = document.getElementById('nearby-vol-panel');
+          const grid = document.getElementById('nearby-vol-grid');
+          if (!panel || !grid) return;
+
+          if (!hasEnoughInfo) {
+            panel.style.display = 'none';
+            grid.innerHTML = '';
+            return;
+          }
+
+          const volunteers = getAdminVolunteerRecommendations(draft);
+          panel.style.display = 'block';
+          grid.innerHTML = volunteers.length
+            ? volunteers.map(renderAdminVolunteerCard).join('')
+            : `<div class="badge" style="grid-column:1 / -1;">No individual volunteers available nearby</div>`;
+        }
+
+        function recommendAdminResponders() {
+          const panel = document.getElementById('nearby-responder-panel');
+          const grid = document.getElementById('nearby-responder-grid');
+          const label = document.getElementById('responder-match-lbl');
+          if (!panel || !grid) return;
+
+          const draft = buildAdminIncidentDraft();
+          const hasEnoughInfo = Boolean(draft.type || draft.title.trim() || draft.description.trim()) && Boolean(draft.barangay);
+
+          if (!hasEnoughInfo) {
+            panel.style.display = 'none';
+            grid.innerHTML = '';
+            renderAdminVolunteers(draft, false);
+            return;
+          }
+
+          const contacts = typeof getResponseContacts === 'function' ? getResponseContacts(draft) : [];
+          panel.style.display = 'block';
+          if (label) label.textContent = draft.needs.length ? draft.needs.join(', ') : 'Barangay Response';
+
+          grid.innerHTML = contacts.length
+            ? contacts.map(renderAdminResponderCard).join('')
+            : `<div class="badge" style="grid-column:1 / -1;">No matching nearby contacts found</div>`;
+
+          renderAdminVolunteers(draft, true);
+        }
+
+        function recommendVolunteers() {
+          recommendAdminResponders();
         }
 
         function submitNewIncident() {
+          const draft = buildAdminIncidentDraft();
           const title = document.getElementById('add-inc-title').value.trim();
           const broadcast = document.getElementById('broadcast-toggle').checked;
           const severityInput = document.getElementById('add-inc-severity').value;
@@ -3354,20 +3539,20 @@
           const barangay = document.getElementById('add-inc-loc').value;
           const description = document.getElementById('add-inc-desc').value.trim();
 
-          if (!title || !barangay) {
-            showToast('Please fill in Title and Barangay', 'warning');
+          if (!title || !barangay || !type) {
+            showToast('Please fill in Title, Incident Type, and Barangay', 'warning');
             return;
           }
 
-          // Map severity to simpler form if needed
-          const severity = severityInput.split(' ')[0]; // 'Critical (Red)' -> 'Critical'
+          const severity = severityInput.split(' ')[0];
+          const responseContacts = typeof getResponseContacts === 'function' ? getResponseContacts(draft) : [];
+          const selectedVolunteers = [
+            ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected')
+          ].map(card => card.dataset.volunteer).filter(Boolean);
+          const contactedNames = responseContacts.map(contact => contact.name).join(', ') || 'Nearby response contacts';
+          const volunteerNames = selectedVolunteers.join(', ') || 'None selected';
+          const timeNow = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
 
-          // Read selected volunteer cards
-          const selected = [
-            ...document.querySelectorAll('#nearby-vol-grid .vol-card.selected .vol-name')
-          ].map(el => el.textContent.trim());
-
-          // Save to incident store
           const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
           const newInc = {
             id: 'INC-' + Date.now(),
@@ -3375,12 +3560,19 @@
             type,
             severity,
             barangay,
-            description,
-            status: 'Reported',
-            assignedVolunteers: selected,
+            location: barangay,
+            description: `${description || 'No description provided.'}\n\n[ACKNOWLEDGED ${timeNow}]: Admin created this report after contacting nearby responders. Contacts: ${contactedNames}.`,
+            status: 'Acknowledged',
+            needs: draft.needs,
+            responseContacts,
+            calledResponders: responseContacts,
+            recommendedVolunteers: getAdminVolunteerRecommendations(draft),
+            assignedVolunteers: selectedVolunteers,
             broadcastSent: broadcast,
+            acknowledgedAt: new Date().toLocaleString('en-PH'),
             createdAt: new Date().toLocaleString('en-PH'),
             reporter: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
+            contact: 'Admin Portal',
             source: 'Admin Portal'
           };
 
@@ -3390,20 +3582,21 @@
           if (typeof renderIncidentsTable === 'function') renderIncidentsTable();
           closeModal('add-incident-modal');
 
-          const volMsg = selected.length ? ' — ' + selected.join(' & ') + ' assigned' : '';
-          showToast('Incident created' + volMsg, 'success');
-
-          logAction('Incident', title, 'Volunteers: ' + (selected.join(', ') || 'None'));
+          showToast('Incident created and moved to Status Reports', 'success');
+          logAction('Acknowledged', title, 'Admin-created report. Contacts: ' + contactedNames + '. Volunteers: ' + volunteerNames);
 
           if (broadcast) {
             logAction('Broadcast', title, 'Public safety advisory published');
           }
 
-          // Reset form
           document.getElementById('add-inc-title').value = '';
           document.getElementById('add-inc-desc').value = '';
+          document.getElementById('add-inc-type').value = '';
           document.getElementById('add-inc-loc').value = '';
+          document.getElementById('nearby-responder-panel').style.display = 'none';
+          document.getElementById('nearby-responder-grid').innerHTML = '';
           document.getElementById('nearby-vol-panel').style.display = 'none';
+          document.getElementById('nearby-vol-grid').innerHTML = '';
           document.getElementById('broadcast-panel').classList.remove('active');
           document.getElementById('broadcast-toggle').checked = false;
         }
@@ -3552,27 +3745,32 @@
               style="margin-bottom:16px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius)">
               <div class="form-section-head" style="margin-top:0">Incident Additional Details</div>
 
-              <div style="display:flex;gap:40px;margin-bottom:16px;">
+              <div style="display:flex;gap:40px;margin-bottom:16px;flex-wrap:wrap;">
+                <div>
+                  <div
+                    style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                    Incident Type</div>
+                  <div id="modal-inc-type" style="font-size:13px;font-weight:500;color:var(--text-primary)">—</div>
+                </div>
+                <div>
+                  <div
+                    style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                    Severity</div>
+                  <div id="modal-inc-severity" style="display:flex;gap:6px;flex-wrap:wrap;">—</div>
+                </div>
                 <div>
                   <div
                     style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
                     Reporting For</div>
                   <div id="modal-inc-reporting-for" style="font-size:13px;font-weight:500;color:var(--text-primary)">
-                    Myself
+                    —
                   </div>
                 </div>
                 <div>
                   <div
                     style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
                     Required Assistance</div>
-                  <div id="modal-inc-needs" style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <span class="badge"
-                      style="background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)">🚑
-                      Ambulance</span>
-                    <span class="badge"
-                      style="background:rgba(59,130,246,0.1);color:var(--primary);border-color:rgba(59,130,246,0.2)">👮
-                      Police</span>
-                  </div>
+                  <div id="modal-inc-needs" style="display:flex;gap:6px;flex-wrap:wrap;">—</div>
                 </div>
               </div>
 
@@ -3580,12 +3778,7 @@
                 <div
                   style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;letter-spacing:0.05em">
                   Attached Media</div>
-                <div id="modal-inc-media" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
-                  <img
-                    src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80"
-                    style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;"
-                    alt="Attached media">
-                </div>
+                <div id="modal-inc-media" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">—</div>
               </div>
             </div>
 
@@ -3629,26 +3822,10 @@
             </div>
 
             <div style="margin-bottom:16px;">
-              <div class="form-section-head" style="margin-top:0">Recommended Volunteers</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                <div
-                  style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
-                  <div class="vol-avatar-mini" style="background:var(--primary)">RD</div>
-                  <div style="flex:1">
-                    <div style="font-size:12px;font-weight:500">Ricardo Dalisay</div>
-                    <div style="font-size:10px;color:var(--text3)">📍 0.4km away • En Route</div>
-                  </div>
-                  <div class="status-dot active"></div>
-                </div>
-                <div
-                  style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
-                  <div class="vol-avatar-mini" style="background:var(--purple)">EG</div>
-                  <div style="flex:1">
-                    <div style="font-size:12px;font-weight:500">Elena Gomez</div>
-                    <div style="font-size:10px;color:var(--text3)">📍 0.9km away • Dispatched</div>
-                  </div>
-                  <div class="status-dot busy"></div>
-                </div>
+              <div class="form-section-head" id="modal-volunteer-section-title" style="margin-top:0">Recommended
+                Volunteers</div>
+              <div id="modal-volunteer-list" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <!-- Populated dynamically by setIncidentDetail() -->
               </div>
             </div>
 
@@ -3747,27 +3924,21 @@
             <div class="form-section-head">Response Actions</div>
             <div id="modal-response-wrap" style="display:flex;flex-direction:column;gap:12px">
               <div class="form-group">
-                <label>Assign Response Units (Select multiple)</label>
-                <div class="unit-selector" id="assign-unit-buttons">
-                  <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Fire Truck">
-                    <span class="icon">🚒</span> Fire Truck
-                  </div>
-                  <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Ambulance">
-                    <span class="icon">🚑</span> Ambulance
-                  </div>
-                  <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Police">
-                    <span class="icon">👮</span> Police
-                  </div>
-                  <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Food & Water">
-                    <span class="icon">☕</span> Food & Water
-                  </div>
-                  <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Shelter">
-                    <span class="icon">⛺</span> Shelter
-                  </div>
+                <label>Call Reporter</label>
+                <div id="modal-reporter-call-card">
+                  <!-- Populated dynamically by setIncidentDetail() -->
                 </div>
               </div>
+              <div class="form-group">
+                <label>Nearby Emergency Contacts Based on Report</label>
+                <div id="modal-response-contact-list" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <!-- Populated dynamically by setIncidentDetail() -->
+                </div>
+                <div class="form-hint">Call the listed responders first. Then click Acknowledge to update the report
+                  status.</div>
+              </div>
               <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" id="field-notes-area"
-                  rows="2" placeholder="Add field update or notes..."></textarea></div>
+                  rows="2" placeholder="Add call notes, responder updates, or field status..."></textarea></div>
             </div>
           </div>
           <span id="modal-inc-id" style="display:none"></span>
@@ -4009,11 +4180,11 @@
         </div>
       </div>
 
-      <!-- Confirm Dispatch -->
+      <!-- Legacy Confirm Dispatch Modal -->
       <div class="modal-backdrop" id="confirm-dispatch-modal">
         <div class="modal modal-sm">
           <div class="modal-head">
-            <h2>Confirm Dispatch</h2>
+            <h2>Confirm Acknowledgement</h2>
             <button class="close-btn" onclick="closeModal('confirm-dispatch-modal')"><svg width="12" height="12"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M18 6L6 18M6 6l12 12" />
@@ -4021,15 +4192,12 @@
           </div>
           <div class="modal-body">
             <div style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5;">
-              Are you sure you want to dispatch <span id="conf-disp-unit"
-                style="font-weight:600;color:var(--text-primary)"></span> to the incident location? This will mobilize
-              the
-              team and transition the incident status.
+              Confirm acknowledgement after the reporter and relevant nearby responders have been contacted.
             </div>
           </div>
           <div class="modal-foot">
             <button class="btn btn-ghost" onclick="closeModal('confirm-dispatch-modal')">Cancel</button>
-            <button class="btn btn-primary" onclick="executeDispatch()">Confirm &amp; Dispatch</button>
+            <button class="btn btn-primary" onclick="acknowledgeIncident()">Acknowledge</button>
           </div>
         </div>
       </div>
@@ -4067,7 +4235,7 @@
           const seen = new Set(); const merged = [];
           [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
           const recent = merged.slice(0, 8);
-          const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
+          const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Acknowledged': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
           if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
           list.innerHTML = recent.map((log, i) => {
             const dotColor = dotColors[log.action] || '#64748B';
@@ -4135,34 +4303,386 @@
           el.classList.add('selected');
           if (document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent = name;
         }
-        function setIncidentDetail(title, status, barangay, timeAgo, description, reporter, contact, source, medical, emergencyContact) {
-          document.getElementById('modal-inc-title').textContent = title;
-          document.getElementById('modal-inc-loc').textContent = barangay;
-          document.getElementById('modal-inc-time').textContent = timeAgo;
-          document.getElementById('modal-inc-desc').textContent = description;
-          if (document.getElementById('modal-inc-reporter')) {
-            document.getElementById('modal-inc-reporter').textContent = reporter || 'Field Report';
+        function escapeHTML(value) {
+          return String(value ?? '').replace(/[&<>"']/g, ch => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[ch]));
+        }
+
+        function firstValue(...values) {
+          for (const value of values) {
+            if (Array.isArray(value) && value.length) return value;
+            if (value !== undefined && value !== null && String(value).trim() !== '') return value;
           }
-          if (document.getElementById('modal-inc-contact')) {
-            document.getElementById('modal-inc-contact').textContent = contact || '—';
-          }
-          if (document.getElementById('modal-inc-source')) {
-            const s = document.getElementById('modal-inc-source');
-            s.textContent = source || 'Field Report';
-            s.className = source === 'Mobile App' ? 'badge badge-teal' : 'badge';
+          return '';
+        }
+
+        function normalizeList(value) {
+          if (!value) return [];
+          if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
+          if (typeof value === 'object') return Object.values(value).map(v => String(v).trim()).filter(Boolean);
+          return String(value)
+            .split(/,|\n|\|/)
+            .map(v => v.trim())
+            .filter(Boolean);
+        }
+
+        function getIncidentLocation(inc) {
+          const rawLocation = firstValue(
+            inc.location,
+            inc.address,
+            inc.fullAddress,
+            inc.landmark,
+            inc.reportLocation,
+            inc.barangay
+          );
+
+          if (!rawLocation) return 'Location not provided';
+          const text = String(rawLocation).trim();
+          return /pasig/i.test(text) ? text : `${text}, Pasig City`;
+        }
+
+        function getIncidentNeeds(inc) {
+          return normalizeList(firstValue(
+            inc.needs,
+            inc.requiredAssistance,
+            inc.assistanceNeeded,
+            inc.resourcesNeeded,
+            inc.unitsNeeded,
+            inc.responseUnits
+          ));
+        }
+
+        function getIncidentMedia(inc) {
+          const media = normalizeList(firstValue(
+            inc.media,
+            inc.attachments,
+            inc.photos,
+            inc.images,
+            inc.photoUrls,
+            inc.photoUrl,
+            inc.imageUrl
+          ));
+
+          return media.filter(Boolean);
+        }
+
+        function renderInfoBadge(text, tone = 'default') {
+          const styles = {
+            critical: 'background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)',
+            warning: 'background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.2)',
+            nominal: 'background:rgba(59,130,246,0.1);color:var(--nominal);border-color:rgba(59,130,246,0.2)',
+            success: 'background:rgba(34,197,94,0.1);color:var(--success);border-color:rgba(34,197,94,0.2)',
+            default: 'background:var(--bg-elevated);color:var(--text-muted);border-color:var(--border)'
+          };
+          return `<span class="badge" style="${styles[tone] || styles.default}">${escapeHTML(text)}</span>`;
+        }
+
+        function severityTone(severity) {
+          const value = String(severity || '').toLowerCase();
+          if (value.includes('critical')) return 'critical';
+          if (value.includes('high')) return 'critical';
+          if (value.includes('medium') || value.includes('moderate')) return 'warning';
+          if (value.includes('low')) return 'success';
+          return 'default';
+        }
+
+        function sourceTone(source) {
+          return String(source || '').toLowerCase().includes('mobile') ? 'badge badge-teal' : 'badge';
+        }
+
+        function setText(id, value, fallback = '—') {
+          const el = document.getElementById(id);
+          if (el) el.textContent = value || fallback;
+        }
+
+
+        function getAssignedUnits(inc) {
+          return normalizeList(firstValue(
+            inc.assignedUnits,
+            inc.dispatchedUnits,
+            inc.responseUnits,
+            inc.unitsAssigned,
+            inc.units,
+            getIncidentNeeds(inc)
+          ));
+        }
+
+        function getDefaultVolunteerPool() {
+          return [
+            { name: 'Ricardo Dalisay', initials: 'RD', distance: '0.4km away', status: 'En Route', dot: 'active', color: 'var(--primary)' },
+            { name: 'Elena Gomez', initials: 'EG', distance: '0.9km away', status: 'Dispatched', dot: 'busy', color: 'var(--nominal)' },
+            { name: 'Mark Reyes', initials: 'MR', distance: '1.1km away', status: 'Available', dot: 'active', color: 'var(--success)' },
+            { name: 'Ana Santos', initials: 'AS', distance: '1.6km away', status: 'Standby', dot: 'offline', color: 'var(--warning)' }
+          ];
+        }
+
+        function normalizeVolunteer(value, index = 0) {
+          if (typeof value === 'object' && value !== null) {
+            const name = firstValue(value.name, value.fullName, value.volunteerName, `Volunteer ${index + 1}`);
+            const initials = firstValue(value.initials, name.split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase());
+            return {
+              name,
+              initials,
+              distance: firstValue(value.distance, value.distanceAway, value.location, value.proximity, 'Distance not provided'),
+              status: firstValue(value.status, value.assignmentStatus, value.state, 'Assigned'),
+              dot: String(firstValue(value.status, value.assignmentStatus, '')).toLowerCase().includes('route') ? 'active' : 'busy',
+              color: firstValue(value.color, 'var(--nominal)')
+            };
           }
 
-          // Handle Emergency/Medical Profile
+          const name = String(value || `Volunteer ${index + 1}`).trim();
+          return {
+            name,
+            initials: name.split(/\s+/).map(part => part[0]).join('').slice(0, 2).toUpperCase(),
+            distance: 'Distance not provided',
+            status: 'Assigned',
+            dot: 'busy',
+            color: 'var(--nominal)'
+          };
+        }
+
+        function getIncidentVolunteers(inc, mode = 'incident') {
+          const savedVolunteers = firstValue(
+            inc.assignedVolunteers,
+            inc.dispatchedVolunteers,
+            inc.volunteersAssigned,
+            inc.responders,
+            inc.recommendedVolunteers,
+            inc.volunteers
+          );
+
+          const list = normalizeList(savedVolunteers).map(normalizeVolunteer);
+          if (list.length) return list;
+
+          const fallback = getDefaultVolunteerPool();
+          return mode === 'statusReport' ? fallback.slice(0, 2).map(v => ({ ...v, status: v.status === 'Available' ? 'Assigned' : v.status })) : fallback.slice(0, 2);
+        }
+
+        function renderVolunteerList(inc, mode = 'incident') {
+          const titleEl = document.getElementById('modal-volunteer-section-title');
+          const listEl = document.getElementById('modal-volunteer-list');
+          if (!listEl) return;
+
+          if (titleEl) {
+            titleEl.textContent = mode === 'statusReport' ? 'Assigned Volunteers' : 'Recommended Volunteers';
+          }
+
+          const volunteers = getIncidentVolunteers(inc, mode);
+          listEl.innerHTML = volunteers.length
+            ? volunteers.map(vol => `
+                <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
+                  <div class="vol-avatar-mini" style="background:${escapeHTML(vol.color)}">${escapeHTML(vol.initials)}</div>
+                  <div style="flex:1">
+                    <div style="font-size:12px;font-weight:500">${escapeHTML(vol.name)}</div>
+                    <div style="font-size:10px;color:var(--text3)">📍 ${escapeHTML(vol.distance)} • ${escapeHTML(vol.status)}</div>
+                  </div>
+                  <div class="status-dot ${escapeHTML(vol.dot)}"></div>
+                </div>
+              `).join('')
+            : `<div class="badge" style="grid-column:1 / -1;">No volunteers assigned</div>`;
+        }
+
+
+        function getCallableNumber(value) {
+          const raw = String(value || '').trim();
+          const phone = raw.match(/(\+?63|0)?[\s-]?\d{3}[\s-]?\d{3}[\s-]?\d{4}/);
+          if (!phone) return '';
+          return phone[0].replace(/[^\d+]/g, '');
+        }
+
+        function renderCallButton(label, number, variant = 'primary') {
+          if (!number) {
+            return `<button class="btn btn-ghost" disabled style="opacity:0.55;cursor:not-allowed;">No phone number</button>`;
+          }
+          const cls = variant === 'primary' ? 'btn btn-primary' : 'btn btn-ghost';
+          return `<a class="${cls}" href="tel:${escapeHTML(number)}" onclick="event.stopPropagation()">☎ ${escapeHTML(label)}</a>`;
+        }
+
+        const RESPONSE_DIRECTORY = {
+          ambulance: [
+            { unit: 'Ambulance', name: 'Pasig City General Hospital Emergency Room', phone: '+63 2 8643 3333', distance: 'Nearest public hospital', role: 'Hospital ER' },
+            { unit: 'Ambulance', name: 'Pasig City Rescue Ambulance', phone: '+63 917 555 2301', distance: 'City rescue dispatch', role: 'Ambulance Unit' }
+          ],
+          police: [
+            { unit: 'Police', name: 'Pasig City Police Station', phone: '+63 2 8641 1907', distance: 'Nearest police coordination', role: 'Police Station' },
+            { unit: 'Police', name: 'Eastern Police District Hotline', phone: '+63 2 8723 0401', distance: 'District backup', role: 'Police Hotline' }
+          ],
+          fire: [
+            { unit: 'Fire Truck', name: 'BFP Pasig Central Fire Station', phone: '+63 2 8641 1931', distance: 'Nearest fire station', role: 'Fire Station' },
+            { unit: 'Fire Truck', name: 'Pasig Fire Rescue Unit', phone: '+63 917 555 2302', distance: 'Fire rescue dispatch', role: 'Fire Rescue' }
+          ],
+          relief: [
+            { unit: 'Food & Water', name: 'Pasig CSWDO Relief Desk', phone: '+63 2 8643 1111', distance: 'Relief coordination', role: 'Relief Support' },
+            { unit: 'Food & Water', name: 'Pasig DRRMO Logistics', phone: '+63 917 555 2303', distance: 'Emergency supplies', role: 'Logistics' }
+          ],
+          shelter: [
+            { unit: 'Shelter', name: 'Pasig DRRMO Evacuation Desk', phone: '+63 2 8643 0000', distance: 'Evacuation coordination', role: 'Shelter Desk' },
+            { unit: 'Shelter', name: 'Barangay Evacuation Coordinator', phone: '+63 917 555 2304', distance: 'Nearest barangay support', role: 'Evacuation Center' }
+          ],
+          barangay: [
+            { unit: 'Barangay Response', name: 'Barangay Emergency Desk', phone: '+63 917 555 2305', distance: 'Local response desk', role: 'Barangay Desk' }
+          ]
+        };
+
+        function contactKeysForIncident(inc) {
+          const needs = getIncidentNeeds(inc).map(v => v.toLowerCase());
+          const type = String(firstValue(inc.type, inc.category, '')).toLowerCase();
+          const keys = new Set();
+
+          const has = keyword => needs.some(item => item.includes(keyword)) || type.includes(keyword);
+
+          if (has('ambulance') || has('medical') || has('rescue')) keys.add('ambulance');
+          if (has('police') || has('crime') || has('neighbor')) keys.add('police');
+          if (has('fire') || has('truck')) keys.add('fire');
+          if (has('food') || has('water') || has('relief')) keys.add('relief');
+          if (has('shelter') || has('evac')) keys.add('shelter');
+
+          if (!keys.size) keys.add('barangay');
+          return Array.from(keys);
+        }
+
+        function getResponseContacts(inc) {
+          const contacts = [];
+          contactKeysForIncident(inc).forEach(key => {
+            contacts.push(...(RESPONSE_DIRECTORY[key] || []));
+          });
+          const seen = new Set();
+          return contacts.filter(contact => {
+            const id = `${contact.name}-${contact.phone}`;
+            if (seen.has(id)) return false;
+            seen.add(id);
+            return true;
+          });
+        }
+
+        function renderReporterCall(inc) {
+          const card = document.getElementById('modal-reporter-call-card');
+          if (!card) return;
+
+          const reporter = firstValue(inc.reporter, inc.reporterName, inc.name, 'Unknown reporter');
+          const contact = firstValue(inc.contact, inc.phone, inc.mobile, inc.contactInfo, 'No contact provided');
+          const phone = getCallableNumber(contact);
+
+          card.innerHTML = `
+            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">${escapeHTML(reporter)}</div>
+                <div style="font-size:11px;color:var(--text3);">${escapeHTML(contact)}</div>
+              </div>
+              ${renderCallButton('Call Reporter', phone)}
+            </div>
+          `;
+        }
+
+        function renderResponseContacts(inc, mode = 'incident') {
+          const list = document.getElementById('modal-response-contact-list');
+          if (!list) return;
+
+          const contacts = firstValue(inc.calledResponders, inc.responseContacts, null) || getResponseContacts(inc);
+
+          list.innerHTML = contacts.length
+            ? contacts.map(contact => {
+              const phone = getCallableNumber(contact.phone);
+              return `
+                  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;">
+                    <div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+                        <span class="badge">${escapeHTML(contact.unit || 'Response')}</span>
+                        <span style="font-size:10px;color:var(--text3);">${escapeHTML(contact.distance || '')}</span>
+                      </div>
+                      <div style="font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.35;">${escapeHTML(contact.name || 'Emergency Contact')}</div>
+                      <div style="font-size:11px;color:var(--text3);margin-top:2px;">${escapeHTML(contact.role || '')}</div>
+                      <div style="font-size:11px;color:var(--nominal);margin-top:4px;">${escapeHTML(contact.phone || 'No phone number')}</div>
+                    </div>
+                    ${renderCallButton('Call', phone, 'ghost')}
+                  </div>
+                `;
+            }).join('')
+            : `<div class="badge" style="grid-column:1 / -1;">No nearby contacts matched this report</div>`;
+        }
+
+        function setIncidentDetail(inc, mode = 'incident') {
+          if (!inc) return;
+
+          const title = firstValue(inc.title, `${inc.type || 'Incident'} Report`);
+          const status = firstValue(inc.status, 'Reported');
+          const severity = firstValue(inc.severity, 'Not provided');
+          const location = getIncidentLocation(inc);
+          const description = firstValue(inc.description, inc.details, inc.message, 'No description provided.');
+          const reporter = firstValue(inc.reporter, inc.reporterName, inc.name, 'Unknown reporter');
+          const contact = firstValue(inc.contact, inc.phone, inc.mobile, inc.contactInfo, 'No contact provided');
+          const source = firstValue(inc.source, 'Mobile App');
+          const type = firstValue(inc.type, inc.category, 'Incident');
+          const reportingFor = firstValue(inc.reportingFor, inc.reportFor, 'Not provided');
+          const needs = getIncidentNeeds(inc);
+          const media = getIncidentMedia(inc);
+          const medical = firstValue(inc.emergencyProfile, inc.medical, inc.medicalProfile, null);
+          const emergencyContact = firstValue(inc.emergencyContact, inc.iceContact, null);
+
+          renderVolunteerList(inc, mode);
+          renderReporterCall(inc);
+          renderResponseContacts(inc, mode);
+
+          setText('modal-inc-title', title);
+          setText('modal-inc-loc', location);
+          setText('modal-inc-time', firstValue(inc.createdAt, inc.time, inc.reportedAt, 'Time not provided'));
+          setText('modal-inc-desc', description);
+          setText('modal-inc-reporter', reporter);
+          setText('modal-inc-contact', contact);
+          setText('modal-inc-type', type);
+          setText('modal-inc-reporting-for', reportingFor);
+
+          const sourceEl = document.getElementById('modal-inc-source');
+          if (sourceEl) {
+            sourceEl.textContent = source;
+            sourceEl.className = sourceTone(source);
+          }
+
+          const severityEl = document.getElementById('modal-inc-severity');
+          if (severityEl) {
+            severityEl.innerHTML = renderInfoBadge(severity, severityTone(severity));
+          }
+
+          const needsEl = document.getElementById('modal-inc-needs');
+          if (needsEl) {
+            needsEl.innerHTML = needs.length
+              ? needs.map(item => renderInfoBadge(item, 'nominal')).join('')
+              : renderInfoBadge('Not provided', 'default');
+          }
+
+          const mediaEl = document.getElementById('modal-inc-media');
+          if (mediaEl) {
+            if (media.length) {
+              mediaEl.innerHTML = media.map((item, index) => {
+                const safeUrl = escapeHTML(item);
+                if (/\.(mp4|webm|ogg)(\?|#|$)/i.test(item)) {
+                  return `<video controls src="${safeUrl}" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);"></video>`;
+                }
+                return `<img src="${safeUrl}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;" alt="Attached media ${index + 1}">`;
+              }).join('');
+            } else {
+              mediaEl.innerHTML = `<span class="badge">No media attached</span>`;
+            }
+          }
+
           const medSection = document.getElementById('emergency-profile-section');
           if (medSection) {
-            if (medical) {
+            if (medical && typeof medical === 'object') {
               medSection.style.display = 'block';
-              document.getElementById('med-blood').textContent = medical.bloodType || '—';
-              document.getElementById('med-allergies').textContent = medical.allergies || 'None';
-              document.getElementById('med-conditions').textContent = medical.conditions || 'None';
-              if (emergencyContact) {
-                document.getElementById('med-contact-name').textContent = emergencyContact.name || '—';
-                document.getElementById('med-contact-phone').textContent = emergencyContact.phone || '—';
+              setText('med-blood', firstValue(medical.bloodType, medical.blood, '—'));
+              setText('med-allergies', firstValue(medical.allergies, 'None'));
+              setText('med-conditions', firstValue(medical.conditions, medical.chronicConditions, 'None'));
+              if (emergencyContact && typeof emergencyContact === 'object') {
+                setText('med-contact-name', firstValue(emergencyContact.name, emergencyContact.fullName, '—'));
+                setText('med-contact-phone', firstValue(emergencyContact.phone, emergencyContact.mobile, emergencyContact.contact, '—'));
+              } else {
+                setText('med-contact-name', '—');
+                setText('med-contact-phone', '—');
               }
             } else {
               medSection.style.display = 'none';
@@ -4173,6 +4693,7 @@
           const map = {
             'Critical': ['critical', 'Critical'],
             'Reported': ['', 'Reported'],
+            'Acknowledged': ['warning', 'Acknowledged'],
             'Dispatched': ['warning', 'Dispatched'],
             'Ongoing': ['critical', 'Ongoing'],
             'Resolved': ['success', 'Resolved'],
@@ -4182,8 +4703,9 @@
           };
           const [cls, label] = map[status] || ['', status];
           b.className = 'badge' + (cls ? ' ' + cls : '');
-          b.innerHTML = (cls ? '<div class="dot"></div>' : '') + label;
+          b.innerHTML = (cls ? '<div class="dot"></div>' : '') + escapeHTML(label);
         }
+
         function saveIncidentNotes(showToastMsg = true) {
           const id = document.getElementById('modal-inc-id').textContent.trim();
           const notesArea = document.getElementById('field-notes-area');
@@ -4207,34 +4729,27 @@
           }
         }
 
-        function openDispatchConfirm() {
-          const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
-          if (selected.length === 0) {
-            showToast('Please select at least one unit to dispatch', 'warning');
-            return;
-          }
-          document.getElementById('conf-disp-unit').textContent = selected.join(', ');
-          openModal('confirm-dispatch-modal');
-        }
-
-        function executeDispatch() {
+        function acknowledgeIncident() {
           saveIncidentNotes(false);
           const id = document.getElementById('modal-inc-id').textContent.trim();
           const incidents = getIncidents();
           const idx = incidents.findIndex(i => i.id === id);
           if (idx === -1) return;
 
-          incidents[idx].status = 'Dispatched';
-          const selected = [...document.querySelectorAll('#assign-unit-buttons .unit-pill.selected')].map(el => el.dataset.unit);
-          const unitStr = selected.join(' & ');
+          const responseContacts = getResponseContacts(incidents[idx]);
+          const contactedNames = responseContacts.map(contact => contact.name).join(', ') || 'Nearby response contacts';
           const timeNow = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
-          incidents[idx].description += `\n\n[DISPATCH ${timeNow}]: ${unitStr} dispatched to scene.`;
+
+          incidents[idx].status = 'Acknowledged';
+          incidents[idx].responseContacts = responseContacts;
+          incidents[idx].calledResponders = responseContacts;
+          incidents[idx].acknowledgedAt = new Date().toLocaleString('en-PH');
+          incidents[idx].description = `${incidents[idx].description || ''}\n\n[ACKNOWLEDGED ${timeNow}]: Reporter and nearby responders contacted. Contacts: ${contactedNames}.`;
 
           saveIncidents(incidents);
-          logAction('Dispatch', incidents[idx].title, `${unitStr} deployed.`);
-          showToast('Rescue team dispatched!', 'success');
+          logAction('Acknowledged', incidents[idx].title, `Reporter and responders contacted: ${contactedNames}`);
+          showToast('Incident acknowledged', 'success');
 
-          closeModal('confirm-dispatch-modal');
           closeModal('incident-detail-modal');
           renderIncidentsTable();
         }
