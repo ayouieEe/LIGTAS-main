@@ -1397,6 +1397,27 @@
       animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)
     }
 
+    #confirm-broadcast-modal .modal {
+      width: 560px;
+      max-width: min(94vw, 560px)
+    }
+
+    #confirm-broadcast-modal .modal-body {
+      max-height: 62vh
+    }
+
+    #confirm-broadcast-modal .modal-foot {
+      flex-wrap: wrap
+    }
+
+    #conf-b-level,
+    #conf-b-msg,
+    #conf-b-zone,
+    #conf-b-count {
+      overflow-wrap: anywhere;
+      word-break: break-word
+    }
+
     .modal.modal-sm {
       width: 420px
     }
@@ -2354,21 +2375,17 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 500;
-      margin-left: 6px
-    }
-
-    .role-badge.super {
-      background: rgba(188, 140, 255, .15);
-      color: var(--purple)
-    }
-
-    .role-badge.admin {
-      background: var(--primary-dim);
-      color: var(--primary)
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      white-space: nowrap;
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--nominal);
+      margin-left: 8px;
     }
 
     /* SECTION HEADERS */
@@ -2720,8 +2737,7 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
         <span>LIGTAS</span>
-        <span class="version">v2.4</span>
-        <div id="active-role-badge" class="role-badge">Admin</div>
+        <div id="active-role-badge" class="role-badge super">Super Admin</div>
       </div>
       <nav class="nav">
         <a href="dashboard.html" class="nav-item active">
@@ -3589,7 +3605,7 @@
           <div style="margin-bottom:10px">
             <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Target
               Barangay</div>
-            <div id="conf-b-zones" style="font-size:12px;color:var(--text-primary);line-height:1.5"></div>
+            <div id="conf-b-zone" style="font-size:13px;font-weight:500;color:var(--text-primary);line-height:1.5"></div>
           </div>
           <div>
             <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Message</div>
@@ -4155,7 +4171,52 @@
   ════════════════════════════════ -->
   <script>
     /* ── MULTI-SELECT BARANGAY DATA ── */
-    const BM_BARANGAYS = [];
+    const BM_PASIG_BARANGAYS = {
+      'Bagong Ilog': 18200,
+      'Bagong Katipunan': 1200,
+      'Bambang': 22000,
+      'Buting': 11000,
+      'Caniogan': 31000,
+      'Dela Paz': 19000,
+      'Kalawaan': 28000,
+      'Kapasigan': 6700,
+      'Kapitolyo': 14300,
+      'Malinao': 7000,
+      'Manggahan': 94000,
+      'Maybunga': 45200,
+      'Oranbo': 4000,
+      'Palatiw': 22000,
+      'Pinagbuhatan': 151000,
+      'Pineda': 18000,
+      'Rosario': 68000,
+      'Sagad': 8000,
+      'San Antonio': 15000,
+      'San Joaquin': 15600,
+      'San Jose': 2500,
+      'San Miguel': 35000,
+      'San Nicolas': 3000,
+      'Santa Cruz': 5000,
+      'Santa Lucia': 48000,
+      'Santa Rosa': 2000,
+      'Santolan': 52100,
+      'Santo Tomas': 42000,
+      'Sumilang': 6000,
+      'Ugong': 28500
+    };
+
+    const bmStoredZones = (() => {
+      try {
+        return JSON.parse(localStorage.getItem('ligtas_zones') || '{}');
+      } catch (e) {
+        return {};
+      }
+    })();
+
+    const BM_BARANGAYS = Object.entries({ ...BM_PASIG_BARANGAYS, ...bmStoredZones })
+      .map(([name, pop]) => ({ name, pop: Number(pop) || 0 }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    const bmTotalPopulation = () => BM_BARANGAYS.reduce((sum, b) => sum + b.pop, 0);
 
 
     const bmSelected = new Set();
@@ -4164,9 +4225,10 @@
     function bmBuildList(filter) {
       filter = (filter || '').toLowerCase();
       const list = document.getElementById('bm-ms-list');
+      if (!list) return;
       const allRow = list.querySelector('.ms-opt-all');
       list.innerHTML = '';
-      list.appendChild(allRow);
+      if (allRow) list.appendChild(allRow);
 
       BM_BARANGAYS
         .filter(b => b.name.toLowerCase().includes(filter))
@@ -4174,13 +4236,15 @@
           const lbl = document.createElement('label');
           lbl.className = 'ms-opt' + (bmSelected.has(b.name) ? ' checked' : '');
           lbl.innerHTML = `<input type="checkbox" ${bmSelected.has(b.name) ? 'checked' : ''}
-            onchange="bmToggleOne('${b.name}', this.checked)" onclick="event.stopPropagation()"> ${b.name}`;
+            onchange='bmToggleOne(${JSON.stringify(b.name)}, this.checked)' onclick="event.stopPropagation()"> ${escapeHTML(b.name)}`;
           list.appendChild(lbl);
         });
 
       const allCb = document.getElementById('bm-ms-all-cb');
-      allCb.checked = bmSelected.size === BM_BARANGAYS.length;
-      allCb.indeterminate = bmSelected.size > 0 && bmSelected.size < BM_BARANGAYS.length;
+      if (allCb) {
+        allCb.checked = BM_BARANGAYS.length > 0 && bmSelected.size === BM_BARANGAYS.length;
+        allCb.indeterminate = bmSelected.size > 0 && bmSelected.size < BM_BARANGAYS.length;
+      }
     }
 
     function bmToggleOne(name, checked) {
@@ -4214,6 +4278,7 @@
       const pills = document.getElementById('bm-ms-pills');
       const reach = document.getElementById('bm-ms-reach');
       const reachVal = document.getElementById('bm-ms-reach-val');
+      if (!lbl || !count || !pills || !reach || !reachVal) return;
 
       count.textContent = bmSelected.size + ' selected';
 
@@ -4225,11 +4290,11 @@
         lbl.textContent = 'All barangay selected';
         pills.innerHTML = '<span class="ms-pill">City-Wide <button class="ms-pill-x" onclick="bmClearAll()">&times;</button></span>';
         reach.style.display = 'block';
-        reachVal.textContent = '811,800 residents';
+        reachVal.textContent = bmTotalPopulation().toLocaleString() + ' residents';
       } else {
         lbl.textContent = bmSelected.size + ' barangay selected';
         pills.innerHTML = [...bmSelected].map(n =>
-          `<span class="ms-pill">${n} <button class="ms-pill-x" onclick="bmToggleOne('${n}',false)">&times;</button></span>`
+          `<span class="ms-pill">${escapeHTML(n)} <button class="ms-pill-x" onclick='bmToggleOne(${JSON.stringify(n)}, false)'>&times;</button></span>`
         ).join('');
         const total = [...bmSelected].reduce((s, n) => {
           const b = BM_BARANGAYS.find(x => x.name === n);
@@ -4260,7 +4325,7 @@
           : [...bmSelected].join(', ');
 
       const totalPop = bmSelected.size === BM_BARANGAYS.length
-        ? 811800
+        ? bmTotalPopulation()
         : [...bmSelected].reduce((s, n) => {
           const b = BM_BARANGAYS.find(x => x.name === n);
           return s + (b ? b.pop : 0);
@@ -4271,13 +4336,59 @@
         return;
       }
 
+      const modal = document.getElementById('confirm-broadcast-modal');
+      if (modal) {
+        modal.dataset.recipients = String(totalPop);
+        modal.dataset.zones = JSON.stringify(
+          bmSelected.size === BM_BARANGAYS.length ? BM_BARANGAYS.map(b => b.name) : [...bmSelected]
+        );
+      }
+
       document.getElementById('conf-b-count').textContent =
         '⚠️ This will send to ' + totalPop.toLocaleString() + ' recipients';
       document.getElementById('conf-b-level').textContent = level || '—';
-      document.getElementById('conf-b-zones').textContent = zoneLabel;
+      document.getElementById('conf-b-zone').textContent = zoneLabel;
       document.getElementById('conf-b-msg').textContent = msg || '(No message entered)';
 
       openModal('confirm-broadcast-modal');
+    }
+
+    function confirmBroadcastSend() {
+      const modal = document.getElementById('confirm-broadcast-modal');
+      const level = document.getElementById('conf-b-level')?.textContent.trim() || 'Weather Alert';
+      const zone = document.getElementById('conf-b-zone')?.textContent.trim() || 'All Barangays';
+      const message = document.getElementById('conf-b-msg')?.textContent.trim() || '(No message entered)';
+      const recipients = Number(modal?.dataset.recipients || 0);
+
+      let zones = [];
+      try {
+        zones = JSON.parse(modal?.dataset.zones || '[]');
+      } catch (e) {
+        zones = [];
+      }
+
+      const broadcasts = JSON.parse(localStorage.getItem('ligtas_broadcasts') || '[]');
+      broadcasts.unshift({
+        id: 'BCAST-' + Date.now(),
+        timestamp: new Date().toLocaleString('en-PH'),
+        level,
+        zone,
+        zones,
+        channels: ['SMS Blast', 'App Push Notif'],
+        recipients,
+        successRate: 98.5,
+        status: 'Delivered',
+        message
+      });
+      localStorage.setItem('ligtas_broadcasts', JSON.stringify(broadcasts.slice(0, 50)));
+
+      if (typeof logAction === 'function') {
+        logAction('Broadcast', level, message.slice(0, 60));
+      }
+
+      closeModal('confirm-broadcast-modal');
+      closeModal('broadcast-modal');
+      showToast('Broadcast sent successfully', 'success');
     }
 
     /* Close dropdown when clicking outside */
@@ -4849,7 +4960,7 @@
 
     (function applyRole() {
       const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = 'Admin';
+      if (badge) badge.textContent = 'Super Admin';
       const nameEl = document.querySelector('.admin-name');
       if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
     })();

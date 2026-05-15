@@ -522,6 +522,69 @@ const DEFAULT_AUDIT = [
     }
 ];
 
+const DEFAULT_BROADCASTS = [
+    {
+        id: 'BCAST-2026-001',
+        timestamp: '2026-05-15, 08:35 AM',
+        level: 'Red Alert',
+        zone: 'Manggahan',
+        channels: ['SMS Blast', 'App Push Notif', 'Barangay PA', 'Facebook'],
+        recipients: 94000,
+        successRate: 98.7,
+        incidentId: 'INC-2026-001',
+        status: 'Delivered',
+        message: 'Emergency advisory: Fire response is ongoing near Amang Rodriguez Ave, Brgy. Manggahan. Avoid the industrial perimeter and follow BFP/PNP traffic rerouting.'
+    },
+    {
+        id: 'BCAST-2026-002',
+        timestamp: '2026-05-15, 09:52 AM',
+        level: 'Orange Alert',
+        zone: 'Pinagbuhatan',
+        channels: ['SMS Blast', 'App Push Notif', 'Viber Community'],
+        recipients: 151000,
+        successRate: 97.9,
+        incidentId: 'INC-2026-002',
+        status: 'Delivered',
+        message: 'Flood advisory for Brgy. Pinagbuhatan: Rescue and pumping units have been dispatched to Urbano Velasco Ave. Avoid flooded streets and prepare essentials.'
+    },
+    {
+        id: 'BCAST-2026-003',
+        timestamp: '2026-05-15, 10:12 AM',
+        level: 'Yellow Alert',
+        zone: 'Rosario',
+        channels: ['App Push Notif', 'Radio Broadcast'],
+        recipients: 68000,
+        successRate: 99.1,
+        incidentId: 'INC-2026-003',
+        status: 'Delivered',
+        message: 'Traffic advisory: Multi-vehicle collision near Rosario Bridge. Use alternate routes while responders and towing services clear Ortigas Ave Extension.'
+    },
+    {
+        id: 'BCAST-2026-004',
+        timestamp: '2026-05-15, 11:36 AM',
+        level: 'Red Alert',
+        zone: 'Kapasigan',
+        channels: ['SMS Blast', 'App Push Notif', 'Barangay PA'],
+        recipients: 6700,
+        successRate: 98.4,
+        incidentId: 'INC-2026-010',
+        status: 'Delivered',
+        message: 'Emergency advisory for Brgy. Kapasigan: Possible gas leak under HAZMAT response. Stay clear of the affected block and assist evacuation of vulnerable residents.'
+    },
+    {
+        id: 'BCAST-2026-005',
+        timestamp: '2026-05-15, 02:08 PM',
+        level: 'Blue',
+        zone: 'Bagong Ilog',
+        channels: ['Facebook', 'Viber Community', 'App Push Notif'],
+        recipients: 18200,
+        successRate: 99.3,
+        incidentId: 'INC-2026-013',
+        status: 'Delivered',
+        message: 'Public assistance request: Missing elderly male last seen in Sitio Pag-asa, Brgy. Bagong Ilog. Report sightings to the barangay desk or Pasig Command Center.'
+    }
+];
+
 
 const DEFAULT_INVENTORY = {
     'Food Packs': 12500,
@@ -770,12 +833,12 @@ function repairIncidentStorage() {
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v16';
+    const CURRENT_VERSION = '2026.05.15.v17';
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
     if (savedVersion !== CURRENT_VERSION) {
         // Clear specific dummy data keys to allow fresh seeding
-        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs', 'ligtas_sos_queue', 'ligtas_relief_requests', 'ligtas_volunteers'];
+        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs', 'ligtas_sos_queue', 'ligtas_relief_requests', 'ligtas_volunteers', 'ligtas_broadcasts'];
         keysToReset.forEach(k => localStorage.removeItem(k));
         localStorage.setItem('ligtas_data_version', CURRENT_VERSION);
         console.log("LIGTAS: Dummy data reset to latest version (" + CURRENT_VERSION + ")");
@@ -827,6 +890,7 @@ const applyLigtasConfig = () => {
     seedStorage('ligtas_volunteers', DEFAULT_VOLUNTEERS, 'array');
     seedStorage('ligtas_incidents', DEFAULT_INCIDENTS, 'array');
     repairIncidentStorage();
+    seedStorage('ligtas_broadcasts', DEFAULT_BROADCASTS, 'array');
     seedStorage('ligtas_audit', DEFAULT_AUDIT, 'array');
     seedStorage('ligtas_audit_logs', DEFAULT_AUDIT, 'array');
     seedStorage('ligtas_user_session', DEFAULT_USER_SESSION, 'object');
@@ -899,7 +963,7 @@ const applyLigtasConfig = () => {
             locSelects.forEach(sel => {
                 const currentVal = sel.value;
                 const firstOpt = sel.options[0];
-                const hasPrompt = firstOpt && (firstOpt.value === "" || firstOpt.text.includes("Select"));
+                const hasPrompt = firstOpt && (firstOpt.value === "" || firstOpt.value === "all" || firstOpt.text.includes("Select") || firstOpt.text.includes("All "));
                 sel.innerHTML = '';
                 if (hasPrompt) sel.appendChild(firstOpt);
 

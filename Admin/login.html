@@ -412,7 +412,7 @@ input:checked + .slider:before { transform: translateX(16px); }
 
   <div class="sys-status">
     <div class="pulse"></div>
-    <span>Secure Node Active v2.4</span>
+    <span>Secure Node Active</span>
   </div>
 
   <script>
@@ -439,13 +439,13 @@ input:checked + .slider:before { transform: translateX(16px); }
         const text = document.getElementById('btn-text');
         const icon = document.getElementById('btn-icon');
         const spinner = document.getElementById('spinner');
-        // Always store Admin role
-        const role = 'Admin';
+        // Always store Super Admin role
+        const role = 'super_admin';
         const userInput = document.querySelector('.input-text[autocomplete="username"]').value;
         const userName = 'Cmdr. Reyes';
 
         // Store role, user, and session start
-        localStorage.setItem('ligtas_role', 'Admin');
+        localStorage.setItem('ligtas_role', role);
         localStorage.setItem('ligtas_user', 'Cmdr. Reyes');
         sessionStorage.setItem(
           'ligtas_session_start', 

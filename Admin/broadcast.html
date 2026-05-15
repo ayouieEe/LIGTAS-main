@@ -217,16 +217,21 @@
       letter-spacing: 0.05em;
       color: var(--text-muted)
     }
-
     .role-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
-      padding: 2px 6px;
-      border-radius: 4px;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      white-space: nowrap;
       background: rgba(59, 130, 246, 0.1);
       color: var(--nominal);
-      margin-left: 4px
+      margin-left: 8px;
     }
 
     /* TOPBAR */
@@ -697,7 +702,7 @@
     }
 
     .broadcast-log {
-      padding: 0 20px
+      padding: 0 20px 20px
     }
 
     .log-item {
@@ -705,6 +710,23 @@
       gap: 16px;
       padding: 12px 0;
       border-bottom: 1px solid var(--border)
+    }
+
+    .log-item.broadcast-entry {
+      align-items: flex-start
+    }
+
+    .log-content {
+      flex: 1;
+      min-width: 0
+    }
+
+    .log-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px
     }
 
     .log-item:last-child {
@@ -722,7 +744,8 @@
     .log-msg {
       font-size: 13px;
       color: var(--text-primary);
-      line-height: 1.5
+      line-height: 1.5;
+      overflow-wrap: anywhere
     }
 
     .log-tag {
@@ -796,6 +819,27 @@
       flex-direction: column;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
       animation: modal-in .2s cubic-bezier(0.4, 0, 0.2, 1)
+    }
+
+    #confirm-broadcast-modal .modal {
+      width: 560px;
+      max-width: min(94vw, 560px)
+    }
+
+    #confirm-broadcast-modal .modal-body {
+      max-height: 62vh
+    }
+
+    #confirm-broadcast-modal .modal-foot {
+      flex-wrap: wrap
+    }
+
+    #conf-b-level,
+    #conf-b-msg,
+    #conf-b-zone,
+    #conf-b-count {
+      overflow-wrap: anywhere;
+      word-break: break-word
     }
 
     .modal.modal-sm {
@@ -1252,6 +1296,304 @@
       text-overflow: ellipsis;
       max-width: 180px;
     }
+
+    /* MULTI-SELECT BARANGAY PICKER */
+    .ms-wrap {
+      position: relative
+    }
+
+    .ms-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text2);
+      font-size: 13.5px;
+      font-family: inherit;
+      cursor: pointer;
+      min-height: 36px;
+      transition: border .15s;
+      width: 100%;
+      text-align: left;
+    }
+
+    .ms-trigger:hover {
+      border-color: var(--text3)
+    }
+
+    .ms-trigger.open {
+      border-color: var(--primary)
+    }
+
+    .ms-trigger-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .ms-chevron {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      transition: transform .2s;
+      color: var(--text3)
+    }
+
+    .ms-trigger.open .ms-chevron {
+      transform: rotate(180deg)
+    }
+
+    .ms-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      z-index: 300;
+      flex-direction: column;
+      max-height: 240px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+    }
+
+    .ms-dropdown.open {
+      display: flex
+    }
+
+    .ms-search-box {
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ms-search-box input {
+      width: 100%;
+      padding: 6px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .ms-search-box input:focus {
+      border-color: var(--primary)
+    }
+
+    .ms-search-box input::placeholder {
+      color: var(--text3)
+    }
+
+    .ms-list {
+      overflow-y: auto;
+      flex: 1
+    }
+
+    .ms-list::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .ms-list::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 3px
+    }
+
+    .ms-opt-all,
+    .ms-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: 0;
+      margin: 0;
+    }
+
+    .ms-opt-all {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ms-opt {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .ms-opt-all:hover,
+    .ms-opt:hover {
+      background: var(--bg3)
+    }
+
+    .ms-opt.checked {
+      color: var(--primary)
+    }
+
+    .ms-opt input[type=checkbox],
+    .ms-opt-all input[type=checkbox] {
+      accent-color: var(--primary);
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .ms-footer {
+      padding: 7px 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .ms-footer-count {
+      font-size: 11px;
+      color: var(--text3)
+    }
+
+    .ms-footer-clear {
+      font-size: 11px;
+      color: var(--nominal);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    .ms-footer-clear:hover {
+      text-decoration: underline
+    }
+
+    .ms-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px
+    }
+
+    .ms-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px 2px 9px;
+      background: rgba(59, 130, 246, .15);
+      color: var(--nominal);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .ms-pill-x {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--nominal);
+      padding: 0;
+      font-size: 14px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      opacity: .7;
+    }
+
+    .ms-pill-x:hover {
+      opacity: 1
+    }
+
+    .ms-reach {
+      margin-top: 8px;
+      font-size: 11.5px;
+      color: var(--text3);
+    }
+
+    .ms-reach span {
+      color: var(--text2);
+      font-weight: 500
+    }
+
+    /* TOAST */
+    #toast-wrap {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      width: min(360px, calc(100vw - 32px));
+      pointer-events: none;
+    }
+
+    .toast {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #1A1D27;
+      border: 1px solid #2E3247;
+      border-left: 3px solid var(--nominal);
+      border-radius: 8px;
+      color: #F9FAFB;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
+      animation: toast-in .25s ease forwards;
+      pointer-events: auto;
+      overflow-wrap: anywhere;
+    }
+
+    .toast span:last-child {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .toast.success {
+      border-left-color: var(--success);
+      color: var(--success);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .toast.error {
+      border-left-color: var(--critical);
+      color: var(--critical);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .toast.warning {
+      border-left-color: var(--warning);
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
   </style>
   <link rel="stylesheet" href="css/modern-ui.css">
 </head>
@@ -1267,8 +1609,7 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
         <span>LIGTAS</span>
-        <span class="version">v2.4</span>
-        <div id="active-role-badge" class="role-badge">Admin</div>
+        <div id="active-role-badge" class="role-badge super">Super Admin</div>
       </div>
       <nav class="nav">
         <a href="dashboard.html" class="nav-item">
@@ -1397,22 +1738,22 @@
           <div class="metrics-row">
             <div class="m-card c-blue">
               <div class="m-card-label">SMS Recipients Reach</div>
-              <div class="m-card-value blue">14,203</div>
+              <div class="m-card-value blue" id="broadcast-sms-reach">14,203</div>
               <div class="m-card-sub">Current active database</div>
             </div>
             <div class="m-card c-teal">
               <div class="m-card-label">App Users Online</div>
-              <div class="m-card-value green">8,502</div>
+              <div class="m-card-value green" id="broadcast-app-online">8,502</div>
               <div class="m-card-sub">Active last 24h</div>
             </div>
             <div class="m-card c-yellow">
               <div class="m-card-label">Broadcasts Today</div>
-              <div class="m-card-value orange">7</div>
+              <div class="m-card-value orange" id="broadcasts-today">0</div>
               <div class="m-card-sub">All channels</div>
             </div>
             <div class="m-card c-green">
               <div class="m-card-label">Success Rate</div>
-              <div class="m-card-value green">98.5%</div>
+              <div class="m-card-value green" id="broadcast-success-rate">0%</div>
               <div class="m-card-sub">Delivery confirmation</div>
             </div>
           </div>
@@ -1433,19 +1774,34 @@
                 </div>
                 <div class="form-group">
                   <label>Target Barangay</label>
-                  <select class="input-select" id="broadcast-barangay" onchange="updateBroadcastRecipients()">
-                    <option value="all">All Barangays (Pasig City)</option>
-                    <option value="Caniogan">Caniogan</option>
-                    <option value="Kapitolyo">Kapitolyo</option>
-                    <option value="Manggahan">Manggahan</option>
-                    <option value="Pinagbuhatan">Pinagbuhatan</option>
-                    <option value="Rosario">Rosario</option>
-                    <option value="San Joaquin">San Joaquin</option>
-                    <option value="Santolan">Santolan</option>
-                    <option value="Ugong">Ugong</option>
-                  </select>
-                  <div class="form-hint" id="recipient-count-hint" style="color:var(--nominal)">Estimated reach: 14,203
-                    residents</div>
+                  <div class="ms-wrap" id="broadcast-ms-wrap">
+                    <button type="button" class="ms-trigger" id="broadcast-ms-trigger" onclick="broadcastToggleDropdown()">
+                      <span class="ms-trigger-text" id="broadcast-ms-label">Select barangay...</span>
+                      <svg class="ms-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
+                    <div class="ms-dropdown" id="broadcast-ms-dropdown">
+                      <div class="ms-search-box">
+                        <input type="text" id="broadcast-ms-search" placeholder="Search barangay..."
+                          oninput="broadcastFilterList(this.value)" onclick="event.stopPropagation()">
+                      </div>
+                      <div class="ms-list" id="broadcast-ms-list">
+                        <label class="ms-opt-all" onclick="broadcastToggleAll(event)">
+                          <input type="checkbox" id="broadcast-ms-all-cb" onclick="event.stopPropagation()"> All Barangay (City-Wide)
+                        </label>
+                      </div>
+                      <div class="ms-footer">
+                        <span class="ms-footer-count" id="broadcast-ms-count">0 selected</span>
+                        <button class="ms-footer-clear" onclick="broadcastClearAll()">Clear all</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ms-pills" id="broadcast-ms-pills"></div>
+                  <div class="ms-reach" id="recipient-count-hint" style="display:none">
+                    Estimated recipients: <span id="broadcast-ms-reach-val"></span>
+                  </div>
                 </div>
                 <div class="form-section">Channels</div>
                 <div class="channel-grid">
@@ -1453,7 +1809,7 @@
                     <div class="channel-icon">📱</div>
                     <div>
                       <div class="channel-name">SMS Blast</div>
-                      <div class="channel-sub">14,203 recipients</div>
+                      <div class="channel-sub" id="sms-channel-reach">Select target barangays</div>
                     </div>
                   </div>
                   <div class="channel-card" onclick="this.classList.toggle('selected')">
@@ -1467,7 +1823,7 @@
                     <div class="channel-icon">🔔</div>
                     <div>
                       <div class="channel-name">App Push Notif</div>
-                      <div class="channel-sub">8,502 app users</div>
+                      <div class="channel-sub" id="app-channel-reach">Select target barangays</div>
                     </div>
                   </div>
                   <div class="channel-card" onclick="this.classList.toggle('selected')">
@@ -1516,9 +1872,8 @@
 
                 </div>
                 <div style="display:flex;gap:8px;margin-top:12px">
-                  <button class="btn btn-ghost" onclick="showToast('Draft saved','info')">Save Draft</button>
                   <button class="btn btn-primary" style="flex:1;justify-content:center"
-                    onclick="openBroadcastConfirm(document.querySelector('#page-broadcast .input-select').value, document.getElementById('broadcast-barangay').value, document.querySelector('.input-textarea').value)">
+                    onclick="confirmMainBroadcast()">
                     Send Broadcast Advisory
                   </button>
                 </div>
@@ -1528,7 +1883,7 @@
               <div class="panel-head">
                 <h2>Broadcast Log</h2><span class="badge-pill-muted">Last 24h</span>
               </div>
-              <div class="broadcast-log mt-3">
+              <div class="broadcast-log mt-3" id="broadcast-log">
                 <div id="no-broadcast-logs" style="padding:32px; text-align:center; color:var(--text3); font-size:13px;">
                   No broadcast history in last 24h
                 </div>
@@ -2140,6 +2495,11 @@
           </div>
           <div id="conf-b-level" style="font-size:13px;font-weight:500;color:var(--text-primary)"></div>
         </div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Target barangay
+          </div>
+          <div id="conf-b-zone" style="font-size:13px;font-weight:500;color:var(--text-primary)"></div>
+        </div>
         <div>
           <div style="font-size:10px;color:var(--text-micro);text-transform:uppercase;margin-bottom:6px">Message</div>
           <div id="conf-b-msg"
@@ -2230,7 +2590,7 @@
 
     (function applyRole() {
       const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = 'Admin';
+      if (badge) badge.textContent = 'Super Admin';
       const nameEl = document.querySelector('.admin-name');
       if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
     })();
@@ -2297,19 +2657,16 @@
       const t = document.createElement('div');
       const icons = { success: '✓', info: 'ℹ', error: '✕', warning: '⚠' };
       t.className = `toast ${type}`;
-      t.style.cssText = "display:flex;align-items:center;gap:12px;padding:12px 18px;background:#1A1D27;border:1px solid #2E3247;border-radius:8px;color:#F9FAFB;font-size:13px;font-weight:500;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);margin-top:10px;animation:toast-in .3s ease forwards;cursor:pointer";
+      t.style.cursor = 'pointer';
 
       if (type === 'success') {
-        t.style.borderColor = "#22C55E";
-        t.style.background = "rgba(34, 197, 94, 0.1)";
-        t.style.color = "#22C55E";
+        t.style.borderColor = "rgba(34, 197, 94, 0.35)";
       } else if (type === 'error') {
-        t.style.borderColor = "#EF4444";
-        t.style.background = "rgba(239, 68, 68, 0.1)";
-        t.style.color = "#EF4444";
+        t.style.borderColor = "rgba(239, 68, 68, 0.35)";
       }
 
-      t.innerHTML = `<span style="font-size:16px">${icons[type] || 'ℹ'}</span><span>${msg}</span>`;
+      t.innerHTML = `<span style="font-size:16px;line-height:1.2">${icons[type] || 'ℹ'}</span><span>${escapeHTML(msg)}</span>`;
+      t.onclick = () => t.remove();
       wrap.appendChild(t);
       setTimeout(() => {
         t.style.opacity = '0';
@@ -2318,32 +2675,286 @@
         setTimeout(() => t.remove(), 300);
       }, 4000);
     }
-    const ZONE_RECIPIENTS = {};
+    function buildZoneRecipients() {
+      try {
+        const zones = JSON.parse(localStorage.getItem('ligtas_zones') || '{}');
+        const total = Object.values(zones).reduce((sum, value) => sum + (Number(value) || 0), 0);
+        return { all: total, 'All Zones': total, 'All Barangays (Pasig City)': total, ...zones };
+      } catch (e) {
+        return { all: 0, 'All Zones': 0 };
+      }
+    }
+    let ZONE_RECIPIENTS = buildZoneRecipients();
+    let broadcastBarangays = [];
+    const broadcastSelected = new Set();
+    let broadcastDropdownOpen = false;
+
+    function refreshBroadcastBarangays() {
+      const zones = buildZoneRecipients();
+      ZONE_RECIPIENTS = zones;
+      broadcastBarangays = Object.entries(zones)
+        .filter(([name]) => !['all', 'All Zones', 'All Barangays (Pasig City)'].includes(name))
+        .map(([name, pop]) => ({ name, pop: Number(pop) || 0 }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function getBroadcastReach() {
+      if (broadcastSelected.size === broadcastBarangays.length) {
+        return broadcastBarangays.reduce((sum, item) => sum + item.pop, 0);
+      }
+
+      return [...broadcastSelected].reduce((sum, name) => {
+        const barangay = broadcastBarangays.find(item => item.name === name);
+        return sum + (barangay ? barangay.pop : 0);
+      }, 0);
+    }
+
+    function getBroadcastZoneLabel() {
+      if (broadcastSelected.size === 0) return '';
+      if (broadcastSelected.size === broadcastBarangays.length) return 'All Barangay (City-Wide)';
+      return [...broadcastSelected].join(', ');
+    }
+
+    function buildBroadcastBarangayList(filter = '') {
+      const list = document.getElementById('broadcast-ms-list');
+      if (!list) return;
+
+      const query = filter.toLowerCase();
+      const allRow = list.querySelector('.ms-opt-all');
+      list.innerHTML = '';
+      if (allRow) list.appendChild(allRow);
+
+      broadcastBarangays
+        .filter(item => item.name.toLowerCase().includes(query))
+        .forEach(item => {
+          const label = document.createElement('label');
+          label.className = 'ms-opt' + (broadcastSelected.has(item.name) ? ' checked' : '');
+          label.innerHTML = `<input type="checkbox" ${broadcastSelected.has(item.name) ? 'checked' : ''}
+            onchange='broadcastToggleOne(${JSON.stringify(item.name)}, this.checked)' onclick="event.stopPropagation()"> ${escapeHTML(item.name)}`;
+          list.appendChild(label);
+        });
+
+      const allCb = document.getElementById('broadcast-ms-all-cb');
+      if (allCb) {
+        allCb.checked = broadcastBarangays.length > 0 && broadcastSelected.size === broadcastBarangays.length;
+        allCb.indeterminate = broadcastSelected.size > 0 && broadcastSelected.size < broadcastBarangays.length;
+      }
+    }
+
+    function broadcastToggleOne(name, checked) {
+      checked ? broadcastSelected.add(name) : broadcastSelected.delete(name);
+      buildBroadcastBarangayList(document.getElementById('broadcast-ms-search')?.value || '');
+      updateBroadcastRecipients();
+    }
+
+    function broadcastToggleAll(e) {
+      if (e) e.stopPropagation();
+      if (broadcastSelected.size === broadcastBarangays.length) {
+        broadcastSelected.clear();
+      } else {
+        broadcastBarangays.forEach(item => broadcastSelected.add(item.name));
+      }
+      buildBroadcastBarangayList(document.getElementById('broadcast-ms-search')?.value || '');
+      updateBroadcastRecipients();
+    }
+
+    function broadcastClearAll() {
+      broadcastSelected.clear();
+      buildBroadcastBarangayList(document.getElementById('broadcast-ms-search')?.value || '');
+      updateBroadcastRecipients();
+    }
+
+    function broadcastFilterList(query) {
+      buildBroadcastBarangayList(query);
+    }
+
+    function broadcastToggleDropdown() {
+      broadcastDropdownOpen = !broadcastDropdownOpen;
+      document.getElementById('broadcast-ms-dropdown')?.classList.toggle('open', broadcastDropdownOpen);
+      document.getElementById('broadcast-ms-trigger')?.classList.toggle('open', broadcastDropdownOpen);
+      if (broadcastDropdownOpen) {
+        setTimeout(() => document.getElementById('broadcast-ms-search')?.focus(), 60);
+      }
+    }
+
+    function getBroadcasts() {
+      try {
+        return JSON.parse(localStorage.getItem('ligtas_broadcasts') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveBroadcasts(records) {
+      localStorage.setItem('ligtas_broadcasts', JSON.stringify(records));
+    }
+
+    function getSelectedChannels(scope = document) {
+      return [...scope.querySelectorAll('.channel-card.selected .channel-name')]
+        .map(el => el.textContent.trim())
+        .filter(Boolean);
+    }
+
+    function renderBroadcastLog() {
+      const logEl = document.getElementById('broadcast-log');
+      if (!logEl) return;
+
+      const broadcasts = getBroadcasts();
+      if (!broadcasts.length) {
+        logEl.innerHTML = '<div id="no-broadcast-logs" style="padding:32px; text-align:center; color:var(--text3); font-size:13px;">No broadcast history in last 24h</div>';
+        return;
+      }
+
+      logEl.innerHTML = broadcasts.slice(0, 10).map(item => {
+        const level = item.level || 'Blue';
+        const tone = level.includes('Red') ? 'red' : level.includes('Orange') ? 'orange' : 'blue';
+        const time = (item.timestamp || '').split(', ').slice(1).join(', ') || item.timestamp || '';
+        const channels = Array.isArray(item.channels) ? item.channels.join(', ') : (item.channels || 'Selected channels');
+        const recipients = Number(item.recipients || 0).toLocaleString();
+        return `
+          <div class="log-item broadcast-entry">
+            <div class="log-time">${escapeHTML(time)}</div>
+            <div class="log-content">
+              <div class="log-msg">${escapeHTML(item.message || 'Broadcast advisory sent.')}</div>
+              <div class="log-meta">
+                <span class="log-tag ${tone}">${escapeHTML(level)}</span>
+                <span class="badge-pill-muted">${escapeHTML(item.zone || 'All Barangays')}</span>
+                <span class="badge-pill-muted">${recipients} recipients</span>
+                <span class="badge-pill-muted">${escapeHTML(channels)}</span>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      const todayCount = broadcasts.filter(item => String(item.timestamp || '').startsWith('2026-05-15')).length;
+      const avgSuccess = broadcasts.reduce((sum, item) => sum + (Number(item.successRate) || 0), 0) / broadcasts.length;
+      const totalReach = ZONE_RECIPIENTS.all || broadcasts[0]?.recipients || 0;
+
+      const smsReach = document.getElementById('broadcast-sms-reach');
+      const appOnline = document.getElementById('broadcast-app-online');
+      const todayEl = document.getElementById('broadcasts-today');
+      const successEl = document.getElementById('broadcast-success-rate');
+      if (smsReach) smsReach.textContent = Number(totalReach).toLocaleString();
+      if (appOnline) appOnline.textContent = Math.round(Number(totalReach) * 0.21).toLocaleString();
+      if (todayEl) todayEl.textContent = todayCount || broadcasts.length;
+      if (successEl) successEl.textContent = `${avgSuccess.toFixed(1)}%`;
+    }
 
 
-    function openBroadcastConfirm(level, zone, message) {
-      const count = ZONE_RECIPIENTS[zone] || 0;
+    function openBroadcastConfirm(level, zone, message, recipientCount, selectedZones = []) {
+      const count = Number(recipientCount ?? ZONE_RECIPIENTS[zone] ?? 0);
+      const modal = document.getElementById('confirm-broadcast-modal');
+      if (modal) {
+        modal.dataset.recipients = String(count);
+        modal.dataset.zones = JSON.stringify(selectedZones);
+      }
       document.getElementById('conf-b-count').textContent = '⚠️ This will send to ' + count.toLocaleString() + ' recipients';
       document.getElementById('conf-b-level').textContent = level || '—';
+      const zoneEl = document.getElementById('conf-b-zone');
+      if (zoneEl) zoneEl.textContent = zone || 'All Barangays';
       document.getElementById('conf-b-msg').textContent = message || '(No message entered)';
       openModal('confirm-broadcast-modal');
     }
 
+    function confirmMainBroadcast() {
+      if (broadcastSelected.size === 0) {
+        showToast('Please select at least one barangay.', 'warning');
+        return;
+      }
+
+      const level = document.querySelector('#page-broadcast .input-select')?.value || 'Blue — Informational';
+      const message = document.querySelector('#page-broadcast .input-textarea')?.value || '';
+      const zoneLabel = getBroadcastZoneLabel();
+      const selectedZones = broadcastSelected.size === broadcastBarangays.length
+        ? broadcastBarangays.map(item => item.name)
+        : [...broadcastSelected];
+
+      openBroadcastConfirm(level, zoneLabel, message, getBroadcastReach(), selectedZones);
+    }
+
     function confirmBroadcastSend() {
+      const modal = document.getElementById('confirm-broadcast-modal');
+      const level = document.getElementById('conf-b-level').textContent.trim();
+      const zone = document.getElementById('conf-b-zone')?.textContent.trim() || 'All Barangays';
+      const message = document.getElementById('conf-b-msg').textContent.trim();
+      const recipients = Number(modal?.dataset.recipients || ZONE_RECIPIENTS[zone] || ZONE_RECIPIENTS.all || 0);
+      let zones = [];
+      try {
+        zones = JSON.parse(modal?.dataset.zones || '[]');
+      } catch (e) {
+        zones = [];
+      }
+      const selectedChannels = getSelectedChannels(document.getElementById('page-broadcast')) || [];
+      const broadcasts = getBroadcasts();
+      broadcasts.unshift({
+        id: 'BCAST-' + Date.now(),
+        timestamp: new Date().toLocaleString('en-PH'),
+        level,
+        zone,
+        zones,
+        channels: selectedChannels.length ? selectedChannels : ['SMS Blast'],
+        recipients,
+        successRate: 98.5,
+        status: 'Delivered',
+        message
+      });
+      saveBroadcasts(broadcasts.slice(0, 50));
       closeModal('confirm-broadcast-modal');
       closeModal('broadcast-modal');
       showToast('Broadcast sent successfully', 'success');
-      logAction('Broadcast', document.getElementById('conf-b-level').textContent, document.getElementById('conf-b-msg').textContent.slice(0, 60));
+      logAction('Broadcast', level, message.slice(0, 60));
+      renderBroadcastLog();
     }
 
     function updateBroadcastRecipients() {
-      const zone = document.getElementById('broadcast-barangay').value;
-      const count = ZONE_RECIPIENTS[zone] || 0;
-      document.getElementById('recipient-count-hint').textContent = 'Estimated reach: ' + count.toLocaleString() + ' residents';
+      const label = document.getElementById('broadcast-ms-label');
+      const count = document.getElementById('broadcast-ms-count');
+      const pills = document.getElementById('broadcast-ms-pills');
+      const reach = document.getElementById('recipient-count-hint');
+      const reachVal = document.getElementById('broadcast-ms-reach-val');
+      const smsReach = document.getElementById('sms-channel-reach');
+      const appReach = document.getElementById('app-channel-reach');
+      if (!label || !count || !pills || !reach || !reachVal) return;
+
+      count.textContent = broadcastSelected.size + ' selected';
+      const selectedReach = getBroadcastReach();
+      if (smsReach) {
+        smsReach.textContent = selectedReach > 0
+          ? selectedReach.toLocaleString() + ' recipients'
+          : 'Select target barangays';
+      }
+      if (appReach) {
+        appReach.textContent = selectedReach > 0
+          ? Math.round(selectedReach * 0.21).toLocaleString() + ' app users'
+          : 'Select target barangays';
+      }
+
+      if (broadcastSelected.size === 0) {
+        label.textContent = 'Select barangay...';
+        pills.innerHTML = '';
+        reach.style.display = 'none';
+      } else if (broadcastSelected.size === broadcastBarangays.length) {
+        label.textContent = 'All barangay selected';
+        pills.innerHTML = '<span class="ms-pill">City-Wide <button class="ms-pill-x" onclick="broadcastClearAll()">&times;</button></span>';
+        reach.style.display = 'block';
+        reachVal.textContent = selectedReach.toLocaleString() + ' residents';
+      } else {
+        label.textContent = broadcastSelected.size + ' barangay selected';
+        pills.innerHTML = [...broadcastSelected].map(name =>
+          `<span class="ms-pill">${escapeHTML(name)} <button class="ms-pill-x" onclick='broadcastToggleOne(${JSON.stringify(name)}, false)'>&times;</button></span>`
+        ).join('');
+        reach.style.display = 'block';
+        reachVal.textContent = selectedReach.toLocaleString() + ' residents';
+      }
     }
 
     function updateBroadcastTarget() {
-      updateBroadcastRecipients();
+      const zone = document.getElementById('broadcast-zone')?.value;
+      const count = ZONE_RECIPIENTS[zone] || ZONE_RECIPIENTS.all || 0;
+      const hint = document.getElementById('recipient-count-hint');
+      if (hint && !document.getElementById('broadcast-ms-wrap')) {
+        hint.textContent = 'Estimated reach: ' + count.toLocaleString() + ' residents';
+      }
     }
 
     function filterIncidents(q) {
@@ -2411,6 +3022,22 @@
     }
     setInterval(updateTime, 1000); updateTime();
     document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')) });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshBroadcastBarangays();
+      buildBroadcastBarangayList('');
+      updateBroadcastRecipients();
+      renderBroadcastLog();
+    });
+
+    document.addEventListener('click', e => {
+      const wrap = document.getElementById('broadcast-ms-wrap');
+      if (wrap && !wrap.contains(e.target) && broadcastDropdownOpen) {
+        broadcastDropdownOpen = false;
+        document.getElementById('broadcast-ms-dropdown')?.classList.remove('open');
+        document.getElementById('broadcast-ms-trigger')?.classList.remove('open');
+      }
+    });
 
 
 

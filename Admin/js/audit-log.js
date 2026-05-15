@@ -117,12 +117,13 @@ function getAuditLogs() {
 
 function logAction(action, target, details) {
   const logs = getAuditLogs();
+  const storedRole = localStorage.getItem('ligtas_role');
   const entry = {
     id: 'AUD-' + Date.now(),
     timestamp: new Date().toISOString(),
     action: action,
     user: localStorage.getItem('ligtas_user') || 'Cmdr. Reyes',
-    role: localStorage.getItem('ligtas_role') || 'Admin',
+    role: storedRole === 'super_admin' ? 'Super Admin' : (storedRole || 'Super Admin'),
     target: target,
     details: details,
     ip: '192.168.1.' + Math.floor(Math.random() * 254 + 1)
@@ -136,7 +137,7 @@ function logAction(action, target, details) {
 
 // ── Role Functions ───────────────────────────────────────
 function getCurrentRole() {
-  return 'Admin';
+  return 'Super Admin';
 }
 
 function logoutUser() {

@@ -2941,14 +2941,18 @@
       background: var(--border);
       flex: 1;
     }
-
     .role-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      padding: 2px 6px;
-      border-radius: 4px;
+      line-height: 1.2;
+      white-space: nowrap;
       background: rgba(59, 130, 246, 0.1);
       color: var(--nominal);
       margin-left: 8px;
@@ -3049,8 +3053,7 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
         <span>LIGTAS</span>
-        <span class="version">v2.4</span>
-        <div id="active-role-badge" class="role-badge">Admin</div>
+        <div id="active-role-badge" class="role-badge super">Super Admin</div>
       </div>
       <nav class="nav">
         <a href="dashboard.html" class="nav-item">
@@ -3170,7 +3173,7 @@
             <div class="admin-avatar">CR</div>
             <div>
               <div class="admin-name">Cmdr. Reyes</div>
-              <div class="admin-role">Admin</div>
+              <div class="admin-role">Super Admin</div>
             </div>
           </div>
         </div>
@@ -4846,7 +4849,7 @@
 
     (function applyRole() {
       const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = 'Admin';
+      if (badge) badge.textContent = 'Super Admin';
       const nameEl = document.querySelector('.admin-name');
       if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
     })();
