@@ -137,7 +137,14 @@ function updateInventorySummaryCards() {
 }
 
 function showAssemblyDetails(centerId) {
-    const centers = {};
+    const centers = {
+        sports: {
+            title: 'Pasig City Sports Complex',
+            address: 'Ortigas Avenue, Brgy. San Joaquin, Pasig City',
+            description: 'Designated evacuation assembly point with medical tents, water supply, and emergency support services.',
+            mapUrl: 'https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5760,121.0835&daddr=14.5826,121.0735&dirflg=d&output=embed'
+        }
+    };
 
     const center = centers[centerId] || centers.sports;
     const titleEl = document.getElementById('assembly-title');
@@ -147,7 +154,7 @@ function showAssemblyDetails(centerId) {
     if (titleEl) titleEl.textContent = center.title;
     if (addressEl) addressEl.textContent = center.address;
     if (descriptionEl) descriptionEl.textContent = center.description;
-    if (mapIframe) mapIframe.src = center.mapUrl;
+    if (mapIframe && center.mapUrl) mapIframe.src = center.mapUrl;
     showScreen('screen-assembly');
 }
 
