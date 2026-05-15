@@ -577,8 +577,7 @@ const DEFAULT_AIDED = [
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v11';
-
+    const CURRENT_VERSION = '2026.05.15.v12';
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
     if (savedVersion !== CURRENT_VERSION) {
@@ -590,9 +589,36 @@ const applyLigtasConfig = () => {
     }
 
     const DEFAULT_SOS = [
-        { name: 'Roberto Garcia', location: 'Manggahan Industrial Perimeter', coords: '14.5958° N, 121.0827° E', timestamp: Date.now() },
-        { name: 'Sgt. Mendoza', location: 'Pinagbuhatan Riverside', coords: '14.5583° N, 121.0917° E', timestamp: Date.now() - 300000 },
-        { name: 'Maria Santos', location: 'Rosario Covered Court', coords: '14.5833° N, 121.0833° E', timestamp: Date.now() - 600000 }
+        { 
+            name: 'Roberto Garcia', 
+            location: 'Manggahan Industrial Perimeter', 
+            coords: '14.5958° N, 121.0827° E', 
+            timestamp: Date.now(),
+            phone: '+63 917 123 4567',
+            bloodType: 'O+',
+            medical: 'Asthma',
+            emergencyContact: 'Maria Garcia (Wife) - +63 917 765 4321'
+        },
+        { 
+            name: 'Leo Santos', 
+            location: 'Manggahan Industrial Perimeter', 
+            coords: '14.5959° N, 121.0826° E', 
+            timestamp: Date.now() - 15000, 
+            phone: '+63 918 234 5678',
+            bloodType: 'A-',
+            medical: 'None',
+            emergencyContact: 'Elena Santos (Sister) - +63 918 876 5432'
+        },
+        { 
+            name: 'Sgt. Mendoza', 
+            location: 'Pinagbuhatan Riverside', 
+            coords: '14.5583° N, 121.0917° E', 
+            timestamp: Date.now() - 300000,
+            phone: '+63 919 345 6789',
+            bloodType: 'B+',
+            medical: 'Hypertension',
+            emergencyContact: 'Liza Mendoza (Daughter) - +63 919 987 6543'
+        }
     ];
 
     // Seed defaults if empty
