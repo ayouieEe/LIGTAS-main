@@ -247,7 +247,7 @@
             <!-- Login Button -->
             <button type="submit" id="loginBtn" class="btn-login resident">
                 <i data-lucide="log-in" class="w-4.5 h-4.5"></i>
-                <span id="loginBtnText">Login as Resident</span>
+                <span id="loginBtnText">Login</span>
             </button>
 
             <!-- Register link -->
@@ -325,7 +325,7 @@
         if (role === 'admin') {
             hero.classList.add('admin');
             btn.className = 'btn-login admin';
-            btnText.textContent = 'Login as Field Admin';
+            btnText.textContent = 'Login';
             badge.className = 'role-badge admin';
             badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse';
             badgeText.textContent = 'FIELD ADMIN';
@@ -339,7 +339,7 @@
         } else {
             hero.classList.remove('admin');
             btn.className = 'btn-login resident';
-            btnText.textContent = 'Login as Resident';
+            btnText.textContent = 'Login';
             badge.className = 'role-badge resident';
             badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-emergency animate-pulse';
             badgeText.textContent = 'RESIDENT';
