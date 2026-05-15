@@ -87,39 +87,286 @@ const getIncidents = () => JSON.parse(localStorage.getItem('ligtas_incidents') |
 const saveIncidents = (arr) => localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
 
 // MASTER DUMMY DATA
-const DEFAULT_ZONES = {};
+const DEFAULT_ZONES = {
+    'Bagong Ilog': 18200,
+    'Bagong Katipunan': 1200,
+    'Bambang': 22000,
+    'Buting': 11000,
+    'Caniogan': 31000,
+    'Dela Paz': 19000,
+    'Kalawaan': 28000,
+    'Kapasigan': 6700,
+    'Kapitolyo': 14300,
+    'Malinao': 7000,
+    'Manggahan': 94000,
+    'Maybunga': 45200,
+    'Oranbo': 4000,
+    'Palatiw': 22000,
+    'Pinagbuhatan': 151000,
+    'Pineda': 18000,
+    'Rosario': 68000,
+    'Sagad': 8000,
+    'San Antonio': 15000,
+    'San Joaquin': 15600,
+    'San Jose': 2500,
+    'San Miguel': 35000,
+    'San Nicolas': 3000,
+    'Santa Cruz': 5000,
+    'Santa Lucia': 48000,
+    'Santa Rosa': 2000,
+    'Santolan': 52100,
+    'Santo Tomas': 42000,
+    'Sumilang': 6000,
+    'Ugong': 28500
+};
 
 
-const DEFAULT_UNITS = [];
+const DEFAULT_UNITS = [
+    { name: 'PASIG-AMB-01 (Advanced Life Support)', type: 'Medical', status: 'Available' },
+    { name: 'PASIG-AMB-02 (Basic Life Support)', type: 'Medical', status: 'En Route' },
+    { name: 'PASIG-FIRE-01 (Pumper)', type: 'Fire', status: 'Available' },
+    { name: 'PASIG-RESCUE-01 (Heavy Rescue)', type: 'Rescue', status: 'Available' },
+    { name: 'PASIG-BOAT-01 (Swift Water)', type: 'Rescue', status: 'Available' }
+];
 
 
-const DEFAULT_CATEGORIES = [];
+const DEFAULT_CATEGORIES = [
+    { name: 'Structure Fire', group: 'Fire & Safety' },
+    { name: 'Electrical Hazard', group: 'Fire & Safety' },
+    { name: 'Gas Leak', group: 'Fire & Safety' },
+    { name: 'Medical Emergency', group: 'Medical & Health' },
+    { name: 'Road Accident', group: 'Medical & Health' },
+    { name: 'Flash Flood', group: 'Environmental' },
+    { name: 'Downed Tree', group: 'Environmental' },
+    { name: 'Civil Disturbance', group: 'Security' }
+];
 
 
-const DEFAULT_INCIDENTS = [];
+const DEFAULT_INCIDENTS = [
+    {
+        id: 'INC-2026-001',
+        title: 'Industrial Structure Fire — Brgy. Manggahan',
+        status: 'Ongoing',
+        severity: 'Critical',
+        location: 'Amang Rodriguez Ave, Manggahan',
+        barangay: 'Manggahan',
+        description: 'Large scale fire at a warehouse facility. Multiple units responding. Low visibility due to heavy smoke. Evacuation of immediate perimeter in progress.',
+        reporter: 'Sgt. Antonio Luna',
+        contact: '+63 917 123 4567',
+        source: 'Official Field Report',
+        type: 'Structure Fire',
+        createdAt: '2026-05-15, 08:12 AM',
+        needs: ['Fire Suppression', 'Medical Standby', 'Evacuation'],
+        reportingFor: 'Industrial Area',
+        media: ['https://images.unsplash.com/photo-1544033527-b192daee1f5b?q=80&w=400']
+    },
+    {
+        id: 'INC-2026-002',
+        title: 'Severe Street Flooding — Brgy. Pinagbuhatan',
+        status: 'Dispatched',
+        severity: 'Urgent',
+        location: 'Urbano Velasco Ave',
+        barangay: 'Pinagbuhatan',
+        description: 'Water level reached knee-high. Residents in low-lying areas requesting assistance with moving belongings. No casualties reported yet.',
+        reporter: 'Maria Clara',
+        contact: '+63 918 987 6543',
+        source: 'Mobile App',
+        type: 'Flash Flood',
+        createdAt: '2026-05-15, 09:45 AM',
+        needs: ['Rescue Boat', 'Pumping Unit'],
+        reportingFor: 'Residential Area'
+    },
+    {
+        id: 'INC-2026-003',
+        title: 'Multi-Vehicle Collision — Ortigas Ave Extension',
+        status: 'Acknowledged',
+        severity: 'High',
+        location: 'Near Rosario Bridge, Brgy. Rosario',
+        barangay: 'Rosario',
+        description: 'Three-car pileup causing major traffic congestion. At least 2 persons with minor injuries. PNP and Traffic Management on site.',
+        reporter: 'Ricardo Dalisay',
+        contact: '+63 920 555 1212',
+        source: 'Verified Field Report',
+        type: 'Road Accident',
+        createdAt: '2026-05-15, 10:05 AM',
+        needs: ['Ambulance', 'Towing Service'],
+        reportingFor: 'Public Road'
+    },
+    {
+        id: 'INC-2026-004',
+        title: 'Security: Civil Disturbance — Brgy. San Antonio',
+        status: 'Reported',
+        severity: 'High',
+        location: 'Emerald Ave, Ortigas Center',
+        barangay: 'San Antonio',
+        description: 'Unsanctioned protest gathering near financial buildings. Requesting police presence for crowd management and traffic rerouting.',
+        reporter: 'Admin Security',
+        contact: '+63 916 333 4444',
+        source: 'CCTV Monitoring',
+        type: 'Civil Disturbance',
+        createdAt: '2026-05-15, 10:30 AM',
+        needs: ['Police Assistance'],
+        reportingFor: 'Business District'
+    },
+    {
+        id: 'INC-2026-005',
+        title: 'Logistics: Center Overflow — Brgy. Santolan',
+        status: 'Reported',
+        severity: 'Medium',
+        location: 'Santolan Elementary School',
+        barangay: 'Santolan',
+        description: 'Evacuation center reached 90% capacity. Requesting immediate transfer plan for incoming residents from low-lying zones.',
+        reporter: 'Officer Benitez',
+        contact: '+63 908 777 8888',
+        source: 'Center Manager Report',
+        type: 'Center Overflow',
+        createdAt: '2026-05-15, 10:45 AM',
+        needs: ['Transportation', 'Shelter Assessment'],
+        reportingFor: 'Evacuation Center'
+    },
+    {
+        id: 'INC-2026-006',
+        title: 'Medical: Respiratory Distress — Brgy. Kapitolyo',
+        status: 'Resolved',
+        severity: 'Medium',
+        location: '12 Pioneer St, Kapitolyo',
+        barangay: 'Kapitolyo',
+        description: '72-year-old male experiencing difficulty breathing. PASIG-AMB-01 responded. Patient stabilized and transported to Medical City.',
+        reporter: 'Elena Gomez',
+        contact: '+63 915 444 3322',
+        source: 'Mobile App',
+        type: 'Medical Emergency',
+        createdAt: '2026-05-15, 07:30 AM',
+        needs: ['Oxygen Support'],
+        reportingFor: 'Private Residence'
+    }
+];
 
 
-const DEFAULT_AUDIT = [];
+const DEFAULT_AUDIT = [
+    {
+        id: 'LOG-004',
+        timestamp: '2026-05-15, 10:48 AM',
+        admin: 'Cmdr. Reyes',
+        action: 'Status Update',
+        target: 'INC-2026-005',
+        detail: 'Requested transport units for Santolan center transfer',
+        ip: '192.168.1.45'
+    },
+    {
+        id: 'LOG-001',
+        timestamp: '2026-05-15, 10:10 AM',
+        admin: 'Cmdr. Reyes',
+        action: 'Dispatch',
+        target: 'INC-2026-003',
+        detail: 'Dispatched PASIG-AMB-02 to Rosario collision site',
+        ip: '192.168.1.45'
+    },
+    {
+        id: 'LOG-002',
+        timestamp: '2026-05-15, 09:50 AM',
+        admin: 'Cmdr. Reyes',
+        action: 'Acknowledged',
+        target: 'INC-2026-002',
+        detail: 'Flood report in Pinagbuhatan acknowledged; monitoring water levels',
+        ip: '192.168.1.45'
+    },
+    {
+        id: 'LOG-003',
+        timestamp: '2026-05-15, 08:30 AM',
+        admin: 'System',
+        action: 'Broadcast',
+        target: 'Manggahan Zone',
+        detail: 'Emergency Alert: Fire at Industrial Area. Stay clear.',
+        ip: '127.0.0.1'
+    }
+];
 
 
-const DEFAULT_INVENTORY = {};
+const DEFAULT_INVENTORY = {
+    'Food Packs': 12500,
+    'Medical Supplies': 850,
+    'Water Supply': 4200,
+    'Hygiene Kits': 1200
+};
 
 
-const DEFAULT_AIDED = [];
+const DEFAULT_AIDED = [
+    {
+        id: 'AID-001',
+        title: 'Evacuation Center: Rizal High School',
+        desc: 'Requesting 500 Food Packs and 200 Hygiene Kits for new arrivals.',
+        zone: 'Caniogan',
+        unit: 'PASIG-RESCUE-01',
+        timestamp: '2026-05-15, 09:15 AM'
+    },
+    {
+        id: 'AID-002',
+        title: 'Barangay Hall: Manggahan',
+        desc: 'Urgent need for 150 bottled water cases and 50 blankets.',
+        zone: 'Manggahan',
+        unit: 'BRGY-MANGGAHAN-RRT',
+        timestamp: '2026-05-15, 08:30 AM'
+    },
+    {
+        id: 'AID-003',
+        title: 'Santolan Elementary School',
+        desc: 'Medical supplies required: first aid kits, paracetamol, and bandages.',
+        zone: 'Santolan',
+        unit: 'PASIG-MED-04',
+        timestamp: '2026-05-15, 07:45 AM'
+    },
+    {
+        id: 'AID-004',
+        title: 'Rosario Covered Court',
+        desc: 'Requesting 300 hot meals and portable generator fuel.',
+        zone: 'Rosario',
+        unit: 'PASIG-RESCUE-03',
+        timestamp: '2026-05-15, 07:00 AM'
+    },
+    {
+        id: 'AID-005',
+        title: 'Pinagbuhatan High School',
+        desc: 'Need 100 sleeping mats, 200 food packs, and 5 tents.',
+        zone: 'Pinagbuhatan',
+        unit: 'PASIG-RESCUE-02',
+        timestamp: '2026-05-14, 11:20 PM'
+    }
+];
 
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v2';
+    const CURRENT_VERSION = '2026.05.15.v7';
+
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
     if (savedVersion !== CURRENT_VERSION) {
         // Clear specific dummy data keys to allow fresh seeding
-        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs'];
+        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs', 'ligtas_sos_queue'];
         keysToReset.forEach(k => localStorage.removeItem(k));
         localStorage.setItem('ligtas_data_version', CURRENT_VERSION);
         console.log("LIGTAS: Dummy data reset to latest version (" + CURRENT_VERSION + ")");
     }
+
+    const DEFAULT_SOS = [
+        {
+            name: 'Roberto Garcia',
+            location: 'Manggahan Industrial Perimeter',
+            coords: '14.5958° N, 121.0827° E',
+            timestamp: Date.now()
+        },
+        {
+            name: 'Sgt. Mendoza',
+            location: 'Pinagbuhatan Riverside',
+            coords: '14.5583° N, 121.0917° E',
+            timestamp: Date.now() - 300000
+        }
+    ];
+
+    // Seed defaults if empty
+    if (!localStorage.getItem('ligtas_sos_queue')) localStorage.setItem('ligtas_sos_queue', JSON.stringify(DEFAULT_SOS));
+
 
     // Seed defaults if empty
     if (!localStorage.getItem('ligtas_zones')) localStorage.setItem('ligtas_zones', JSON.stringify(DEFAULT_ZONES));

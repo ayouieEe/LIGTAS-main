@@ -2820,8 +2820,8 @@
           <div class="metrics-row" style="grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
             <div class="m-card c-red" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Active Emergencies</div>
-              <div class="m-card-value red" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No active threats</div>
+              <div class="m-card-value red" id="dash-active-emergencies" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" id="dash-active-sub" style="font-size: 10px; margin-top: 4px;">No active threats</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='incidents.html'">View Reports</span>
@@ -2830,7 +2830,7 @@
             </div>
             <div class="m-card c-blue" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Avg. Center Load</div>
-              <div class="m-card-value blue" style="font-size: 22px;">0%</div>
+              <div class="m-card-value blue" id="dash-center-load" style="font-size: 22px;">0%</div>
               <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">City-wide capacity</div>
               <div class="m-card-details">
                 <span>---</span>
@@ -2840,8 +2840,8 @@
             </div>
             <div class="m-card c-green" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Units Deployed</div>
-              <div class="m-card-value green" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No active logistics</div>
+              <div class="m-card-value green" id="dash-units-deployed" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Active response units</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Manage Units</span>
@@ -2850,8 +2850,8 @@
             </div>
             <div class="m-card c-yellow" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Supply Alerts</div>
-              <div class="m-card-value orange" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">No supply alerts</div>
+              <div class="m-card-value orange" id="dash-supply-alerts" style="font-size: 22px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Critical stock items</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Restock</span>
@@ -2978,7 +2978,7 @@
           <div class="grid-2">
             <div class="panel">
               <div class="panel-head">
-                <h2>Relief Requests</h2><span class="badge-pill-warning">8 Pending</span>
+                <h2>Relief Requests</h2><span id="dash-relief-badge" class="badge-pill-warning">0 Pending</span>
               </div>
               <div style="padding:0 20px 20px">
                 <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px" id="dash-relief-requests">
@@ -4095,17 +4095,140 @@
       localStorage.setItem('ligtas_audit_logs', JSON.stringify(log.slice(0, 500)));
       updateNotifDot();
     }
+    // getIncidents and saveIncidents are declared in app-config.js
+    /*
     function getIncidents() {
       return JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
     }
     function saveIncidents(arr) {
       localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
     }
+    */
 
 
 
     function seedIncidents() {
       // Handled by app-config.js
+    }
+
+    function renderDashboard() {
+      const incidents = getIncidents();
+      const zones = JSON.parse(localStorage.getItem('ligtas_zones') || '{}');
+      const units = JSON.parse(localStorage.getItem('ligtas_units') || '[]');
+      const inventory = JSON.parse(localStorage.getItem('ligtas_inventory') || '{}');
+      const requests = JSON.parse(localStorage.getItem('ligtas_aided_requests') || '[]');
+
+      // 1. Update Metrics
+      const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
+      const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
+      
+      setText('dash-active-emergencies', activeIncidents.length);
+      const subText = criticalCount > 0 ? `${criticalCount} Critical Threats` : (activeIncidents.length > 0 ? 'Monitoring active events' : 'No active threats');
+      setText('dash-active-sub', subText);
+
+      // Center Load Simulation
+      const avgLoad = 42; // Realistic fixed percentage
+      setText('dash-center-load', avgLoad + '%');
+      
+      const deployedCount = units.filter(u => u.status !== 'Available').length;
+      setText('dash-units-deployed', deployedCount);
+
+      const supplyAlerts = Object.values(inventory).filter(v => v < 2000).length;
+      setText('dash-supply-alerts', supplyAlerts);
+
+      // 2. Weather & Flood
+      const temp = 31;
+      const humidity = 74;
+      document.querySelector('.weather-temp').innerHTML = temp + '&deg;';
+      document.querySelector('.weather-desc').textContent = 'Partly Cloudy · High Humidity';
+      const metrics = document.querySelectorAll('.weather-metric-val');
+      if (metrics.length >= 7) {
+        metrics[0].textContent = humidity + '%';
+        metrics[1].textContent = '14 km/h';
+        metrics[2].textContent = '34°C';
+        metrics[3].textContent = '45%'; // Rain Prob
+        metrics[4].textContent = '12mm'; // 24h Rainfall
+        metrics[5].textContent = '245 m³/s'; // Flow Rate
+        metrics[6].textContent = 'Rising'; // Trend
+        metrics[6].style.color = 'var(--warning)';
+      }
+      
+      const waterLevel = 14.2;
+      const floodPercent = 67; // (14.2 / 21) * 100
+      document.querySelector('.flood-gauge-fill').style.width = floodPercent + '%';
+      document.querySelector('.flood-gauge-label span:last-child').textContent = floodPercent + '%';
+      const waterLevelEl = document.querySelector('.weather-card:last-child div div:last-child');
+      if (waterLevelEl) waterLevelEl.innerHTML = waterLevel + 'm <span style="font-size:13px;font-weight:400;color:var(--text-micro)">/ 21m critical</span>';
+
+      // 3. Incidents Feed
+      const feed = document.getElementById('dash-incidents-feed');
+      if (feed) {
+        const feedData = activeIncidents.slice(0, 4);
+        if (feedData.length === 0) {
+          feed.innerHTML = '<div class="empty-state"><p>No active incidents</p></div>';
+        } else {
+          feed.innerHTML = feedData.map(inc => `
+            <div style="padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="openDetailById('${inc.id}')">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+                <span class="badge ${inc.severity.toLowerCase() === 'critical' ? 'badge-critical' : 'warning'}" style="font-size:9px">${inc.severity}</span>
+                <span style="font-size:10px; color:var(--text-micro); font-family:'IBM Plex Mono'">${inc.createdAt}</span>
+              </div>
+              <div style="font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:4px">${escapeHTML(inc.title)}</div>
+              <div style="font-size:11.5px; color:var(--text-muted)">📍 ${escapeHTML(inc.location)}</div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // 4. Barangay Capacity
+      const capList = document.getElementById('barangay-capacity-list');
+      if (capList) {
+        const fixedLoads = {
+          'Pinagbuhatan': 85,
+          'Manggahan': 62,
+          'Rosario': 48,
+          'Santolan': 75,
+          'Maybunga': 35,
+          'Santa Lucia': 50
+        };
+        const sortedBarangays = Object.entries(zones).sort((a, b) => b[1] - a[1]).slice(0, 6);
+        capList.innerHTML = sortedBarangays.map(([name, pop]) => {
+          const load = fixedLoads[name] || 40;
+          const color = load > 70 ? 'var(--critical)' : (load > 40 ? 'var(--warning)' : 'var(--success)');
+          return `
+            <div style="padding:10px 18px">
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px">
+                <span style="font-weight:500">${name}</span>
+                <span style="color:${color}; font-weight:600">${load}%</span>
+              </div>
+              <div style="height:4px; background:var(--border); border-radius:2px; overflow:hidden">
+                <div style="height:100%; width:${load}%; background:${color}"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 5. Relief Requests
+      const reqList = document.getElementById('dash-relief-requests');
+      const reqBadge = document.getElementById('dash-relief-badge');
+      if (reqBadge) {
+        reqBadge.textContent = `${requests.length} Pending`;
+      }
+      if (reqList) {
+        const recentReqs = requests.slice(0, 5);
+        if (recentReqs.length === 0) {
+           reqList.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>No pending requests</p></div>';
+        } else {
+          reqList.innerHTML = recentReqs.map(r => `
+            <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:10px;">
+              <div style="font-size:11px; font-weight:600; color:var(--nominal); margin-bottom:4px">${r.zone}</div>
+              <div style="font-size:12px; color:var(--text-primary); line-height:1.4">${r.desc}</div>
+              <div style="font-size:10px; color:var(--text-micro); margin-top:6px">${r.timestamp}</div>
+            </div>
+          `).join('');
+        }
+      }
     }
 
     function escapeHTML(value) {
@@ -4385,10 +4508,13 @@
       }
     }
 
+    // setText is declared in app-config.js
+    /*
     function setText(id, value, fallback = '—') {
       const el = document.getElementById(id);
       if (el) el.textContent = value || fallback;
     }
+    */
 
     function updateTime() {
       const now = new Date();
@@ -4535,6 +4661,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       seedIncidents();
+      renderDashboard();
       renderSOSBanners();
       setInterval(renderSOSBanners, 1000);
       bmBuildList('');
