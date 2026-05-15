@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F', alert: '#E53935', tint: '#FFEBEE',
+                        deep: '#B71C1C', safe: '#2E7D32', amber: '#E65100',
+                        flood: '#1565C0', quake: '#6A1B9A', medical: '#00695C',
+                        navy: '#1C1C1E', slate: '#6B7280',
+                    },
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .form-input {
+            width: 100%; padding: 11px 14px; border: 1.5px solid #E5E7EB;
+            border-radius: 12px; background: #F8FAFC; color: #1C1C1E;
+            font-size: 14px; outline: none; font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus { border-color: #D32F2F; box-shadow: 0 0 0 3px rgba(211,47,47,0.1); }
+        .form-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.04em; }
+        .card { background: white; border-radius: 20px; border: 1px solid #F1F5F9; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        .btn-submit { width: 100%; padding: 13px; border-radius: 14px; font-weight: 700; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1C1C1E; color: white; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 999; animation: slideDown 0.3s ease; white-space: nowrap; }
+        @keyframes slideDown { from { opacity:0; transform: translateX(-50%) translateY(-12px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+        .record-card { background: #F8FAFC; border: 1px solid #E5E7EB; border-radius: 12px; padding: 12px 14px; }
+        .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .urgency-critical { background: #FEE2E2; color: #DC2626; }
+        .urgency-high { background: #FEF3C7; color: #D97706; }
+        .urgency-medium { background: #DBEAFE; color: #2563EB; }
+        .urgency-low { background: #D1FAE5; color: #059669; }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 3px; cursor: pointer; position: relative;
+            padding: 6px 4px 0;
+            transition: color 0.2s;
+            color: #9CA3AF;
+            border: none; background: none;
+        }
+        .bottom-nav-item span {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .bottom-nav-item.active { color: #D32F2F; }
+        .bottom-nav-item .nav-pill {
+            position: absolute; top: 4px;
+            width: 48px; height: 36px;
+            background: rgba(211,47,47,0.1);
+            border-radius: 10px;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .bottom-nav-item.active .nav-pill { opacity: 1; }
+    </style>
+</head>
+<body class="bg-gray-900 flex justify-center items-center min-h-screen antialiased">
+
+<div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+    <!-- Header -->
+    <header class="pt-[50px] px-4 pb-3 flex justify-between items-center bg-white border-b border-gray-100 shrink-0 z-10 sticky top-0">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emergency flex items-center justify-center">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-white"></i>
+            </div>
+            <div>
+                <p class="font-bold text-[16px] text-navy leading-none">LIGTAS Admin</p>
+                <p class="text-[11px] text-slate" id="admin-name-label">Field/Center Admin</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emergency/10 text-emergency text-[11px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse"></span>ADMIN
+            </span>
+            <button onclick="confirmLogout()" title="Logout" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-red-50 transition">
+                <i data-lucide="log-out" class="w-4 h-4 text-slate"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-[80px]">
+
+        <!-- ======================== RELIEF REQUEST TAB ======================== -->
+        <div id="panel-relief" class="panel px-4 pt-5 space-y-4">
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-amber/10 flex items-center justify-center">
+                        <i data-lucide="package" class="w-5 h-5 text-amber"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Relief Request</p>
+                        <p class="text-slate text-[12px]">Submit a request for relief goods</p>
+                    </div>
+                </div>
+
+                <form id="relief-form" class="space-y-4" onsubmit="submitRelief(event)">
+                    <div>
+                        <label class="form-label">Center Name</label>
+                        <input id="relief-center" class="form-input" type="text" placeholder="e.g. Brgy. Kapitolyo Evac Center" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Relief Type</label>
+                        <select id="relief-type" class="form-input" required>
+                            <option value="">Select relief type...</option>
+                            <option value="Food Pack">Food Pack</option>
+                            <option value="Water">Water (Bottled/Drum)</option>
+                            <option value="Hygiene Kit">Hygiene Kit</option>
+                            <option value="Blankets & Bedding">Blankets & Bedding</option>
+                            <option value="Medical Supplies">Medical Supplies</option>
+                            <option value="Baby Kit">Baby Kit</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Qty (Families)</label>
+                            <input id="relief-qty" class="form-input" type="number" min="1" placeholder="e.g. 120" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Urgency</label>
+                            <select id="relief-urgency" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Notes</label>
+                        <textarea id="relief-notes" class="form-input" rows="3" placeholder="Additional details, specific needs, access routes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #E65100, #FF8F00); color: white;">
+                        <i data-lucide="send" class="w-4 h-4"></i>Submit Relief Request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ======================== EVACUEE PROFILING TAB ======================== -->
+        <div id="panel-profiling" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-flood/10 flex items-center justify-center">
+                        <i data-lucide="user-plus" class="w-5 h-5 text-flood"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Register Evacuee</p>
+                        <p class="text-slate text-[12px]">Manual profiling for center evacuees</p>
+                    </div>
+                </div>
+
+                <form id="profiling-form" class="space-y-4" onsubmit="submitProfiling(event)">
+                    <div>
+                        <label class="form-label">Center Name</label>
+                        <input id="prof-center" class="form-input" type="text" placeholder="e.g. Brgy. Bagong Ilog Evac Center" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Full Name</label>
+                        <input id="prof-name" class="form-input" type="text" placeholder="Evacuee full name" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Age</label>
+                            <input id="prof-age" class="form-input" type="number" min="0" max="120" placeholder="Age" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Gender</label>
+                            <select id="prof-gender" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Household Size</label>
+                        <input id="prof-household" class="form-input" type="number" min="1" placeholder="Number of household members" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Special Needs</label>
+                        <textarea id="prof-needs" class="form-input" rows="2" placeholder="e.g. Wheelchair, Infant formula, Dialysis, Medications..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #1565C0, #1976D2); color: white;">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>Register Evacuee
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ======================== INCIDENT REPORT TAB ======================== -->
+        <div id="panel-incident" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-emergency/10 flex items-center justify-center">
+                        <i data-lucide="alert-octagon" class="w-5 h-5 text-emergency"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Incident Report</p>
+                        <p class="text-slate text-[12px]">Report a localized emergency</p>
+                    </div>
+                </div>
+
+                <form id="incident-form" class="space-y-4" onsubmit="submitIncident(event)">
+                    <div>
+                        <label class="form-label">Incident Type</label>
+                        <select id="inc-type" class="form-input" required onchange="updateIncidentIcon(this.value)">
+                            <option value="">Select type...</option>
+                            <option value="Fire">🔥 Fire</option>
+                            <option value="Flooding">💧 Flooding</option>
+                            <option value="Structural Damage">🏚️ Structural Damage</option>
+                            <option value="Medical Emergency">🚑 Medical Emergency</option>
+                            <option value="Power Outage">⚡ Power Outage</option>
+                            <option value="Landslide">⛰️ Landslide</option>
+                            <option value="Other">📋 Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Location / Area</label>
+                        <input id="inc-location" class="form-input" type="text" placeholder="e.g. Brgy. San Miguel, near Ortigas Ave" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Severity</label>
+                            <select id="inc-severity" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">People Affected</label>
+                            <input id="inc-affected" class="form-input" type="number" min="0" placeholder="Approx. count">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Description</label>
+                        <textarea id="inc-description" class="form-input" rows="3" placeholder="Describe the situation, visible damage, immediate needs..." required></textarea>
+                    </div>
+                    <div>
+                        <label class="form-label">Reported By</label>
+                        <input id="inc-reporter" class="form-input" type="text" placeholder="Your name / center" required>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #D32F2F, #E53935); color: white;">
+                        <i data-lucide="send" class="w-4 h-4"></i>Submit Incident Report
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ======================== LOGS TAB ======================== -->
+        <div id="panel-logs" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="flex items-center justify-between mb-1">
+                <p class="text-[17px] font-bold text-navy">Submission Logs</p>
+                <button onclick="clearAllLogs()" class="text-[12px] text-emergency font-semibold">Clear All</button>
+            </div>
+            <div id="logs-container" class="space-y-3">
+                <div class="text-center py-10 text-slate text-[13px]">
+                    <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-30"></i>
+                    <p>No submissions yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== PROFILE TAB ======================== -->
+        <div id="panel-profile" class="panel hidden px-4 pt-5 pb-6 space-y-4">
+
+            <!-- Avatar card -->
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emergency to-deep flex items-center justify-center flex-shrink-0">
+                        <span id="profile-avatar" class="text-white text-[24px] font-bold">?</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="profile-display-name" class="text-[18px] font-bold text-navy truncate">—</p>
+                        <p id="profile-display-center" class="text-[12px] text-slate truncate mt-0.5">—</p>
+                        <span class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-full bg-emergency/10 text-emergency text-[11px] font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse"></span>FIELD ADMIN
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-[10px] text-slate uppercase tracking-wide font-semibold mb-1">Admin ID</p>
+                        <p id="profile-id" class="text-[12px] font-bold text-navy font-mono">—</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-[10px] text-slate uppercase tracking-wide font-semibold mb-1">Barangay</p>
+                        <p id="profile-barangay" class="text-[12px] font-bold text-navy truncate">—</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit form -->
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-flood/10 flex items-center justify-center">
+                        <i data-lucide="edit-3" class="w-5 h-5 text-flood"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Edit Profile</p>
+                        <p class="text-slate text-[12px]">Update your admin information</p>
+                    </div>
+                </div>
+                <form id="profile-form" class="space-y-4" onsubmit="saveProfile(event)">
+                    <div>
+                        <label class="form-label">Full Name</label>
+                        <input id="pf-name" class="form-input" type="text" placeholder="Your full name" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Mobile Number</label>
+                        <input id="pf-phone" class="form-input" type="tel" placeholder="+63 9XX XXX XXXX">
+                    </div>
+                    <div>
+                        <label class="form-label">Evacuation Center</label>
+                        <input id="pf-center" class="form-input" type="text" placeholder="Center name you manage">
+                    </div>
+                    <div>
+                        <label class="form-label">Barangay</label>
+                        <input id="pf-barangay" class="form-input" type="text" placeholder="Your assigned barangay">
+                    </div>
+                    <div>
+                        <label class="form-label">Address</label>
+                        <input id="pf-address" class="form-input" type="text" placeholder="Center address">
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #1565C0, #1976D2); color: white;">
+                        <i data-lucide="save" class="w-4 h-4"></i>Save Profile
+                    </button>
+                </form>
+            </div>
+
+            <!-- Danger zone -->
+            <div class="card p-5 border border-red-100">
+                <p class="text-[13px] font-bold text-emergency mb-3">Account</p>
+                <button onclick="confirmLogout()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-emergency text-[13px] font-semibold hover:bg-red-100 transition">
+                    <span class="flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i>Sign out of admin account</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ── Bottom Navigation Bar ── -->
+    <nav class="h-[72px] pb-[10px] bg-white border-t border-gray-100 flex justify-around items-center absolute bottom-0 w-full z-20">
+        <button class="bottom-nav-item active" id="tab-relief" onclick="switchTab('relief')">
+            <div class="nav-pill"></div>
+            <i data-lucide="package" class="w-5 h-5 relative z-10"></i>
+            <span>Relief</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-profiling" onclick="switchTab('profiling')">
+            <div class="nav-pill"></div>
+            <i data-lucide="users" class="w-5 h-5 relative z-10"></i>
+            <span>Evacuees</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-incident" onclick="switchTab('incident')">
+            <div class="nav-pill"></div>
+            <i data-lucide="alert-triangle" class="w-5 h-5 relative z-10"></i>
+            <span>Incidents</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-logs" onclick="switchTab('logs')">
+            <div class="nav-pill"></div>
+            <i data-lucide="list" class="w-5 h-5 relative z-10"></i>
+            <span>Logs</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-profile" onclick="switchTab('profile')">
+            <div class="nav-pill"></div>
+            <i data-lucide="user-circle" class="w-5 h-5 relative z-10"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- Logout confirmation modal -->
+    <div id="logout-modal" class="hidden absolute inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-[320px] text-center shadow-xl">
+            <div class="w-14 h-14 rounded-2xl bg-emergency/10 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="log-out" class="w-7 h-7 text-emergency"></i>
+            </div>
+            <h2 class="text-[18px] font-bold text-navy mb-2">Sign Out?</h2>
+            <p class="text-[13px] text-slate mb-6">You will be returned to the login screen.</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 h-11 rounded-xl bg-gray-100 text-slate font-semibold text-[14px]">Cancel</button>
+                <button onclick="doLogout()" class="flex-1 h-11 rounded-xl bg-emergency text-white font-semibold text-[14px]">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    lucide.createIcons();
+
+    // ─── Auth guard ─────────────────────────────────────────────────────────
+    (function() {
+        const role = localStorage.getItem('ligtas_role');
+        if (role !== 'field_admin') {
+            window.location.href = 'Auth/login.html';
+        }
+    })();
+
+    // ─── Load user name ──────────────────────────────────────────────────────
+    (function() {
+        const session = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+        if (session.name) {
+            document.getElementById('admin-name-label').textContent = session.name;
+        }
+    })();
+
+    // ─── Tab switching ───────────────────────────────────────────────────────
+    function switchTab(tab) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+        document.getElementById('panel-' + tab).classList.remove('hidden');
+        document.getElementById('tab-' + tab).classList.add('active');
+        if (tab === 'logs') renderLogs();
+        if (tab === 'profile') renderProfile();
+        lucide.createIcons();
+    }
+
+    // ─── Toast ───────────────────────────────────────────────────────────────
+    function showToast(msg, color = '#1C1C1E') {
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.style.background = color;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
+
+    // ─── Shared save helper ──────────────────────────────────────────────────
+    function saveRecord(key, record) {
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        existing.unshift(record);
+        localStorage.setItem(key, JSON.stringify(existing));
+    }
+
+    // ─── Relief Request ──────────────────────────────────────────────────────
+    function submitRelief(e) {
+        e.preventDefault();
+        const record = {
+            id: 'RR-' + Date.now(),
+            timestamp: new Date().toISOString(),
+            type: 'Relief Request',
+            center: document.getElementById('relief-center').value,
+            reliefType: document.getElementById('relief-type').value,
+            qty: document.getElementById('relief-qty').value,
+            urgency: document.getElementById('relief-urgency').value,
+            notes: document.getElementById('relief-notes').value,
+        };
+        saveRecord('ligtas_relief_requests', record);
+        document.getElementById('relief-form').reset();
+        showToast('✅ Relief request submitted!', '#2E7D32');
+    }
+
+    // ─── Evacuee Profiling ───────────────────────────────────────────────────
+    function submitProfiling(e) {
+        e.preventDefault();
+        const record = {
+            id: 'EV-' + Date.now(),
+            timestamp: new Date().toISOString(),
+            type: 'Evacuee',
+            center: document.getElementById('prof-center').value,
+            name: document.getElementById('prof-name').value,
+            age: document.getElementById('prof-age').value,
+            gender: document.getElementById('prof-gender').value,
+            household: document.getElementById('prof-household').value,
+            specialNeeds: document.getElementById('prof-needs').value,
+        };
+        saveRecord('ligtas_evacuees', record);
+        document.getElementById('profiling-form').reset();
+        showToast('✅ Evacuee registered!', '#1565C0');
+    }
+
+    // ─── Incident Report ─────────────────────────────────────────────────────
+    function submitIncident(e) {
+        e.preventDefault();
+        const record = {
+            id: 'IR-' + Date.now(),
+            timestamp: new Date().toISOString(),
+            type: 'Incident',
+            incidentType: document.getElementById('inc-type').value,
+            location: document.getElementById('inc-location').value,
+            severity: document.getElementById('inc-severity').value,
+            affected: document.getElementById('inc-affected').value,
+            description: document.getElementById('inc-description').value,
+            reporter: document.getElementById('inc-reporter').value,
+        };
+        saveRecord('ligtas_incident_reports', record);
+        document.getElementById('incident-form').reset();
+        showToast('✅ Incident report submitted!', '#D32F2F');
+    }
+
+    // ─── Logs renderer ───────────────────────────────────────────────────────
+    function renderLogs() {
+        const container = document.getElementById('logs-container');
+        const relief = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+        const evacuees = JSON.parse(localStorage.getItem('ligtas_evacuees') || '[]');
+        const incidents = JSON.parse(localStorage.getItem('ligtas_incident_reports') || '[]');
+        const all = [...relief, ...evacuees, ...incidents].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        if (all.length === 0) {
+            container.innerHTML = `<div class="text-center py-10 text-slate text-[13px]"><i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-30"></i><p>No submissions yet.</p></div>`;
+            lucide.createIcons();
+            return;
+        }
+
+        container.innerHTML = all.map(r => {
+            const time = new Date(r.timestamp).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            let icon = '', color = '', detail = '';
+            if (r.type === 'Relief Request') {
+                icon = 'package'; color = '#E65100';
+                detail = `${r.reliefType} · ${r.qty} families · <span class="badge urgency-${(r.urgency||'').toLowerCase()}">${r.urgency}</span>`;
+            } else if (r.type === 'Evacuee') {
+                icon = 'user'; color = '#1565C0';
+                detail = `${r.name}, ${r.age} yrs, ${r.gender} · HH: ${r.household}`;
+            } else {
+                icon = 'alert-triangle'; color = '#D32F2F';
+                detail = `${r.incidentType} · ${r.location} · <span class="badge urgency-${(r.severity||'').toLowerCase()}">${r.severity}</span>`;
+            }
+            return `<div class="record-card">
+                <div class="flex items-start gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${color}18">
+                        <i data-lucide="${icon}" class="w-4 h-4" style="color:${color}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-[13px] font-bold text-navy">${r.type}</p>
+                            <p class="text-[11px] text-slate flex-shrink-0">${time}</p>
+                        </div>
+                        <p class="text-[12px] text-slate mt-0.5">${r.center || r.location || ''}</p>
+                        <p class="text-[12px] text-navy mt-1">${detail}</p>
+                        <p class="text-[11px] text-slate mt-0.5 font-mono">${r.id}</p>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    function clearAllLogs() {
+        if (!confirm('Clear all submission logs?')) return;
+        localStorage.removeItem('ligtas_relief_requests');
+        localStorage.removeItem('ligtas_evacuees');
+        localStorage.removeItem('ligtas_incident_reports');
+        renderLogs();
+        showToast('Logs cleared');
+    }
+
+    // ─── Profile ─────────────────────────────────────────────────────────────
+    function renderProfile() {
+        const s = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+        const name = s.name || '';
+        document.getElementById('profile-avatar').textContent = name ? name.charAt(0).toUpperCase() : '?';
+        document.getElementById('profile-display-name').textContent = name || 'Unknown Admin';
+        document.getElementById('profile-display-center').textContent = s.center || 'No center assigned';
+        document.getElementById('profile-id').textContent = s.id || '—';
+        document.getElementById('profile-barangay').textContent = s.barangay || '—';
+        // Fill edit form
+        document.getElementById('pf-name').value = name;
+        document.getElementById('pf-phone').value = s.phone || '';
+        document.getElementById('pf-center').value = s.center || '';
+        document.getElementById('pf-barangay').value = s.barangay || '';
+        document.getElementById('pf-address').value = s.address || '';
+    }
+
+    function saveProfile(e) {
+        e.preventDefault();
+        const s = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+        s.name    = document.getElementById('pf-name').value;
+        s.phone   = document.getElementById('pf-phone').value;
+        s.center  = document.getElementById('pf-center').value;
+        s.barangay = document.getElementById('pf-barangay').value;
+        s.address = document.getElementById('pf-address').value;
+        localStorage.setItem('ligtas_user_session', JSON.stringify(s));
+        // Refresh header label + display card
+        document.getElementById('admin-name-label').textContent = s.name;
+        renderProfile();
+        showToast('✅ Profile saved!', '#1565C0');
+    }
+
+    // ─── Logout ──────────────────────────────────────────────────────────────
+    function confirmLogout() { document.getElementById('logout-modal').classList.remove('hidden'); }
+    function closeModal() { document.getElementById('logout-modal').classList.add('hidden'); }
+    function doLogout() {
+        localStorage.removeItem('ligtas_role');
+        localStorage.removeItem('ligtas_user_session');
+        window.location.href = 'Auth/login.html';
+    }
+</script>
+</body>
+</html>
