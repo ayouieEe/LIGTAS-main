@@ -144,101 +144,173 @@ const DEFAULT_CATEGORIES = [
 
 const DEFAULT_INCIDENTS = [
     {
-        id: 'INC-2026-001',
-        title: 'Industrial Structure Fire — Brgy. Manggahan',
-        status: 'Ongoing',
-        severity: 'Critical',
-        location: 'Amang Rodriguez Ave, Manggahan',
-        barangay: 'Manggahan',
+        id: 'INC-2026-001', title: 'Industrial Structure Fire — Brgy. Manggahan', status: 'Acknowledged', severity: 'Critical',
+        location: 'Amang Rodriguez Ave, Manggahan', barangay: 'Manggahan',
         description: 'Large scale fire at a warehouse facility. Multiple units responding. Low visibility due to heavy smoke. Evacuation of immediate perimeter in progress.',
-        reporter: 'Sgt. Antonio Luna',
-        contact: '+63 917 123 4567',
-        source: 'Official Field Report',
-        type: 'Structure Fire',
-        createdAt: '2026-05-15, 08:12 AM',
+        reporter: 'Sgt. Antonio Luna', contact: '+63 917 123 4567', source: 'Official Field Report',
+        type: 'Structure Fire', createdAt: '2026-05-15, 08:12 AM',
         needs: ['Fire Suppression', 'Medical Standby', 'Evacuation'],
         reportingFor: 'Industrial Area',
-        media: ['https://images.unsplash.com/photo-1544033527-b192daee1f5b?q=80&w=400']
+        media: ['https://images.unsplash.com/photo-1544033527-b192daee1f5b?q=80&w=400'],
+        calledResponders: [
+            { name: 'BFP Pasig City Fire Station', unit: 'Fire', role: 'Primary Fire Response', phone: '(02) 8643-0000', distance: '0.7 km away' },
+            { name: 'PASIG-AMB-01 (Dr. Apolinar Cruz)', unit: 'Ambulance', role: 'Medical Standby', phone: '+63 919 100 1001', distance: '1.2 km away' },
+            { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Perimeter Security', phone: '(02) 8641-0000', distance: '0.5 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Juan Dela Cruz', initials: 'JD', status: 'On-Route', distance: '0.4 km away', color: 'var(--nominal)' },
+            { name: 'Ana Reyes', initials: 'AR', status: 'On-Scene', distance: '0.1 km away', color: 'var(--warning)' },
+            { name: 'Roberto Tan', initials: 'RT', status: 'Assigned', distance: '0.9 km away', color: 'var(--nominal)' }
+        ],
+        fieldNotes: 'Fire spreading to adjacent block. Requesting additional water tankers immediately. Perimeter secured by PNP.'
     },
     {
-        id: 'INC-2026-002',
-        title: 'Severe Street Flooding — Brgy. Pinagbuhatan',
-        status: 'Dispatched',
-        severity: 'Urgent',
-        location: 'Urbano Velasco Ave',
-        barangay: 'Pinagbuhatan',
+        id: 'INC-2026-002', title: 'Severe Street Flooding — Brgy. Pinagbuhatan', status: 'Acknowledged', severity: 'Urgent',
+        location: 'Urbano Velasco Ave', barangay: 'Pinagbuhatan',
         description: 'Water level reached knee-high. Residents in low-lying areas requesting assistance with moving belongings. No casualties reported yet.',
-        reporter: 'Maria Clara',
-        contact: '+63 918 987 6543',
-        source: 'Mobile App',
-        type: 'Flash Flood',
-        createdAt: '2026-05-15, 09:45 AM',
+        reporter: 'Maria Clara', contact: '+63 918 987 6543', source: 'Mobile App',
+        type: 'Flash Flood', createdAt: '2026-05-15, 09:45 AM',
         needs: ['Rescue Boat', 'Pumping Unit'],
-        reportingFor: 'Residential Area'
+        reportingFor: 'Residential Area',
+        media: ['https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=400'],
+        calledResponders: [
+            { name: 'Brgy. Pinagbuhatan Rescue Team', unit: 'Rescue', role: 'Boat Rescue Unit', phone: '+63 919 888 7777', distance: '0.3 km away' },
+            { name: 'DSWD Pasig City Field Office', unit: 'Relief', role: 'Social Welfare & Aid', phone: '(02) 8643-2000', distance: '1.1 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Maria Santos', initials: 'MS', status: 'On-Scene', distance: '0.2 km away', color: 'var(--warning)' },
+            { name: 'Jose Rizal', initials: 'JR', status: 'On-Route', distance: '0.6 km away', color: 'var(--nominal)' },
+            { name: 'Liza Cruz', initials: 'LC', status: 'Assigned', distance: '1.0 km away', color: 'var(--nominal)' }
+        ],
+        fieldNotes: 'Water level slowly subsiding. Rescue boat extracted 8 residents from Sitio Pag-asa. Pumping operations ongoing.'
     },
     {
-        id: 'INC-2026-003',
-        title: 'Multi-Vehicle Collision — Ortigas Ave Extension',
-        status: 'Acknowledged',
-        severity: 'High',
-        location: 'Near Rosario Bridge, Brgy. Rosario',
-        barangay: 'Rosario',
+        id: 'INC-2026-003', title: 'Multi-Vehicle Collision — Ortigas Ave Extension', status: 'Acknowledged', severity: 'High',
+        location: 'Near Rosario Bridge, Brgy. Rosario', barangay: 'Rosario',
         description: 'Three-car pileup causing major traffic congestion. At least 2 persons with minor injuries. PNP and Traffic Management on site.',
-        reporter: 'Ricardo Dalisay',
-        contact: '+63 920 555 1212',
-        source: 'Verified Field Report',
-        type: 'Road Accident',
-        createdAt: '2026-05-15, 10:05 AM',
+        reporter: 'Ricardo Dalisay', contact: '+63 920 555 1212', source: 'Verified Field Report',
+        type: 'Road Accident', createdAt: '2026-05-15, 10:05 AM',
         needs: ['Ambulance', 'Towing Service'],
-        reportingFor: 'Public Road'
+        reportingFor: 'Public Road', media: [],
+        calledResponders: [
+            { name: 'Pasig City Traffic Management', unit: 'Traffic', role: 'Traffic Control', phone: '+63 917 800 0001', distance: '1.0 km away' },
+            { name: 'Pasig City General Hospital ER', unit: 'Medical', role: 'Emergency Medical Services', phone: '(02) 8643-1111', distance: '0.8 km away' },
+            { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Law Enforcement', phone: '(02) 8641-0000', distance: '0.5 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Traffic Aux 01 (Ben Santos)', initials: 'BS', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
+            { name: 'Traffic Aux 02 (Carla Misa)', initials: 'CM', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' }
+        ],
+        fieldNotes: 'Two lanes blocked. Towing truck ETA 10 mins. 2 victims with minor lacerations transported to PCGH.'
     },
     {
-        id: 'INC-2026-004',
-        title: 'Security: Civil Disturbance — Brgy. San Antonio',
-        status: 'Reported',
-        severity: 'High',
-        location: 'Emerald Ave, Ortigas Center',
-        barangay: 'San Antonio',
+        id: 'INC-2026-004', title: 'Security: Civil Disturbance — Brgy. San Antonio', status: 'Reported', severity: 'High',
+        location: 'Emerald Ave, Ortigas Center', barangay: 'San Antonio',
         description: 'Unsanctioned protest gathering near financial buildings. Requesting police presence for crowd management and traffic rerouting.',
-        reporter: 'Admin Security',
-        contact: '+63 916 333 4444',
-        source: 'CCTV Monitoring',
-        type: 'Civil Disturbance',
-        createdAt: '2026-05-15, 10:30 AM',
+        reporter: 'Admin Security', contact: '+63 916 333 4444', source: 'CCTV Monitoring',
+        type: 'Civil Disturbance', createdAt: '2026-05-15, 10:30 AM',
         needs: ['Police Assistance'],
-        reportingFor: 'Business District'
+        reportingFor: 'Business District', media: [],
+        calledResponders: [
+            { name: 'PNP Ortigas Detachment', unit: 'Police', role: 'Sub-station', phone: '+63 917 555 4444', distance: '0.9 km away' },
+            { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Law Enforcement', phone: '(02) 8641-0000', distance: '0.5 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Brgy. Tanod — Team Alpha', initials: 'TA', status: 'Assigned', distance: '0.3 km away', color: 'var(--nominal)' },
+            { name: 'Brgy. Tanod — Team Bravo', initials: 'TB', status: 'Assigned', distance: '0.5 km away', color: 'var(--nominal)' }
+        ],
+        fieldNotes: 'Crowd size approx 150 people. Peaceful but blocking main road. PNP Ortigas notified, ETA 5 mins.'
     },
     {
-        id: 'INC-2026-005',
-        title: 'Logistics: Center Overflow — Brgy. Santolan',
-        status: 'Reported',
-        severity: 'Medium',
-        location: 'Santolan Elementary School',
-        barangay: 'Santolan',
+        id: 'INC-2026-005', title: 'Logistics: Center Overflow — Brgy. Santolan', status: 'Reported', severity: 'Medium',
+        location: 'Santolan Elementary School', barangay: 'Santolan',
         description: 'Evacuation center reached 90% capacity. Requesting immediate transfer plan for incoming residents from low-lying zones.',
-        reporter: 'Officer Benitez',
-        contact: '+63 908 777 8888',
-        source: 'Center Manager Report',
-        type: 'Center Overflow',
-        createdAt: '2026-05-15, 10:45 AM',
+        reporter: 'Officer Benitez', contact: '+63 908 777 8888', source: 'Center Manager Report',
+        type: 'Center Overflow', createdAt: '2026-05-15, 10:45 AM',
         needs: ['Transportation', 'Shelter Assessment'],
-        reportingFor: 'Evacuation Center'
+        reportingFor: 'Evacuation Center', media: [],
+        calledResponders: [
+            { name: 'Santolan Elementary Evac Center', unit: 'Shelter', role: 'Evacuation Manager', phone: '+63 918 222 3333', distance: '0.0 km away' },
+            { name: 'Rizal High School Evac Center', unit: 'Shelter', role: 'Center-In-Charge', phone: '+63 908 444 5555', distance: '1.5 km away' },
+            { name: 'Pasig DRRMO Relief Division', unit: 'Relief', role: 'Relief Coordinator', phone: '+63 906 777 8888', distance: '0.4 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Relief Coord Aling Nena', initials: 'AN', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
+            { name: 'Relief Coord Mang Isko', initials: 'MI', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
+            { name: 'Volunteer Driver 01', initials: 'VD', status: 'Assigned', distance: '0.8 km away', color: 'var(--nominal)' }
+        ],
+        fieldNotes: 'Need 2 L300 vans to transport 40 individuals to Rizal High School center. Transferred 15 already.'
     },
     {
-        id: 'INC-2026-006',
-        title: 'Medical: Respiratory Distress — Brgy. Kapitolyo',
-        status: 'Resolved',
-        severity: 'Medium',
-        location: '12 Pioneer St, Kapitolyo',
-        barangay: 'Kapitolyo',
+        id: 'INC-2026-007', title: 'Power Outage — Brgy. Oranbo', status: 'Reported', severity: 'Medium',
+        location: 'Shaw Boulevard', barangay: 'Oranbo',
+        description: 'Transformer blew out. Three street blocks are currently without power. Meralco has been notified but requesting traffic enforcers for the intersection.',
+        reporter: 'LGU Hotline', contact: '+63 2 8643 1111', source: 'Hotline Call',
+        type: 'Utility Failure', createdAt: '2026-05-15, 11:15 AM',
+        needs: ['Traffic Enforcer', 'Utility Service'],
+        reportingFor: 'Commercial Area', media: [],
+        calledResponders: [
+            { name: 'Meralco Emergency Hotline', unit: 'Utility', role: 'Power Restoration', phone: '16211', distance: '— (Utility)' },
+            { name: 'Pasig City Traffic Management', unit: 'Traffic', role: 'Traffic Control', phone: '+63 917 800 0001', distance: '1.0 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Brgy. Tanod Team Alpha', initials: 'TA', status: 'On-Scene', distance: '0.1 km away', color: 'var(--warning)' },
+            { name: 'Traffic Aux 03 (Mark Diaz)', initials: 'MD', status: 'On-Route', distance: '0.7 km away', color: 'var(--nominal)' }
+        ],
+        fieldNotes: 'Meralco dispatched. ETA 30 mins. Traffic enforcers positioned at Shaw-Ortigas intersection.'
+    },
+    {
+        id: 'INC-2026-006', title: 'Medical: Respiratory Distress — Brgy. Kapitolyo', status: 'Resolved', severity: 'Medium',
+        location: '12 Pioneer St, Kapitolyo', barangay: 'Kapitolyo',
         description: '72-year-old male experiencing difficulty breathing. PASIG-AMB-01 responded. Patient stabilized and transported to Medical City.',
-        reporter: 'Elena Gomez',
-        contact: '+63 915 444 3322',
-        source: 'Mobile App',
-        type: 'Medical Emergency',
-        createdAt: '2026-05-15, 07:30 AM',
+        reporter: 'Elena Gomez', contact: '+63 915 444 3322', source: 'Mobile App',
+        type: 'Medical Emergency', createdAt: '2026-05-15, 07:30 AM',
         needs: ['Oxygen Support'],
-        reportingFor: 'Private Residence'
+        reportingFor: 'Private Residence', media: [],
+        calledResponders: [
+            { name: 'PASIG-AMB-01 (Dr. Apolinar Cruz)', unit: 'Ambulance', role: 'Paramedic Unit', phone: '+63 919 100 1001', distance: '1.2 km away' },
+            { name: 'Medical City Pasig ER', unit: 'Hospital', role: 'Receiving Facility', phone: '(02) 8988-1000', distance: '0.6 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Volunteer Medic Ana Lim', initials: 'AL', status: 'Resolved', distance: '0.2 km away', color: 'var(--text3)' }
+        ],
+        fieldNotes: 'Patient successfully handed over to ER staff. Condition: stable. Unit PASIG-AMB-01 returning to base.'
+    },
+    {
+        id: 'INC-2026-008', title: 'Fallen Tree Obstruction — Brgy. Ugong', status: 'Resolved', severity: 'Low',
+        location: 'Valle Verde 1', barangay: 'Ugong',
+        description: 'Old acacia tree fell and blocked the subdivision main gate. Clearing operations completed by local DRRMO unit.',
+        reporter: 'HOA President', contact: '+63 917 888 9999', source: 'Phone Report',
+        type: 'Downed Tree', createdAt: '2026-05-14, 04:20 PM',
+        needs: ['Clearing Team', 'Chainsaw'],
+        reportingFor: 'Residential Village',
+        media: ['https://images.unsplash.com/photo-1590422749909-51dd3fb52f9c?w=400'],
+        calledResponders: [
+            { name: 'Ugong DRRMO Unit', unit: 'Rescue', role: 'Clearing Operations', phone: '+63 920 444 5555', distance: '0.4 km away' },
+            { name: 'Brgy. Hall Emergency Desk', unit: 'Barangay', role: 'Barangay Response Unit', phone: '+63 927 111 2222', distance: '0.3 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'HOA Maintenance Lead (Tony)', initials: 'TM', status: 'Resolved', distance: '0.0 km away', color: 'var(--text3)' },
+            { name: 'DRRMO Clearing Crew', initials: 'DC', status: 'Resolved', distance: '0.0 km away', color: 'var(--text3)' }
+        ],
+        fieldNotes: 'Area fully cleared by 05:30 PM. Gate reopened. Traffic flowing normally again.'
+    },
+    {
+        id: 'INC-2026-009', title: 'Minor Earthquake Damage — Brgy. Maybunga', status: 'Resolved', severity: 'Low',
+        location: 'Maybunga Public Market', barangay: 'Maybunga',
+        description: 'Cracks observed on the outer wall following the 4.2 tremor. Engineering team assessed and declared structure safe. Routine monitoring advised.',
+        reporter: 'Market Admin', contact: '+63 919 222 3333', source: 'Field Assessment',
+        type: 'Structural Damage', createdAt: '2026-05-14, 02:10 PM',
+        needs: ['Engineering Assessor'],
+        reportingFor: 'Public Market', media: [],
+        calledResponders: [
+            { name: 'City Engineering Dept', unit: 'Engineering', role: 'Structural Assessment', phone: '(02) 8643-2222', distance: '0.9 km away' },
+            { name: 'Brgy. Hall Emergency Desk', unit: 'Barangay', role: 'Barangay Response Unit', phone: '+63 927 111 2222', distance: '0.3 km away' }
+        ],
+        assignedVolunteers: [
+            { name: 'Engr. Mario Bautista', initials: 'MB', status: 'Resolved', distance: '0.5 km away', color: 'var(--text3)' }
+        ],
+        fieldNotes: 'Assessment complete. Cracks are superficial, no structural compromise. Routine check scheduled in 2 weeks.'
     }
 ];
 
@@ -337,7 +409,7 @@ const DEFAULT_AIDED = [
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v7';
+    const CURRENT_VERSION = '2026.05.15.v11';
 
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
@@ -350,18 +422,9 @@ const applyLigtasConfig = () => {
     }
 
     const DEFAULT_SOS = [
-        {
-            name: 'Roberto Garcia',
-            location: 'Manggahan Industrial Perimeter',
-            coords: '14.5958° N, 121.0827° E',
-            timestamp: Date.now()
-        },
-        {
-            name: 'Sgt. Mendoza',
-            location: 'Pinagbuhatan Riverside',
-            coords: '14.5583° N, 121.0917° E',
-            timestamp: Date.now() - 300000
-        }
+        { name: 'Roberto Garcia', location: 'Manggahan Industrial Perimeter', coords: '14.5958° N, 121.0827° E', timestamp: Date.now() },
+        { name: 'Sgt. Mendoza', location: 'Pinagbuhatan Riverside', coords: '14.5583° N, 121.0917° E', timestamp: Date.now() - 300000 },
+        { name: 'Maria Santos', location: 'Rosario Covered Court', coords: '14.5833° N, 121.0833° E', timestamp: Date.now() - 600000 }
     ];
 
     // Seed defaults if empty

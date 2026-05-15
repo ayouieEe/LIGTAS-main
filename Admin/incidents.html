@@ -2834,26 +2834,26 @@
             style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
             <div class="m-card c-red" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Active Emergencies</div>
-              <div class="m-card-value red" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No active status</div>
+              <div class="m-card-value red" id="inc-active-emergencies" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" id="inc-active-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No active status</div>
 
             </div>
             <div class="m-card c-blue" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Units Deployed</div>
-              <div class="m-card-value blue" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No units deployed</div>
+              <div class="m-card-value blue" id="inc-units-deployed" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Active response units</div>
 
             </div>
             <div class="m-card c-orange" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Civilians Affected</div>
-              <div class="m-card-value orange" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No citizens affected</div>
+              <div class="m-card-value orange" id="inc-civilians-affected" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Estimated across incidents</div>
 
             </div>
             <div class="m-card c-yellow" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Pending Dispatch</div>
-              <div class="m-card-value orange" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No pending dispatch
+              <div class="m-card-value orange" id="inc-pending-dispatch" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Requires immediate action
               </div>
 
             </div>
@@ -3121,17 +3121,21 @@
 
       <script>
         // ── INCIDENT STORE ────────────────────────────────────────────────────────────
+        // getIncidents is declared globally in app-config.js to prevent SyntaxError
+        /*
         function getIncidents() {
           return JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
         }
+        */
+        /*
         const SEED_INCIDENTS = [];
-
 
         function seedIncidents() {
           if (getIncidents().length === 0) {
             saveIncidents(SEED_INCIDENTS);
           }
         }
+        */
 
         // badge class map for lifecycle status
         const LIFECYCLE_BADGE = {
@@ -3183,6 +3187,19 @@
           let resolvedHTML = '';
           let feedHTML = '';
 
+          // Update Top Metrics (Consistent with Dashboard)
+          const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
+          const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
+          const pendingCount = incidents.filter(i => i.status === 'Reported').length;
+          const units = JSON.parse(localStorage.getItem('ligtas_units') || '[]');
+          const deployedCount = units.filter(u => u.status !== 'Available').length;
+          
+          setText('inc-active-emergencies', activeIncidents.length);
+          setText('inc-active-sub', criticalCount > 0 ? `${criticalCount} Critical Threats` : (activeIncidents.length > 0 ? 'Monitoring active events' : 'No active status'));
+          setText('inc-units-deployed', deployedCount);
+          setText('inc-civilians-affected', '1,450'); // Static estimated fallback
+          setText('inc-pending-dispatch', pendingCount);
+
           incidents.forEach(inc => {
             const sevCls = SEVERITY_BADGE[inc.severity] || SEVERITY_BADGE.default;
             const lifeCls = LIFECYCLE_BADGE[inc.status] || 'badge';
@@ -3211,13 +3228,11 @@
           </tr>`;
             if (inc.status === 'Resolved') {
               resolvedHTML += rowHTML;
-            } else if (inc.status !== 'Dispatched' && inc.status !== 'Acknowledged' && inc.status !== 'Ongoing') {
-              // Only show newly reported incidents in main table. Acknowledged/Ongoing reports move to the side feed.
+            } else if (inc.status === 'Reported') {
+              // Only show newly reported incidents in main table. Acknowledged reports move to the side feed.
               activeHTML += rowHTML;
-            }
-
-            if (inc.status === 'Acknowledged' || inc.status === 'Dispatched' || inc.status === 'Ongoing') {
-              const feedCls = inc.status === 'Ongoing' ? 'critical' : 'nominal';
+            } else if (inc.status === 'Acknowledged') {
+              const feedCls = inc.severity === 'Critical' ? 'critical' : 'nominal';
               feedHTML += `
               <div class="feed-item ${feedCls}">
                 <div class="feed-info">
@@ -4292,6 +4307,8 @@
           el.classList.add('selected');
           if (document.getElementById('selected-center-name')) document.getElementById('selected-center-name').textContent = name;
         }
+        /* 
+        // Duplicate functions globally defined in app-config.js
         function escapeHTML(value) {
           return String(value ?? '').replace(/[&<>"']/g, ch => ({
             '&': '&amp;',
@@ -4334,6 +4351,7 @@
           const text = String(rawLocation).trim();
           return /pasig/i.test(text) ? text : `${text}, Pasig City`;
         }
+        */
 
 
 
@@ -4424,12 +4442,32 @@
 
 
         const RESPONSE_DIRECTORY = {
-          ambulance: [],
-          police: [],
-          fire: [],
-          relief: [],
-          shelter: [],
-          barangay: []
+          ambulance: [
+            { name: 'Pasig City General Hospital ER', unit: 'Medical', role: 'Emergency Medical Services', phone: '(02) 8643-1111', distance: '0.8 km away' },
+            { name: 'PASIG-AMB-01 (Dr. Apolinar Cruz)', unit: 'Ambulance', role: 'Paramedic Unit', phone: '+63 919 100 1001', distance: '1.2 km away' },
+            { name: 'PASIG-AMB-02', unit: 'Ambulance', role: 'Secondary Response', phone: '+63 919 100 1002', distance: '2.1 km away' }
+          ],
+          police: [
+            { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Law Enforcement', phone: '(02) 8641-0000', distance: '0.5 km away' },
+            { name: 'PNP Ortigas Detachment', unit: 'Police', role: 'Sub-station', phone: '+63 917 555 4444', distance: '0.9 km away' },
+            { name: 'Pasig City Traffic Management', unit: 'Traffic', role: 'Traffic Control', phone: '+63 917 800 0001', distance: '1.0 km away' }
+          ],
+          fire: [
+            { name: 'BFP Pasig City Fire Station', unit: 'Fire', role: 'Primary Fire Response', phone: '(02) 8643-0000', distance: '0.7 km away' },
+            { name: 'BFP Manggahan Sub-station', unit: 'Fire', role: 'Secondary Response', phone: '+63 918 200 3003', distance: '1.3 km away' }
+          ],
+          relief: [
+            { name: 'DSWD Pasig City Field Office', unit: 'Relief', role: 'Social Welfare & Aid', phone: '(02) 8643-2000', distance: '1.1 km away' },
+            { name: 'Pasig DRRMO Relief Division', unit: 'Relief', role: 'Relief Coordinator', phone: '+63 906 777 8888', distance: '0.4 km away' }
+          ],
+          shelter: [
+            { name: 'Santolan Elementary Evac Center', unit: 'Shelter', role: 'Evacuation Manager', phone: '+63 918 222 3333', distance: '1.5 km away' },
+            { name: 'Rizal High School Evac Center', unit: 'Shelter', role: 'Center-In-Charge', phone: '+63 908 444 5555', distance: '2.0 km away' }
+          ],
+          barangay: [
+            { name: 'Brgy. Hall Emergency Desk', unit: 'Barangay', role: 'Barangay Response Unit', phone: '+63 927 111 2222', distance: '0.3 km away' },
+            { name: 'Brgy. Tanod Command Center', unit: 'Tanod', role: 'Community Watch', phone: '+63 927 333 4444', distance: '0.3 km away' }
+          ]
         };
 
 
@@ -4713,8 +4751,8 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open')) });
 
         document.addEventListener('DOMContentLoaded', () => {
+          if (typeof applyLigtasConfig === 'function') applyLigtasConfig();
           if (typeof renderSOSBanners === 'function') renderSOSBanners();
-          if (typeof seedIncidents === "function") seedIncidents();
           if (typeof renderIncidentsTable === "function") renderIncidentsTable();
         });
       </script>
