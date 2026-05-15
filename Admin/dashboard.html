@@ -11,6 +11,37 @@
   <script src="js/app-config.js"></script>
   <script src="js/app.js"></script>
   <script src="js/audit-log.js"></script>
+  <script>
+    function renderNotifications() {
+      const list = document.getElementById('notif-list');
+      if (!list) return;
+      const logsA = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const logsB = JSON.parse(localStorage.getItem('ligtas_audit_logs') || '[]');
+      const seen = new Set(); const merged = [];
+      [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
+      const recent = merged.slice(0, 8);
+      const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Acknowledged': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
+      if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
+      list.innerHTML = recent.map((log, i) => {
+        const dotColor = dotColors[log.action] || '#64748B';
+        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' - ' + (log.detail || log.details) : '');
+        let timeStr = ''; try { const p = (log.timestamp || '').split(', '); timeStr = p.length >= 2 ? p[1].replace(/:\d\d /, ' ') : log.timestamp || ''; } catch (e) { }
+        const bb = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${bb}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
+          + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+          + `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
+          + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
+          + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
+      }).join('');
+    }
+
+    function updateNotifDot() {
+      const logs = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
+      const lastRead = parseInt(sessionStorage.getItem('ligtas_last_read') || '0');
+      const dot = document.querySelector('.notif-dot');
+      if (dot) dot.style.display = logs.length > lastRead ? 'block' : 'none';
+    }
+  </script>
   <style>
     option {
       background: var(--bg-card);
@@ -4328,7 +4359,8 @@
       const zones = JSON.parse(localStorage.getItem('ligtas_zones') || '{}');
       const units = JSON.parse(localStorage.getItem('ligtas_units') || '[]');
       const inventory = JSON.parse(localStorage.getItem('ligtas_inventory') || '{}');
-      const requests = JSON.parse(localStorage.getItem('ligtas_aided_requests') || '[]');
+      const requests = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+      const pendingRequests = requests.filter(r => firstValue(r.status, 'Pending') === 'Pending');
 
       // 1. Update Metrics
       const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
@@ -4382,10 +4414,10 @@
           feed.innerHTML = feedData.map(inc => `
             <div style="padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer;" onclick="openDetailById('${inc.id}')">
               <div style="display:flex; justify-content:space-between; margin-bottom:6px">
-                <span class="badge ${inc.severity.toLowerCase() === 'critical' ? 'badge-critical' : 'warning'}" style="font-size:9px">${inc.severity}</span>
-                <span style="font-size:10px; color:var(--text-micro); font-family:'IBM Plex Mono'">${inc.createdAt}</span>
+                <span class="badge ${String(firstValue(inc.severity, 'Medium')).toLowerCase() === 'critical' ? 'badge-critical' : 'warning'}" style="font-size:9px">${escapeHTML(firstValue(inc.severity, 'Medium'))}</span>
+                <span style="font-size:10px; color:var(--text-micro); font-family:'IBM Plex Mono'">${escapeHTML(firstValue(inc.createdAt, inc.submittedAt, 'Just now'))}</span>
               </div>
-              <div style="font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:4px">${escapeHTML(inc.title)}</div>
+              <div style="font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:4px">${escapeHTML(firstValue(inc.title, inc.type, 'Emergency Report'))}</div>
               <div style="font-size:11.5px; color:var(--text-muted)">📍 ${escapeHTML(inc.location)}</div>
             </div>
           `).join('');
@@ -4425,18 +4457,18 @@
       const reqList = document.getElementById('dash-relief-requests');
       const reqBadge = document.getElementById('dash-relief-badge');
       if (reqBadge) {
-        reqBadge.textContent = `${requests.length} Pending`;
+        reqBadge.textContent = `${pendingRequests.length} Pending`;
       }
       if (reqList) {
-        const recentReqs = requests.slice(0, 5);
+        const recentReqs = pendingRequests.slice(0, 5);
         if (recentReqs.length === 0) {
           reqList.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>No pending requests</p></div>';
         } else {
           reqList.innerHTML = recentReqs.map(r => `
             <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:10px;">
-              <div style="font-size:11px; font-weight:600; color:var(--nominal); margin-bottom:4px">${r.zone}</div>
-              <div style="font-size:12px; color:var(--text-primary); line-height:1.4">${r.desc}</div>
-              <div style="font-size:10px; color:var(--text-micro); margin-top:6px">${r.timestamp}</div>
+              <div style="font-size:11px; font-weight:600; color:var(--nominal); margin-bottom:4px">${escapeHTML(firstValue(r.center, r.zone, 'Relief Center'))}</div>
+              <div style="font-size:12px; color:var(--text-primary); line-height:1.4">${escapeHTML(firstValue(r.notes, r.desc, r.type, 'No request details provided.'))}</div>
+              <div style="font-size:10px; color:var(--text-micro); margin-top:6px">${escapeHTML(firstValue(r.submittedAt, r.timestamp, 'Just now'))}</div>
             </div>
           `).join('');
         }
@@ -4747,15 +4779,22 @@
       if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
     })();
 
-    function updateNotifDot() {
-      const logs = JSON.parse(localStorage.getItem('ligtas_audit_logs') || localStorage.getItem('ligtas_audit') || '[]');
-      const lastRead = parseInt(sessionStorage.getItem('ligtas_last_read') || '0');
+    window.updateNotifDot = function updateNotifDot() {
+      const logs = JSON.parse(
+        localStorage.getItem('ligtas_audit') || '[]'
+      );
+      const lastRead = parseInt(
+        sessionStorage.getItem('ligtas_last_read') || '0'
+      );
       const dot = document.querySelector('.notif-dot');
-      if (dot) dot.style.display = logs.length > lastRead ? 'block' : 'none';
-    }
+      if (dot) {
+        dot.style.display =
+          logs.length > lastRead ? 'block' : 'none';
+      }
+    };
     updateNotifDot();
 
-    function renderNotifications() {
+    window.renderNotifications = function renderNotifications() {
       const list = document.getElementById('notif-list');
       if (!list) return;
       const logsA = JSON.parse(localStorage.getItem('ligtas_audit') || '[]');
@@ -4763,26 +4802,20 @@
       const seen = new Set(); const merged = [];
       [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
       const recent = merged.slice(0, 8);
-
-      const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'SOS Acknowledged': '#EF4444' };
-      if (recent.length === 0) {
-        list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>';
-        return;
-      }
+      const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Acknowledged': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
+      if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
       list.innerHTML = recent.map((log, i) => {
         const dotColor = dotColors[log.action] || '#64748B';
-        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' — ' + (log.detail || log.details) : '');
-        const borderBottom = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
-        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${borderBottom}">
-          <div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px"></div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px">${log.action}</div>
-            <div style="font-size:12px;color:var(--text-muted);line-height:1.4">${desc}</div>
-          </div>
-          <div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap">${log.timestamp || ''}</div>
-        </div>`;
+        const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' - ' + (log.detail || log.details) : '');
+        let timeStr = ''; try { const p = (log.timestamp || '').split(', '); timeStr = p.length >= 2 ? p[1].replace(/:\d\d /, ' ') : log.timestamp || ''; } catch (e) { }
+        const bb = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${bb}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
+          + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+          + `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
+          + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
+          + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
       }).join('');
-    }
+    };
   </script>
 
   <script>
@@ -4926,6 +4959,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      if (typeof applyLigtasConfig === 'function') applyLigtasConfig();
       seedIncidents();
       renderDashboard();
       renderSOSBanners();

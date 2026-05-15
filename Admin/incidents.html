@@ -3235,10 +3235,11 @@
           </tr>`;
             if (inc.status === 'Resolved') {
               resolvedHTML += rowHTML;
-            } else if (inc.status === 'Reported') {
-              // Only show newly reported incidents in main table. Acknowledged reports move to the side feed.
+            } else {
               activeHTML += rowHTML;
-            } else if (inc.status === 'Acknowledged') {
+            }
+
+            if (inc.status === 'Acknowledged') {
               const feedCls = inc.severity === 'Critical' ? 'critical' : 'nominal';
               feedHTML += `
               <div class="feed-item ${feedCls}">

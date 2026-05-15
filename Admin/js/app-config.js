@@ -1,43 +1,43 @@
 // CORE UTILITIES (Global)
-const firstValue = (...vals) => {
+var firstValue = (...vals) => {
     for (const v of vals) {
         if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim().toLowerCase() !== 'undefined') return v;
     }
     return vals[vals.length - 1];
 };
 
-const normalizeList = (val) => {
+var normalizeList = (val) => {
     if (!val) return [];
     if (Array.isArray(val)) return val;
     if (typeof val === 'string') return val.split(/,|\n|\|/).map(s => s.trim()).filter(Boolean);
     return [];
 };
 
-const escapeHTML = (str) => {
+var escapeHTML = (str) => {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
 };
 
-const getIncidentLocation = (inc) => {
+var getIncidentLocation = (inc) => {
     const raw = firstValue(inc.location, inc.barangay, inc.address, inc.fullAddress, inc.landmark, inc.reportLocation, inc.latlng, 'Unknown location');
     const text = String(raw).trim();
     if (text === 'Unknown location' || /pasig/i.test(text)) return text;
     return `${text}, Pasig City`;
 };
 
-const getIncidentNeeds = (inc) => {
+var getIncidentNeeds = (inc) => {
     return normalizeList(firstValue(
         inc.needs, inc.requiredAssistance, inc.assistanceNeeded, inc.resourcesNeeded, inc.unitsNeeded, inc.responseUnits, inc.assistance, inc.requirements
     ));
 };
 
-const getIncidentMedia = (inc) => {
+var getIncidentMedia = (inc) => {
     return normalizeList(firstValue(
         inc.media, inc.attachments, inc.photos, inc.images, inc.photoUrls, inc.photoUrl, inc.imageUrl
     )).filter(Boolean);
 };
 
-const severityTone = (severity) => {
+var severityTone = (severity) => {
     if (!severity) return 'default';
     const s = String(severity).toLowerCase();
     if (s.includes('critical')) return 'critical';
@@ -47,7 +47,7 @@ const severityTone = (severity) => {
     return 'default';
 };
 
-const sourceTone = (source) => {
+var sourceTone = (source) => {
     if (!source) return 'badge';
     const s = String(source).toLowerCase();
     if (s.includes('admin') || s.includes('official')) return 'badge critical';
@@ -56,12 +56,12 @@ const sourceTone = (source) => {
     return 'badge';
 };
 
-const getCallableNumber = (phone) => {
+var getCallableNumber = (phone) => {
     if (!phone) return '';
     return String(phone).replace(/[^\d+]/g, '');
 };
 
-const renderCallButton = (label, phone, type = 'primary') => {
+var renderCallButton = (label, phone, type = 'primary') => {
     if (!phone) return `<button class="btn btn-ghost" disabled style="opacity:0.55;cursor:not-allowed;">No phone number</button>`;
     const btnClass = type === 'ghost' ? 'btn-ghost' : 'btn-primary';
     return `<a href="tel:${phone}" class="btn ${btnClass}" style="text-decoration:none;font-size:11px;padding:6px 10px;" onclick="if(typeof onInitiateCall==='function')onInitiateCall(this,'${phone}');event.stopPropagation()">☎ ${label}</a>`;
@@ -144,7 +144,7 @@ window.updateCallStatus = function (btn, status) {
     }
 };
 
-const renderInfoBadge = (text, type = 'default') => {
+var renderInfoBadge = (text, type = 'default') => {
     const colors = {
         'critical': 'background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)',
         'warning': 'background:rgba(245,158,11,0.1);color:var(--warning);border-color:rgba(245,158,11,0.2)',
@@ -155,13 +155,13 @@ const renderInfoBadge = (text, type = 'default') => {
     return `<span class="badge" style="${colors[type] || colors.default}">${escapeHTML(text)}</span>`;
 };
 
-const setText = (id, value, fallback = '—') => {
+var setText = (id, value, fallback = '—') => {
     const el = document.getElementById(id);
     if (el) el.textContent = value || fallback;
 };
 
-const getIncidents = () => JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
-const saveIncidents = (arr) => localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
+var getIncidents = () => JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+var saveIncidents = (arr) => localStorage.setItem('ligtas_incidents', JSON.stringify(arr));
 
 // MASTER DUMMY DATA
 const DEFAULT_ZONES = {
@@ -574,15 +574,208 @@ const DEFAULT_AIDED = [
     }
 ];
 
+const DEFAULT_RELIEF_REQUESTS = [
+    {
+        id: 'REQ-20260515-001',
+        center: 'Nagpayong Elementary School EC',
+        location: 'Barangay Pinagbuhatan, Pasig City',
+        type: 'Food Packs',
+        families: '450',
+        urgency: 'Critical',
+        notes: 'Dinner stock will run short by 6:00 PM. Priority families include seniors, children, and pregnant evacuees from creekside areas.',
+        status: 'Pending',
+        submittedAt: '5/15/2026, 06:45:00 AM',
+        lastComment: ''
+    },
+    {
+        id: 'REQ-20260515-002',
+        center: 'Rizal High School EC',
+        location: 'Barangay Caniogan, Pasig City',
+        type: 'Water Supply',
+        families: '620',
+        urgency: 'High',
+        notes: 'Potable water is below a half-day requirement after new arrivals. Need tanker refill before lunch service.',
+        status: 'Pending',
+        submittedAt: '5/15/2026, 07:05:00 AM',
+        lastComment: ''
+    },
+    {
+        id: 'REQ-20260515-003',
+        center: 'Santolan Covered Court EC',
+        location: 'Barangay Santolan, Pasig City',
+        type: 'Medical Supplies',
+        families: '160',
+        urgency: 'High',
+        notes: 'Clinic table is running low on gauze, alcohol, oral rehydration salts, and paracetamol.',
+        status: 'Pending',
+        submittedAt: '5/15/2026, 08:25:00 AM',
+        lastComment: ''
+    },
+    {
+        id: 'REQ-20260515-004',
+        center: 'Buting Elementary School EC',
+        location: 'Barangay Buting, Pasig City',
+        type: 'Hygiene Kits',
+        families: '210',
+        urgency: 'Medium',
+        notes: 'Comfort room area needs soap, sanitary pads, toothbrushes, and pails for newly registered families.',
+        status: 'Pending',
+        submittedAt: '5/15/2026, 08:00:00 AM',
+        lastComment: ''
+    },
+    {
+        id: 'REQ-20260515-005',
+        center: 'Pinagbuhatan High School EC',
+        location: 'Barangay Pinagbuhatan, Pasig City',
+        type: 'Rice Sacks',
+        families: '500',
+        urgency: 'Critical',
+        notes: 'Approved for central kitchen support serving high-density evacuation rooms.',
+        status: 'For Pick-Up',
+        submittedAt: '5/15/2026, 07:25:00 AM',
+        updatedAt: '5/15/2026, 08:10:00 AM',
+        lastComment: 'Approved. Cargo Truck 04 assigned from central warehouse.'
+    },
+    {
+        id: 'REQ-20260515-006',
+        center: 'Eusebio High School EC',
+        location: 'Barangay Rosario, Pasig City',
+        type: 'Medical Supplies',
+        families: '220',
+        urgency: 'Medium',
+        notes: 'Approved for clinic replenishment after morning assessment by the medical desk.',
+        status: 'For Pick-Up',
+        submittedAt: '5/15/2026, 07:15:00 AM',
+        updatedAt: '5/15/2026, 08:00:00 AM',
+        lastComment: 'Medical Team Alpha assigned to prepare boxes for release.'
+    },
+    {
+        id: 'REQ-20260515-007',
+        center: 'Pasig Elementary School EC',
+        location: 'Barangay San Nicolas, Pasig City',
+        type: 'Food Packs',
+        families: '210',
+        urgency: 'High',
+        notes: 'Completed morning distribution for evacuees from nearby low-lying streets.',
+        status: 'Request Done',
+        submittedAt: '5/15/2026, 05:40:00 AM',
+        updatedAt: '5/15/2026, 06:50:00 AM',
+        lastComment: 'Delivered and signed by center admin.'
+    },
+    {
+        id: 'REQ-20260515-008',
+        center: 'Sagad High School EC',
+        location: 'Barangay Sagad, Pasig City',
+        type: 'Water Supply',
+        families: '140',
+        urgency: 'Medium',
+        notes: 'Completed potable water refill before breakfast distribution.',
+        status: 'Request Done',
+        submittedAt: '5/15/2026, 05:55:00 AM',
+        updatedAt: '5/15/2026, 07:05:00 AM',
+        lastComment: 'Water Team 01 completed delivery.'
+    }
+];
+
+const DEFAULT_VOLUNTEERS = [
+    { name: 'Rafael Mendoza', role: 'Rescue', initials: 'RM', color: '#EF4444', status: 'Active', loc: 'Nagpayong Elementary School EC' },
+    { name: 'Beatrice Cruz', role: 'Medical', initials: 'BC', color: '#3B82F6', status: 'Active', loc: 'Rizal High School EC' },
+    { name: 'Mateo Santos', role: 'Logistics', initials: 'MS', color: '#F59E0B', status: 'Busy', loc: 'Pasig Command Center Warehouse' },
+    { name: 'Paolo Reyes', role: 'Rescue', initials: 'PR', color: '#22C55E', status: 'Active', loc: 'Santolan Covered Court EC' },
+    { name: 'Elena Dimaculangan', role: 'Comms', initials: 'ED', color: '#8B5CF6', status: 'Active', loc: 'Pasig Command Center' },
+    { name: 'Ricardo Dalisay', role: 'Driver', initials: 'RD', color: '#64748B', status: 'Busy', loc: 'C. Raymundo Avenue, Maybunga' },
+    { name: 'Marian Salonga', role: 'Medical', initials: 'MS', color: '#14B8A6', status: 'Active', loc: 'Manggahan High School EC' },
+    { name: 'Jomar Dela Cruz', role: 'Logistics', initials: 'JC', color: '#F43F5E', status: 'Busy', loc: 'Buting Elementary School EC' }
+];
+
+const DEFAULT_USER_SESSION = {
+    name: 'Juan Dela Cruz',
+    phone: '0917-555-1234',
+    barangay: 'Ugong',
+    medical: {
+        bloodType: 'O+',
+        allergies: 'None declared',
+        conditions: 'Asthma'
+    },
+    emergencyContact: {
+        name: 'Maria Dela Cruz',
+        phone: '0917-555-5678'
+    }
+};
+
+function hasUsableStoredData(key, expectedType) {
+    const raw = localStorage.getItem(key);
+    if (!raw) return false;
+    try {
+        const parsed = JSON.parse(raw);
+        if (expectedType === 'array') return Array.isArray(parsed) && parsed.length > 0;
+        if (expectedType === 'object') return parsed && typeof parsed === 'object' && !Array.isArray(parsed) && Object.keys(parsed).length > 0;
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function seedStorage(key, data, expectedType) {
+    if (!hasUsableStoredData(key, expectedType)) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+}
+
+function normalizeIncidentRecord(incident, index = 0) {
+    const fallback = DEFAULT_INCIDENTS[index % DEFAULT_INCIDENTS.length] || {};
+    const type = firstValue(incident.type, fallback.type, 'Emergency Report');
+    const barangay = firstValue(incident.barangay, fallback.barangay, 'Pasig');
+    const title = firstValue(incident.title, fallback.title, `${type} — ${barangay}`);
+    const location = firstValue(incident.location, incident.address, incident.fullAddress, incident.landmark, fallback.location, barangay);
+
+    return {
+        ...fallback,
+        ...incident,
+        id: firstValue(incident.id, fallback.id, `INC-${Date.now()}-${index + 1}`),
+        title,
+        type,
+        barangay,
+        location,
+        status: firstValue(incident.status, fallback.status, 'Reported'),
+        severity: firstValue(incident.severity, incident.priority, fallback.severity, 'Medium'),
+        description: firstValue(incident.description, incident.details, incident.message, fallback.description, 'No description provided.'),
+        reporter: firstValue(incident.reporter, incident.reporterName, incident.name, fallback.reporter, 'Field Report'),
+        contact: firstValue(incident.contact, incident.phone, incident.mobile, fallback.contact, 'No contact provided'),
+        source: firstValue(incident.source, fallback.source, 'Mobile App'),
+        createdAt: firstValue(incident.createdAt, incident.submittedAt, incident.time, incident.reportedAt, fallback.createdAt, new Date().toLocaleString('en-PH')),
+        needs: getIncidentNeeds(incident).length ? getIncidentNeeds(incident) : normalizeList(fallback.needs),
+        reportingFor: firstValue(incident.reportingFor, incident.reportFor, fallback.reportingFor, 'Not provided'),
+        media: getIncidentMedia(incident).length ? getIncidentMedia(incident) : normalizeList(fallback.media)
+    };
+}
+
+function repairIncidentStorage() {
+    let incidents;
+    try {
+        incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+    } catch (e) {
+        incidents = [];
+    }
+
+    if (!Array.isArray(incidents) || incidents.length === 0) {
+        localStorage.setItem('ligtas_incidents', JSON.stringify(DEFAULT_INCIDENTS));
+        return;
+    }
+
+    const repaired = incidents.map((incident, index) => normalizeIncidentRecord(incident || {}, index));
+    localStorage.setItem('ligtas_incidents', JSON.stringify(repaired));
+}
+
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v12';
+    const CURRENT_VERSION = '2026.05.15.v15';
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
     if (savedVersion !== CURRENT_VERSION) {
         // Clear specific dummy data keys to allow fresh seeding
-        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs', 'ligtas_sos_queue'];
+        const keysToReset = ['ligtas_incidents', 'ligtas_audit', 'ligtas_inventory', 'ligtas_aided_requests', 'ligtas_audit_logs', 'ligtas_sos_queue', 'ligtas_relief_requests', 'ligtas_volunteers'];
         keysToReset.forEach(k => localStorage.removeItem(k));
         localStorage.setItem('ligtas_data_version', CURRENT_VERSION);
         console.log("LIGTAS: Dummy data reset to latest version (" + CURRENT_VERSION + ")");
@@ -622,22 +815,24 @@ const applyLigtasConfig = () => {
     ];
 
     // Seed defaults if empty
-    if (!localStorage.getItem('ligtas_sos_queue')) localStorage.setItem('ligtas_sos_queue', JSON.stringify(DEFAULT_SOS));
+    seedStorage('ligtas_sos_queue', DEFAULT_SOS, 'array');
 
 
     // Seed defaults if empty
-    if (!localStorage.getItem('ligtas_zones')) localStorage.setItem('ligtas_zones', JSON.stringify(DEFAULT_ZONES));
-    if (!localStorage.getItem('ligtas_units')) localStorage.setItem('ligtas_units', JSON.stringify(DEFAULT_UNITS));
-    if (!localStorage.getItem('ligtas_inventory')) localStorage.setItem('ligtas_inventory', JSON.stringify(DEFAULT_INVENTORY));
-    if (!localStorage.getItem('ligtas_aided_requests')) localStorage.setItem('ligtas_aided_requests', JSON.stringify(DEFAULT_AIDED));
+    seedStorage('ligtas_zones', DEFAULT_ZONES, 'object');
+    seedStorage('ligtas_units', DEFAULT_UNITS, 'array');
+    seedStorage('ligtas_inventory', DEFAULT_INVENTORY, 'object');
+    seedStorage('ligtas_aided_requests', DEFAULT_AIDED, 'array');
+    seedStorage('ligtas_relief_requests', DEFAULT_RELIEF_REQUESTS, 'array');
+    seedStorage('ligtas_volunteers', DEFAULT_VOLUNTEERS, 'array');
+    seedStorage('ligtas_incidents', DEFAULT_INCIDENTS, 'array');
+    repairIncidentStorage();
+    seedStorage('ligtas_audit', DEFAULT_AUDIT, 'array');
+    seedStorage('ligtas_audit_logs', DEFAULT_AUDIT, 'array');
+    seedStorage('ligtas_user_session', DEFAULT_USER_SESSION, 'object');
 
-    if (!localStorage.getItem('ligtas_incidents') || JSON.parse(localStorage.getItem('ligtas_incidents')).length === 0) {
-        localStorage.setItem('ligtas_incidents', JSON.stringify(DEFAULT_INCIDENTS));
-    }
-
-    if (!localStorage.getItem('ligtas_audit') || JSON.parse(localStorage.getItem('ligtas_audit')).length === 0) {
-        localStorage.setItem('ligtas_audit', JSON.stringify(DEFAULT_AUDIT));
-    }
+    if (!localStorage.getItem('ligtas_role')) localStorage.setItem('ligtas_role', 'super_admin');
+    if (!localStorage.getItem('ligtas_user')) localStorage.setItem('ligtas_user', 'Cmdr. Reyes');
 
     if (!localStorage.getItem('ligtas_config')) {
         localStorage.setItem('ligtas_config', JSON.stringify({
