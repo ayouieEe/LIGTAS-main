@@ -1,14 +1,14 @@
 import os
 import re
 
-html_path = r'c:\Users\jange\Desktop\LIGTAS\index.html'
+html_path = r'c:\Users\jange\Desktop\LIGTAS\dashboard.html'
 
 with open(html_path, 'r', encoding='utf-8') as f:
     content = f.read()
 
 # 1. Replace nav buttons with anchor tags
 nav_replacements = [
-    (r'<button class="nav-item active" data-target="dashboard">', r'<a href="index.html" class="nav-item" data-target="dashboard">'),
+    (r'<button class="nav-item active" data-target="dashboard">', r'<a href="dashboard.html" class="nav-item" data-target="dashboard">'),
     (r'<button class="nav-item" data-target="incidents">', r'<a href="incidents.html" class="nav-item" data-target="incidents">'),
     (r'<button class="nav-item" data-target="centers">', r'<a href="centers.html" class="nav-item" data-target="centers">'),
     (r'<button class="nav-item" data-target="relief-ops">', r'<a href="relief-ops.html" class="nav-item" data-target="relief-ops">'),
@@ -17,7 +17,7 @@ nav_replacements = [
     (r'</button>\s*<!-- End Nav -->', r'</a>') # Just a general replace for nav buttons, but we can do it safer:
 ]
 
-content = content.replace('<button class="nav-item active" data-target="dashboard"><i class="ph ph-squares-four"></i> Dashboard</button>', '<a href="index.html" class="nav-item" data-target="dashboard"><i class="ph ph-squares-four"></i> Dashboard</a>')
+content = content.replace('<button class="nav-item active" data-target="dashboard"><i class="ph ph-squares-four"></i> Dashboard</button>', '<a href="dashboard.html" class="nav-item" data-target="dashboard"><i class="ph ph-squares-four"></i> Dashboard</a>')
 content = content.replace('<button class="nav-item" data-target="incidents"><i class="ph ph-warning-circle"></i> Incidents</button>', '<a href="incidents.html" class="nav-item" data-target="incidents"><i class="ph ph-warning-circle"></i> Incidents</a>')
 content = content.replace('<button class="nav-item" data-target="centers"><i class="ph ph-buildings"></i> Centers</button>', '<a href="centers.html" class="nav-item" data-target="centers"><i class="ph ph-buildings"></i> Centers</a>')
 content = content.replace('<button class="nav-item" data-target="relief-ops"><i class="ph ph-package"></i> Relief Ops</button>', '<a href="relief-ops.html" class="nav-item" data-target="relief-ops"><i class="ph ph-package"></i> Relief Ops</a>')
@@ -58,7 +58,7 @@ titles = {
 }
 
 file_mapping = {
-    'dashboard': 'index.html',
+    'dashboard': 'dashboard.html',
     'incidents': 'incidents.html',
     'centers': 'centers.html',
     'relief-ops': 'relief-ops.html',
