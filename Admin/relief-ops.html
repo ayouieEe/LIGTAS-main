@@ -1465,40 +1465,260 @@
 
     /* METRIC CARD ACTIONS REMOVED - FULL CARD CLICKABLE */
 
-    /* MAP PLACEHOLDER */
-    .map-ph {
-      background: var(--bg3);
+    /* RELIEF REQUEST QUEUE */
+    .req-list {
+      padding: 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+
+    .req-list::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .req-list::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 3px
+    }
+
+    .req-card {
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      height: 160px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--border);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .req-card:hover {
+      border-color: var(--text-micro);
+      background: var(--bg4)
+    }
+
+    .req-card.bc-red {
+      border-left-color: var(--critical)
+    }
+
+    .req-card.bc-orange {
+      border-left-color: var(--warning)
+    }
+
+    .req-card.bc-blue {
+      border-left-color: var(--nominal)
+    }
+
+    .req-card.bc-green {
+      border-left-color: var(--success)
+    }
+
+    .req-card.bc-teal {
+      border-left-color: var(--teal)
+    }
+
+    .rq-head {
       display: flex;
       align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      margin: 0 18px 14px
+      justify-content: space-between;
+      margin-bottom: 6px
     }
 
-    .map-grid {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 32px 32px;
-      opacity: .6
+    .rq-center {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary)
     }
 
-    .map-truck {
-      position: absolute;
-      background: var(--bg2);
-      border: 1px solid var(--primary);
+    .rq-time {
+      font-size: 10px;
+      color: var(--text-micro);
+      font-family: 'IBM Plex Mono', monospace
+    }
+
+    .rq-type {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px
+    }
+
+    .rq-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px
+    }
+
+    .rq-qty {
+      font-size: 11px;
+      color: var(--text-micro)
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+      border-color: rgba(245, 158, 11, 0.3)
+    }
+
+    .badge-approved {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--nominal);
+      border-color: rgba(59, 130, 246, 0.3)
+    }
+
+    .badge-nostocks {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--critical);
+      border-color: rgba(239, 68, 68, 0.3)
+    }
+
+    .badge-pickup {
+      background: rgba(20, 184, 166, 0.1);
+      color: var(--teal);
+      border-color: rgba(20, 184, 166, 0.3)
+    }
+
+    .badge-done {
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--success);
+      border-color: rgba(34, 197, 94, 0.3)
+    }
+
+    .rq-empty {
+      padding: 28px 16px;
+      text-align: center;
+      color: var(--text3);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Relief request review modal wide */
+    .modal.modal-relief {
+      width: 600px
+    }
+
+    /* Status action buttons row */
+    .status-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .btn-status {
+      padding: 9px 12px;
       border-radius: var(--radius);
-      padding: 4px 10px;
-      font-size: 11.5px;
-      color: var(--primary);
-      font-weight: 500;
-      display: flex;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      transition: all .15s;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .btn-status:hover {
+      background: var(--bg4);
+      border-color: var(--text-micro)
+    }
+
+    .btn-status.s-approve {
+      border-color: rgba(59, 130, 246, .4);
+      color: var(--nominal)
+    }
+
+    .btn-status.s-approve:hover {
+      background: rgba(59, 130, 246, .1)
+    }
+
+    .btn-status.s-nostocks {
+      border-color: rgba(239, 68, 68, .4);
+      color: var(--critical)
+    }
+
+    .btn-status.s-nostocks:hover {
+      background: rgba(239, 68, 68, .1)
+    }
+
+    .btn-status.s-pickup {
+      border-color: rgba(20, 184, 166, .4);
+      color: var(--teal)
+    }
+
+    .btn-status.s-pickup:hover {
+      background: rgba(20, 184, 166, .1)
+    }
+
+    .btn-status.s-done {
+      border-color: rgba(34, 197, 94, .4);
+      color: var(--success)
+    }
+
+    .btn-status.s-done:hover {
+      background: rgba(34, 197, 94, .1)
+    }
+
+    .btn-status:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: var(--border);
+      color: var(--text-muted)
+    }
+
+    .btn-status:disabled:hover {
+      background: var(--bg-elevated)
+    }
+
+    /* Urgency bar */
+    .urgency-pill {
+      display: inline-flex;
       align-items: center;
-      gap: 6px
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .urgency-critical {
+      background: rgba(239, 68, 68, .1);
+      color: var(--critical);
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .urgency-high {
+      background: rgba(245, 158, 11, .1);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, .3)
+    }
+
+    .urgency-medium {
+      background: rgba(234, 179, 8, .1);
+      color: var(--yellow);
+      border: 1px solid rgba(234, 179, 8, .3)
+    }
+
+    .urgency-low {
+      background: rgba(34, 197, 94, .1);
+      color: var(--success);
+      border: 1px solid rgba(34, 197, 94, .3)
+    }
+
+    /* Submit request btn for center admin */
+    .center-admin-only {
+      display: none
+    }
+
+    .super-admin-queue {
+      display: block
     }
 
     /* CIRCLE CHART */
@@ -1821,23 +2041,25 @@
     .mc-segmented {
       display: flex;
       background: #0F1117;
-      padding: 4px;
+      padding: 3px;
       border-radius: 8px;
       border: 1px solid #2E3247;
-      gap: 4px;
+      gap: 3px;
+      width: fit-content;
+      min-width: 250px;
     }
 
     .mc-seg-btn {
-      flex: 1;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 500;
+      padding: 7px 16px;
+      font-size: 11px;
+      font-weight: 600;
       color: #6B7280;
       background: none;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.2s;
+      white-space: nowrap;
     }
 
     .mc-seg-btn.active {
@@ -3161,32 +3383,69 @@
         <div class="page active" id="page-relief">
           <div class="grid-right-heavy" style="height:620px">
             <div class="panel" style="display:flex;flex-direction:column;overflow:hidden">
-              <div class="panel-head">
-                <div style="display:flex;align-items:center;gap:12px">
-                  <h2>Aid Requests</h2>
-                  <div class="mc-segmented" style="margin-left:8px; padding: 2px;">
-                    <button class="mc-seg-btn active" id="btn-show-pending" style="padding: 4px 10px; font-size: 11px;"
-                      onclick="toggleRequestView('pending')">Queue</button>
-                    <button class="mc-seg-btn" id="btn-show-history" style="padding: 4px 10px; font-size: 11px;"
+              <div class="panel-head"
+                style="display:flex; align-items:center; justify-content:space-between; gap:20px; padding:12px 20px">
+                <div style="display:flex; align-items:center; gap:20px">
+                  <h2 style="white-space:nowrap; margin:0; font-size:16px">Relief Requests</h2>
+                  <div class="mc-segmented">
+                    <button class="mc-seg-btn active" id="btn-show-pending"
+                      onclick="toggleRequestView('pending')">Pending</button>
+                    <button class="mc-seg-btn" id="btn-show-forpickup" onclick="toggleRequestView('forpickup')">For
+                      Pick-Up</button>
+                    <button class="mc-seg-btn" id="btn-show-history"
                       onclick="toggleRequestView('history')">History</button>
                   </div>
                 </div>
-                <span class="badge badge-warning" id="pending-count">0 Pending</span>
 
+                <div style="display:flex; align-items:center; gap:12px">
+                  <span class="badge badge-warning" id="pending-count"
+                    style="display:none; font-weight:700; padding:4px 10px; border-radius:6px">0 Pending</span>
+                  <!-- center_admin: submit new request -->
+                  <button class="btn btn-sm btn-primary" id="submit-relief-req-btn"
+                    onclick="openModal('submit-relief-request-modal')" style="display:none">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    New Request
+                  </button>
+                </div>
               </div>
+
+              <!-- Pending list -->
               <div class="req-list" id="pending-request-list"
                 style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px">
-                <div id="no-pending-msg" style="padding:48px 24px; text-align:center; color:var(--text3); font-size:13px;">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px; opacity:0.5">
-                    <circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/>
+                <div id="no-pending-msg"
+                  style="padding:48px 24px; text-align:center; color:var(--text3); font-size:13px;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    style="margin-bottom:12px; opacity:0.5">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                    <rect x="9" y="3" width="6" height="4" rx="1" />
                   </svg>
-                  <p>No pending aid requests in queue</p>
+                  <p>No pending relief requests</p>
                 </div>
-
               </div>
+
+              <!-- For Pick-Up list -->
+              <div class="req-list" id="forpickup-request-list"
+                style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px;display:none">
+                <div id="no-forpickup-msg"
+                  style="padding:48px 24px; text-align:center; color:var(--text3); font-size:13px;">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    style="margin-bottom:12px; opacity:0.5">
+                    <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v2" />
+                    <circle cx="16" cy="19" r="2" />
+                    <circle cx="9" cy="19" r="2" />
+                    <path d="M17 17h-6" />
+                  </svg>
+                  <p>No requests ready for pick-up</p>
+                </div>
+              </div>
+
+              <!-- History list -->
               <div class="req-list" id="aided-history-list"
                 style="flex:1;overflow-y:auto;min-height:0;padding-bottom:16px;display:none">
-                <!-- Populated by renderAidedHistory() -->
+                <!-- Populated by renderReliefHistory() -->
               </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:16px;height:100%">
@@ -3194,10 +3453,11 @@
                 <div class="panel-head">
                   <h2>Distribution Manager</h2>
                   <span class="badge nominal">
-                    <div class="dot"></div>0 Active Deployments
-
+                    <div class="dot"></div>Stocks
                   </span>
                 </div>
+
+                <!-- Inventory Cards -->
                 <div class="metrics-row" style="padding:0 18px 14px; grid-template-columns: repeat(2, 1fr); gap: 12px;">
                   <div class="m-card c-blue" onclick="openRestockFor('Food Packs', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
@@ -3207,7 +3467,6 @@
                     <div class="m-card-value blue">0<span
                         style="font-size:12px;color:var(--text-micro);margin-left:4px">tons</span></div>
                     <div class="m-card-sub">No recent activity</div>
-
                   </div>
                   <div class="m-card c-orange" onclick="openRestockFor('Medical Supplies', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
@@ -3216,7 +3475,6 @@
                     <div class="m-card-label">Medical Supplies</div>
                     <div class="m-card-value orange">0</div>
                     <div class="m-card-sub">No stock data</div>
-
                   </div>
                   <div class="m-card c-blue" onclick="openRestockFor('Water Supply', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
@@ -3226,7 +3484,6 @@
                     <div class="m-card-value blue">0<span
                         style="font-size:12px;color:var(--text-micro);margin-left:4px">gal</span></div>
                     <div class="m-card-sub">No recent activity</div>
-
                   </div>
                   <div class="m-card c-green" onclick="openRestockFor('Hygiene Kits', 'add')">
                     <div class="m-card-hint">RESTOCK</div>
@@ -3235,28 +3492,11 @@
                     <div class="m-card-label">Hygiene Kits</div>
                     <div class="m-card-value green">0</div>
                     <div class="m-card-sub">No recent activity</div>
-
                   </div>
                 </div>
-                <p style="font-size: 11px; color: var(--text3); padding: 0 18px 12px;">Click a resource to RESTOCK, or
-                  DEDUCT inventory based on dispatch logs.</p>
-                <div class="map-ph">
-                  <div class="map-grid"></div>
-                  <div class="map-truck" style="display:none">🚛 NO ACTIVE CONVOYS</div>
 
-                </div>
-                <div style="padding:0 18px 14px">
-                  <button class="btn btn-primary w-full" style="justify-content:center"
-                    onclick="openModal('dispatch-modal')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                      <path d="M12 9v4" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                    Initialize New Convoy
-                  </button>
-                </div>
+                <p style="font-size: 11px; color: var(--text3); padding: 0 18px 12px;">Click a resource to RESTOCK or
+                  DEDUCT inventory based on dispatch logs.</p>
               </div>
               <div class="panel" style="flex:1;display:flex;flex-direction:column">
                 <div class="panel-head">
@@ -3304,7 +3544,8 @@
                   </select>
                 </div>
                 <div class="vol-list" id="vol-list" style="flex:1;overflow-y:auto;min-height:0;padding-bottom:12px">
-                  <div id="no-volunteers-msg" style="padding:32px; text-align:center; color:var(--text3); font-size:12px;">
+                  <div id="no-volunteers-msg"
+                    style="padding:32px; text-align:center; color:var(--text3); font-size:12px;">
                     No volunteers registered in system
                   </div>
 
@@ -3904,6 +4145,215 @@
           <button class="btn btn-ghost" onclick="closeModal('aid-request-detail-modal')">Close</button>
           <button class="btn btn-primary" id="ard-dispatch-btn" onclick="openDispatchFromDetail()">Initialize
             Dispatch</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RELIEF REQUEST REVIEW MODAL (super_admin) ===== -->
+    <div class="modal-backdrop" id="relief-request-review-modal">
+      <div class="modal modal-relief">
+        <div class="modal-head">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div
+              style="width:32px;height:32px;background:rgba(59,130,246,0.1);color:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </div>
+            <div>
+              <h2 id="rrm-title" style="font-size:15px;font-weight:600">Relief Request</h2>
+              <div id="rrm-id" style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6B7280">
+                REQ-000000</div>
+            </div>
+          </div>
+          <button class="close-btn" onclick="closeModal('relief-request-review-modal')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Status + urgency row -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+            <span id="rrm-status-badge" class="badge badge-pending">Pending</span>
+            <span id="rrm-urgency-badge" class="urgency-pill urgency-high">High</span>
+            <span id="rrm-time"
+              style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;margin-left:auto"></span>
+          </div>
+
+          <!-- Center info -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div
+              style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:12px">
+              <div
+                style="font-size:10px;color:var(--text-micro);text-transform:uppercase;font-weight:600;margin-bottom:4px">
+                Requesting Center</div>
+              <div id="rrm-center" style="font-size:13.5px;font-weight:600;color:var(--text-primary)">-</div>
+              <div id="rrm-location" style="font-size:11.5px;color:var(--text-muted);margin-top:2px">-</div>
+            </div>
+            <div
+              style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:12px">
+              <div
+                style="font-size:10px;color:var(--text-micro);text-transform:uppercase;font-weight:600;margin-bottom:4px">
+                Relief Type · Families</div>
+              <div id="rrm-type" style="font-size:13.5px;font-weight:600;color:var(--nominal)">-</div>
+              <div id="rrm-qty" style="font-size:11.5px;color:var(--text-muted);margin-top:2px">-</div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Notes / Special Situation</label>
+            <div id="rrm-notes"
+              style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:13px;color:var(--text-muted);line-height:1.5;min-height:52px">
+              No additional notes.</div>
+          </div>
+
+          <!-- Super admin comment -->
+          <div class="form-group" style="margin-bottom:16px">
+            <label>Instructions / Comments to Center Admin</label>
+            <textarea class="input-textarea" id="rrm-comment" rows="3"
+              placeholder="Add pickup instructions, schedule, rejection reason, or any instructions for the center admin..."></textarea>
+          </div>
+
+          <!-- Action buttons -->
+          <div id="rrm-actions-title"
+            style="font-size:10px;color:var(--text-micro);text-transform:uppercase;font-weight:600;margin-bottom:8px;letter-spacing:.06em">
+            Update Request Status</div>
+          <div class="status-actions" id="rrm-status-actions">
+            <button class="btn-status s-approve" id="rrm-btn-approve" onclick="updateReliefRequestStatus('Approved')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              Approve Request
+            </button>
+            <button class="btn-status s-nostocks" id="rrm-btn-nostocks"
+              onclick="updateReliefRequestStatus('No Stocks')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+              No Stocks Available
+            </button>
+            <button class="btn-status s-pickup" id="rrm-btn-pickup" onclick="updateReliefRequestStatus('For Pick-Up')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px">
+                <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v2" />
+                <circle cx="16" cy="19" r="2" />
+                <circle cx="9" cy="19" r="2" />
+                <path d="M17 17h-6" />
+              </svg>
+              Reliefs Picked-up
+            </button>
+            <button class="btn-status s-done" id="rrm-btn-done" onclick="updateReliefRequestStatus('Request Done')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              Mark Request Done
+            </button>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal('relief-request-review-modal')">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SUBMIT RELIEF REQUEST MODAL (center_admin) ===== -->
+    <div class="modal-backdrop" id="submit-relief-request-modal">
+      <div class="modal">
+        <div class="modal-head">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div
+              style="width:32px;height:32px;background:rgba(34,197,94,0.1);color:#22C55E;border-radius:8px;display:flex;align-items:center;justify-content:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+            </div>
+            <div>
+              <h2 style="font-size:15px;font-weight:600">Request Relief Goods</h2>
+              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6B7280">Submit to Super
+                Admin Queue</div>
+            </div>
+          </div>
+          <button class="close-btn" onclick="closeModal('submit-relief-request-modal')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-section-head">Center Information</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Evacuation Center Name</label>
+              <input class="input-text" id="srr-center" placeholder="e.g. Rizal High School Evacuation Center">
+            </div>
+            <div class="form-group">
+              <label>Location / Barangay</label>
+              <input class="input-text" id="srr-location" placeholder="e.g. Manggahan, Pasig City">
+            </div>
+          </div>
+
+          <div class="form-section-head">Relief Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Relief Type Needed</label>
+              <select class="input-select" id="srr-type">
+                <option value="">Select relief type...</option>
+                <option>Food Packs</option>
+                <option>Water Supply</option>
+                <option>Medical Supplies</option>
+                <option>Shelter Materials</option>
+                <option>Hygiene Kits</option>
+                <option>Volunteers</option>
+                <option>Mixed Relief Goods</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Estimated No. of Families</label>
+              <input class="input-text" id="srr-qty" type="number" placeholder="e.g. 250">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Urgency Level</label>
+            <div class="priority-pills" id="srr-urgency-pills" style="gap:8px">
+              <button type="button" class="p-pill critical" onclick="setSRRUrgency(this,'Critical')">🔴
+                Critical</button>
+              <button type="button" class="p-pill high active" onclick="setSRRUrgency(this,'High')">🟠 High</button>
+              <button type="button" class="p-pill medium" onclick="setSRRUrgency(this,'Medium')">🟡 Medium</button>
+              <button type="button" class="p-pill low" onclick="setSRRUrgency(this,'Low')">🟢 Low</button>
+            </div>
+            <input type="hidden" id="srr-urgency" value="High">
+          </div>
+
+          <div class="form-group">
+            <label>Notes / Special Situation Details</label>
+            <textarea class="input-textarea" id="srr-notes" rows="3"
+              placeholder="Describe the current situation, specific needs, or any critical information..."></textarea>
+            <div class="form-hint">Include urgent medical needs, vulnerable populations, or any special circumstances.
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal('submit-relief-request-modal')">Cancel</button>
+          <button class="btn btn-primary" onclick="submitReliefRequest()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+            </svg>
+            Submit Request
+          </button>
         </div>
       </div>
     </div>
@@ -4620,11 +5070,11 @@
       seedIncidents();
 
       (function applyRole() {
-      const badge = document.getElementById('active-role-badge');
-      if (badge) badge.textContent = 'Admin';
-      const nameEl = document.querySelector('.admin-name');
-      if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
-    })();
+        const badge = document.getElementById('active-role-badge');
+        if (badge) badge.textContent = 'Admin';
+        const nameEl = document.querySelector('.admin-name');
+        if (nameEl) nameEl.textContent = localStorage.getItem('ligtas_user') || 'Cmdr. Reyes';
+      })();
 
       function renderNotifications() {
         const list = document.getElementById('notif-list');
@@ -4634,18 +5084,18 @@
         const seen = new Set(); const merged = [];
         [...logsA, ...logsB].forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); merged.push(e); } });
         const recent = merged.slice(0, 8);
-        const dotColors = { 'Login':'#3B82F6','Logout':'#22C55E','Incident':'#EF4444','Dispatch':'#F59E0B','Broadcast':'#EF4444','Verify':'#22C55E','Status Update':'#3B82F6','Supply Update':'#22C55E','SOS Acknowledged':'#EF4444' };
+        const dotColors = { 'Login': '#3B82F6', 'Logout': '#22C55E', 'Incident': '#EF4444', 'Dispatch': '#F59E0B', 'Broadcast': '#EF4444', 'Verify': '#22C55E', 'Status Update': '#3B82F6', 'Supply Update': '#22C55E', 'SOS Acknowledged': '#EF4444' };
         if (recent.length === 0) { list.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:13px">No recent activity</div>'; return; }
         list.innerHTML = recent.map((log, i) => {
           const dotColor = dotColors[log.action] || '#64748B';
           const desc = (log.admin || log.user || '') + (log.detail || log.details ? ' — ' + (log.detail || log.details) : '');
-          let timeStr = ''; try { const p = (log.timestamp||'').split(', '); timeStr = p.length>=2 ? p[1].replace(/:\d\d /,' ') : log.timestamp||''; } catch(e){}
-          const bb = i < recent.length-1 ? 'border-bottom:1px solid var(--border);' : '';
+          let timeStr = ''; try { const p = (log.timestamp || '').split(', '); timeStr = p.length >= 2 ? p[1].replace(/:\d\d /, ' ') : log.timestamp || ''; } catch (e) { }
+          const bb = i < recent.length - 1 ? 'border-bottom:1px solid var(--border);' : '';
           return `<div style="display:flex;align-items:flex-start;gap:12px;padding:13px 18px;${bb}cursor:default;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.025)'" onmouseout="this.style.background=''">`
-            +`<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
-            +`<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
-            +`<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
-            +`<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
+            + `<div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0;margin-top:5px;box-shadow:0 0 6px ${dotColor}55;"></div>`
+            + `<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;">${log.action}</div>`
+            + `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;word-break:break-word;">${desc}</div></div>`
+            + `<div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;white-space:nowrap;flex-shrink:0;padding-top:2px;">${timeStr}</div></div>`;
         }).join('');
       }
 
@@ -5190,25 +5640,6 @@
         }
       }
 
-      function toggleRequestView(view) {
-        const pendingList = document.getElementById('pending-request-list');
-        const historyList = document.getElementById('aided-history-list');
-        const btnPending = document.getElementById('btn-show-pending');
-        const btnHistory = document.getElementById('btn-show-history');
-
-        if (view === 'pending') {
-          pendingList.style.display = 'block';
-          historyList.style.display = 'none';
-          btnPending.classList.add('active');
-          btnHistory.classList.remove('active');
-        } else {
-          pendingList.style.display = 'none';
-          historyList.style.display = 'block';
-          btnPending.classList.remove('active');
-          btnHistory.classList.add('active');
-          renderAidedHistory();
-        }
-      }
 
       function renderAidedHistory() {
         const list = document.getElementById('aided-history-list');
@@ -5427,6 +5858,340 @@
       renderAidedHistory();
       renderInventory();
 
+      // =============================================
+      // RELIEF REQUEST SYSTEM
+      // =============================================
+
+      // Detect role (defaults to super_admin for this page)
+      const CURRENT_ROLE = localStorage.getItem('ligtas_role') || 'super_admin';
+      window._reviewingReqId = null;
+
+      function initReliefRequestUI() {
+        const isSuperAdmin = CURRENT_ROLE === 'super_admin';
+        const isCenterAdmin = CURRENT_ROLE === 'center_admin';
+
+        // Left panel: pending count badge (super_admin) or submit btn (center_admin)
+        const pendingBadge = document.getElementById('pending-count');
+        const submitBtn = document.getElementById('submit-relief-req-btn');
+
+        if (submitBtn) submitBtn.style.display = isCenterAdmin ? 'inline-flex' : 'none';
+
+        renderReliefRequests();
+      }
+
+      // Render relief requests into the correct panel list
+      function renderReliefRequests(filterStatus) {
+        const status = filterStatus || 'Pending';
+        const containerId = (status === 'Pending') ? 'pending-request-list' :
+          (status === 'For Pick-Up') ? 'forpickup-request-list' : 'aided-history-list';
+        const list = document.getElementById(containerId);
+        if (!list) return;
+
+        const all = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+        const isCenterAdmin = CURRENT_ROLE === 'center_admin';
+        const centerName = localStorage.getItem('ligtas_center_name') || '';
+
+        // Filter items
+        let items;
+        if (status === 'Pending') {
+          // Only Pending items here
+          items = all.filter(r => r.status === 'Pending');
+        } else if (status === 'For Pick-Up') {
+          // Both Approved and For Pick-Up show in this tab
+          items = all.filter(r => r.status === 'Approved' || r.status === 'For Pick-Up');
+        } else {
+          // History tab
+          items = all.filter(r => r.status === 'Request Done' || r.status === 'No Stocks');
+        }
+
+        if (isCenterAdmin && centerName) {
+          items = items.filter(r => r.center === centerName);
+        }
+
+        // Update pending count badge
+        const pendingItems = all.filter(r => r.status === 'Pending');
+        const countEl = document.getElementById('pending-count');
+        if (countEl) {
+          countEl.textContent = pendingItems.length + ' Pending';
+          if (pendingItems.length > 0) {
+            countEl.style.setProperty('display', 'inline-block', 'important');
+          } else {
+            countEl.style.display = 'none';
+          }
+        }
+
+        // Clear existing dynamic cards
+        list.querySelectorAll('.req-card').forEach(c => c.remove());
+
+        const noMsgId = (status === 'Pending') ? 'no-pending-msg' :
+          (status === 'For Pick-Up') ? 'no-forpickup-msg' : '';
+        const noMsg = noMsgId ? document.getElementById(noMsgId) : null;
+
+        if (items.length === 0) {
+          if (noMsg) noMsg.style.display = 'block';
+          return;
+        }
+        if (noMsg) noMsg.style.display = 'none';
+
+        const urgencyColors = { Critical: 'bc-red', High: 'bc-orange', Medium: 'bc-yellow', Low: 'bc-blue' };
+        const statusBadgeClass = {
+          'Pending': 'badge-pending',
+          'Approved': 'badge-approved',
+          'No Stocks': 'badge-nostocks',
+          'For Pick-Up': 'badge-pickup',
+          'Request Done': 'badge-done'
+        };
+
+        items.forEach(req => {
+          const card = document.createElement('div');
+          const uc = urgencyColors[req.urgency] || 'bc-blue';
+          const sc = statusBadgeClass[req.status] || 'badge-pending';
+
+          card.className = 'req-card ' + uc;
+          card.style.cursor = 'pointer';
+          card.onclick = () => openReliefRequestReview(req.id);
+
+          card.innerHTML = `
+            <div class="req-card-head" style="pointer-events:none">
+              <div class="req-card-meta">${req.center} · ${req.submittedAt || ''}</div>
+              <span class="badge ${sc}" style="font-size:10px">${req.status}</span>
+            </div>
+            <div class="req-card-title" style="pointer-events:none">${req.type}</div>
+            <div class="req-card-desc" style="font-size:12px;color:var(--text-muted);margin-bottom:8px;line-height:1.4;pointer-events:none">${req.notes || 'No additional notes.'}</div>
+            <div class="req-card-foot" style="pointer-events:none">
+              <span class="urgency-pill urgency-${(req.urgency || 'high').toLowerCase()}" style="font-size:10px;padding:2px 7px">${req.urgency}</span>
+              <span style="font-size:10.5px;color:var(--text-micro)">${req.families ? req.families + ' families' : ''}</span>
+            </div>
+          `;
+          list.appendChild(card);
+        });
+      }
+
+      function filterReliefQueue(status) {
+        const btnPending = document.getElementById('rq-btn-pending');
+        const btnAll = document.getElementById('rq-btn-all');
+        if (status === 'pending') {
+          if (btnPending) { btnPending.classList.add('active'); }
+          if (btnAll) { btnAll.classList.remove('active'); }
+        } else {
+          if (btnPending) { btnPending.classList.remove('active'); }
+          if (btnAll) { btnAll.classList.add('active'); }
+        }
+        renderReliefRequests(status);
+      }
+
+      // Open review modal for a specific request (super_admin)
+      function openReliefRequestReview(reqId) {
+        const all = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+        const req = all.find(r => r.id === reqId);
+        if (!req) return;
+
+        window._reviewingReqId = reqId;
+
+        document.getElementById('rrm-title').textContent = req.type + ' Request';
+        document.getElementById('rrm-id').textContent = req.id;
+        document.getElementById('rrm-center').textContent = req.center;
+        document.getElementById('rrm-location').textContent = req.location || '-';
+        document.getElementById('rrm-type').textContent = req.type;
+        document.getElementById('rrm-qty').textContent = req.families ? req.families + ' estimated families' : 'Quantity not specified';
+        document.getElementById('rrm-notes').textContent = req.notes || 'No additional notes.';
+        document.getElementById('rrm-comment').value = req.lastComment || '';
+        document.getElementById('rrm-time').textContent = req.submittedAt || '';
+
+        // Status badge
+        const sb = document.getElementById('rrm-status-badge');
+        const statusBadgeClass = { 'Pending': 'badge-pending', 'Approved': 'badge-approved', 'No Stocks': 'badge-nostocks', 'For Pick-Up': 'badge-pickup', 'Request Done': 'badge-done' };
+        sb.className = 'badge ' + (statusBadgeClass[req.status] || 'badge-pending');
+        sb.textContent = req.status;
+
+        // Urgency badge
+        const ub = document.getElementById('rrm-urgency-badge');
+        ub.className = 'urgency-pill urgency-' + (req.urgency || 'high').toLowerCase();
+        ub.textContent = req.urgency || 'High';
+
+        // Toggle Buttons based on status
+        const btnApprove = document.getElementById('rrm-btn-approve');
+        const btnNoStocks = document.getElementById('rrm-btn-nostocks');
+        const btnPickup = document.getElementById('rrm-btn-pickup');
+        const btnDone = document.getElementById('rrm-btn-done');
+        const actionsTitle = document.getElementById('rrm-actions-title');
+
+        // Reset visibility and disabled state
+        [btnApprove, btnNoStocks, btnPickup, btnDone].forEach(b => {
+          if (b) {
+            b.style.display = 'none';
+            b.disabled = false;
+          }
+        });
+        if (actionsTitle) actionsTitle.style.display = 'block';
+
+        if (req.status === 'Pending') {
+          if (btnApprove) {
+            btnApprove.style.display = 'flex';
+            btnApprove.disabled = false;
+          }
+          if (btnPickup) btnPickup.style.display = 'none';
+          if (btnDone) btnDone.style.display = 'none';
+        } else if (req.status === 'Approved' || req.status === 'For Pick-Up') {
+          if (btnApprove) btnApprove.style.display = 'none';
+          if (btnPickup) {
+            btnPickup.style.display = 'flex';
+            // Enable if Approved (waiting for pickup), Disable if already in For Pick-Up status
+            btnPickup.disabled = (req.status === 'For Pick-Up');
+          }
+          if (btnDone) {
+            btnDone.style.display = 'flex';
+            btnDone.disabled = false;
+          }
+        } else {
+          // Finished / No Stocks / Done - hide all actions
+          if (actionsTitle) actionsTitle.style.display = 'none';
+        }
+
+        openModal('relief-request-review-modal');
+      }
+
+      // Super admin updates status of a request
+      function updateReliefRequestStatus(newStatus) {
+        const reqId = window._reviewingReqId;
+        if (!reqId) return;
+
+        const comment = document.getElementById('rrm-comment').value.trim();
+        const all = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+        const idx = all.findIndex(r => r.id === reqId);
+        if (idx === -1) return;
+
+        all[idx].status = newStatus;
+        all[idx].lastComment = comment;
+        all[idx].updatedAt = new Date().toLocaleString('en-PH');
+        localStorage.setItem('ligtas_relief_requests', JSON.stringify(all));
+
+        // Log notification so center_admin sees it in the notification bell
+        const req = all[idx];
+        const notifMsg = `[${req.center}] ${req.type} request → ${newStatus}` + (comment ? ': ' + comment : '');
+        logAction('Relief Request Update', notifMsg, 'Status changed to ' + newStatus);
+
+        // Update review modal badge
+        const statusBadgeClass = { 'Pending': 'badge-pending', 'Approved': 'badge-approved', 'No Stocks': 'badge-nostocks', 'For Pick-Up': 'badge-pickup', 'Request Done': 'badge-done' };
+        const sb = document.getElementById('rrm-status-badge');
+        if (sb) { sb.className = 'badge ' + (statusBadgeClass[newStatus] || 'badge-pending'); sb.textContent = newStatus; }
+
+        closeModal('relief-request-review-modal');
+        showToast('Request status updated to: ' + newStatus, 'success');
+
+        // Refresh lists
+        renderReliefRequests('Pending');
+        renderReliefRequests('For Pick-Up');
+        renderReliefHistory();
+      }
+
+      // Center admin submits a new relief request
+      function submitReliefRequest() {
+        const center = document.getElementById('srr-center').value.trim();
+        const location = document.getElementById('srr-location').value.trim();
+        const type = document.getElementById('srr-type').value;
+        const qty = document.getElementById('srr-qty').value;
+        const urgency = document.getElementById('srr-urgency').value || 'High';
+        const notes = document.getElementById('srr-notes').value.trim();
+
+        if (!center || !type) {
+          showToast('Please fill in Center Name and Relief Type', 'warning');
+          return;
+        }
+
+        const req = {
+          id: 'REQ-' + Date.now(),
+          center,
+          location,
+          type,
+          families: qty || '',
+          urgency,
+          notes,
+          status: 'Pending',
+          submittedAt: new Date().toLocaleString('en-PH'),
+          lastComment: ''
+        };
+
+        const all = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+        all.unshift(req);
+        localStorage.setItem('ligtas_relief_requests', JSON.stringify(all.slice(0, 100)));
+
+        // Log audit entry
+        logAction('Relief Request', center + ' — ' + type, 'Submitted · Urgency: ' + urgency);
+
+        closeModal('submit-relief-request-modal');
+        showToast('Relief request submitted to Super Admin', 'success');
+
+        // Reset form
+        ['srr-center', 'srr-location', 'srr-qty', 'srr-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        document.getElementById('srr-type').value = '';
+        document.getElementById('srr-urgency').value = 'High';
+        document.querySelectorAll('#srr-urgency-pills .p-pill').forEach(b => b.classList.remove('active'));
+        const highBtn = document.querySelector('#srr-urgency-pills .p-pill.high');
+        if (highBtn) highBtn.classList.add('active');
+
+        renderReliefRequests();
+      }
+
+      function setSRRUrgency(btn, level) {
+        document.querySelectorAll('#srr-urgency-pills .p-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('srr-urgency').value = level;
+      }
+
+      // Override toggleRequestView to handle relief history tab
+      // Override toggleRequestView to handle 3 tabs
+      function toggleRequestView(view) {
+        const pendingList = document.getElementById('pending-request-list');
+        const pickupList = document.getElementById('forpickup-request-list');
+        const historyList = document.getElementById('aided-history-list');
+
+        const btnPending = document.getElementById('btn-show-pending');
+        const btnPickup = document.getElementById('btn-show-forpickup');
+        const btnHistory = document.getElementById('btn-show-history');
+
+        // Hide all
+        [pendingList, pickupList, historyList].forEach(l => { if (l) l.style.display = 'none'; });
+        [btnPending, btnPickup, btnHistory].forEach(b => { if (b) b.classList.remove('active'); });
+
+        if (view === 'pending') {
+          if (pendingList) pendingList.style.display = 'flex';
+          if (btnPending) btnPending.classList.add('active');
+          renderReliefRequests('Pending');
+        } else if (view === 'forpickup') {
+          if (pickupList) pickupList.style.display = 'flex';
+          if (btnPickup) btnPickup.classList.add('active');
+          renderReliefRequests('For Pick-Up');
+        } else {
+          if (historyList) historyList.style.display = 'flex';
+          if (btnHistory) btnHistory.classList.add('active');
+          renderReliefHistory();
+        }
+      }
+
+      // Render history tab (calls renderReliefRequests with 'History')
+      function renderReliefHistory() {
+        renderReliefRequests('History');
+      }
+
+      // Seed some demo requests so super admin sees the queue in action
+      function seedDemoReliefRequests(force = false) {
+        if (!force && localStorage.getItem('ligtas_relief_requests')) return;
+        const demo = [
+          { id: 'REQ-1778819201588', center: 'Rizal High School EC', location: 'Pasig City', type: 'Food Packs', families: '320', urgency: 'Critical', notes: '320 families with children under 5 need immediate food packs. Supply ran out 2 hours ago.', status: 'Pending', submittedAt: '5/15/2026, 12:20:10 PM', lastComment: '' },
+          { id: 'REQ-1778819201589', center: 'Pasig Elementary Complex', location: 'Pasig City', type: 'Water Supply', families: '180', urgency: 'High', notes: 'Water tanks empty. Residents have been without water for 6 hours.', status: 'Pending', submittedAt: '5/15/2026, 12:22:45 PM', lastComment: '' },
+          { id: 'REQ-1778819201590', center: 'Santolan Covered Court', location: 'Santolan, Pasig', type: 'Medical Supplies', families: '95', urgency: 'Medium', notes: 'Running low on first aid kits and hypertension medicine.', status: 'Approved', submittedAt: '5/15/2026, 11:45:12 AM', lastComment: 'Approved by super_admin. Preparing for pickup.', updatedAt: '5/15/2026, 12:05:30 PM' },
+          { id: 'REQ-1778819201591', center: 'Manggahan High School', location: 'Pasig City', type: 'Hygiene Kits', families: '150', urgency: 'Low', notes: 'Basic hygiene supplies for new arrivals.', status: 'For Pick-Up', submittedAt: '5/15/2026, 10:30:00 AM', lastComment: 'Reliefs have been picked up by the logistics team.', updatedAt: '5/15/2026, 11:15:00 AM' },
+          { id: 'REQ-1778819201592', center: 'Rosario Sports Complex', location: 'Pasig City', type: 'Blankets', families: '50', urgency: 'Medium', notes: 'Need blankets for elderly residents.', status: 'No Stocks', submittedAt: '5/15/2026, 09:15:00 AM', lastComment: 'Currently out of stock, expected in 2 days.', updatedAt: '5/15/2026, 09:45:00 AM' },
+          { id: 'REQ-1778819201593', center: 'Pinagbuhatan High School', location: 'Pasig City', type: 'Rice Sacks', families: '500', urgency: 'Critical', notes: 'Urgent need for rice supply.', status: 'Request Done', submittedAt: '5/15/2026, 08:00:00 AM', lastComment: '500 sacks delivered and distributed.', updatedAt: '5/15/2026, 10:00:00 AM' }
+        ];
+        localStorage.setItem('ligtas_relief_requests', JSON.stringify(demo));
+      }
+
+      // Initial seed (forced for reset)
+      seedDemoReliefRequests(true);
+      initReliefRequestUI();
+
       function updateTime() {
         const now = new Date();
         const d = now.toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -5554,30 +6319,33 @@
     </script>
 
 
-  <!-- LOGOUT CONFIRMATION MODAL -->
-  <div class="modal-backdrop" id="logout-modal">
-    <div class="modal modal-sm">
-      <div class="modal-head">
-        <h2>Confirm Logout</h2>
-        <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
-      </div>
-      <div class="modal-body" style="padding: 24px; text-align: center;">
-        <div style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+    <!-- LOGOUT CONFIRMATION MODAL -->
+    <div class="modal-backdrop" id="logout-modal">
+      <div class="modal modal-sm">
+        <div class="modal-head">
+          <h2>Confirm Logout</h2>
+          <button class="close-btn" onclick="closeModal('logout-modal')">&times;</button>
         </div>
-        <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?</p>
-        <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
-      </div>
-      <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
-        <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
-        <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+        <div class="modal-body" style="padding: 24px; text-align: center;">
+          <div
+            style="width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </div>
+          <p style="color: var(--text-primary); font-weight: 500; margin-bottom: 8px;">Are you sure you want to log out?
+          </p>
+          <p style="color: var(--text-muted); font-size: 13px;">Your current administrative session will be ended.</p>
+        </div>
+        <div class="modal-foot" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 24px;">
+          <button class="btn btn-ghost" onclick="closeModal('logout-modal')">Cancel</button>
+          <button class="btn btn-primary" onclick="logoutUser()">Log Out</button>
+        </div>
       </div>
     </div>
-  </div>
 </body>
 
 </html>
