@@ -2821,7 +2821,8 @@
             <div class="m-card c-red" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Active Emergencies</div>
               <div class="m-card-value red" id="dash-active-emergencies" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" id="dash-active-sub" style="font-size: 10px; margin-top: 4px;">No active threats</div>
+              <div class="m-card-sub" id="dash-active-sub" style="font-size: 10px; margin-top: 4px;">No active threats
+              </div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='incidents.html'">View Reports</span>
@@ -3631,279 +3632,490 @@
     <!-- Toast container -->
     <div id="toast-wrap"></div>
 
-    <!-- UNIVERSAL SOS MODAL -->
-    <div class="modal-backdrop" id="sos-modal">
-      <div class="modal modal-sm">
-        <div class="modal-head">
-          <h2>
-            <div class="sos-icon-pulse" style="display:inline-block;margin-right:8px;vertical-align:middle"></div> SOS
-            Alert
-          </h2>
-          <button class="close-btn" onclick="closeModal('sos-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div
-            style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.1);border-radius:8px;padding:16px">
-            <label style="color:var(--critical)">Distress Signal From</label>
-            <div id="sos-detail-name"
-              style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:4px">-</div>
-            <div id="sos-detail-loc" style="font-size:13px;color:var(--text-muted);margin-bottom:12px">-</div>
-            <label>GPS COORDINATES</label>
-            <div id="sos-detail-coords"
-              style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--primary)">-</div>
-          </div>
-          <p style="font-size:11px;color:var(--text-micro);margin-top:16px;line-height:1.4">Distress signal received via
-            LIGTAS Mobile App. High accuracy GPS fix established. Immediate dispatch of nearest rescue unit recommended.
-          </p>
-        </div>
-        <div class="modal-foot">
-          <button class="btn btn-ghost" onclick="closeModal('sos-modal')">Ignore</button>
-          <button class="btn btn-primary" style="background:var(--critical);border-color:var(--critical)"
-            onclick="acknowledgeSOS()">Acknowledge & Dispatch</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- LOGOUT CONFIRMATION MODAL -->
-      </div>
-    </div>
-
-    <div class="modal-backdrop" id="incident-detail-modal">
+    <!-- SOS LIST MODAL -->
+    <div class="modal-backdrop" id="sos-list-modal">
       <div class="modal modal-lg">
         <div class="modal-head">
-          <h2 id="modal-inc-title">Edit Incident</h2><button class="close-btn"
-            onclick="closeModal('incident-detail-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2.5">
+          <h2 style="display:flex; align-items:center; gap:8px;">
+            <div class="sos-icon-pulse"></div> Active SOS Emergencies
+          </h2>
+          <button class="close-btn" onclick="closeModal('sos-list-modal')"><svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg></button>
+        </div>
+        <div class="modal-body" style="background:var(--bg); padding:16px;">
+          <div id="sos-list-container" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Render list here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOS DETAIL MODAL -->
+    <div class="modal-backdrop" id="sos-detail-modal">
+      <div class="modal modal-lg">
+        <div class="modal-head">
+          <h2 style="display:flex; align-items:center; gap:8px;">
+            <div class="sos-icon-pulse"></div> SOS Emergency Detail
+          </h2>
+          <button class="close-btn" onclick="closeModal('sos-detail-modal')"><svg width="12" height="12"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg></button>
         </div>
         <div class="modal-body">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-            <span id="modal-inc-badge" class="badge badge-critical">Critical</span>
-            <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">San Joaquin, Pasig</span>
-            <span id="modal-inc-time"
-              style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">2m ago</span>
+            <span class="badge badge-critical"
+              style="background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2);">SOS
+              Alert</span>
+            <span id="sos-det-loc" style="font-size:13px;color:var(--text2)">-</span>
+            <span id="sos-det-time"
+              style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">-</span>
           </div>
-          <div
-            style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)"
-            id="modal-inc-desc">Incident description loading...</div>
 
-          <div
-            style="display:grid;grid-template-columns:1fr 1fr 0.8fr;gap:16px;margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.03);border-radius:var(--radius);border:1px solid var(--border)">
-            <div>
-              <div
-                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
-                Reporter Name</div>
-              <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
-            </div>
-            <div>
-              <div
-                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
-                Contact Info</div>
-              <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
-            </div>
-            <div>
-              <div
-                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
-                Report Source</div>
-              <div id="modal-inc-source" class="badge">Field Report</div>
-            </div>
+          <!-- Correlated Event Flag -->
+          <div id="sos-correlation-flag"
+            style="display:none;margin-bottom:16px;padding:12px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius);color:var(--warning);font-size:13px;align-items:center;gap:8px;">
+            <span style="font-size:16px;">⚠️</span> <strong>Correlated Event Detected:</strong> Multiple SOS alerts
+            reported in this exact area within minutes of each other.
           </div>
 
           <div
             style="margin-bottom:16px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius)">
-            <div class="form-section-head" style="margin-top:0">Incident Additional Details</div>
+            <div class="form-section-head" style="margin-top:0">Account & Location Information</div>
 
-            <div style="display:flex;gap:40px;margin-bottom:16px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
               <div>
                 <div
                   style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
-                  Reporting For</div>
-                <div id="modal-inc-reporting-for" style="font-size:13px;font-weight:500;color:var(--text-primary)">
-                  Myself
-                </div>
+                  Account Name</div>
+                <div id="sos-det-name" style="font-size:16px;font-weight:600;color:var(--critical)">-</div>
               </div>
               <div>
                 <div
                   style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
-                  Required Assistance</div>
-                <div id="modal-inc-needs" style="display:flex;gap:6px;flex-wrap:wrap;">
-                  <span class="badge"
-                    style="background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)">🚑
-                    Ambulance</span>
-                  <span class="badge"
-                    style="background:rgba(59,130,246,0.1);color:var(--primary);border-color:rgba(59,130,246,0.2)">👮
-                    Police</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div
-                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;letter-spacing:0.05em">
-                Attached Media</div>
-              <div id="modal-inc-media" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
-                <img
-                  src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80"
-                  style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;"
-                  alt="Attached media">
-              </div>
-            </div>
-          </div>
-
-          <!-- Emergency Profile Section -->
-          <div id="emergency-profile-section"
-            style="display:none;margin-bottom:16px;padding:16px;background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius)">
-            <div class="form-section-head"
-              style="margin-top:0;color:var(--critical);border-color:rgba(239,68,68,0.1)">
-              Emergency Profile: Reporter</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
-              <div>
-                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Blood Type
-                </div>
-                <div id="med-blood" style="font-size:13px;font-weight:700;color:var(--critical)">—</div>
-              </div>
-              <div style="grid-column:span 2">
-                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Allergies
-                </div>
-                <div id="med-allergies" style="font-size:12px;color:var(--text-primary)">—</div>
-              </div>
-            </div>
-            <div style="margin-bottom:12px">
-              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Chronic
-                Conditions
-              </div>
-              <div id="med-conditions" style="font-size:12px;color:var(--text-primary)">—</div>
-            </div>
-            <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px">
-              <div>
-                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Emergency
-                  Contact
-                </div>
-                <div id="med-contact-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">—</div>
+                  Phone Number</div>
+                <div id="sos-det-phone" style="font-size:14px;color:var(--text-primary)">-</div>
               </div>
               <div>
-                <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Contact Phone
-                </div>
-                <div id="med-contact-phone" style="font-size:12px;color:var(--text-primary)">—</div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  Emergency Contact</div>
+                <div id="sos-det-emc" style="font-size:14px;color:var(--text-primary)">-</div>
+              </div>
+              <div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  Blood Type & Medical</div>
+                <div id="sos-det-med" style="font-size:14px;color:var(--text-primary)">-</div>
+              </div>
+              <div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  Text Location</div>
+                <div id="sos-det-textloc" style="font-size:14px;color:var(--text-primary)">-</div>
+              </div>
+              <div>
+                <div
+                  style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                  GPS Coordinates</div>
+                <div id="sos-det-coords"
+                  style="font-size:14px;font-family:'IBM Plex Mono',monospace;color:var(--primary)">-</div>
               </div>
             </div>
+
+            <p style="font-size:12px;color:var(--text-muted);line-height:1.5;">This is an emergency SOS distress signal.
+              The user is in an emergency situation and may not be able to provide further information. Dispatch nearest
+              response units immediately.</p>
           </div>
 
-          <!-- Volunteer Section -->
-          <div style="margin-bottom:24px;">
-            <div class="form-section-head" style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-              <span>Recommended Volunteers</span>
-              <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">In-App Notify Only</span>
-            </div>
-            <div id="modal-volunteer-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <!-- Dynamically populated -->
+          <div class="form-section-head"
+            style="margin-top:16px;font-size:12px;text-transform:uppercase;color:var(--text3);letter-spacing:0.05em;margin-bottom:12px;">
+            Contact SOS Sender</div>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
+            <a id="sos-btn-call-sender" href="#" class="btn btn-primary"
+              style="display:flex; justify-content:center; align-items:center; gap:8px; background:var(--primary); border:none; padding:12px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              Call Sender
+            </a>
+
+            <div style="display:flex; gap:10px;">
+              <a id="sos-btn-call-emc" href="#" class="btn btn-ghost"
+                style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px; border:1px solid var(--border); padding:12px; background:var(--bg2);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                Call Em. Contact
+              </a>
+              <button class="btn btn-ghost"
+                style="flex:1; display:flex; justify-content:center; align-items:center; gap:8px; border:1px solid var(--border); padding:12px; background:var(--bg2);"
+                onclick="showToast('Signal sent to sender\'s family group', 'success')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                Signal Family
+              </button>
             </div>
           </div>
 
-          <!-- Response Units / Nearby Contacts -->
-          <div style="margin-bottom:24px;">
-            <div class="form-section-head" style="margin-top:0">Nearby Response Contacts</div>
-            <div id="modal-response-contact-list" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
+          <div class="form-section-head"
+            style="font-size:12px;text-transform:uppercase;color:var(--text3);letter-spacing:0.05em;margin-bottom:8px;">
+            Contact Rescuer</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">Nearby Emergency Contacts</div>
 
-          <div id="modal-broadcast-wrap"
-            style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <!-- Card 1 -->
             <div
-              style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+              style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge"
+                  style="background:transparent; color:var(--text3); border:1px solid var(--border); padding:4px 8px; font-weight:500;">Police</span>
+                <span style="font-size:12px; color:var(--text-muted);">0.9 km away</span>
+              </div>
               <div>
-                <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Broadcast to
-                  Public</div>
-                <div style="font-size:12px;color:var(--text3);">Publish as official advisory for residents</div>
+                <div style="font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:2px;">PNP Ortigas
+                  Detachment</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">Sub-station</div>
+                <div style="font-size:14px; color:var(--primary);">+63 917 555 4444</div>
               </div>
-              <label style="position:relative;display:inline-block;width:36px;height:20px;margin:0;">
-                <input type="checkbox" style="opacity:0;width:0;height:0;" id="broadcast-toggle"
-                  onchange="document.getElementById('broadcast-slider').style.background=this.checked?'var(--nominal)':'var(--bg4)';document.getElementById('broadcast-thumb').style.transform=this.checked?'translateX(16px)':'translateX(0)';document.getElementById('broadcast-options').style.display=this.checked?'block':'none';">
-                <span id="broadcast-slider"
-                  style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--bg4);transition:.2s;border-radius:20px;">
-                  <span id="broadcast-thumb"
-                    style="position:absolute;content:'';height:14px;width:14px;left:3px;bottom:3px;background-color:white;transition:.2s;border-radius:50%;transform:translateX(0);"></span>
-                </span>
-              </label>
+              <a href="tel:+639175554444" class="btn btn-ghost"
+                style="width:100%; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--bg2); border:1px solid var(--border); margin-top:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                Call
+              </a>
             </div>
-            <div id="broadcast-options" style="padding:20px;display:none;">
-              <div style="margin-bottom:16px;">
-                <label
-                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Public
-                  Headline</label>
-                <input type="text" id="broadcast-headline" placeholder="Official Advisory Headline"
-                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;">
-              </div>
 
-              <div style="margin-bottom:16px;">
-                <label
-                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Safety
-                  Message</label>
-                <textarea id="broadcast-message" placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"
-                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;min-height:80px;resize:vertical;"></textarea>
+            <!-- Card 2 -->
+            <div
+              style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge"
+                  style="background:transparent; color:var(--text3); border:1px solid var(--border); padding:4px 8px; font-weight:500;">Police</span>
+                <span style="font-size:12px; color:var(--text-muted);">0.5 km away</span>
               </div>
-
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-                <div>
-                  <label
-                    style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Alert
-                    Level</label>
-                  <select id="broadcast-level"
-                    style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
-                    <option>High Alert</option>
-                    <option>Moderate</option>
-                    <option>Information</option>
-                  </select>
-                </div>
-                <div>
-                  <label
-                    style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Target
-                    Scope</label>
-                  <select id="broadcast-scope"
-                    style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
-                    <option>City-Wide</option>
-                    <option>District-Wide</option>
-                    <option>Barangay Level</option>
-                  </select>
-                </div>
+              <div>
+                <div style="font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:2px;">PNP Pasig
+                  City HQ</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">Law Enforcement</div>
+                <div style="font-size:14px; color:var(--primary);">(02) 8641-0000</div>
               </div>
+              <a href="tel:0286410000" class="btn btn-ghost"
+                style="width:100%; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--bg2); border:1px solid var(--border); margin-top:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                Call
+              </a>
             </div>
-          </div>
 
-          <div class="form-section-head">Response Actions</div>
-          <div id="modal-response-wrap" style="display:flex;flex-direction:column;gap:12px">
-            <div class="form-group">
-              <label>Assign Response Units (Select multiple)</label>
-              <div class="unit-selector" id="assign-unit-buttons">
-                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Fire Truck">
-                  <span class="icon">🚒</span> Fire Truck
-                </div>
-                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Ambulance">
-                  <span class="icon">🚑</span> Ambulance
-                </div>
-                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Police">
-                  <span class="icon">👮</span> Police
-                </div>
-                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Food & Water">
-                  <span class="icon">☕</span> Food & Water
-                </div>
-                <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Shelter">
-                  <span class="icon">⛺</span> Shelter
-                </div>
+            <!-- Card 3 -->
+            <div
+              style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge"
+                  style="background:transparent; color:var(--text3); border:1px solid var(--border); padding:4px 8px; font-weight:500;">Ambulance</span>
+                <span style="font-size:12px; color:var(--text-muted);">1.2 km away</span>
               </div>
+              <div>
+                <div style="font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:2px;">PASIG-AMB-01
+                </div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">Medical Unit</div>
+                <div style="font-size:14px; color:var(--primary);">+63 919 100 1001</div>
+              </div>
+              <a href="tel:+639191001001" class="btn btn-ghost"
+                style="width:100%; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--bg2); border:1px solid var(--border); margin-top:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                Call
+              </a>
             </div>
-            <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" id="field-notes-area"
-                rows="2" placeholder="Add field update or notes..."></textarea></div>
+
+            <!-- Card 4 -->
+            <div
+              style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; flex-direction:column; gap:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge"
+                  style="background:transparent; color:var(--text3); border:1px solid var(--border); padding:4px 8px; font-weight:500;">City
+                  Hall</span>
+                <span style="font-size:12px; color:var(--text-muted);">2.1 km away</span>
+              </div>
+              <div>
+                <div style="font-size:15px; font-weight:600; color:var(--text-primary); margin-bottom:2px;">Pasig
+                  Command Center</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">Central Dispatch</div>
+                <div style="font-size:14px; color:var(--primary);">(02) 8643-0000</div>
+              </div>
+              <a href="tel:0286430000" class="btn btn-ghost"
+                style="width:100%; display:flex; justify-content:center; align-items:center; gap:8px; background:var(--bg2); border:1px solid var(--border); margin-top:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                Call
+              </a>
+            </div>
           </div>
         </div>
-        <span id="modal-inc-id" style="display:none"></span>
-        <div class="modal-foot" style="justify-content:flex-end;gap:8px" id="dynamic-modal-foot">
-          <!-- Dynamically populated by JS -->
+        <div class="modal-foot">
+          <button class="btn btn-ghost" onclick="closeModal('sos-detail-modal');openSOSListModal()">Back to
+            List</button>
+          <button class="btn btn-primary" style="background:var(--critical);border-color:var(--critical)"
+            onclick="acknowledgeSOS()">Acknowledge</button>
         </div>
       </div>
     </div>
+
+    <!-- LOGOUT CONFIRMATION MODAL -->
+  </div>
+  </div>
+
+  <div class="modal-backdrop" id="incident-detail-modal">
+    <div class="modal modal-lg">
+      <div class="modal-head">
+        <h2 id="modal-inc-title">Edit Incident</h2><button class="close-btn"
+          onclick="closeModal('incident-detail-modal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg></button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+          <span id="modal-inc-badge" class="badge badge-critical">Critical</span>
+          <span id="modal-inc-loc" style="font-size:13px;color:var(--text2)">San Joaquin, Pasig</span>
+          <span id="modal-inc-time"
+            style="font-size:12px;color:var(--text3);margin-left:auto;font-family:'DM Mono',monospace">2m ago</span>
+        </div>
+        <div
+          style="background:var(--bg3);border-radius:var(--radius);padding:14px;margin-bottom:14px;font-size:13.5px;line-height:1.6;color:var(--text2)"
+          id="modal-inc-desc">Incident description loading...</div>
+
+        <div
+          style="display:grid;grid-template-columns:1fr 1fr 0.8fr;gap:16px;margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.03);border-radius:var(--radius);border:1px solid var(--border)">
+          <div>
+            <div
+              style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+              Reporter Name</div>
+            <div id="modal-inc-reporter" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+          </div>
+          <div>
+            <div
+              style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+              Contact Info</div>
+            <div id="modal-inc-contact" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+          </div>
+          <div>
+            <div
+              style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:4px;letter-spacing:0.05em">
+              Report Source</div>
+            <div id="modal-inc-source" class="badge">Field Report</div>
+          </div>
+        </div>
+
+        <div
+          style="margin-bottom:16px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius)">
+          <div class="form-section-head" style="margin-top:0">Incident Additional Details</div>
+
+          <div style="display:flex;gap:40px;margin-bottom:16px;">
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                Reporting For</div>
+              <div id="modal-inc-reporting-for" style="font-size:13px;font-weight:500;color:var(--text-primary)">
+                Myself
+              </div>
+            </div>
+            <div>
+              <div
+                style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;letter-spacing:0.05em">
+                Required Assistance</div>
+              <div id="modal-inc-needs" style="display:flex;gap:6px;flex-wrap:wrap;">
+                <span class="badge"
+                  style="background:rgba(239,68,68,0.1);color:var(--critical);border-color:rgba(239,68,68,0.2)">🚑
+                  Ambulance</span>
+                <span class="badge"
+                  style="background:rgba(59,130,246,0.1);color:var(--primary);border-color:rgba(59,130,246,0.2)">👮
+                  Police</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div
+              style="font-size:10px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;letter-spacing:0.05em">
+              Attached Media</div>
+            <div id="modal-inc-media" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;">
+              <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80"
+                style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border);cursor:pointer;"
+                alt="Attached media">
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Profile Section -->
+        <div id="emergency-profile-section"
+          style="display:none;margin-bottom:16px;padding:16px;background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius)">
+          <div class="form-section-head" style="margin-top:0;color:var(--critical);border-color:rgba(239,68,68,0.1)">
+            Emergency Profile: Reporter</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Blood Type
+              </div>
+              <div id="med-blood" style="font-size:13px;font-weight:700;color:var(--critical)">—</div>
+            </div>
+            <div style="grid-column:span 2">
+              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Allergies
+              </div>
+              <div id="med-allergies" style="font-size:12px;color:var(--text-primary)">—</div>
+            </div>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Chronic
+              Conditions
+            </div>
+            <div id="med-conditions" style="font-size:12px;color:var(--text-primary)">—</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px">
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Emergency
+                Contact
+              </div>
+              <div id="med-contact-name" style="font-size:12px;font-weight:600;color:var(--text-primary)">—</div>
+            </div>
+            <div>
+              <div style="font-size:9px;text-transform:uppercase;color:var(--text3);margin-bottom:2px">Contact Phone
+              </div>
+              <div id="med-contact-phone" style="font-size:12px;color:var(--text-primary)">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volunteer Section -->
+        <div style="margin-bottom:24px;">
+          <div class="form-section-head"
+            style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
+            <span>Recommended Volunteers</span>
+            <span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">In-App
+              Notify Only</span>
+          </div>
+          <div id="modal-volunteer-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Response Units / Nearby Contacts -->
+        <div style="margin-bottom:24px;">
+          <div class="form-section-head" style="margin-top:0">Nearby Response Contacts</div>
+          <div id="modal-response-contact-list" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <div id="modal-broadcast-wrap"
+          style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;overflow:hidden;">
+          <div
+            style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:2px;">Broadcast to
+                Public</div>
+              <div style="font-size:12px;color:var(--text3);">Publish as official advisory for residents</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:36px;height:20px;margin:0;">
+              <input type="checkbox" style="opacity:0;width:0;height:0;" id="broadcast-toggle"
+                onchange="document.getElementById('broadcast-slider').style.background=this.checked?'var(--nominal)':'var(--bg4)';document.getElementById('broadcast-thumb').style.transform=this.checked?'translateX(16px)':'translateX(0)';document.getElementById('broadcast-options').style.display=this.checked?'block':'none';">
+              <span id="broadcast-slider"
+                style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--bg4);transition:.2s;border-radius:20px;">
+                <span id="broadcast-thumb"
+                  style="position:absolute;content:'';height:14px;width:14px;left:3px;bottom:3px;background-color:white;transition:.2s;border-radius:50%;transform:translateX(0);"></span>
+              </span>
+            </label>
+          </div>
+          <div id="broadcast-options" style="padding:20px;display:none;">
+            <div style="margin-bottom:16px;">
+              <label
+                style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Public
+                Headline</label>
+              <input type="text" id="broadcast-headline" placeholder="Official Advisory Headline"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;">
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label
+                style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Safety
+                Message</label>
+              <textarea id="broadcast-message" placeholder="Instructions for citizens (e.g. Avoid Ortigas Ave...)"
+                style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;min-height:80px;resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div>
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Alert
+                  Level</label>
+                <select id="broadcast-level"
+                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
+                  <option>High Alert</option>
+                  <option>Moderate</option>
+                  <option>Information</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;display:block;">Target
+                  Scope</label>
+                <select id="broadcast-scope"
+                  style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text-primary);font-size:13px;padding:12px 14px;border-radius:var(--radius);font-family:inherit;outline:none;cursor:pointer;">
+                  <option>City-Wide</option>
+                  <option>District-Wide</option>
+                  <option>Barangay Level</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-head">Response Actions</div>
+        <div id="modal-response-wrap" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group">
+            <label>Assign Response Units (Select multiple)</label>
+            <div class="unit-selector" id="assign-unit-buttons">
+              <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Fire Truck">
+                <span class="icon">🚒</span> Fire Truck
+              </div>
+              <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Ambulance">
+                <span class="icon">🚑</span> Ambulance
+              </div>
+              <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Police">
+                <span class="icon">👮</span> Police
+              </div>
+              <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Food & Water">
+                <span class="icon">☕</span> Food & Water
+              </div>
+              <div class="unit-pill" onclick="toggleUnit(this)" data-unit="Shelter">
+                <span class="icon">⛺</span> Shelter
+              </div>
+            </div>
+          </div>
+          <div class="form-group"><label>Field Notes</label><textarea class="input-textarea" id="field-notes-area"
+              rows="2" placeholder="Add field update or notes..."></textarea></div>
+        </div>
+      </div>
+      <span id="modal-inc-id" style="display:none"></span>
+      <div class="modal-foot" style="justify-content:flex-end;gap:8px" id="dynamic-modal-foot">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+  </div>
 
   </div><!-- /.app -->
 
@@ -4121,7 +4333,7 @@
       // 1. Update Metrics
       const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
       const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
-      
+
       setText('dash-active-emergencies', activeIncidents.length);
       const subText = criticalCount > 0 ? `${criticalCount} Critical Threats` : (activeIncidents.length > 0 ? 'Monitoring active events' : 'No active threats');
       setText('dash-active-sub', subText);
@@ -4129,7 +4341,7 @@
       // Center Load Simulation
       const avgLoad = 42; // Realistic fixed percentage
       setText('dash-center-load', avgLoad + '%');
-      
+
       const deployedCount = units.filter(u => u.status !== 'Available').length;
       setText('dash-units-deployed', deployedCount);
 
@@ -4152,7 +4364,7 @@
         metrics[6].textContent = 'Rising'; // Trend
         metrics[6].style.color = 'var(--warning)';
       }
-      
+
       const waterLevel = 14.2;
       const floodPercent = 67; // (14.2 / 21) * 100
       document.querySelector('.flood-gauge-fill').style.width = floodPercent + '%';
@@ -4218,7 +4430,7 @@
       if (reqList) {
         const recentReqs = requests.slice(0, 5);
         if (recentReqs.length === 0) {
-           reqList.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>No pending requests</p></div>';
+          reqList.innerHTML = '<div class="empty-state" style="padding: 20px;"><p>No pending requests</p></div>';
         } else {
           reqList.innerHTML = recentReqs.map(r => `
             <div style="background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius); padding:10px;">
@@ -4366,7 +4578,7 @@
 
       incidents[idx].status = 'Acknowledged';
       incidents[idx].acknowledgedAt = new Date().toLocaleString('en-PH');
-      
+
       const broadcastHeadline = document.getElementById('broadcast-headline')?.value.trim();
       const broadcastMsg = document.getElementById('broadcast-message')?.value.trim();
       const isBroadcast = document.getElementById('broadcast-toggle')?.checked;
@@ -4624,12 +4836,30 @@
       if (!container) return;
       const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
       if (queue.length === 0) { container.innerHTML = ''; return; }
-      if (queue.length === 1) {
-        const sos = queue[0];
-        container.innerHTML = `<div class="sos-banner" onclick="openSOSDetailByIndex(0)"><div class="sos-icon-pulse"></div><div class="sos-info"><div class="sos-user">${sos.name}</div><div class="sos-location">${sos.location}</div></div></div>`;
+
+      container.innerHTML = `<div class="sos-banner" onclick="openSOSListModal()" style="border-width:2px"><div class="sos-icon-pulse"></div><div class="sos-info"><div class="sos-user" style="color:var(--critical);font-weight:700">${queue.length} ACTIVE SOS ALERTS</div><div class="sos-location">Click to view emergencies</div></div></div>`;
+    }
+
+    function openSOSListModal() {
+      const queue = JSON.parse(localStorage.getItem('ligtas_sos_queue') || '[]');
+      const container = document.getElementById('sos-list-container');
+      if (queue.length === 0) {
+        container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center;color:var(--text-muted)">No active SOS alerts.</div>';
       } else {
-        container.innerHTML = `<div class="sos-banner" onclick="openSOSDetailByIndex(0)" style="border-width:2px"><div class="sos-icon-pulse"></div><div class="sos-info"><div class="sos-user" style="color:var(--critical);font-weight:700">${queue.length} ACTIVE SOS ALERTS</div><div class="sos-location">Priority Dispatch Required</div></div></div>`;
+        container.innerHTML = queue.map((sos, i) => {
+          const timeStr = new Date(sos.timestamp).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+          return `
+          <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg-elevated);border:1px solid var(--border);border-left:3px solid var(--critical);padding:14px;border-radius:var(--radius);">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:4px;">${sos.name}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:2px">📍 ${sos.location}</div>
+              <div style="font-size:11px;color:var(--text-micro);font-family:'IBM Plex Mono',monospace;">${timeStr}</div>
+            </div>
+            <button class="btn btn-sm btn-primary" style="background:var(--critical);border-color:var(--critical)" onclick="openSOSDetailByIndex(${i})">Review & Dispatch</button>
+          </div>
+        `}).join('');
       }
+      openModal('sos-list-modal');
     }
 
     let currentSOSIndex = -1;
@@ -4638,12 +4868,45 @@
       currentSOSIndex = index;
       const sos = queue[index];
       if (!sos) return;
-      document.getElementById('sos-detail-name').textContent = sos.name;
-      document.getElementById('sos-detail-loc').textContent = sos.location;
-      document.getElementById('sos-detail-coords').textContent = sos.coords;
-      const head = document.querySelector('#sos-modal .modal-head h2');
-      if (head) head.innerHTML = `<div class="sos-icon-pulse" style="display:inline-block;margin-right:8px;vertical-align:middle"></div> Alert ${index + 1} of ${queue.length}`;
-      openModal('sos-modal');
+
+      document.getElementById('sos-det-name').textContent = sos.name || '-';
+      document.getElementById('sos-det-loc').textContent = sos.location || '-';
+      document.getElementById('sos-det-coords').textContent = sos.coords || '-';
+      document.getElementById('sos-det-phone').textContent = sos.phone || '-';
+      document.getElementById('sos-det-emc').textContent = sos.emergencyContact || '-';
+      document.getElementById('sos-det-textloc').textContent = sos.location || '-';
+
+      const medText = (sos.bloodType ? sos.bloodType : 'Unknown Blood Type') + (sos.medical && sos.medical !== 'None' ? ' | ' + sos.medical : '');
+      document.getElementById('sos-det-med').textContent = medText || '-';
+
+      const timeStr = new Date(sos.timestamp).toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('sos-det-time').textContent = 'Reported at ' + timeStr;
+
+      // Update Call Links
+      document.getElementById('sos-btn-call-sender').href = sos.phone ? `tel:${sos.phone.replace(/[^\d+]/g, '')}` : '#';
+      if (sos.emergencyContact) {
+        const emcPhoneMatch = sos.emergencyContact.match(/(\+\d+|\d{10,})/);
+        document.getElementById('sos-btn-call-emc').href = emcPhoneMatch ? `tel:${emcPhoneMatch[0].replace(/[^\d+]/g, '')}` : '#';
+      } else {
+        document.getElementById('sos-btn-call-emc').href = '#';
+      }
+
+      // Correlated Event Logic
+      let isCorrelated = false;
+      for (let i = 0; i < queue.length; i++) {
+        if (i !== index) {
+          const other = queue[i];
+          const timeDiff = Math.abs(sos.timestamp - other.timestamp);
+          if (sos.location === other.location && timeDiff <= 300000) { // Same location & within 5 mins
+            isCorrelated = true;
+            break;
+          }
+        }
+      }
+      document.getElementById('sos-correlation-flag').style.display = isCorrelated ? 'flex' : 'none';
+
+      closeModal('sos-list-modal');
+      openModal('sos-detail-modal');
     }
 
     function acknowledgeSOS() {
@@ -4655,8 +4918,11 @@
       showToast(`SOS for ${ackSOS.name} Acknowledged`, 'success');
       queue.splice(currentSOSIndex, 1);
       localStorage.setItem('ligtas_sos_queue', JSON.stringify(queue));
-      closeModal('sos-modal');
+      closeModal('sos-detail-modal');
       renderSOSBanners();
+      if (queue.length > 0) {
+        openSOSListModal();
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
