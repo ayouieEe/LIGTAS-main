@@ -943,12 +943,121 @@
         window.addEventListener('DOMContentLoaded', function() {
             renderDashboardStats();
             filterIncidents('all');
+            renderVolunteerDispatches();
             const params = new URLSearchParams(window.location.search);
             const screenParam = params.get('screen');
             const incidentParam = params.get('incident');
             if (incidentParam) showIncidentDetails(incidentParam);
             else if (screenParam) showScreen('screen-' + screenParam);
+
+            // Periodically check for new dispatch jobs
+            setInterval(renderVolunteerDispatches, 3000);
         });
+
+        function renderVolunteerDispatches() {
+            const container = document.getElementById('volunteer-dispatch-container');
+            if (!container) {
+                const section = document.createElement('div');
+                section.id = 'volunteer-dispatch-container';
+                section.className = 'space-y-4 mb-6';
+                const feed = document.querySelector('.flex-1.overflow-y-auto .space-y-4');
+                if (feed) feed.prepend(section);
+                else return;
+            }
+            
+            const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+            const userName = "Volunteer Juan Dela Cruz"; // Mock current user
+            
+            const pendingJobs = incidents.filter(inc => 
+                inc.status === 'Acknowledged' && 
+                inc.recommendedVolunteers && 
+                inc.recommendedVolunteers.some(v => v.name === userName) &&
+                !(inc.acceptedVolunteers || []).some(v => v.name === userName) &&
+                !(inc.declinedVolunteers || []).some(v => v.name === userName)
+            );
+            
+            const containerEl = document.getElementById('volunteer-dispatch-container');
+            if (pendingJobs.length === 0) {
+                containerEl.innerHTML = '';
+                return;
+            }
+            
+            containerEl.innerHTML = `
+                <div class="mb-2">
+                    <p class="text-[12px] uppercase tracking-[0.28em] text-emergency font-bold">New Emergency Dispatch</p>
+                </div>
+                ${pendingJobs.map(job => `
+                    <div class="alert-card bg-slate-900 rounded-3xl p-5 border border-emergency/30 shadow-xl relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-emergency/10 to-transparent"></div>
+                        <div class="relative">
+                            <div class="flex items-center justify-between gap-3">
+                                <span class="inline-flex items-center gap-2 rounded-full bg-emergency px-3 py-1.5 text-[11px] font-bold text-white">DISPATCH JOB</span>
+                                <span class="text-[11px] text-white/50">${job.createdAt || 'Just now'}</span>
+                            </div>
+                            <h3 class="mt-4 text-[18px] font-bold text-white leading-tight">${job.title}</h3>
+                            <p class="mt-2 text-[14px] leading-relaxed text-white/70">📍 ${job.location}</p>
+                            <div class="mt-6 flex gap-3">
+                                <button onclick="declineJob('${job.id}')" class="flex-1 h-12 rounded-xl bg-white/10 border border-white/20 text-white font-semibold text-[14px] active:scale-95 transition-transform">DECLINE</button>
+                                <button onclick="acceptJob('${job.id}')" class="flex-[2] h-12 rounded-xl bg-emergency text-white font-bold text-[14px] shadow-lg shadow-emergency/20 active:scale-95 transition-transform">ACCEPT JOB</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        function acceptJob(id) {
+            const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+            const idx = incidents.findIndex(i => i.id === id);
+            if (idx === -1) return;
+            
+            const userName = "Volunteer Juan Dela Cruz";
+            if (!incidents[idx].acceptedVolunteers) incidents[idx].acceptedVolunteers = [];
+            
+            // Mock volunteer data matching the pool
+            const volData = {
+                name: userName,
+                initials: 'JD',
+                status: 'Assigned',
+                distance: 'En Route',
+                dot: 'active',
+                color: '#22C55E',
+                acceptedAt: new Date().toLocaleString()
+            };
+            
+            incidents[idx].acceptedVolunteers.push(volData);
+            localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+            
+            // Log action for Admin
+            const logs = JSON.parse(localStorage.getItem('ligtas_audit_logs') || '[]');
+            logs.unshift({
+                id: 'LOG-V-' + Date.now(),
+                timestamp: new Date().toLocaleString('en-PH'),
+                admin: userName,
+                action: 'Dispatch Accepted',
+                target: incidents[idx].title,
+                detail: 'Volunteer accepted the job and is en route.',
+                ip: 'Mobile App'
+            });
+            localStorage.setItem('ligtas_audit_logs', JSON.stringify(logs));
+            
+            renderVolunteerDispatches();
+            showGlobalNotification('JOB ACCEPTED', 'You are now assigned to: ' + incidents[idx].title);
+        }
+
+        function declineJob(id) {
+             const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+            const idx = incidents.findIndex(i => i.id === id);
+            if (idx === -1) return;
+            
+            const userName = "Volunteer Juan Dela Cruz";
+            if (!incidents[idx].declinedVolunteers) incidents[idx].declinedVolunteers = [];
+            incidents[idx].declinedVolunteers.push({ name: userName, status: 'Declined', reason: 'Busy' });
+            
+            localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+            renderVolunteerDispatches();
+        }
 
         // CONNECTIVITY LOGIC: Listen for Admin Broadcasts
         let lastLogCount = (JSON.parse(localStorage.getItem('ligtas_audit') || '[]')).length;
