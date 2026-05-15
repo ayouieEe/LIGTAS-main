@@ -3140,6 +3140,11 @@
           'Ongoing': 'badge critical',
           'Resolved': 'badge success'
         };
+        const STATUS_REPORT_STATUSES = ['Acknowledged', 'Dispatched', 'Ongoing'];
+        const isResolvedIncident = status => status === 'Resolved';
+        const isStatusReportIncident = status => STATUS_REPORT_STATUSES.includes(status);
+        const isActiveIncident = status => !isResolvedIncident(status) && !isStatusReportIncident(status);
+
         // badge class map for severity
         const SEVERITY_BADGE = {
           'Critical': 'badge critical',
@@ -3183,13 +3188,14 @@
           let feedHTML = '';
 
           // Update Top Metrics (Consistent with Dashboard)
-          const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
+          const activeIncidents = incidents.filter(i => isActiveIncident(i.status));
+          const statusReports = incidents.filter(i => isStatusReportIncident(i.status));
           const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
-          const pendingDispatchCount = incidents.filter(i => i.status === 'Reported').length;
+          const pendingDispatchCount = activeIncidents.length;
           
-          // Calculate Confirmed Responders (Accepted across all active incidents)
+          // Calculate Confirmed Responders from incidents already in status tracking.
           let confirmedCount = 0;
-          activeIncidents.forEach(inc => {
+          statusReports.forEach(inc => {
             // Count Rescuers
             const responses = inc.responderResponses || {};
             confirmedCount += Object.values(responses).filter(s => s === 'Accepted').length;
@@ -3233,13 +3239,13 @@
               </div>
             </td>
           </tr>`;
-            if (inc.status === 'Resolved') {
+            if (isResolvedIncident(inc.status)) {
               resolvedHTML += rowHTML;
-            } else {
+            } else if (isActiveIncident(inc.status)) {
               activeHTML += rowHTML;
             }
 
-            if (inc.status === 'Acknowledged') {
+            if (isStatusReportIncident(inc.status)) {
               const feedCls = inc.severity === 'Critical' ? 'critical' : 'nominal';
               feedHTML += `
               <div class="feed-item ${feedCls}">

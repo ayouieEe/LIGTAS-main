@@ -221,7 +221,7 @@ const DEFAULT_CATEGORIES = [
 
 const DEFAULT_INCIDENTS = [
     {
-        id: 'INC-2026-001', title: 'Industrial Structure Fire — Brgy. Manggahan', status: 'Acknowledged', severity: 'Critical',
+        id: 'INC-2026-001', title: 'Industrial Structure Fire — Brgy. Manggahan', status: 'Ongoing', severity: 'Critical',
         location: 'Amang Rodriguez Ave, Manggahan', barangay: 'Manggahan',
         description: 'Large scale fire at a warehouse facility. Multiple units responding. Low visibility due to heavy smoke. Evacuation of immediate perimeter in progress.',
         reporter: 'Sgt. Antonio Luna', contact: '+63 917 123 4567', source: 'Official Field Report',
@@ -246,7 +246,7 @@ const DEFAULT_INCIDENTS = [
         fieldNotes: 'Fire spreading to adjacent block. Requesting additional water tankers immediately. Perimeter secured by PNP.'
     },
     {
-        id: 'INC-2026-002', title: 'Severe Street Flooding — Brgy. Pinagbuhatan', status: 'Acknowledged', severity: 'Urgent',
+        id: 'INC-2026-002', title: 'Severe Street Flooding — Brgy. Pinagbuhatan', status: 'Dispatched', severity: 'Urgent',
         location: 'Urbano Velasco Ave', barangay: 'Pinagbuhatan',
         description: 'Water level reached knee-high. Residents in low-lying areas requesting assistance with moving belongings. No casualties reported yet.',
         reporter: 'Maria Clara', contact: '+63 918 987 6543', source: 'Mobile App',
@@ -412,7 +412,7 @@ const DEFAULT_INCIDENTS = [
         fieldNotes: 'Assessment complete. Cracks are superficial, no structural compromise. Routine check scheduled in 2 weeks.'
     },
     {
-        id: 'INC-2026-010', title: 'Chemical Gas Leak — Brgy. Kapasigan', status: 'Acknowledged', severity: 'Critical',
+        id: 'INC-2026-010', title: 'Chemical Gas Leak — Brgy. Kapasigan', status: 'Ongoing', severity: 'Critical',
         location: 'Kapasigan Residential Block', barangay: 'Kapasigan',
         description: 'Strong chemical odor reported by multiple residents. Possible industrial gas leak from nearby facility. Evacuation of immediate radius in progress. HAZMAT team requested.',
         reporter: 'Brgy. Captain V. Reyes', contact: '+63 928 333 4444', source: 'Official Field Report',
@@ -434,7 +434,7 @@ const DEFAULT_INCIDENTS = [
         fieldNotes: 'Source identified as a corroded valve in a private storage unit. Containment in progress. No respiratory distress reported yet.'
     },
     {
-        id: 'INC-2026-011', title: 'Structural Collapse — Santolan Center', status: 'Acknowledged', severity: 'High',
+        id: 'INC-2026-011', title: 'Structural Collapse — Santolan Center', status: 'Dispatched', severity: 'High',
         location: 'Santolan Multi-Purpose Center', barangay: 'Santolan',
         description: 'Partial ceiling collapse in the main hall. Three individuals trapped under light debris. Structure instability suspected. Requesting engineering assessment.',
         reporter: 'Center Supervisor', contact: '+63 919 555 6666', source: 'Mobile App',
@@ -770,7 +770,7 @@ function repairIncidentStorage() {
 
 const applyLigtasConfig = () => {
     // FORCE RESET FOR DATA CONSISTENCY (One-time migration to high-fidelity dummy data)
-    const CURRENT_VERSION = '2026.05.15.v15';
+    const CURRENT_VERSION = '2026.05.15.v16';
 
     const savedVersion = localStorage.getItem('ligtas_data_version');
     if (savedVersion !== CURRENT_VERSION) {
