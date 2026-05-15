@@ -410,6 +410,75 @@ const DEFAULT_INCIDENTS = [
             { name: 'Engr. Mario Bautista', initials: 'MB', status: 'Resolved', distance: '0.5 km away', color: 'var(--text3)' }
         ],
         fieldNotes: 'Assessment complete. Cracks are superficial, no structural compromise. Routine check scheduled in 2 weeks.'
+    },
+    {
+        id: 'INC-2026-010', title: 'Chemical Gas Leak — Brgy. Kapasigan', status: 'Acknowledged', severity: 'Critical',
+        location: 'Kapasigan Residential Block', barangay: 'Kapasigan',
+        description: 'Strong chemical odor reported by multiple residents. Possible industrial gas leak from nearby facility. Evacuation of immediate radius in progress. HAZMAT team requested.',
+        reporter: 'Brgy. Captain V. Reyes', contact: '+63 928 333 4444', source: 'Official Field Report',
+        type: 'Gas Leak', createdAt: '2026-05-15, 11:30 AM',
+        needs: ['HAZMAT Unit', 'Medical Standby', 'Evacuation Support'],
+        reportingFor: 'Residential Area',
+        media: [],
+        calledResponders: [
+            { name: 'BFP HAZMAT Unit', unit: 'Fire', role: 'Chemical Containment', phone: '(02) 8643-0000', distance: '1.2 km away' },
+            { name: 'Pasig City Health Dept', unit: 'Medical', role: 'Health Assessment', phone: '(02) 8643-1111', distance: '0.8 km away' }
+        ],
+        acceptedVolunteers: [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'On-Scene', distance: '0.2 km away', color: 'var(--success)' }
+        ],
+        responderResponses: {
+            'BFP HAZMAT Unit': 'Accepted',
+            'Pasig City Health Dept': 'Accepted'
+        },
+        fieldNotes: 'Source identified as a corroded valve in a private storage unit. Containment in progress. No respiratory distress reported yet.'
+    },
+    {
+        id: 'INC-2026-011', title: 'Structural Collapse — Santolan Center', status: 'Acknowledged', severity: 'High',
+        location: 'Santolan Multi-Purpose Center', barangay: 'Santolan',
+        description: 'Partial ceiling collapse in the main hall. Three individuals trapped under light debris. Structure instability suspected. Requesting engineering assessment.',
+        reporter: 'Center Supervisor', contact: '+63 919 555 6666', source: 'Mobile App',
+        type: 'Structural Damage', createdAt: '2026-05-15, 12:15 PM',
+        needs: ['Engineering Assessor', 'Search & Rescue', 'Ambulance'],
+        reportingFor: 'Public Facility',
+        media: [],
+        calledResponders: [
+            { name: 'City Engineering Dept', unit: 'Engineering', role: 'Stability Assessment', phone: '(02) 8643-2222', distance: '2.1 km away' },
+            { name: 'Pasig Search & Rescue', unit: 'Rescue', role: 'Extrication Team', phone: '(02) 8643-0000', distance: '1.5 km away' }
+        ],
+        acceptedVolunteers: [
+            { name: 'Volunteer Maria Santos', initials: 'MS', status: 'On-Scene', distance: '0.1 km away', color: 'var(--success)' },
+            { name: 'Volunteer Roberto Tan', initials: 'RT', status: 'On-Scene', distance: '0.2 km away', color: 'var(--success)' }
+        ],
+        responderResponses: {
+            'City Engineering Dept': 'Accepted',
+            'Pasig Search & Rescue': 'Accepted'
+        },
+        fieldNotes: 'All trapped individuals extricated with minor injuries. Engineering team declared the main hall off-limits until further notice.'
+    },
+    {
+        id: 'INC-2026-012', title: 'Civil Disturbance — Brgy. Kapitolyo', status: 'Reported', severity: 'Medium',
+        location: 'Kapitolyo Public Market', barangay: 'Kapitolyo',
+        description: 'Reported heated dispute between stall owners and customers. Crowd gathering. Requesting police mediation to prevent escalation.',
+        reporter: 'Market Security', contact: '+63 920 777 8888', source: 'Mobile App',
+        type: 'Civil Disturbance', createdAt: '2026-05-15, 01:30 PM',
+        needs: ['Police'],
+        reportingFor: 'Public Market',
+        media: [],
+        calledResponders: [],
+        fieldNotes: 'Awaiting dispatcher acknowledgement.'
+    },
+    {
+        id: 'INC-2026-013', title: 'Missing Person — Brgy. Bagong Ilog', status: 'Reported', severity: 'Medium',
+        location: 'Sitio Pag-asa', barangay: 'Bagong Ilog',
+        description: 'Elderly male, 72 years old, reported missing since 08:00 AM. Last seen wearing a blue shirt and khaki shorts. Family requesting assistance.',
+        reporter: 'Elena Dela Cruz', contact: '+63 917 444 5555', source: 'Phone Report',
+        type: 'Missing Person', createdAt: '2026-05-15, 02:05 PM',
+        needs: ['Police', 'Search Team'],
+        reportingFor: 'Residential Area',
+        media: [],
+        calledResponders: [],
+        fieldNotes: 'Initial search by family yielded no results. Requesting official broadcast.'
     }
 ];
 

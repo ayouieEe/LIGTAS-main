@@ -17,3 +17,20 @@ function updateTime(){
 }
 setInterval(updateTime,1000);updateTime();
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'))});
+
+// HELPER UTILITIES
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function firstValue(...args) {
+  return args.find(v => v !== undefined && v !== null && v !== '');
+}
+
+function escapeHTML(str) {
+  if (!str) return '';
+  const p = document.createElement('p');
+  p.textContent = str;
+  return p.innerHTML;
+}

@@ -2833,29 +2833,24 @@
           <div class="metrics-row"
             style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
             <div class="m-card c-red" style="padding: 16px 20px;">
-              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Active Emergencies</div>
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Active Incidents</div>
               <div class="m-card-value red" id="inc-active-emergencies" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" id="inc-active-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">No active status</div>
-
+              <div class="m-card-sub" id="inc-active-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Monitoring active events</div>
             </div>
-            <div class="m-card c-blue" style="padding: 16px 20px;">
-              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Units Deployed</div>
-              <div class="m-card-value blue" id="inc-units-deployed" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Active response units</div>
-
+            <div class="m-card c-green" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Confirmed Responders</div>
+              <div class="m-card-value green" id="inc-confirmed-responders" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Personnel on-scene / en route</div>
             </div>
             <div class="m-card c-orange" style="padding: 16px 20px;">
-              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Civilians Affected</div>
-              <div class="m-card-value orange" id="inc-civilians-affected" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Estimated across incidents</div>
-
-            </div>
-            <div class="m-card c-yellow" style="padding: 16px 20px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Pending Dispatch</div>
               <div class="m-card-value orange" id="inc-pending-dispatch" style="font-size: 26px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Requires immediate action
-              </div>
-
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Units awaiting response</div>
+            </div>
+            <div class="m-card c-blue" style="padding: 16px 20px;">
+              <div class="m-card-label" style="font-size: 10px; margin-bottom: 6px;">Total On-Call</div>
+              <div class="m-card-value blue" id="inc-total-oncall" style="font-size: 26px;">0</div>
+              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px; opacity: 0.7;">Available system volunteers</div>
             </div>
           </div>
           <div class="grid-left-heavy" style="height:620px">
@@ -3190,15 +3185,27 @@
           // Update Top Metrics (Consistent with Dashboard)
           const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
           const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
-          const pendingCount = incidents.filter(i => i.status === 'Reported').length;
-          const units = JSON.parse(localStorage.getItem('ligtas_units') || '[]');
-          const deployedCount = units.filter(u => u.status !== 'Available').length;
+          const pendingDispatchCount = incidents.filter(i => i.status === 'Reported').length;
+          
+          // Calculate Confirmed Responders (Accepted across all active incidents)
+          let confirmedCount = 0;
+          activeIncidents.forEach(inc => {
+            // Count Rescuers
+            const responses = inc.responderResponses || {};
+            confirmedCount += Object.values(responses).filter(s => s === 'Accepted').length;
+            
+            // Count Volunteers
+            const acceptedVols = inc.acceptedVolunteers || [];
+            confirmedCount += acceptedVols.length;
+          });
+
+          const totalVolunteers = typeof getDefaultVolunteerPool === 'function' ? getDefaultVolunteerPool().length : 0;
           
           setText('inc-active-emergencies', activeIncidents.length);
           setText('inc-active-sub', criticalCount > 0 ? `${criticalCount} Critical Threats` : (activeIncidents.length > 0 ? 'Monitoring active events' : 'No active status'));
-          setText('inc-units-deployed', deployedCount);
-          setText('inc-civilians-affected', '1,450'); // Static estimated fallback
-          setText('inc-pending-dispatch', pendingCount);
+          setText('inc-confirmed-responders', confirmedCount);
+          setText('inc-pending-dispatch', pendingDispatchCount);
+          setText('inc-total-oncall', totalVolunteers);
 
           incidents.forEach(inc => {
             const sevCls = SEVERITY_BADGE[inc.severity] || SEVERITY_BADGE.default;
@@ -4237,8 +4244,17 @@
                         incidents[idx] = { ...incidents[idx], ...fresh };
                         updated = true;
                     }
+                } else {
+                    // Auto-import missing master data
+                    incidents.push(fresh);
+                    updated = true;
                 }
             });
+            
+            // Sort by ID to maintain order (optional but cleaner)
+            if (updated) {
+                incidents.sort((a, b) => b.id.localeCompare(a.id));
+            }
             
             if (updated) {
                 localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
@@ -4473,7 +4489,7 @@
             const dec = declined.find(d => String(d.name || '').trim().toLowerCase() === vName);
             
             if (isActiveMode) {
-              return { ...vol, status: 'Dispatched', dot: 'active', color: 'var(--nominal)' };
+              return { ...vol, status: 'Pending', dot: 'active', color: 'var(--nominal)' };
             }
 
             if (acc) {
@@ -4503,8 +4519,7 @@
                 const isResponded = vol.status === 'Responded';
                 const isAccepted = vol.status === 'Accepted' || isResponded;
                 const isDeclined = vol.status === 'Declined';
-                const isDispatched = vol.status === 'Dispatched';
-                const isPending = !isAccepted && !isDeclined && !isDispatched;
+                const isPending = !isAccepted && !isDeclined;
 
                 let statusBadge = '';
                 let cardStyle = 'background:var(--bg3);border:1px solid var(--border);';
@@ -4518,11 +4533,9 @@
                 } else if (isDeclined) {
                   statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#EF4444;background:rgba(239,68,68,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(239,68,68,0.2);">✕ DECLINED</span>';
                   cardStyle = 'background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.2);';
-                } else if (isDispatched) {
-                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#3B82F6;background:rgba(59,130,246,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,0.2);">🛰 DISPATCHED</span>';
-                  cardStyle = 'background:rgba(59,130,246,0.02);border:1px solid rgba(59,130,246,0.1);';
-                } else {
-                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:var(--text3);background:var(--bg4);padding:2px 6px;border-radius:4px;border:1px solid var(--border);">⌛ PENDING</span>';
+                } else if (isPending) {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:var(--warning);background:rgba(245,158,11,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.2);">⏳ PENDING</span>';
+                  cardStyle = 'background:rgba(245,158,11,0.02);border:1px solid rgba(245,158,11,0.1);';
                 }
                 
                 return `
