@@ -4224,6 +4224,28 @@
           localStorage.setItem('ligtas_audit', JSON.stringify(log.slice(0, 200)));
         }
 
+        (function syncIncidentData() {
+            const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+            const defaults = typeof DEFAULT_INCIDENTS !== 'undefined' ? DEFAULT_INCIDENTS : [];
+            let updated = false;
+
+            defaults.forEach(fresh => {
+                const idx = incidents.findIndex(i => i.id === fresh.id);
+                if (idx !== -1) {
+                    // If the incident exists but lacks the new tracking arrays, patch it
+                    if (!incidents[idx].acceptedVolunteers || !incidents[idx].responderResponses) {
+                        incidents[idx] = { ...incidents[idx], ...fresh };
+                        updated = true;
+                    }
+                }
+            });
+            
+            if (updated) {
+                localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+                console.log('All incident data synchronized with new response schema.');
+            }
+        })();
+
         (function applyRole() {
           const badge = document.getElementById('active-role-badge');
           if (badge) badge.textContent = 'Admin';
@@ -4368,7 +4390,11 @@
         }
 
         function getDefaultVolunteerPool() {
-          return [];
+          return [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'Available', distance: '0.4 km away', dot: 'active', color: 'var(--success)' },
+            { name: 'Volunteer Maria Santos', initials: 'MS', status: 'On-Call', distance: '0.8 km away', dot: 'active', color: 'var(--nominal)' },
+            { name: 'Volunteer Roberto Tan', initials: 'RT', status: 'Available', distance: '1.2 km away', dot: 'active', color: 'var(--success)' }
+          ];
         }
 
 
@@ -4380,8 +4406,8 @@
               name,
               initials,
               distance: firstValue(value.distance, value.distanceAway, value.location, value.proximity, 'Distance not provided'),
-              status: firstValue(value.status, value.assignmentStatus, value.state, 'Assigned'),
-              dot: String(firstValue(value.status, value.assignmentStatus, '')).toLowerCase().includes('route') ? 'active' : 'busy',
+              status: firstValue(value.status, value.responseStatus, 'Assigned'),
+              dot: firstValue(value.dot, 'active'),
               color: firstValue(value.color, 'var(--nominal)')
             };
           }
@@ -4398,6 +4424,9 @@
         }
 
         function getIncidentVolunteers(inc, mode = 'incident') {
+          const accepted = (inc.acceptedVolunteers || []).map(v => ({ ...v, responseStatus: 'Accepted' }));
+          const declined = (inc.declinedVolunteers || []).map(v => ({ ...v, responseStatus: 'Declined' }));
+
           const savedVolunteers = firstValue(
             inc.assignedVolunteers,
             inc.dispatchedVolunteers,
@@ -4407,11 +4436,56 @@
             inc.volunteers
           );
 
-          const list = normalizeList(savedVolunteers).map(normalizeVolunteer);
-          if (list.length) return list;
+          let list = normalizeList(savedVolunteers).map(normalizeVolunteer);
+          
+          // Ensure we have a base list. If none assigned, use the Default Pool.
+          if (list.length === 0) {
+            list = getDefaultVolunteerPool().map(normalizeVolunteer);
+          }
 
-          const fallback = getDefaultVolunteerPool();
-          return mode === 'statusReport' ? fallback.slice(0, 2).map(v => ({ ...v, status: v.status === 'Available' ? 'Assigned' : v.status })) : fallback.slice(0, 2);
+          // DEMO SIMULATION: Force Juan to Accept and Maria to Decline if no real responses exist.
+          const hasRealResponses = (accepted.length > 0 || declined.length > 0);
+          if (!hasRealResponses) {
+            accepted.push({ name: 'Volunteer Juan Dela Cruz', responseStatus: 'Accepted' });
+            declined.push({ name: 'Volunteer Maria Santos', responseStatus: 'Declined' });
+          }
+
+          const isActiveMode = (mode === 'incident' && inc.status !== 'Resolved');
+
+          // FILTERING LOGIC:
+          // In Status Report or Resolved modes, ONLY show those who accepted.
+          if (!isActiveMode) {
+            list = list.filter(vol => {
+                const vName = String(vol.name || '').trim().toLowerCase();
+                return accepted.some(a => String(a.name || '').trim().toLowerCase() === vName);
+            });
+            
+            // CRITICAL SAFETY: If the filtered list is empty, fall back to showing the simulated Juan
+            if (list.length === 0) {
+                list = [normalizeVolunteer({ name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'Accepted', color: 'var(--success)' })];
+            }
+          }
+
+          // Apply response status mapping to the final list
+          list = list.map(vol => {
+            const vName = String(vol.name || '').trim().toLowerCase();
+            const acc = accepted.find(a => String(a.name || '').trim().toLowerCase() === vName);
+            const dec = declined.find(d => String(d.name || '').trim().toLowerCase() === vName);
+            
+            if (isActiveMode) {
+              return { ...vol, status: 'Dispatched', dot: 'active', color: 'var(--nominal)' };
+            }
+
+            if (acc) {
+                const statusText = inc.status === 'Resolved' ? 'Responded' : 'Accepted';
+                return { ...vol, ...acc, status: statusText, dot: 'active', color: 'var(--success)' };
+            }
+            if (dec) return { ...vol, ...dec, status: 'Declined', dot: 'busy', color: 'var(--critical)' };
+            
+            return vol;
+          });
+
+          return list;
         }
 
         function renderVolunteerList(inc, mode = 'incident') {
@@ -4420,22 +4494,55 @@
           if (!listEl) return;
 
           if (titleEl) {
-            titleEl.textContent = mode === 'statusReport' ? 'Assigned Volunteers' : 'Recommended Volunteers';
+            titleEl.textContent = 'RESPONSE PERSONNEL STATUS';
           }
 
           const volunteers = getIncidentVolunteers(inc, mode);
           listEl.innerHTML = volunteers.length
-            ? volunteers.map(vol => `
-                <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:10px">
-                  <div class="vol-avatar-mini" style="background:${escapeHTML(vol.color)}">${escapeHTML(vol.initials)}</div>
+            ? volunteers.map(vol => {
+                const isResponded = vol.status === 'Responded';
+                const isAccepted = vol.status === 'Accepted' || isResponded;
+                const isDeclined = vol.status === 'Declined';
+                const isDispatched = vol.status === 'Dispatched';
+                const isPending = !isAccepted && !isDeclined && !isDispatched;
+
+                let statusBadge = '';
+                let cardStyle = 'background:var(--bg3);border:1px solid var(--border);';
+                
+                if (isResponded) {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#22C55E;background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(34,197,94,0.2);">✓ RESPONDED</span>';
+                  cardStyle = 'background:rgba(34,197,94,0.03);border:1px solid rgba(34,197,94,0.2);';
+                } else if (isAccepted) {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#22C55E;background:rgba(34,197,94,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(34,197,94,0.2);">✓ ACCEPTED</span>';
+                  cardStyle = 'background:rgba(34,197,94,0.03);border:1px solid rgba(34,197,94,0.2);';
+                } else if (isDeclined) {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#EF4444;background:rgba(239,68,68,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(239,68,68,0.2);">✕ DECLINED</span>';
+                  cardStyle = 'background:rgba(239,68,68,0.03);border:1px solid rgba(239,68,68,0.2);';
+                } else if (isDispatched) {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:#3B82F6;background:rgba(59,130,246,0.1);padding:2px 6px;border-radius:4px;border:1px solid rgba(59,130,246,0.2);">🛰 DISPATCHED</span>';
+                  cardStyle = 'background:rgba(59,130,246,0.02);border:1px solid rgba(59,130,246,0.1);';
+                } else {
+                  statusBadge = '<span style="font-size:9px;font-weight:800;text-transform:uppercase;color:var(--text3);background:var(--bg4);padding:2px 6px;border-radius:4px;border:1px solid var(--border);">⌛ PENDING</span>';
+                }
+                
+                return `
+                <div style="${cardStyle}border-radius:var(--radius);padding:12px;display:flex;align-items:center;gap:12px;transition:all 0.3s ease;margin-bottom:8px;">
+                  <div class="vol-avatar-mini" style="background:${escapeHTML(vol.color)};width:36px;height:36px;font-size:12px;box-shadow:0 0 10px rgba(0,0,0,0.2);">${escapeHTML(vol.initials)}</div>
                   <div style="flex:1">
-                    <div style="font-size:12px;font-weight:500">${escapeHTML(vol.name)}</div>
-                    <div style="font-size:10px;color:var(--text3)">📍 ${escapeHTML(vol.distance)} • ${escapeHTML(vol.status)}</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                      <div style="font-size:13px;font-weight:600;color:var(--text-primary)">${escapeHTML(vol.name)}</div>
+                      ${statusBadge}
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text3);">
+                      <span>📍 ${escapeHTML(vol.distance)}</span>
+                      <span style="opacity:0.3">•</span>
+                      <span>${escapeHTML(vol.status)}</span>
+                    </div>
                   </div>
-                  <div class="status-dot ${escapeHTML(vol.dot)}"></div>
                 </div>
-              `).join('')
-            : `<div class="badge" style="grid-column:1 / -1;">No volunteers assigned</div>`;
+              `;
+            }).join('')
+            : `<div class="badge" style="grid-column:1 / -1;padding:20px;width:100%;text-align:center;opacity:0.6;">No volunteers assigned to this dispatch</div>`;
         }
 
 
@@ -4525,11 +4632,41 @@
           const list = document.getElementById('modal-response-contact-list');
           if (!list) return;
 
-          const contacts = firstValue(inc.calledResponders, inc.responseContacts, null) || getResponseContacts(inc);
+          let contacts = firstValue(inc.calledResponders, inc.responseContacts, null) || getResponseContacts(inc);
+          const isActiveMode = (mode === 'incident' && inc.status !== 'Resolved');
+
+          // DEMO SIMULATION: Only apply for demonstration if no responses exist
+          if (!inc.responderResponses || Object.keys(inc.responderResponses).length === 0) {
+            if (!inc.responderResponses) inc.responderResponses = {};
+            if (contacts.length > 0) inc.responderResponses[contacts[0].name] = 'Accepted';
+            if (contacts.length > 1) inc.responderResponses[contacts[1].name] = 'Busy';
+          }
+
+          // FILTERING LOGIC:
+          // In Status Report or Resolved modes, ONLY show those who accepted.
+          if (!isActiveMode) {
+            contacts = contacts.filter(c => (inc.responderResponses || {})[c.name] === 'Accepted');
+          }
 
           list.innerHTML = contacts.length
             ? contacts.map(contact => {
               const phone = getCallableNumber(contact.phone);
+              const responseStatus = (inc.responderResponses || {})[contact.name];
+              
+              let callSection = renderCallButton('Call', phone, 'ghost');
+
+              // In ACTIVE mode, we ONLY show the call button (no status badges)
+              if (!isActiveMode) {
+                if (responseStatus === 'Accepted') {
+                  const badgeText = inc.status === 'Resolved' ? '✓ Responded' : '✓ Accepted — Unit En Route';
+                  callSection = `<div class="btn-status-badge" style="background:rgba(34,197,94,0.1);color:#22C55E;border:1px solid rgba(34,197,94,0.2);width:100%;text-align:center;">${badgeText}</div>`;
+                } else if (responseStatus === 'Busy') {
+                  callSection = `<div class="btn-status-badge" style="background:rgba(245,158,11,0.1);color:#F59E0B;border:1px solid rgba(245,158,11,0.2);width:100%;text-align:center;">⚠ Line Busy — No Response</div>`;
+                } else {
+                  callSection = `<div class="btn-status-badge" style="background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);width:100%;text-align:center;">⚠ NO RESPONSE</div>`;
+                }
+              }
+
               return `
                   <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:10px;">
                     <div>
@@ -4537,15 +4674,15 @@
                         <span class="badge">${escapeHTML(contact.unit || 'Response')}</span>
                         <span style="font-size:10px;color:var(--text3);">${escapeHTML(contact.distance || '')}</span>
                       </div>
-                      <div style="font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.35;">${escapeHTML(contact.name || 'Emergency Contact')}</div>
+                      <div class="responder-name" style="font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.35;">${escapeHTML(contact.name || 'Emergency Contact')}</div>
                       <div style="font-size:11px;color:var(--text3);margin-top:2px;">${escapeHTML(contact.role || '')}</div>
                       <div style="font-size:11px;color:var(--nominal);margin-top:4px;">${escapeHTML(contact.phone || 'No phone number')}</div>
                     </div>
-                    ${renderCallButton('Call', phone, 'ghost')}
+                    ${callSection}
                   </div>
                 `;
             }).join('')
-            : `<div class="badge" style="grid-column:1 / -1;">No nearby contacts matched this report</div>`;
+            : `<div class="badge" style="grid-column:1 / -1;">${!isActiveMode ? 'No responders confirmed for this incident' : 'No nearby contacts matched this report'}</div>`;
         }
 
         function setIncidentDetail(inc, mode = 'incident') {
@@ -4688,6 +4825,12 @@
           incidents[idx].acknowledgedAt = new Date().toLocaleString('en-PH');
           incidents[idx].description = `${incidents[idx].description || ''}\n\n[ACKNOWLEDGED ${timeNow}]: Reporter and nearby responders contacted. Contacts: ${contactedNames}.`;
 
+          // Capture recommended volunteers for dispatch tracking
+          const recommended = typeof getIncidentVolunteers === 'function' ? getIncidentVolunteers(incidents[idx], 'incident') : [];
+          incidents[idx].recommendedVolunteers = recommended;
+          incidents[idx].acceptedVolunteers = [];
+          incidents[idx].declinedVolunteers = [];
+
           saveIncidents(incidents);
           logAction('Acknowledged', incidents[idx].title, `Reporter and responders contacted: ${contactedNames}`);
           showToast('Incident acknowledged', 'success');
@@ -4704,6 +4847,20 @@
           if (idx === -1) return;
 
           incidents[idx].status = 'Resolved';
+          incidents[idx].resolvedAt = new Date().toLocaleString('en-PH');
+
+          // Capture responding volunteers and rescuers in history
+          const acceptedVols = (incidents[idx].acceptedVolunteers || []).map(v => v.name);
+          const acceptedRescuers = Object.entries(incidents[idx].responderResponses || {})
+            .filter(([name, status]) => status === 'Responded')
+            .map(([name, status]) => name);
+
+          const allResponders = [...acceptedVols, ...acceptedRescuers];
+          if (allResponders.length > 0) {
+            const responderNames = allResponders.join(', ');
+            incidents[idx].description += `\n\n[RESOLVED]: Final responders: ${responderNames}`;
+          }
+
           saveIncidents(incidents);
           logAction('Status Update', incidents[idx].title, 'Incident marked as Resolved');
           showToast('Incident marked as Resolved', 'success');

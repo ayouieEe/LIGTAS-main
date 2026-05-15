@@ -64,7 +64,84 @@ const getCallableNumber = (phone) => {
 const renderCallButton = (label, phone, type = 'primary') => {
     if (!phone) return `<button class="btn btn-ghost" disabled style="opacity:0.55;cursor:not-allowed;">No phone number</button>`;
     const btnClass = type === 'ghost' ? 'btn-ghost' : 'btn-primary';
-    return `<a href="tel:${phone}" class="btn ${btnClass}" style="text-decoration:none;font-size:11px;padding:6px 10px;" onclick="event.stopPropagation()">☎ ${label}</a>`;
+    return `<a href="tel:${phone}" class="btn ${btnClass}" style="text-decoration:none;font-size:11px;padding:6px 10px;" onclick="if(typeof onInitiateCall==='function')onInitiateCall(this,'${phone}');event.stopPropagation()">☎ ${label}</a>`;
+};
+
+// Global Interactive Call Handlers
+window.onInitiateCall = function (el, phone) {
+    const parent = el.parentElement;
+    if (!parent || parent.querySelector('.call-status-actions')) return;
+
+    const actions = document.createElement('div');
+    actions.className = 'call-status-actions';
+    actions.style.display = 'flex';
+    actions.style.gap = '8px';
+    actions.style.marginTop = '6px';
+    actions.style.animation = 'fadeInStatus 0.3s ease-out';
+
+    actions.innerHTML = `
+        <button class="btn btn-sm" style="background:rgba(245,158,11,0.1);color:#F59E0B;border:1px solid rgba(245,158,11,0.2);flex:1;font-size:10px;padding:5px;font-weight:600;" onclick="updateCallStatus(this, 'Busy')">Line Busy</button>
+        <button class="btn btn-sm" style="background:rgba(34,197,94,0.1);color:#22C55E;border:1px solid rgba(34,197,94,0.2);flex:1;font-size:10px;padding:5px;font-weight:600;" onclick="updateCallStatus(this, 'Accepted')">Accepted</button>
+    `;
+    
+    parent.appendChild(actions);
+    
+    // Add animation if not present
+    if (!document.getElementById('call-tracking-styles')) {
+        const style = document.createElement('style');
+        style.id = 'call-tracking-styles';
+        style.textContent = `
+            @keyframes fadeInStatus { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+            .btn-status-badge { animation: fadeInStatus 0.3s ease-out; font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: var(--radius); text-align: center; margin-top: 6px; }
+        `;
+        document.head.appendChild(style);
+    }
+};
+
+window.updateCallStatus = function (btn, status) {
+    const wrap = btn.parentElement;
+    const parent = wrap.parentElement;
+    const badge = document.createElement('div');
+    badge.className = 'btn-status-badge';
+
+    // Find responder name and incident ID
+    const nameEl = parent.querySelector('.responder-name');
+    const responderName = nameEl ? nameEl.textContent.trim() : null;
+    const incidentId = document.getElementById('modal-inc-id')?.textContent.trim();
+
+    if (incidentId && responderName) {
+        const incidents = JSON.parse(localStorage.getItem('ligtas_incidents') || '[]');
+        const idx = incidents.findIndex(i => i.id === incidentId);
+        if (idx !== -1) {
+            if (!incidents[idx].responderResponses) incidents[idx].responderResponses = {};
+            incidents[idx].responderResponses[responderName] = status;
+            localStorage.setItem('ligtas_incidents', JSON.stringify(incidents));
+        }
+    }
+
+    if (status === 'Busy') {
+        badge.style.background = 'rgba(245,158,11,0.1)';
+        badge.style.color = '#F59E0B';
+        badge.style.border = '1px solid rgba(245,158,11,0.2)';
+        badge.innerHTML = '⚠ Line Busy — No Response';
+    } else {
+        badge.style.background = 'rgba(34,197,94,0.1)';
+        badge.style.color = '#22C55E';
+        badge.style.border = '1px solid rgba(34,197,94,0.2)';
+        badge.innerHTML = '✓ Accepted — Unit En Route';
+        
+        if (typeof logAction === 'function') {
+            const title = document.getElementById('modal-inc-title')?.textContent || 'Incident';
+            logAction('Dispatch', title, `Responder ${responderName} accepted via direct call`);
+        }
+    }
+
+    wrap.replaceWith(badge);
+    const callBtn = parent.querySelector('a.btn');
+    if (callBtn) {
+        callBtn.style.opacity = '0.4';
+        callBtn.style.pointerEvents = 'none';
+    }
 };
 
 const renderInfoBadge = (text, type = 'default') => {
@@ -158,9 +235,13 @@ const DEFAULT_INCIDENTS = [
             { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Perimeter Security', phone: '(02) 8641-0000', distance: '0.5 km away' }
         ],
         assignedVolunteers: [
-            { name: 'Juan Dela Cruz', initials: 'JD', status: 'On-Route', distance: '0.4 km away', color: 'var(--nominal)' },
-            { name: 'Ana Reyes', initials: 'AR', status: 'On-Scene', distance: '0.1 km away', color: 'var(--warning)' },
-            { name: 'Roberto Tan', initials: 'RT', status: 'Assigned', distance: '0.9 km away', color: 'var(--nominal)' }
+            { name: 'Volunteer Roberto Tan', initials: 'RT', status: 'Assigned', distance: '0.9 km away', color: 'var(--nominal)' }
+        ],
+        acceptedVolunteers: [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'Assigned', distance: '0.4 km away', color: 'var(--success)' }
+        ],
+        declinedVolunteers: [
+            { name: 'Volunteer Maria Santos', initials: 'MS', status: 'Assigned', distance: '0.8 km away', color: 'var(--critical)' }
         ],
         fieldNotes: 'Fire spreading to adjacent block. Requesting additional water tankers immediately. Perimeter secured by PNP.'
     },
@@ -178,10 +259,18 @@ const DEFAULT_INCIDENTS = [
             { name: 'DSWD Pasig City Field Office', unit: 'Relief', role: 'Social Welfare & Aid', phone: '(02) 8643-2000', distance: '1.1 km away' }
         ],
         assignedVolunteers: [
-            { name: 'Maria Santos', initials: 'MS', status: 'On-Scene', distance: '0.2 km away', color: 'var(--warning)' },
-            { name: 'Jose Rizal', initials: 'JR', status: 'On-Route', distance: '0.6 km away', color: 'var(--nominal)' },
-            { name: 'Liza Cruz', initials: 'LC', status: 'Assigned', distance: '1.0 km away', color: 'var(--nominal)' }
+            { name: 'Volunteer Roberto Tan', initials: 'RT', status: 'Assigned', distance: '1.0 km away', color: 'var(--nominal)' }
         ],
+        acceptedVolunteers: [
+            { name: 'Volunteer Maria Santos', initials: 'MS', status: 'On-Scene', distance: '0.2 km away', color: 'var(--warning)' }
+        ],
+        declinedVolunteers: [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'Assigned', distance: '0.6 km away', color: 'var(--nominal)' }
+        ],
+        responderResponses: {
+            'Brgy. Pinagbuhatan Rescue Team': 'Accepted',
+            'DSWD Pasig City Field Office': 'Accepted'
+        },
         fieldNotes: 'Water level slowly subsiding. Rescue boat extracted 8 residents from Sitio Pag-asa. Pumping operations ongoing.'
     },
     {
@@ -197,10 +286,15 @@ const DEFAULT_INCIDENTS = [
             { name: 'Pasig City General Hospital ER', unit: 'Medical', role: 'Emergency Medical Services', phone: '(02) 8643-1111', distance: '0.8 km away' },
             { name: 'PNP Pasig City HQ', unit: 'Police', role: 'Law Enforcement', phone: '(02) 8641-0000', distance: '0.5 km away' }
         ],
-        assignedVolunteers: [
-            { name: 'Traffic Aux 01 (Ben Santos)', initials: 'BS', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
-            { name: 'Traffic Aux 02 (Carla Misa)', initials: 'CM', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' }
+        acceptedVolunteers: [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
+            { name: 'Volunteer Maria Santos', initials: 'MS', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' }
         ],
+        responderResponses: {
+            'Pasig City Traffic Management': 'Accepted',
+            'Pasig City General Hospital ER': 'Accepted',
+            'PNP Pasig City HQ': 'Accepted'
+        },
         fieldNotes: 'Two lanes blocked. Towing truck ETA 10 mins. 2 victims with minor lacerations transported to PCGH.'
     },
     {
@@ -235,8 +329,8 @@ const DEFAULT_INCIDENTS = [
             { name: 'Pasig DRRMO Relief Division', unit: 'Relief', role: 'Relief Coordinator', phone: '+63 906 777 8888', distance: '0.4 km away' }
         ],
         assignedVolunteers: [
-            { name: 'Relief Coord Aling Nena', initials: 'AN', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
-            { name: 'Relief Coord Mang Isko', initials: 'MI', status: 'On-Scene', distance: '0.0 km away', color: 'var(--warning)' },
+            { name: 'Relief Coord Aling Nena', initials: 'AN', status: 'Assigned', distance: '0.0 km away', color: 'var(--nominal)' },
+            { name: 'Relief Coord Mang Isko', initials: 'MI', status: 'Assigned', distance: '0.0 km away', color: 'var(--nominal)' },
             { name: 'Volunteer Driver 01', initials: 'VD', status: 'Assigned', distance: '0.8 km away', color: 'var(--nominal)' }
         ],
         fieldNotes: 'Need 2 L300 vans to transport 40 individuals to Rizal High School center. Transferred 15 already.'
@@ -254,8 +348,8 @@ const DEFAULT_INCIDENTS = [
             { name: 'Pasig City Traffic Management', unit: 'Traffic', role: 'Traffic Control', phone: '+63 917 800 0001', distance: '1.0 km away' }
         ],
         assignedVolunteers: [
-            { name: 'Brgy. Tanod Team Alpha', initials: 'TA', status: 'On-Scene', distance: '0.1 km away', color: 'var(--warning)' },
-            { name: 'Traffic Aux 03 (Mark Diaz)', initials: 'MD', status: 'On-Route', distance: '0.7 km away', color: 'var(--nominal)' }
+            { name: 'Brgy. Tanod Team Alpha', initials: 'TA', status: 'Assigned', distance: '0.1 km away', color: 'var(--nominal)' },
+            { name: 'Traffic Aux 03 (Mark Diaz)', initials: 'MD', status: 'Assigned', distance: '0.7 km away', color: 'var(--nominal)' }
         ],
         fieldNotes: 'Meralco dispatched. ETA 30 mins. Traffic enforcers positioned at Shaw-Ortigas intersection.'
     },
@@ -271,9 +365,14 @@ const DEFAULT_INCIDENTS = [
             { name: 'PASIG-AMB-01 (Dr. Apolinar Cruz)', unit: 'Ambulance', role: 'Paramedic Unit', phone: '+63 919 100 1001', distance: '1.2 km away' },
             { name: 'Medical City Pasig ER', unit: 'Hospital', role: 'Receiving Facility', phone: '(02) 8988-1000', distance: '0.6 km away' }
         ],
-        assignedVolunteers: [
-            { name: 'Volunteer Medic Ana Lim', initials: 'AL', status: 'Resolved', distance: '0.2 km away', color: 'var(--text3)' }
+        acceptedVolunteers: [
+            { name: 'Volunteer Juan Dela Cruz', initials: 'JD', status: 'Accepted', distance: '0.4 km away', color: 'var(--success)' },
+            { name: 'Volunteer Medic Ana Lim', initials: 'AL', status: 'Accepted', distance: '0.2 km away', color: 'var(--success)' }
         ],
+        responderResponses: {
+            'PASIG-AMB-01 (Dr. Apolinar Cruz)': 'Accepted',
+            'Medical City Pasig ER': 'Accepted'
+        },
         fieldNotes: 'Patient successfully handed over to ER staff. Condition: stable. Unit PASIG-AMB-01 returning to base.'
     },
     {
@@ -436,11 +535,11 @@ const applyLigtasConfig = () => {
     if (!localStorage.getItem('ligtas_units')) localStorage.setItem('ligtas_units', JSON.stringify(DEFAULT_UNITS));
     if (!localStorage.getItem('ligtas_inventory')) localStorage.setItem('ligtas_inventory', JSON.stringify(DEFAULT_INVENTORY));
     if (!localStorage.getItem('ligtas_aided_requests')) localStorage.setItem('ligtas_aided_requests', JSON.stringify(DEFAULT_AIDED));
-    
+
     if (!localStorage.getItem('ligtas_incidents') || JSON.parse(localStorage.getItem('ligtas_incidents')).length === 0) {
         localStorage.setItem('ligtas_incidents', JSON.stringify(DEFAULT_INCIDENTS));
     }
-    
+
     if (!localStorage.getItem('ligtas_audit') || JSON.parse(localStorage.getItem('ligtas_audit')).length === 0) {
         localStorage.setItem('ligtas_audit', JSON.stringify(DEFAULT_AUDIT));
     }
