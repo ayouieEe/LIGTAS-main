@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIGTAS - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emergency: '#D32F2F', alert: '#E53935', tint: '#FFEBEE',
+                        deep: '#B71C1C', safe: '#2E7D32', amber: '#E65100',
+                        flood: '#1565C0', quake: '#6A1B9A', medical: '#00695C',
+                        navy: '#1C1C1E', slate: '#6B7280',
+                    },
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .form-input {
+            width: 100%; padding: 11px 14px; border: 1.5px solid #E5E7EB;
+            border-radius: 12px; background: #F8FAFC; color: #1C1C1E;
+            font-size: 14px; outline: none; font-family: 'Inter', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus { border-color: #D32F2F; box-shadow: 0 0 0 3px rgba(211,47,47,0.1); }
+        .form-label { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 5px; display: block; text-transform: uppercase; letter-spacing: 0.04em; }
+        .card { background: white; border-radius: 20px; border: 1px solid #F1F5F9; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+        .btn-submit { width: 100%; padding: 13px; border-radius: 14px; font-weight: 700; font-size: 15px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1C1C1E; color: white; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 999; animation: slideDown 0.3s ease; white-space: nowrap; }
+        @keyframes slideDown { from { opacity:0; transform: translateX(-50%) translateY(-12px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+        .record-card { background: #F8FAFC; border: 1px solid #E5E7EB; border-radius: 12px; padding: 12px 14px; }
+        .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .urgency-critical { background: #FEE2E2; color: #DC2626; }
+        .urgency-high { background: #FEF3C7; color: #D97706; }
+        .urgency-medium { background: #DBEAFE; color: #2563EB; }
+        .urgency-low { background: #D1FAE5; color: #059669; }
+        .status-approved { background: #D1FAE5; color: #047857; }
+        .status-for-pickup { background: #DBEAFE; color: #1D4ED8; }
+        .status-pending { background: #FEF3C7; color: #B45309; }
+        .status-completed { background: #E5E7EB; color: #4B5563; }
+        .status-action-btn {
+            padding: 10px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;
+            border: none; cursor: pointer; background: #2563EB; color: white; transition: transform 0.2s, filter 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .status-action-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+        .status-action-btn.done { background: #047857; }
+        .status-action-btn.secondary { background: #2563EB; }
+        .notification-popup {
+            position: absolute; top: 86px; right: 1rem; width: min(100%, 360px);
+            background: white; border-radius: 24px; border: 1px solid #E5E7EB;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18); padding: 18px;
+            z-index: 70;
+        }
+        .notification-popup.hidden { display: none; }
+        .notification-badge {
+            position: absolute; top: -4px; right: -4px;
+            min-width: 18px; height: 18px; border-radius: 999px;
+            background: #D32F2F; color: white; font-size: 10px; font-weight: 800;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+
+        /* ── Bottom Nav ── */
+        .bottom-nav-item {
+            flex: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 3px; cursor: pointer; position: relative;
+            padding: 6px 4px 0;
+            transition: color 0.2s;
+            color: #9CA3AF;
+            border: none; background: none;
+        }
+        .bottom-nav-item span {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .bottom-nav-item.active { color: #D32F2F; }
+        .bottom-nav-item .nav-pill {
+            position: absolute; top: 4px;
+            width: 48px; height: 36px;
+            background: rgba(211,47,47,0.1);
+            border-radius: 10px;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .bottom-nav-item.active .nav-pill { opacity: 1; }
+
+        /* ── Incident Report (matches report page exactly) ── */
+        .inc-step-content { display: none; }
+        .inc-step-content.active { display: block; }
+
+        /* Incident type cards — match report page */
+        .inc-card {
+            position: relative;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 1rem;
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .inc-card.selected {
+            background: #FFEBEE;
+            border: 2px solid #D32F2F;
+        }
+        .inc-card .inc-check {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: none;
+            color: #D32F2F;
+        }
+        .inc-card.selected .inc-check { display: block; }
+
+        /* Segment toggle */
+        .inc-segment-group {
+            display: flex;
+            background: rgba(248,250,252,0.5);
+            padding: 0.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E7EB;
+        }
+        .inc-segment {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.6rem;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6B7280;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .inc-segment.active {
+            background: white;
+            color: #1C1C1E;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        /* Severity buttons */
+        .inc-sev-btn {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem 0;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #6B7280;
+        }
+        .inc-sev-btn:not(:last-child) { border-right: 1px solid #F1F5F9; }
+        .inc-sev-btn.active {
+            background: #FFEBEE;
+            font-weight: 700;
+            color: #D32F2F;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        /* Need chips */
+        .inc-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            border: 1px solid #E5E7EB;
+            background: white;
+            font-size: 13px;
+            color: #1C1C1E;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .inc-chip.active {
+            border-color: #D32F2F;
+            background: #D32F2F;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(211,47,47,0.2);
+        }
+        .registry-card {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(15,23,42,0.04);
+        }
+        .registry-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .registry-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .registry-subtitle {
+            font-size: 12px;
+            color: #6B7280;
+        }
+        .registry-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .registry-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 100%;
+        }
+        .registry-table th,
+        .registry-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #F3F4F6;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+        .registry-table th {
+            color: #6B7280;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 11px;
+        }
+        .registry-table tr:last-child td {
+            border-bottom: none;
+        }
+        .registry-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 9999px;
+            background: #EEF2FF;
+            color: #3730A3;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .summary-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 22px;
+            padding: 18px 16px;
+            box-shadow: 0 10px 24px rgba(15,23,42,0.05);
+        }
+        .summary-note {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #6B7280;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .metric-card {
+            background: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 11px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .status-pill.default { background: #E5E7EB; color: #374151; }
+        .status-pill.urgent { background: #FEF3C7; color: #92400E; }
+        .status-pill.medical { background: #DBEAFE; color: #1D4ED8; }
+        .status-pill.critical { background: #FEE2E2; color: #B91C1C; }
+        .active-centers {
+            display: grid;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .active-centers-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .center-header-note {
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+        .search-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .toggle-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .toggle-btn {
+            background: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            border-radius: 14px;
+            color: #1F2937;
+            padding: 12px 0;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .toggle-btn.active {
+            background: #2563EB;
+            color: white;
+            border-color: #2563EB;
+        }
+        .search-box { width: 100%; }
+        .table-action-btn {
+            background: transparent;
+            border: 1px solid #E5E7EB;
+            color: #111827;
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .table-action-btn:hover {
+            background: #F8FAFC;
+        }
+        .text-primary { color: #2563EB; }
+        .center-card {
+            background: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            border-radius: 22px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+            display: grid;
+            gap: 14px;
+        }
+        .center-card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .center-card-meta {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 10px;
+        }
+        .center-progress {
+            height: 8px;
+            border-radius: 999px;
+            background: #F3F4F6;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .center-progress-bar {
+            height: 100%;
+            border-radius: 999px;
+            background: #D32F2F;
+        }
+        .center-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #6B7280;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            padding: 10px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-card {
+            width: min(100%, 340px);
+            max-width: 340px;
+            max-height: calc(100vh - 24px);
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 22px 60px rgba(15, 23, 42, 0.16);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            padding: 16px 16px 0;
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .modal-description {
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.4;
+        }
+        .modal-body {
+            padding: 14px 14px 16px;
+            overflow-y: auto;
+        }
+        .modal-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 14px 14px;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 14px;
+            background: #F8FAFC;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .modal-body .form-label {
+            font-size: 11px;
+        }
+        .modal-body .form-input,
+        .modal-body textarea {
+            font-size: 13px;
+        }
+        .modal-footer .btn-submit {
+            flex: 1 1 100%;
+            padding: 12px 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex justify-center items-center min-h-screen antialiased">
+
+<div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+
+    <!-- Header -->
+    <header class="pt-[50px] px-4 pb-3 flex justify-between items-center bg-white border-b border-gray-100 shrink-0 z-10 sticky top-0">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-emergency flex items-center justify-center">
+                <i data-lucide="shield-alert" class="w-4 h-4 text-white"></i>
+            </div>
+            <div>
+                <p class="font-bold text-[16px] text-navy leading-none">LIGTAS Admin</p>
+                <p class="text-[11px] text-slate" id="admin-name-label">Field/Center Admin</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emergency/10 text-emergency text-[11px] font-bold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse"></span>ADMIN
+            </span>
+            <button id="notification-toggle-btn" onclick="openNotificationPage()" title="Relief Notifications" class="w-8 h-8 rounded-full bg-gray-100 relative flex items-center justify-center hover:bg-gray-200 transition">
+                <i data-lucide="bell" class="w-4 h-4 text-slate"></i>
+                <span id="notification-count" class="notification-badge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto no-scrollbar pb-[80px]">
+
+        <!-- ======================== RELIEF REQUEST TAB ======================== -->
+        <div id="panel-relief" class="panel px-4 pt-5 space-y-4">
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-amber/10 flex items-center justify-center">
+                        <i data-lucide="package" class="w-5 h-5 text-amber"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Relief Request</p>
+                        <p class="text-slate text-[12px]">Submit a request for relief goods</p>
+                    </div>
+                </div>
+                <form id="relief-form" class="space-y-4" onsubmit="submitRelief(event)">
+                    <div>
+                        <label class="form-label">Center Name</label>
+                        <select id="relief-center" class="form-input" required>
+                            <option value="">Select active center...</option>
+                            <option>QC Multi-Purpose Hall</option>
+                            <option>Pasig Elementary School Complex</option>
+                            <option>Rainforest Park (RAVE)</option>
+                            <option>Brgy. Kapitolyo Evac Center</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Relief Type</label>
+                        <select id="relief-type" class="form-input" required>
+                            <option value="">Select relief type...</option>
+                            <option>Food Pack</option>
+                            <option>Water (Bottled/Drum)</option>
+                            <option>Hygiene Kit</option>
+                            <option>Blankets & Bedding</option>
+                            <option>Medical Supplies</option>
+                            <option>Baby Kit</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Qty (Families)</label>
+                            <input id="relief-qty" class="form-input" type="number" min="1" placeholder="e.g. 120" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Urgency</label>
+                            <select id="relief-urgency" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Notes</label>
+                        <textarea id="relief-notes" class="form-input" rows="3" placeholder="Additional details, specific needs, access routes..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #E65100, #FF8F00); color: white;">
+                        <i data-lucide="send" class="w-4 h-4"></i>Submit Relief Request
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ======================== NOTIFICATIONS PAGE ======================== -->
+        <div id="panel-notifications" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="closeNotificationPage()" class="w-10 h-10 rounded-2xl bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i data-lucide="chevron-left" class="w-4 h-4 text-slate"></i>
+                </button>
+                <div>
+                    <p class="font-bold text-[18px] text-navy">Relief Notifications</p>
+                    <p class="text-[12px] text-slate">Approved and pick-up requests for the admin.</p>
+                </div>
+            </div>
+            <div class="card p-5 space-y-5">
+                <div>
+                    <p class="text-[13px] font-semibold text-navy mb-3">Approved Requests</p>
+                    <div id="notif-approved-relief-list" class="space-y-3">
+                        <div class="text-[12px] text-slate">No approved requests yet.</div>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[13px] font-semibold text-navy mb-3">Pick Up Requests</p>
+                    <div id="notif-pickup-relief-list" class="space-y-3">
+                        <div class="text-[12px] text-slate">No pick-up requests yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== EVACUEE PROFILING TAB ======================== -->
+        <div id="panel-profiling" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <p class="metric-label">Total Evacuees</p>
+                    <p class="metric-value" id="evac-total">0</p>
+                    <p class="summary-note">Registered profiles</p>
+                </div>
+                <div class="summary-card">
+                    <p class="metric-label">Active Centers</p>
+                    <p class="metric-value" id="evac-centers">0</p>
+                    <p class="summary-note">Evacuation halls</p>
+                </div>
+                <div class="summary-card">
+                    <p class="metric-label">Households</p>
+                    <p class="metric-value" id="evac-households">0</p>
+                    <p class="summary-note">Household members</p>
+                </div>
+                <div class="summary-card">
+                    <p class="metric-label">Urgent Cases</p>
+                    <p class="metric-value" id="evac-urgent-count">0</p>
+                    <p class="summary-note">Urgent / critical</p>
+                </div>
+            </div>
+            <div class="toggle-row">
+                <button id="toggle-evacuee" type="button" class="toggle-btn active" onclick="switchEvacueeTab('evacuee')">Evacuee Management</button>
+                <button id="toggle-centers" type="button" class="toggle-btn" onclick="switchEvacueeTab('centers')">Active Centers</button>
+            </div>
+            <div id="evacuee-tab-content" class="space-y-4">
+                <div class="card p-5">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-10 h-10 rounded-2xl bg-flood/10 flex items-center justify-center">
+                            <i data-lucide="user-plus" class="w-5 h-5 text-flood"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-navy text-[16px]">Register Evacuee</p>
+                            <p class="text-slate text-[12px]">Manual profiling for center evacuees</p>
+                        </div>
+                    </div>
+                    <form id="profiling-form" class="space-y-4" onsubmit="submitProfiling(event)">
+                    <div>
+                        <label class="form-label">Center</label>
+                        <select id="prof-center" class="form-input" required>
+                            <option value="">Select active center...</option>
+                            <option>QC Multi-Purpose Hall</option>
+                            <option>Pasig Elementary School Complex</option>
+                            <option>Rainforest Park (RAVE)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Full Name</label>
+                        <input id="prof-name" class="form-input" type="text" placeholder="Evacuee full name" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Age</label>
+                            <input id="prof-age" class="form-input" type="number" min="0" max="120" placeholder="Age" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Gender</label>
+                            <select id="prof-gender" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option>Male</option><option>Female</option><option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select id="prof-status" class="form-input" required>
+                            <option value="">Select...</option>
+                            <option>Stable</option>
+                            <option>Medical</option>
+                            <option>Urgent</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Household Size</label>
+                        <input id="prof-household" class="form-input" type="number" min="1" placeholder="Number of household members" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Special Needs</label>
+                        <textarea id="prof-needs" class="form-input" rows="2" placeholder="e.g. Wheelchair, Infant formula, Dialysis, Medications..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #1565C0, #1976D2); color: white;">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>Register Evacuee
+                    </button>
+                </form>
+            </div>
+                <div class="registry-card">
+                    <div class="registry-header">
+                        <div>
+                            <p class="registry-title">Evacuee Management</p>
+                            <p class="registry-subtitle text-primary">QC Multi-Purpose Hall</p>
+                        </div>
+                    </div>
+                    <div class="search-row">
+                        <div class="search-box relative w-full">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input id="evacuee-search" type="text" class="form-input pl-10" placeholder="Search evacuees...">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="registry-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age / Gender</th>
+                                    <th>Status</th>
+                                    <th>Needs</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="evacuee-table-body">
+                                <tr><td colspan="5" class="py-6 text-center text-slate text-[13px]">No evacuees yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="centers-tab-content" class="space-y-4 hidden">
+                <div class="active-centers-header">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate uppercase tracking-[0.18em]">Active Centers</h2>
+                        <p class="center-header-note">Showing current evacuation hubs and capacity status</p>
+                    </div>
+                </div>
+                <div class="active-centers">
+                    <div class="center-card">
+                        <div class="center-card-title">QC Multi-Purpose Hall</div>
+                        <div class="center-card-meta">Brgy. Caniogan, Pasig City</div>
+                        <div class="center-progress"><div class="center-progress-bar" style="width: 98%; background: #D32F2F;"></div></div>
+                        <div class="center-card-footer"><span>Capt. Elena Roxas</span><span>1,176 / 1,200</span></div>
+                    </div>
+                    <div class="center-card">
+                        <div class="center-card-title">Pasig Elementary School Complex</div>
+                        <div class="center-card-meta">Caruncho Ave, Pasig</div>
+                        <div class="center-progress"><div class="center-progress-bar" style="width: 42%; background: #2563EB;"></div></div>
+                        <div class="center-card-footer"><span>Dr. Samuel Vistanos</span><span>2,100 / 5,000</span></div>
+                    </div>
+                    <div class="center-card">
+                        <div class="center-card-title">Rainforest Park (RAVE)</div>
+                        <div class="center-card-meta">F. Legaspi Ave, Pasig City</div>
+                        <div class="center-progress"><div class="center-progress-bar" style="width: 15%; background: #059669;"></div></div>
+                        <div class="center-card-footer"><span>Officer Go</span><span>375 / 2,500</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== INCIDENT REPORT TAB ======================== -->
+        <div id="panel-incident" class="panel hidden">
+
+            <!-- Top title bar (matches report page) -->
+            <div class="px-5 py-4 bg-white shrink-0">
+                <h1 class="text-[20px] font-bold tracking-tight text-navy mb-0.5">File a Report</h1>
+                <p class="text-[13px] text-slate">Report an incident in Pasig City</p>
+            </div>
+
+            <!-- STEPPER (matches report page exactly) -->
+            <div class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-100 relative">
+                <div class="absolute inset-x-12 top-[22px] h-[2px] bg-gray-100 z-0"></div>
+                <div class="absolute left-12 top-[22px] h-[2px] bg-emergency transition-all duration-300 z-0" id="inc-stepper-progress" style="width: 0%;"></div>
+
+                <div class="flex flex-col items-center gap-1.5 z-10" id="inc-stepper-1">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white ring-4 ring-white transition-all duration-300">1</div>
+                    <span class="text-[11px] font-medium text-emergency">Type</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 z-10" id="inc-stepper-2">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 ring-4 ring-white transition-all duration-300">2</div>
+                    <span class="text-[11px] font-medium text-slate">Details</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 z-10" id="inc-stepper-3">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 ring-4 ring-white transition-all duration-300">3</div>
+                    <span class="text-[11px] font-medium text-slate">Media</span>
+                </div>
+                <div class="flex flex-col items-center gap-1.5 z-10" id="inc-stepper-4">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 ring-4 ring-white transition-all duration-300">4</div>
+                    <span class="text-[11px] font-medium text-slate">Review</span>
+                </div>
+            </div>
+
+            <!-- SCROLLABLE STEP CONTENT -->
+            <div class="overflow-y-auto no-scrollbar px-5 py-4 pb-[160px]" style="max-height: calc(100vh - 260px);">
+
+                <!-- STEP 1: Type -->
+                <div class="inc-step-content active" id="inc-step-1">
+                    <h2 class="text-[16px] font-semibold text-navy mb-3">What are you reporting?</h2>
+                    <div class="grid grid-cols-2 gap-2 mb-5" id="inc-type-grid">
+                        <div class="inc-card selected" data-type="Fire">
+                            <div class="w-10 h-10 rounded-full bg-white text-emergency flex items-center justify-center shadow-sm">
+                                <i data-lucide="flame" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Fire</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Flood">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-flood flex items-center justify-center">
+                                <i data-lucide="waves" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Flood</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Earthquake">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 text-quake flex items-center justify-center">
+                                <i data-lucide="activity" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Earthquake</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Accident">
+                            <div class="w-10 h-10 rounded-full bg-orange-50 text-amber flex items-center justify-center">
+                                <i data-lucide="car" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Accident</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Medical Emergency">
+                            <div class="w-10 h-10 rounded-full bg-teal-50 text-medical flex items-center justify-center">
+                                <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Medical</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Power Outage">
+                            <div class="w-10 h-10 rounded-full bg-yellow-50 text-amber flex items-center justify-center">
+                                <i data-lucide="zap" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Power</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Landslide">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 text-quake flex items-center justify-center">
+                                <i data-lucide="mountain" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Landslide</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                        <div class="inc-card" data-type="Other">
+                            <div class="w-10 h-10 rounded-full bg-gray-100 text-slate flex items-center justify-center">
+                                <i data-lucide="box" class="w-5 h-5"></i>
+                            </div>
+                            <span class="text-[12px] font-medium text-navy">Other</span>
+                            <div class="inc-check"><i data-lucide="check-circle-2" class="w-4 h-4"></i></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[13px] text-slate mb-2">Reporting for:</label>
+                        <div class="inc-segment-group">
+                            <div class="inc-segment active" data-target="self">Myself</div>
+                            <div class="inc-segment" data-target="someone">Someone Else</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Details -->
+                <div class="inc-step-content" id="inc-step-2">
+                    <div class="mb-5">
+                        <label class="block text-[14px] font-semibold text-navy mb-3">Location</label>
+                        <button type="button" onclick="useCurrentLocation()" class="w-full h-12 bg-tint text-emergency rounded-xl text-[14px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                            <i data-lucide="map-pin" class="w-4 h-4"></i> Use My Current Location
+                        </button>
+
+                        <div class="flex items-center gap-3 my-4">
+                            <div class="h-px bg-gray-200 flex-1"></div>
+                            <span class="text-[12px] text-slate">or enter manually</span>
+                            <div class="h-px bg-gray-200 flex-1"></div>
+                        </div>
+
+                        <div class="relative mb-3">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input id="inc-location" type="text" class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-4 text-[14px] text-navy focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all" placeholder="Street address, landmark...">
+                        </div>
+
+                        <div class="w-full h-[140px] bg-gray-200 rounded-xl flex items-center justify-center relative overflow-hidden shadow-inner">
+                            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0); background-size: 16px 16px;"></div>
+                            <i data-lucide="map-pin" class="w-8 h-8 text-emergency z-10 drop-shadow-md pb-2"></i>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mb-5">
+                        <div class="flex-1 relative">
+                            <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input id="inc-date" type="text" value="" readonly class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-3 text-[14px] text-navy">
+                        </div>
+                        <div class="flex-1 relative">
+                            <i data-lucide="clock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                            <input id="inc-time" type="text" value="" readonly class="w-full h-12 bg-white border border-gray-200 rounded-xl pl-10 pr-3 text-[14px] text-navy">
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-[14px] font-semibold text-navy mb-3">Severity</label>
+                        <div class="flex bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                            <div class="inc-sev-btn" data-severity="Low">Low</div>
+                            <div class="inc-sev-btn" data-severity="Medium" style="color:#E65100;">Medium</div>
+                            <div class="inc-sev-btn active" data-severity="High">High</div>
+                            <div class="inc-sev-btn" data-severity="Critical" style="color:#B71C1C;">Critical</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[14px] font-semibold text-navy mb-3">What is needed?</label>
+                        <div class="flex flex-wrap gap-2">
+                            <div class="inc-chip" data-need="Fire Truck"><i data-lucide="flame" class="w-3.5 h-3.5"></i> Fire Truck</div>
+                            <div class="inc-chip active" data-need="Ambulance"><i data-lucide="activity" class="w-3.5 h-3.5"></i> Ambulance</div>
+                            <div class="inc-chip active" data-need="Police"><i data-lucide="shield" class="w-3.5 h-3.5"></i> Police</div>
+                            <div class="inc-chip" data-need="Food & Water"><i data-lucide="coffee" class="w-3.5 h-3.5"></i> Food & Water</div>
+                            <div class="inc-chip" data-need="Shelter"><i data-lucide="home" class="w-3.5 h-3.5"></i> Shelter</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Media + Description -->
+                <div class="inc-step-content" id="inc-step-3">
+                    <div class="mb-5">
+                        <textarea id="inc-description" class="w-full min-h-[120px] bg-white border border-gray-200 rounded-xl p-4 text-[14px] text-navy resize-none focus:outline-none focus:ring-2 focus:ring-emergency/20 focus:border-emergency transition-all" placeholder="Describe what happened..."></textarea>
+                        <div class="text-right text-[11px] text-slate mt-1.5" id="inc-char-count">0 / 500</div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-[14px] font-semibold text-navy mb-3">Attach Media</label>
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden flex items-center justify-center relative">
+                                <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover" alt="Incident">
+                            </div>
+                            <div class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                                <span class="text-[12px] font-medium text-slate">Add Photo</span>
+                            </div>
+                            <div class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                            </div>
+                            <div class="aspect-square bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-gray-100 transition-colors">
+                                <i data-lucide="plus" class="w-6 h-6 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <button type="button" class="text-[13px] font-medium text-emergency flex items-center gap-1.5 hover:underline">
+                            <i data-lucide="video" class="w-4 h-4"></i> Add Video
+                        </button>
+                    </div>
+
+</div>
+
+                <!-- STEP 4: Review -->
+                <div class="inc-step-content" id="inc-step-4">
+                    <h2 class="text-[18px] font-bold text-navy mb-4">Review Your Report</h2>
+
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-5 relative">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[12px] text-slate w-20 shrink-0">Type</span>
+                            <span class="bg-orange-50 text-amber px-2.5 py-1 rounded-md text-[12px] font-semibold flex items-center gap-1.5" id="review-type-badge">
+                                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                                <span id="review-type-text">Fire</span>
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-start mb-3 gap-4">
+                            <span class="text-[12px] text-slate w-20 shrink-0">Location</span>
+                            <span class="text-[13px] font-medium text-navy text-right" id="review-location">-</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[12px] text-slate w-20 shrink-0">Time</span>
+                            <span class="text-[13px] font-medium text-navy text-right" id="review-time">-</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[12px] text-slate w-20 shrink-0">Severity</span>
+                            <span class="text-[13px] font-medium text-navy flex items-center gap-1.5 justify-end" id="review-severity">
+                                <span class="w-2 h-2 rounded-full bg-emergency"></span> High
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[12px] text-slate w-20 shrink-0">Needs</span>
+                            <span class="text-[13px] font-medium text-navy text-right" id="review-needs">Ambulance, Police</span>
+                        </div>
+                        <div class="flex flex-col gap-1.5 mb-2 pr-[84px]">
+                            <span class="text-[12px] text-slate">Description</span>
+                            <span class="text-[13px] text-slate italic leading-relaxed" id="review-description">-</span>
+                        </div>
+                        <div class="absolute bottom-5 right-5 w-[72px] h-[72px] rounded-lg overflow-hidden border border-gray-200">
+                            <img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=150&q=80" class="w-full h-full object-cover" alt="Thumb">
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-slate text-center px-4">Submitting false reports violates Pasig City Ordinance No. 45-21.</p>
+                </div>
+
+            </div>
+
+            <!-- FIXED BOTTOM BUTTONS — matches report page style -->
+            <div class="absolute bottom-[72px] left-0 right-0 px-4 py-3 bg-white/95 backdrop-blur-md border-t border-gray-100 z-20">
+                <button type="button" id="inc-next-btn"
+                    class="w-full h-13 bg-emergency text-white rounded-2xl text-[15px] font-bold shadow-md shadow-red-500/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-2 py-3.5">
+                    <span>Next</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- REPORT RECEIVED SCREEN (centered confirmation card) -->
+            <div id="inc-received-screen" class="hidden absolute inset-0 bg-black/20 backdrop-blur-sm z-30 flex items-center justify-center p-4">
+                <div class="w-full max-w-[392px] bg-white rounded-[32px] overflow-hidden shadow-2xl ring-1 ring-black/5">
+                    <div class="bg-safe/10 px-6 py-8 flex flex-col items-center gap-4 text-center">
+                        <div class="w-20 h-20 rounded-full bg-safe flex items-center justify-center shadow-lg shadow-safe/30">
+                            <i data-lucide="check" class="w-9 h-9 text-white"></i>
+                        </div>
+                        <h1 class="text-[24px] font-bold text-navy">Report Received!</h1>
+                        <p class="max-w-[280px] text-[14px] leading-6 text-slate">Your incident report has been submitted successfully. Our team will review it and dispatch assistance as needed.</p>
+                        <div id="inc-receipt-id" class="bg-white text-emergency font-mono text-[13px] px-4 py-2 rounded-full border border-emergency/20">#IR-2026-00000</div>
+                    </div>
+                    <div class="px-5 pb-6 pt-5 space-y-4">
+                        <div class="bg-gray-50 rounded-3xl p-4 border border-gray-100">
+                            <div class="flex items-center justify-between gap-3">
+                                <p class="text-[12px] uppercase tracking-[0.3em] text-slate font-semibold">Status</p>
+                                <span class="text-[12px] font-semibold text-safe">Received</span>
+                            </div>
+                            <p class="text-[13px] text-slate mt-3 leading-6">We'll notify you if there are updates or if a response team is dispatched to your report.</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-white rounded-3xl border border-gray-100 p-3 text-center">
+                                <p class="text-[10px] uppercase tracking-[0.25em] text-slate mb-2">Type</p>
+                                <p id="inc-received-type" class="text-[13px] font-semibold text-navy">Fire</p>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-gray-100 p-3 text-center">
+                                <p class="text-[10px] uppercase tracking-[0.25em] text-slate mb-2">Severity</p>
+                                <p id="inc-received-severity" class="text-[13px] font-semibold text-navy">High</p>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-gray-100 p-3 text-center">
+                                <p class="text-[10px] uppercase tracking-[0.25em] text-slate mb-2">Location</p>
+                                <p id="inc-received-location" class="text-[13px] font-semibold text-navy truncate">-</p>
+                            </div>
+                        </div>
+
+                        <button type="button" id="inc-done-btn" class="w-full bg-emergency text-white rounded-2xl text-[16px] font-bold shadow-md shadow-red-500/20 active:scale-[0.98] transition-transform py-3.5">
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ======================== LOGS TAB ======================== -->
+        <div id="panel-logs" class="panel hidden px-4 pt-5 space-y-4">
+            <div class="flex items-center justify-between mb-1">
+                <p class="text-[17px] font-bold text-navy">Submission Logs</p>
+                <button onclick="clearAllLogs()" class="text-[12px] text-emergency font-semibold">Clear All</button>
+            </div>
+            <div id="logs-container" class="space-y-3">
+                <div class="text-center py-10 text-slate text-[13px]">
+                    <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-30"></i>
+                    <p>No submissions yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== PROFILE TAB ======================== -->
+        <div id="panel-profile" class="panel hidden px-4 pt-5 pb-6 space-y-4">
+            <div class="card p-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emergency to-deep flex items-center justify-center flex-shrink-0">
+                        <span id="profile-avatar" class="text-white text-[24px] font-bold">?</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="profile-display-name" class="text-[18px] font-bold text-navy truncate">—</p>
+                        <p id="profile-display-center" class="text-[12px] text-slate truncate mt-0.5">—</p>
+                        <span class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-full bg-emergency/10 text-emergency text-[11px] font-bold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse"></span>FIELD ADMIN
+                        </span>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-[10px] text-slate uppercase tracking-wide font-semibold mb-1">Admin ID</p>
+                        <p id="profile-id" class="text-[12px] font-bold text-navy font-mono">—</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3">
+                        <p class="text-[10px] text-slate uppercase tracking-wide font-semibold mb-1">Barangay</p>
+                        <p id="profile-barangay" class="text-[12px] font-bold text-navy truncate">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-5">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="w-10 h-10 rounded-2xl bg-flood/10 flex items-center justify-center">
+                        <i data-lucide="edit-3" class="w-5 h-5 text-flood"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-navy text-[16px]">Edit Profile</p>
+                        <p class="text-slate text-[12px]">Update your admin information</p>
+                    </div>
+                </div>
+                <form id="profile-form" class="space-y-4" onsubmit="saveProfile(event)">
+                    <div><label class="form-label">Full Name</label><input id="pf-name" class="form-input" type="text" placeholder="Your full name" required></div>
+                    <div><label class="form-label">Mobile Number</label><input id="pf-phone" class="form-input" type="tel" placeholder="+63 9XX XXX XXXX"></div>
+                    <div><label class="form-label">Evacuation Center</label><input id="pf-center" class="form-input" type="text" placeholder="Center name you manage"></div>
+                    <div><label class="form-label">Barangay</label><input id="pf-barangay" class="form-input" type="text" placeholder="Your assigned barangay"></div>
+                    <div><label class="form-label">Address</label><input id="pf-address" class="form-input" type="text" placeholder="Center address"></div>
+                    <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #1565C0, #1976D2); color: white;">
+                        <i data-lucide="save" class="w-4 h-4"></i>Save Profile
+                    </button>
+                </form>
+            </div>
+            <div class="card p-5 border border-red-100">
+                <p class="text-[13px] font-bold text-emergency mb-3">Account</p>
+                <button onclick="confirmLogout()" class="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-emergency text-[13px] font-semibold hover:bg-red-100 transition">
+                    <span class="flex items-center gap-2"><i data-lucide="log-out" class="w-4 h-4"></i>Sign out of admin account</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="h-[72px] pb-[10px] bg-white border-t border-gray-100 flex justify-around items-center absolute bottom-0 w-full z-20">
+        <button class="bottom-nav-item active" id="tab-relief" onclick="switchTab('relief')">
+            <div class="nav-pill"></div>
+            <i data-lucide="package" class="w-5 h-5 relative z-10"></i>
+            <span>Relief</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-profiling" onclick="switchTab('profiling')">
+            <div class="nav-pill"></div>
+            <i data-lucide="users" class="w-5 h-5 relative z-10"></i>
+            <span>Evacuees</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-incident" onclick="switchTab('incident')">
+            <div class="nav-pill"></div>
+            <i data-lucide="alert-triangle" class="w-5 h-5 relative z-10"></i>
+            <span>Incidents</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-logs" onclick="switchTab('logs')">
+            <div class="nav-pill"></div>
+            <i data-lucide="list" class="w-5 h-5 relative z-10"></i>
+            <span>Logs</span>
+        </button>
+        <button class="bottom-nav-item" id="tab-profile" onclick="switchTab('profile')">
+            <div class="nav-pill"></div>
+            <i data-lucide="user-circle" class="w-5 h-5 relative z-10"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- Logout modal -->
+    <div id="logout-modal" class="hidden absolute inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-[320px] text-center shadow-xl">
+            <div class="w-14 h-14 rounded-2xl bg-emergency/10 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="log-out" class="w-7 h-7 text-emergency"></i>
+            </div>
+            <h2 class="text-[18px] font-bold text-navy mb-2">Sign Out?</h2>
+            <p class="text-[13px] text-slate mb-6">You will be returned to the login screen.</p>
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 h-11 rounded-xl bg-gray-100 text-slate font-semibold text-[14px]">Cancel</button>
+                <button onclick="doLogout()" class="flex-1 h-11 rounded-xl bg-emergency text-white font-semibold text-[14px]">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-evacuee-modal" class="modal-overlay">
+        <div class="modal-card relative">
+            <div class="modal-close-btn" onclick="closeEditModal()">
+                <i data-lucide="x" class="w-4 h-4 text-slate"></i>
+            </div>
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Evacuee Details</h2>
+                <p class="modal-description">Update the evacuee record and save changes.</p>
+            </div>
+            <div class="modal-body">
+                <form id="edit-evacuee-form" class="space-y-4" onsubmit="submitEvacueeEdit(event)">
+                    <div>
+                        <label class="form-label">Center</label>
+                        <select id="edit-prof-center" class="form-input" required>
+                            <option value="">Select active center...</option>
+                            <option>QC Multi-Purpose Hall</option>
+                            <option>Pasig Elementary School Complex</option>
+                            <option>Rainforest Park (RAVE)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Full Name</label>
+                        <input id="edit-prof-name" class="form-input" type="text" placeholder="Evacuee full name" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="form-label">Age</label>
+                            <input id="edit-prof-age" class="form-input" type="number" min="0" max="120" placeholder="Age" required>
+                        </div>
+                        <div>
+                            <label class="form-label">Gender</label>
+                            <select id="edit-prof-gender" class="form-input" required>
+                                <option value="">Select...</option>
+                                <option>Male</option><option>Female</option><option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select id="edit-prof-status" class="form-input" required>
+                            <option value="">Select...</option>
+                            <option>Stable</option>
+                            <option>Medical</option>
+                            <option>Urgent</option>
+                            <option>Critical</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Household Size</label>
+                        <input id="edit-prof-household" class="form-input" type="number" min="1" placeholder="Number of household members" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Special Needs</label>
+                        <textarea id="edit-prof-needs" class="form-input" rows="2" placeholder="e.g. Wheelchair, Infant formula, Dialysis, Medications..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeEditModal()" class="btn-submit" style="background: #F3F4F6; color: #374151;">Cancel</button>
+                        <button type="submit" class="btn-submit" style="background: #2563EB; color: white;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+// ─── Auth guard ───────────────────────────────────────────────────────────
+(function() {
+    const role = localStorage.getItem('ligtas_role');
+    if (role !== 'field_admin') {
+        // window.location.href = 'Auth/login.html'; // disabled for demo
+    }
+})();
+
+// ─── Load user name ───────────────────────────────────────────────────────
+(function() {
+    const session = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+    if (session.name) document.getElementById('admin-name-label').textContent = session.name;
+})();
+
+// ─── Tab switching ────────────────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.remove('hidden');
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'logs') renderLogs();
+    if (tab === 'profile') renderProfile();
+    if (tab === 'incident') resetIncidentWizard();
+    lucide.createIcons();
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────
+function showToast(msg, color = '#1C1C1E') {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.style.background = color;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// ─── Save helper ──────────────────────────────────────────────────────────
+function saveRecord(key, record) {
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    existing.unshift(record);
+    localStorage.setItem(key, JSON.stringify(existing));
+}
+
+function seedSampleIncident() {
+    const key = 'ligtas_incident_reports';
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    if (existing.length === 0) {
+        const now = new Date();
+        const sample = {
+            id: 'IR-' + now.getTime(),
+            timestamp: now.toISOString(),
+            type: 'Incident',
+            incidentType: 'Flood',
+            location: 'Barangay San Isidro',
+            date: now.toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }),
+            time: now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }),
+            severity: 'High',
+            needs: ['Rescue Team', 'Medical Aid'],
+            description: 'Street flooding has trapped residents and a small bridge is submerged, blocking access to main roads.',
+            reportingFor: 'Self'
+        };
+        existing.unshift(sample);
+        localStorage.setItem(key, JSON.stringify(existing));
+    }
+}
+
+function seedSampleEvacuees() {
+    const key = 'ligtas_evacuees';
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    if (existing.length === 0) {
+        const samples = [
+            {
+                id: 'EV-' + Date.now(),
+                timestamp: new Date().toISOString(),
+                type: 'Evacuee',
+                center: 'QC Multi-Purpose Hall',
+                name: 'Sofia Nicole Manuel',
+                age: '21',
+                gender: 'Female',
+                status: 'Medical',
+                household: '4',
+                specialNeeds: 'Food relief'
+            },
+            {
+                id: 'EV-' + (Date.now() + 1),
+                timestamp: new Date().toISOString(),
+                type: 'Evacuee',
+                center: 'Pasig Elementary School Complex',
+                name: 'Antonio Reyes',
+                age: '65',
+                gender: 'Male',
+                status: 'Stable',
+                household: '2',
+                specialNeeds: 'Blanket'
+            },
+            {
+                id: 'EV-' + (Date.now() + 2),
+                timestamp: new Date().toISOString(),
+                type: 'Evacuee',
+                center: 'Rainforest Park (RAVE)',
+                name: 'Elena Cruz',
+                age: '32',
+                gender: 'Female',
+                status: 'Urgent',
+                household: '3',
+                specialNeeds: 'Medicine'
+            },
+            {
+                id: 'EV-' + (Date.now() + 3),
+                timestamp: new Date().toISOString(),
+                type: 'Evacuee',
+                center: 'QC Multi-Purpose Hall',
+                name: 'Miguel Santos',
+                age: '49',
+                gender: 'Male',
+                status: 'Critical',
+                household: '5',
+                specialNeeds: 'Oxygen tank'
+            }
+        ];
+        localStorage.setItem(key, JSON.stringify(samples));
+    }
+}
+
+function seedSampleRelief() {
+    const key = 'ligtas_relief_requests';
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+
+    const sampleApproved = {
+        id: 'RR-' + Date.now(),
+        timestamp: new Date().toISOString(),
+        type: 'Relief Request',
+        center: 'QC Multi-Purpose Hall',
+        reliefType: 'Food Pack',
+        qty: '35',
+        urgency: 'High',
+        notes: 'Rice and instant noodles for displaced families.',
+        status: 'Approved'
+    };
+    const samplePickup = {
+        id: 'RR-' + (Date.now() + 1),
+        timestamp: new Date().toISOString(),
+        type: 'Relief Request',
+        center: 'Pasig Elementary School Complex',
+        reliefType: 'Blankets & Bedding',
+        qty: '20',
+        urgency: 'Medium',
+        notes: 'Warm blankets for seniors and children.',
+        status: 'For Pickup'
+    };
+    const sampleApproved2 = {
+        id: 'RR-' + (Date.now() + 2),
+        timestamp: new Date().toISOString(),
+        type: 'Relief Request',
+        center: 'Rainforest Park (RAVE)',
+        reliefType: 'Water (Bottled/Drum)',
+        qty: '50',
+        urgency: 'High',
+        notes: 'Bottled water for affected families and volunteers.',
+        status: 'Approved'
+    };
+
+    const hasApproved = existing.some(r => r.status === 'Approved');
+    const hasPickup = existing.some(r => r.status === 'For Pickup');
+
+    if (existing.length === 0) {
+        localStorage.setItem(key, JSON.stringify([sampleApproved, samplePickup, sampleApproved2]));
+        return;
+    }
+
+    const updated = [...existing];
+    if (!hasApproved) updated.unshift(sampleApproved, sampleApproved2);
+    if (!hasPickup) updated.unshift(samplePickup);
+    if (updated.length !== existing.length) {
+        localStorage.setItem(key, JSON.stringify(updated));
+    }
+}
+
+// ─── Relief ───────────────────────────────────────────────────────────────
+function submitRelief(e) {
+    e.preventDefault();
+    const record = {
+        id: 'RR-' + Date.now(), timestamp: new Date().toISOString(), type: 'Relief Request',
+        center: document.getElementById('relief-center').value,
+        reliefType: document.getElementById('relief-type').value,
+        qty: document.getElementById('relief-qty').value,
+        urgency: document.getElementById('relief-urgency').value,
+        notes: document.getElementById('relief-notes').value,
+        status: 'Pending'
+    };
+    saveRecord('ligtas_relief_requests', record);
+    document.getElementById('relief-form').reset();
+    renderReliefNotifications();
+    showToast('✅ Relief request submitted!', '#2E7D32');
+}
+
+function renderReliefNotifications() {
+    const notifApproved = document.getElementById('notif-approved-relief-list');
+    const notifPickup = document.getElementById('notif-pickup-relief-list');
+    const countEl = document.getElementById('notification-count');
+    if (!notifApproved || !notifPickup) return;
+
+    const relief = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+    const approved = relief.filter(r => r.status === 'Approved');
+    const pickup = relief.filter(r => r.status === 'For Pickup');
+
+    notifApproved.innerHTML = approved.length ? approved.map(r => generateReliefNotificationCard(r, false)).join('') : '<div class="text-[12px] text-slate">No approved requests yet.</div>';
+    notifPickup.innerHTML = pickup.length ? pickup.map(r => generateReliefNotificationCard(r, true)).join('') : '<div class="text-[12px] text-slate">No pick-up requests yet.</div>';
+
+    const totalCount = approved.length + pickup.length;
+    if (countEl) {
+        countEl.textContent = totalCount ? totalCount : '0';
+        countEl.style.display = totalCount ? 'inline-flex' : 'none';
+    }
+
+    lucide.createIcons();
+}
+
+function openNotificationPage() {
+    document.querySelectorAll('.panel').forEach(panel => panel.classList.add('hidden'));
+    document.querySelectorAll('.bottom-nav-item').forEach(item => item.classList.remove('active'));
+    const notifPanel = document.getElementById('panel-notifications');
+    if (notifPanel) notifPanel.classList.remove('hidden');
+}
+
+function closeNotificationPage() {
+    switchTab('relief');
+}
+
+function generateReliefNotificationCard(r, isPickup) {
+    const time = new Date(r.timestamp).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const statusClass = r.status.toLowerCase().replace(/ /g, '-');
+    const actionButton = isPickup ? `<button type="button" onclick="markReliefDone('${r.id}')" class="status-action-btn done"><span>✓</span>Mark as Done</button>` : `<button type="button" onclick="setReliefPickup('${r.id}')" class="status-action-btn secondary"><span>⏳</span>Set Pick Up</button>`;
+    return `<div class="record-card">
+        <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+                <p class="text-[13px] font-semibold text-navy truncate">${r.reliefType} • ${r.qty}</p>
+                <p class="text-[12px] text-slate mt-1 truncate">${r.center}</p>
+            </div>
+            <span class="badge status-${statusClass}">${r.status}</span>
+        </div>
+        <div class="flex flex-col gap-3 mt-3">
+            <p class="text-[11px] text-slate">${time}</p>
+            ${isPickup ? actionButton : ''}
+        </div>
+        <p class="text-[12px] text-slate mt-3">${r.notes || 'No notes provided.'}</p>
+    </div>`;
+}
+
+function setReliefPickup(id) {
+    updateReliefStatus(id, 'For Pickup');
+}
+
+function markReliefDone(id) {
+    updateReliefStatus(id, 'Completed');
+}
+
+function updateReliefStatus(id, newStatus) {
+    const relief = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+    const updated = relief.map(r => r.id === id ? { ...r, status: newStatus } : r);
+    localStorage.setItem('ligtas_relief_requests', JSON.stringify(updated));
+    renderReliefNotifications();
+    renderLogs();
+    showToast(`✅ Relief marked ${newStatus.toLowerCase()}.`, '#1565C0');
+}
+
+// ─── Evacuee ──────────────────────────────────────────────────────────────
+let editEvacueeId = null;
+
+function submitProfiling(e) {
+    e.preventDefault();
+    const record = {
+        id: 'EV-' + Date.now(), timestamp: new Date().toISOString(), type: 'Evacuee',
+        center: document.getElementById('prof-center').value,
+        name: document.getElementById('prof-name').value,
+        age: document.getElementById('prof-age').value,
+        gender: document.getElementById('prof-gender').value,
+        status: document.getElementById('prof-status').value,
+        household: document.getElementById('prof-household').value,
+        specialNeeds: document.getElementById('prof-needs').value,
+    };
+    saveRecord('ligtas_evacuees', record);
+    document.getElementById('profiling-form').reset();
+    showToast('✅ Evacuee registered!', '#1565C0');
+    renderEvacuees();
+}
+
+function editEvacuee(id) {
+    const evacuees = JSON.parse(localStorage.getItem('ligtas_evacuees') || '[]');
+    const record = evacuees.find(e => e.id === id);
+    if (!record) return;
+
+    editEvacueeId = id;
+    document.getElementById('edit-prof-center').value = record.center || '';
+    document.getElementById('edit-prof-name').value = record.name || '';
+    document.getElementById('edit-prof-age').value = record.age || '';
+    document.getElementById('edit-prof-gender').value = record.gender || '';
+    document.getElementById('edit-prof-status').value = record.status || '';
+    document.getElementById('edit-prof-household').value = record.household || '';
+    document.getElementById('edit-prof-needs').value = record.specialNeeds || '';
+    document.getElementById('edit-evacuee-modal').classList.add('active');
+}
+
+function closeEditModal() {
+    editEvacueeId = null;
+    document.getElementById('edit-evacuee-form').reset();
+    document.getElementById('edit-evacuee-modal').classList.remove('active');
+}
+
+function submitEvacueeEdit(e) {
+    e.preventDefault();
+    if (!editEvacueeId) return;
+
+    const evacuees = JSON.parse(localStorage.getItem('ligtas_evacuees') || '[]');
+    const updated = evacuees.map(record => {
+        if (record.id !== editEvacueeId) return record;
+        return {
+            ...record,
+            center: document.getElementById('edit-prof-center').value,
+            name: document.getElementById('edit-prof-name').value,
+            age: document.getElementById('edit-prof-age').value,
+            gender: document.getElementById('edit-prof-gender').value,
+            status: document.getElementById('edit-prof-status').value,
+            household: document.getElementById('edit-prof-household').value,
+            specialNeeds: document.getElementById('edit-prof-needs').value,
+        };
+    });
+    localStorage.setItem('ligtas_evacuees', JSON.stringify(updated));
+    closeEditModal();
+    renderEvacuees();
+    showToast('✅ Evacuee updated!', '#2563EB');
+}
+
+function renderEvacuees(query = '') {
+    const tableBody = document.getElementById('evacuee-table-body');
+    const totalEl = document.getElementById('evac-total');
+    const centersEl = document.getElementById('evac-centers');
+    const householdsEl = document.getElementById('evac-households');
+    const urgentEl = document.getElementById('evac-urgent-count');
+    if (!tableBody) return;
+
+    const evacuees = JSON.parse(localStorage.getItem('ligtas_evacuees') || '[]');
+    const filter = query.toLowerCase().trim();
+
+    const totalHouseholds = evacuees.reduce((sum, e) => sum + Number(e.household || 0), 0);
+    const uniqueCenters = [...new Set(evacuees.map(e => e.center).filter(Boolean))].length;
+    const urgentCases = evacuees.filter(e => /critical|urgent/i.test(e.status)).length;
+
+    if (totalEl) totalEl.textContent = evacuees.length;
+    if (centersEl) centersEl.textContent = uniqueCenters;
+    if (householdsEl) householdsEl.textContent = totalHouseholds;
+    if (urgentEl) urgentEl.textContent = urgentCases;
+
+    const filtered = evacuees.filter(e => {
+        if (!filter) return true;
+        return [e.name, e.center, e.gender, e.household, e.specialNeeds, e.status]
+            .some(val => val && val.toString().toLowerCase().includes(filter));
+    });
+
+    if (filtered.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate text-[13px]">No evacuees found.</td></tr>`;
+        return;
+    }
+
+    const statusClass = status => {
+        if (!status) return 'default';
+        const key = status.toLowerCase();
+        if (key.includes('critical')) return 'critical';
+        if (key.includes('urgent')) return 'urgent';
+        if (key.includes('medical')) return 'medical';
+        if (key.includes('stable')) return 'default';
+        return 'default';
+    };
+
+    tableBody.innerHTML = filtered.map(e => `
+        <tr class="border-t border-gray-100">
+            <td class="py-3 text-navy font-medium">${e.name}</td>
+            <td class="py-3 text-slate">${e.age || '—'} / ${e.gender || '—'}</td>
+            <td class="py-3 text-slate">
+                <span class="status-pill ${statusClass(e.status)}">${e.status || 'No status'}</span>
+            </td>
+            <td class="py-3 text-slate">${e.specialNeeds || 'No special needs'}</td>
+            <td class="py-3">
+                <button type="button" onclick="editEvacuee('${e.id}')" class="table-action-btn">Edit</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ─── Incident Wizard ──────────────────────────────────────────────────────
+let incStep = 1;
+const INC_TOTAL = 4;
+const INC_TITLES = ['Type', 'Details', 'Media', 'Review'];
+
+const incState = {
+    type: 'Fire', reportingFor: 'self',
+    location: 'C5 Road, Brgy. Ugong, Pasig City',
+    date: '', time: '',
+    severity: 'High', needs: ['Ambulance', 'Police'],
+    description: 'A fire has been reported near the C5 intersection with smoke visible from the second floor.'
+};
+
+function incGoToStep(step) {
+    if (step < 1 || step > INC_TOTAL) return;
+    incStep = step;
+
+    // Show/hide step content
+    document.querySelectorAll('.inc-step-content').forEach((el, i) => {
+        el.classList.toggle('active', i === step - 1);
+    });
+
+    // Update stepper dots
+    for (let i = 1; i <= INC_TOTAL; i++) {
+        const dotEl = document.querySelector('#inc-stepper-' + i + ' div');
+        const lblEl = document.querySelector('#inc-stepper-' + i + ' span');
+        if (i < step) {
+            dotEl.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white ring-4 ring-white transition-all duration-300';
+            dotEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            lblEl.className = 'text-[11px] font-medium text-emergency';
+        } else if (i === step) {
+            dotEl.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-emergency text-white ring-4 ring-white transition-all duration-300';
+            dotEl.textContent = i;
+            lblEl.className = 'text-[11px] font-medium text-emergency';
+        } else {
+            dotEl.className = 'w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold bg-gray-100 text-gray-400 ring-4 ring-white transition-all duration-300';
+            dotEl.textContent = i;
+            lblEl.className = 'text-[11px] font-medium text-slate';
+        }
+    }
+
+    // Progress bar
+    const pct = ((step - 1) / (INC_TOTAL - 1)) * 100;
+    document.getElementById('inc-stepper-progress').style.width = pct + '%';
+
+    // Next button label
+    const nextBtn = document.getElementById('inc-next-btn');
+    if (step === INC_TOTAL) {
+        nextBtn.innerHTML = '<span>Submit Report</span><i data-lucide="send" class="w-4 h-4"></i>';
+    } else {
+        nextBtn.innerHTML = '<span>Next</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+    }
+
+    if (step === INC_TOTAL) updateIncReview();
+    lucide.createIcons();
+}
+
+function updateIncReview() {
+    incState.location = document.getElementById('inc-location').value.trim();
+    incState.description = document.getElementById('inc-description').value.trim();
+
+    document.getElementById('review-type-text').textContent = incState.type;
+    document.getElementById('review-location').textContent = incState.location || '-';
+    document.getElementById('review-time').textContent = `${incState.date} — ${incState.time}`;
+    document.getElementById('review-severity').innerHTML = `<span class="w-2 h-2 rounded-full bg-emergency"></span> ${incState.severity}`;
+    document.getElementById('review-needs').textContent = incState.needs.length ? incState.needs.join(', ') : 'None';
+    document.getElementById('review-description').textContent = incState.description || '-';
+}
+
+function submitIncident() {
+    updateIncReview();
+    const record = {
+        id: 'IR-' + Date.now(), timestamp: new Date().toISOString(), type: 'Incident',
+        incidentType: incState.type,
+        location: incState.location || 'Unknown location',
+        date: incState.date, time: incState.time,
+        severity: incState.severity,
+        needs: incState.needs,
+        description: incState.description || 'No description provided.',
+        reportingFor: incState.reportingFor === 'self' ? 'Myself' : 'Someone Else'
+    };
+    saveRecord('ligtas_incident_reports', record);
+
+    // Show received screen
+    document.getElementById('inc-receipt-id').textContent = record.id;
+    const typeEl = document.getElementById('inc-received-type');
+    const severityEl = document.getElementById('inc-received-severity');
+    const locationEl = document.getElementById('inc-received-location');
+    if (typeEl) typeEl.textContent = record.incidentType;
+    if (severityEl) severityEl.textContent = record.severity;
+    if (locationEl) locationEl.textContent = record.location || 'Unknown';
+
+    document.getElementById('inc-received-screen').classList.remove('hidden');
+}
+
+function resetIncidentWizard() {
+    incState.type = 'Fire';
+    incState.reportingFor = 'self';
+    incState.location = 'C5 Road, Brgy. Ugong, Pasig City';
+    incState.date = new Date().toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+    incState.time = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
+    incState.severity = 'High';
+    incState.needs = ['Ambulance', 'Police'];
+    incState.description = 'A fire has been reported near the C5 intersection with smoke visible from the second floor.';
+
+    // Reset cards
+    document.querySelectorAll('.inc-card').forEach(c => c.classList.toggle('selected', c.dataset.type === 'Fire'));
+
+    // Reset segments
+    document.querySelectorAll('.inc-segment').forEach(s => s.classList.toggle('active', s.dataset.target === 'self'));
+
+    // Reset fields
+    document.getElementById('inc-location').value = incState.location;
+    document.getElementById('inc-date').value = incState.date;
+    document.getElementById('inc-time').value = incState.time;
+    document.getElementById('inc-description').value = incState.description;
+    document.getElementById('inc-char-count').textContent = `${incState.description.length} / 500`;
+
+    // Reset severity
+    document.querySelectorAll('.inc-sev-btn').forEach(b => b.classList.toggle('active', b.dataset.severity === 'High'));
+
+    // Reset chips
+    document.querySelectorAll('.inc-chip').forEach(c => {
+        const isDefault = ['Ambulance', 'Police'].includes(c.dataset.need);
+        c.classList.toggle('active', isDefault);
+    });
+
+    // Hide received screen
+    document.getElementById('inc-received-screen').classList.add('hidden');
+
+    incGoToStep(1);
+}
+
+function useCurrentLocation() {
+    incState.location = 'Current Location';
+    document.getElementById('inc-location').value = 'Current Location';
+}
+
+// ─── Incident event listeners ─────────────────────────────────────────────
+document.querySelectorAll('.inc-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.inc-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        incState.type = card.dataset.type;
+    });
+});
+
+document.querySelectorAll('.inc-segment').forEach(seg => {
+    seg.addEventListener('click', () => {
+        document.querySelectorAll('.inc-segment').forEach(s => s.classList.remove('active'));
+        seg.classList.add('active');
+        incState.reportingFor = seg.dataset.target;
+    });
+});
+
+document.querySelectorAll('.inc-sev-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.inc-sev-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        incState.severity = btn.dataset.severity;
+    });
+});
+
+document.querySelectorAll('.inc-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+        chip.classList.toggle('active');
+        incState.needs = Array.from(document.querySelectorAll('.inc-chip.active')).map(el => el.dataset.need);
+    });
+});
+
+document.getElementById('inc-description').addEventListener('input', function() {
+    document.getElementById('inc-char-count').textContent = `${this.value.length} / 500`;
+});
+
+document.getElementById('inc-next-btn').addEventListener('click', () => {
+    if (incStep < INC_TOTAL) {
+        incGoToStep(incStep + 1);
+    } else {
+        submitIncident();
+    }
+});
+
+document.getElementById('inc-done-btn').addEventListener('click', () => {
+    document.getElementById('inc-received-screen').classList.add('hidden');
+    resetIncidentWizard();
+});
+
+// ─── Logs ─────────────────────────────────────────────────────────────────
+function renderLogs() {
+    const container = document.getElementById('logs-container');
+    const relief = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
+    const evacuees = JSON.parse(localStorage.getItem('ligtas_evacuees') || '[]');
+    const incidents = JSON.parse(localStorage.getItem('ligtas_incident_reports') || '[]');
+    const all = [...relief, ...evacuees, ...incidents].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    if (all.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-slate text-[13px]"><i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 opacity-30"></i><p>No submissions yet.</p></div>`;
+        lucide.createIcons(); return;
+    }
+
+    container.innerHTML = all.map(r => {
+        const time = new Date(r.timestamp).toLocaleString('en-PH', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        let icon = '', color = '', detail = '';
+        if (r.type === 'Relief Request') {
+            icon = 'package'; color = '#E65100';
+            detail = `${r.reliefType} · ${r.qty} families · <span class="badge urgency-${(r.urgency||'').toLowerCase()}">${r.urgency}</span>`;
+        } else if (r.type === 'Evacuee') {
+            icon = 'user'; color = '#1565C0';
+            detail = `${r.name}, ${r.age} yrs, ${r.gender} · HH: ${r.household}`;
+        } else {
+            icon = 'alert-triangle'; color = '#D32F2F';
+            detail = `${r.incidentType} · ${r.location} · <span class="badge urgency-${(r.severity||'').toLowerCase()}">${r.severity}</span>`;
+        }
+        return `<div class="record-card"><div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${color}18">
+                <i data-lucide="${icon}" class="w-4 h-4" style="color:${color}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-[13px] font-bold text-navy">${r.type}</p>
+                    <p class="text-[11px] text-slate flex-shrink-0">${time}</p>
+                </div>
+                <p class="text-[12px] text-slate mt-0.5">${r.center || r.location || ''}</p>
+                <p class="text-[12px] text-navy mt-1">${detail}</p>
+                <p class="text-[11px] text-slate mt-0.5 font-mono">${r.id}</p>
+            </div>
+        </div></div>`;
+    }).join('');
+    lucide.createIcons();
+}
+
+function clearAllLogs() {
+    if (!confirm('Clear all submission logs?')) return;
+    localStorage.removeItem('ligtas_relief_requests');
+    localStorage.removeItem('ligtas_evacuees');
+    localStorage.removeItem('ligtas_incident_reports');
+    renderLogs();
+    renderEvacuees();
+    renderReliefNotifications();
+    showToast('Logs cleared');
+}
+
+function switchEvacueeTab(tab) {
+    const evacueeBtn = document.getElementById('toggle-evacuee');
+    const centersBtn = document.getElementById('toggle-centers');
+    const evacueeContent = document.getElementById('evacuee-tab-content');
+    const centersContent = document.getElementById('centers-tab-content');
+    if (!evacueeBtn || !centersBtn || !evacueeContent || !centersContent) return;
+
+    evacueeBtn.classList.toggle('active', tab === 'evacuee');
+    centersBtn.classList.toggle('active', tab === 'centers');
+    evacueeContent.classList.toggle('hidden', tab !== 'evacuee');
+    centersContent.classList.toggle('hidden', tab !== 'centers');
+}
+
+// ─── Profile ──────────────────────────────────────────────────────────────
+function renderProfile() {
+    const s = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+    const name = s.name || '';
+    document.getElementById('profile-avatar').textContent = name ? name.charAt(0).toUpperCase() : '?';
+    document.getElementById('profile-display-name').textContent = name || 'Unknown Admin';
+    document.getElementById('profile-display-center').textContent = s.center || 'No center assigned';
+    document.getElementById('profile-id').textContent = s.id || '—';
+    document.getElementById('profile-barangay').textContent = s.barangay || '—';
+    document.getElementById('pf-name').value = name;
+    document.getElementById('pf-phone').value = s.phone || '';
+    document.getElementById('pf-center').value = s.center || '';
+    document.getElementById('pf-barangay').value = s.barangay || '';
+    document.getElementById('pf-address').value = s.address || '';
+}
+
+function saveProfile(e) {
+    e.preventDefault();
+    const s = JSON.parse(localStorage.getItem('ligtas_user_session') || '{}');
+    s.name = document.getElementById('pf-name').value;
+    s.phone = document.getElementById('pf-phone').value;
+    s.center = document.getElementById('pf-center').value;
+    s.barangay = document.getElementById('pf-barangay').value;
+    s.address = document.getElementById('pf-address').value;
+    localStorage.setItem('ligtas_user_session', JSON.stringify(s));
+    document.getElementById('admin-name-label').textContent = s.name;
+    renderProfile();
+    showToast('✅ Profile saved!', '#1565C0');
+}
+
+// ─── Logout ───────────────────────────────────────────────────────────────
+function confirmLogout() { document.getElementById('logout-modal').classList.remove('hidden'); }
+function closeModal() { document.getElementById('logout-modal').classList.add('hidden'); }
+function doLogout() {
+    localStorage.removeItem('ligtas_role');
+    localStorage.removeItem('ligtas_user_session');
+    window.location.href = 'Auth/login.html';
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+seedSampleIncident();
+seedSampleEvacuees();
+seedSampleRelief();
+resetIncidentWizard();
+renderEvacuees();
+renderReliefNotifications();
+
+const evacueeSearch = document.getElementById('evacuee-search');
+if (evacueeSearch) {
+    evacueeSearch.addEventListener('input', e => renderEvacuees(e.target.value));
+}
+</script>
+</body>
+</html>

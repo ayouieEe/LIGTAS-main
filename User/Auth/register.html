@@ -1,383 +1,416 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIGTAS - Register</title>
-
-    <!-- Tailwind CSS & Custom Config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        emergency: '#D32F2F',
-                        alert: '#E53935',
-                        tint: '#FFEBEE',
-                        deep: '#B71C1C',
-                        safe: '#2E7D32',
-                        amber: '#E65100',
-                        flood: '#1565C0',
-                        quake: '#6A1B9A',
-                        medical: '#00695C',
-                        navy: '#1C1C1E',
-                        slate: '#6B7280',
+                        emergency: '#D32F2F', alert: '#E53935', tint: '#FFEBEE',
+                        deep: '#B71C1C', safe: '#2E7D32', amber: '#E65100',
+                        flood: '#1565C0', quake: '#6A1B9A', medical: '#00695C',
+                        navy: '#1C1C1E', slate: '#6B7280',
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
                 }
             }
         }
     </script>
-
-    <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="../style.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .btn.loading {
-            position: relative;
-            color: transparent;
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+
+        .hero-bg {
+            background: linear-gradient(145deg, #1C1C1E 0%, #2D1B1B 50%, #1C1C1E 100%);
         }
-        .btn.loading::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            top: 50%;
-            left: 50%;
-            margin-left: -8px;
-            margin-top: -8px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
+        .hero-bg.admin {
+            background: linear-gradient(145deg, #0D1B2A 0%, #1A2A3A 50%, #0D1B2A 100%);
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .form-input {
+            width: 100%; padding: 13px 14px 13px 42px;
+            border: 1.5px solid #E5E7EB; border-radius: 14px;
+            background: #F8FAFC; color: #1C1C1E;
+            font-size: 14px; font-family: 'Inter', sans-serif;
+            outline: none; transition: border-color 0.2s, box-shadow 0.2s;
         }
+        .form-input.no-icon { padding-left: 14px; }
+        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9CA3AF; pointer-events: none; width: 18px; height: 18px; }
+
+        .btn-register {
+            width: 100%; padding: 14px; border-radius: 14px; border: none;
+            font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s ease; position: relative; overflow: hidden;
+            color: white;
+        }
+        .btn-register:active { transform: scale(0.98); }
+        .btn-register.loading { color: transparent; }
+        .btn-register.loading::after {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            top: 50%; left: 50%; margin: -9px 0 0 -9px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* password strength */
+        .strength-bar { height: 4px; border-radius: 99px; transition: width 0.4s ease, background 0.4s ease; }
+
+        /* role badge in hero */
+        .role-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+        }
+
+        /* perks list */
+        .perk-item { display: flex; align-items: flex-start; gap: 10px; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* pw match indicator */
+        .match-ok { border-color: #2E7D32 !important; }
+        .match-fail { border-color: #D32F2F !important; }
     </style>
 </head>
-<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+<body class="bg-gray-900 flex justify-center items-center min-h-screen antialiased">
 
-    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-[#F5F7FB] relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+<div class="w-full max-w-[390px] h-[100vh] max-h-[844px] relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800 bg-white">
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-y-auto bg-[#F5F7FB] px-4 py-6 flex flex-col">
+    <!-- ── HERO ── -->
+    <div id="hero" class="hero-bg shrink-0 px-5 pt-[52px] pb-6">
+        <!-- Top row -->
+        <div class="flex items-center justify-between mb-5">
+            <button onclick="history.back()" class="w-9 h-9 rounded-2xl bg-white/10 flex items-center justify-center text-white/70 hover:bg-white/20 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            </button>
+            <span id="hero-badge" class="role-badge" style="background:rgba(211,47,47,0.2);color:#FF8A80;">
+                <span id="badge-dot" class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse"></span>
+                <span id="badge-text">RESIDENT</span>
+            </span>
+        </div>
 
-            <div class="bg-white border border-gray-200 shadow-sm rounded-[32px] p-6 mb-4">
-                <div class="text-center mb-4">
-                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-emergency/10 text-emergency mb-3">
-                        <i data-lucide="user-plus" class="w-7 h-7"></i>
-                    </div>
-                    <h1 class="text-[24px] font-bold text-navy mb-1">Create your account</h1>
-                    <p class="text-[13px] text-slate">Join the LIGTAS network and stay ready for emergencies.</p>
-                </div>
-                <div class="rounded-3xl bg-[#F8FAFC] border border-slate-200 p-4 text-left">
-                    <p class="text-[13px] font-semibold text-navy mb-2">Why register?</p>
-                    <ul class="space-y-2 text-[12px] text-slate">
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-safe/10 text-safe text-[11px]">✓</span>
-                            <span>Receive urgent alerts and volunteer assignments from your barangay.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emergency/10 text-emergency text-[11px]">✓</span>
-                            <span>Keep your emergency contact details ready for rescue teams.</span>
-                        </li>
-                    </ul>
-                </div>
+        <!-- Logo + title -->
+        <div class="flex items-center gap-3 mb-1">
+            <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-white"></i>
             </div>
-
-            <!-- Register Form -->
-            <form class="space-y-4" id="registerForm">
-
-                <!-- Full Name -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Full Name</label>
-                    <div class="relative">
-                        <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="text" 
-                            id="fullname" 
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Enter your full name"
-                            value="Juan Dela Cruz"
-                            required
-                        >
-                    </div>
-                </div>
-
-                <!-- Email -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Email Address</label>
-                    <div class="relative">
-                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="email" 
-                            id="email-register" 
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Enter your email"
-                            value="juan@example.com"
-                            required
-                        >
-                    </div>
-                </div>
-
-                <!-- Mobile Number -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Mobile Number</label>
-                    <div class="relative">
-                        <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="tel" 
-                            id="mobile" 
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="+63 9XX XXX XXXX"
-                            value="0917-555-9876"
-                            required
-                        >
-                    </div>
-                </div>
-
-                <!-- Barangay / Location -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Barangay / Location</label>
-                    <div class="relative">
-                        <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate z-10"></i>
-                        <select id="barangay" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all appearance-none cursor-pointer" required>
-                            <option value="">Select your barangay</option>
-                            <option value="Brgy. Bagong Ilog">Brgy. Bagong Ilog</option>
-                            <option value="Brgy. Bagong Katipunan">Brgy. Bagong Katipunan</option>
-                            <option value="Brgy. Bambang">Brgy. Bambang</option>
-                            <option value="Brgy. Buting">Brgy. Buting</option>
-                            <option value="Brgy. Caniogan">Brgy. Caniogan</option>
-                            <option value="Brgy. Dela Paz">Brgy. Dela Paz</option>
-                            <option value="Brgy. Kalawaan">Brgy. Kalawaan</option>
-                            <option value="Brgy. Kapasigan">Brgy. Kapasigan</option>
-                            <option value="Brgy. Kapitolyo" selected>Brgy. Kapitolyo</option>
-                            <option value="Brgy. Malinao">Brgy. Malinao</option>
-                            <option value="Brgy. Manggahan">Brgy. Manggahan</option>
-                            <option value="Brgy. Maybunga">Brgy. Maybunga</option>
-                            <option value="Brgy. Oranbo">Brgy. Oranbo</option>
-                            <option value="Brgy. Palatiw">Brgy. Palatiw</option>
-                            <option value="Brgy. Pinagbuhatan">Brgy. Pinagbuhatan</option>
-                            <option value="Brgy. Pineda">Brgy. Pineda</option>
-                            <option value="Brgy. Rosario">Brgy. Rosario</option>
-                            <option value="Brgy. Sagad">Brgy. Sagad</option>
-                            <option value="Brgy. San Antonio">Brgy. San Antonio</option>
-                            <option value="Brgy. San Joaquin">Brgy. San Joaquin</option>
-                            <option value="Brgy. San Jose">Brgy. San Jose</option>
-                            <option value="Brgy. San Miguel">Brgy. San Miguel</option>
-                            <option value="Brgy. San Nicolas (Pob.)">Brgy. San Nicolas (Pob.)</option>
-                            <option value="Brgy. Santa Cruz">Brgy. Santa Cruz</option>
-                            <option value="Brgy. Santa Lucia">Brgy. Santa Lucia</option>
-                            <option value="Brgy. Santa Rosa">Brgy. Santa Rosa</option>
-                            <option value="Brgy. Santo Tomas">Brgy. Santo Tomas</option>
-                            <option value="Brgy. Santolan">Brgy. Santolan</option>
-                            <option value="Brgy. Sumilang">Brgy. Sumilang</option>
-                            <option value="Brgy. Ugong">Brgy. Ugong</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Password</label>
-                    <div class="relative">
-                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="password" 
-                            id="password-register" 
-                            class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Create a strong password"
-                            value="password123"
-                            required
-                        >
-                        <button 
-                            type="button" 
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-emergency transition-colors"
-                            onclick="togglePasswordVisibility('password-register')"
-                        >
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                    <!-- Password Strength Bar -->
-                    <div class="mt-2">
-                        <div class="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                            <div class="h-full w-0 bg-emergency rounded-full transition-all" id="strengthBar"></div>
-                        </div>
-                        <p class="text-[10px] text-slate mt-1">Strength: <span id="strengthText">–</span></p>
-                    </div>
-                </div>
-
-                <!-- Confirm Password -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-1.5 uppercase tracking-wide">Confirm Password</label>
-                    <div class="relative">
-                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="password" 
-                            id="confirm-password" 
-                            class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Confirm your password"
-                            value="password123"
-                            required
-                        >
-                        <button 
-                            type="button" 
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-emergency transition-colors"
-                            onclick="togglePasswordVisibility('confirm-password')"
-                        >
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Terms Checkbox -->
-                <div class="flex items-start gap-2 py-2">
-                    <input 
-                        type="checkbox" 
-                        id="terms" 
-                        class="mt-1 w-4 h-4 accent-emergency rounded cursor-pointer"
-                        checked
-                        required
-                    >
-                    <label for="terms" class="text-[12px] text-slate cursor-pointer">
-                        I agree to the <a href="#" class="font-semibold text-emergency hover:text-deep transition-colors">Terms of Service</a> and <a href="#" class="font-semibold text-emergency hover:text-deep transition-colors">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <!-- Create Account Button -->
-                <button type="submit" class="btn w-full bg-gradient-to-r from-emergency to-alert hover:shadow-xl py-3 rounded-[18px] font-bold text-white transition-all transform hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-2 mt-2">
-                    <span>Create Account</span>
-                    <i data-lucide="check-circle" class="w-5 h-5"></i>
-                </button>
-
-                <!-- Login Link -->
-                <p class="text-center text-[13px] text-slate mt-3">
-                    Already have an account? <a href="login.html" class="font-bold text-emergency hover:text-deep transition-colors">Login</a>
-                </p>
-            </form>
-
-            <!-- Safety Tips Card -->
-            <div class="mt-5 rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
-                <div class="flex items-center gap-2 mb-3">
-                    <div class="rounded-2xl bg-safe/10 p-2">
-                        <i data-lucide="shield" class="w-5 h-5 text-safe"></i>
-                    </div>
-                    <div>
-                        <p class="text-[13px] font-semibold text-navy">Security Best Practices</p>
-                        <p class="text-[11px] text-slate">Safe registration tips for your LIGTAS profile.</p>
-                    </div>
-                </div>
-                <ul class="space-y-2 text-[12px] text-slate">
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-safe/10 text-safe text-[11px]">✓</span>
-                        <span>Choose a password with letters, numbers, and symbols.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-emergency/10 text-emergency text-[11px]">✓</span>
-                        <span>Verify your contact details for faster emergency alerts.</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <span class="mt-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 text-slate text-[11px]">✓</span>
-                        <span>Keep your barangay location updated in your profile.</span>
-                    </li>
-                </ul>
-            </div>
-
-        </main>
-
+            <span class="text-white font-bold text-[20px] tracking-tight">LIGTAS</span>
+        </div>
+        <h1 id="hero-title" class="text-white text-[24px] font-bold leading-snug mt-2">Create your<br>Resident account.</h1>
+        <p id="hero-sub" class="text-white/55 text-[13px] mt-1">Join the LIGTAS network. Stay alert, stay safe.</p>
     </div>
 
-    <script>
-        lucide.createIcons();
+    <!-- ── FORM BODY ── -->
+    <main class="flex-1 overflow-y-auto no-scrollbar bg-gray-50 px-4 pt-5 pb-8">
 
-        function togglePasswordVisibility(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            const isPassword = passwordInput.type === 'password';
-            passwordInput.type = isPassword ? 'text' : 'password';
+        <!-- Role info card -->
+        <div id="role-info-card" class="rounded-2xl p-4 mb-5 border" style="background:#FFF5F5;border-color:rgba(211,47,47,0.18);">
+            <div class="flex items-center gap-3 mb-3">
+                <div id="role-icon-wrap" class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(211,47,47,0.12);">
+                    <i id="role-icon" data-lucide="user" class="w-4 h-4" style="color:#D32F2F;"></i>
+                </div>
+                <div>
+                    <p id="role-card-title" class="text-[13px] font-bold text-navy">Registering as a Resident</p>
+                    <p id="role-card-sub" class="text-[11px] text-slate">Normal User · Community member</p>
+                </div>
+            </div>
+            <div id="role-perks" class="space-y-1.5">
+                <!-- filled by JS -->
+            </div>
+        </div>
+
+        <form id="registerForm" class="space-y-3" onsubmit="handleRegister(event)">
+
+            <!-- Full Name -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Full Name</label>
+                <div class="relative">
+                    <i data-lucide="user" class="input-icon"></i>
+                    <input type="text" id="fullname" class="form-input" placeholder="Enter your full name" required>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Email Address</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="input-icon"></i>
+                    <input type="email" id="reg-email" class="form-input" placeholder="yourname@email.com" required>
+                </div>
+            </div>
+
+            <!-- Mobile -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Mobile Number</label>
+                <div class="relative">
+                    <i data-lucide="phone" class="input-icon"></i>
+                    <input type="tel" id="mobile" class="form-input" placeholder="+63 9XX XXX XXXX" required>
+                </div>
+            </div>
+
+            <!-- Barangay -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Barangay</label>
+                <div class="relative">
+                    <i data-lucide="map-pin" class="input-icon" style="z-index:10;"></i>
+                    <select id="barangay" class="form-input" style="appearance:none;" required>
+                        <option value="">Select your barangay...</option>
+                        <option>Brgy. Bagong Ilog</option>
+                        <option>Brgy. Bagong Katipunan</option>
+                        <option>Brgy. Bambang</option>
+                        <option>Brgy. Buting</option>
+                        <option>Brgy. Caniogan</option>
+                        <option>Brgy. Dela Paz</option>
+                        <option>Brgy. Kalawaan</option>
+                        <option>Brgy. Kapasigan</option>
+                        <option>Brgy. Kapitolyo</option>
+                        <option>Brgy. Malinao</option>
+                        <option>Brgy. Manggahan</option>
+                        <option>Brgy. Maybunga</option>
+                        <option>Brgy. Oranbo</option>
+                        <option>Brgy. Palatiw</option>
+                        <option>Brgy. Pinagbuhatan</option>
+                        <option>Brgy. Pineda</option>
+                        <option>Brgy. Rosario</option>
+                        <option>Brgy. Sagad</option>
+                        <option>Brgy. San Antonio</option>
+                        <option>Brgy. San Joaquin</option>
+                        <option>Brgy. San Jose</option>
+                        <option>Brgy. San Miguel</option>
+                        <option>Brgy. San Nicolas (Pob.)</option>
+                        <option>Brgy. Santa Cruz</option>
+                        <option>Brgy. Santa Lucia</option>
+                        <option>Brgy. Santa Rosa</option>
+                        <option>Brgy. Santo Tomas</option>
+                        <option>Brgy. Santolan</option>
+                        <option>Brgy. Sumilang</option>
+                        <option>Brgy. Ugong</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Admin-only: Center Name -->
+            <div id="center-field" class="hidden">
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Evacuation Center Name</label>
+                <div class="relative">
+                    <i data-lucide="building" class="input-icon"></i>
+                    <input type="text" id="center-name" class="form-input" placeholder="e.g. Brgy. Kapasigan Evacuation Center">
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="input-icon"></i>
+                    <input type="password" id="password" class="form-input pr-12" placeholder="Create a strong password" required oninput="checkStrength(this.value)">
+                    <button type="button" onclick="togglePw('password')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-navy transition-colors">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <!-- Strength meter -->
+                <div class="mt-2 space-y-1">
+                    <div class="flex gap-1">
+                        <div class="flex-1 h-1 rounded-full bg-gray-200 overflow-hidden"><div id="sb1" class="strength-bar h-full w-0 bg-gray-200"></div></div>
+                        <div class="flex-1 h-1 rounded-full bg-gray-200 overflow-hidden"><div id="sb2" class="strength-bar h-full w-0 bg-gray-200"></div></div>
+                        <div class="flex-1 h-1 rounded-full bg-gray-200 overflow-hidden"><div id="sb3" class="strength-bar h-full w-0 bg-gray-200"></div></div>
+                        <div class="flex-1 h-1 rounded-full bg-gray-200 overflow-hidden"><div id="sb4" class="strength-bar h-full w-0 bg-gray-200"></div></div>
+                    </div>
+                    <p class="text-[11px] text-gray-400">Strength: <span id="strength-text" class="font-semibold">–</span></p>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Confirm Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="input-icon"></i>
+                    <input type="password" id="confirm-pw" class="form-input pr-12" placeholder="Re-enter your password" required oninput="checkMatch()">
+                    <button type="button" onclick="togglePw('confirm-pw')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-navy transition-colors">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <p id="match-msg" class="text-[11px] mt-1 hidden"></p>
+            </div>
+
+            <!-- Terms -->
+            <div class="flex items-start gap-3 py-1">
+                <input type="checkbox" id="terms" class="mt-0.5 w-4 h-4 rounded cursor-pointer" style="accent-color:#D32F2F;" checked required>
+                <label for="terms" class="text-[12px] text-slate cursor-pointer leading-relaxed">
+                    I agree to the <a href="#" class="font-semibold text-emergency">Terms of Service</a> and <a href="#" class="font-semibold text-emergency">Privacy Policy</a>
+                </label>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="reg-btn" class="btn-register" style="background:linear-gradient(135deg,#D32F2F,#E53935);box-shadow:0 6px 20px rgba(211,47,47,0.35);">
+                <i data-lucide="user-check" class="w-4 h-4"></i>
+                <span id="reg-btn-text">Create Resident Account</span>
+            </button>
+
+            <p class="text-center text-[13px] text-slate pt-1">
+                Already have an account? <a href="login.html" class="font-bold text-emergency hover:text-deep transition-colors">Login</a>
+            </p>
+
+        </form>
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    // ── Read role from URL param ──────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get('role') === 'admin' ? 'admin' : 'resident';
+
+    const PERKS = {
+        resident: [
+            { icon: 'bell', text: 'Receive real-time emergency alerts' },
+            { icon: 'map', text: 'Access evacuation routes & maps' },
+            { icon: 'shield', text: 'Safety guides & preparation tips' },
+        ],
+        admin: [
+            { icon: 'layout-dashboard', text: 'Full Admin Dashboard access' },
+            { icon: 'package', text: 'Submit relief requests for your center' },
+            { icon: 'users', text: 'Register & manage evacuees' },
+            { icon: 'alert-triangle', text: 'File incident reports' },
+        ]
+    };
+
+    function applyRoleTheme() {
+        const hero = document.getElementById('hero');
+        const badge = document.getElementById('hero-badge');
+        const badgeDot = document.getElementById('badge-dot');
+        const badgeText = document.getElementById('badge-text');
+        const title = document.getElementById('hero-title');
+        const sub = document.getElementById('hero-sub');
+        const card = document.getElementById('role-info-card');
+        const iconWrap = document.getElementById('role-icon-wrap');
+        const icon = document.getElementById('role-icon');
+        const cardTitle = document.getElementById('role-card-title');
+        const cardSub = document.getElementById('role-card-sub');
+        const perksEl = document.getElementById('role-perks');
+        const btn = document.getElementById('reg-btn');
+        const btnText = document.getElementById('reg-btn-text');
+        const centerField = document.getElementById('center-field');
+
+        if (role === 'admin') {
+            hero.classList.add('admin');
+            badge.style.cssText = 'background:rgba(21,101,192,0.2);color:#90CAF9;';
+            badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse';
+            badgeText.textContent = 'FIELD ADMIN';
+            title.innerHTML = 'Create your<br>Admin account.';
+            sub.textContent = 'Manage your center. Stay operational.';
+            card.style.cssText = 'background:#EFF6FF;border-color:rgba(21,101,192,0.2);';
+            iconWrap.style.background = 'rgba(21,101,192,0.12)';
+            icon.setAttribute('data-lucide', 'shield');
+            icon.style.color = '#1565C0';
+            cardTitle.textContent = 'Registering as a Field Admin';
+            cardSub.textContent = 'Center Admin · Elevated Access';
+            btn.style.cssText = 'background:linear-gradient(135deg,#1565C0,#1976D2);box-shadow:0 6px 20px rgba(21,101,192,0.35);';
+            btnText.textContent = 'Create Admin Account';
+            centerField.classList.remove('hidden');
+            document.querySelector('input[id="center-name"]').required = true;
+            document.documentElement.style.setProperty('--accent', '#1565C0');
+            document.documentElement.style.setProperty('--accent-soft', 'rgba(21,101,192,0.1)');
+        } else {
+            document.documentElement.style.setProperty('--accent', '#D32F2F');
+            document.documentElement.style.setProperty('--accent-soft', 'rgba(211,47,47,0.1)');
         }
 
-        // Password strength indicator
-        document.getElementById('password-register').addEventListener('input', function(e) {
-            const password = e.target.value;
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthText = document.getElementById('strengthText');
-            
-            let strength = 0;
-            let strengthLevel = 'Weak';
-            
-            if (password.length >= 8) strength++;
-            if (password.length >= 12) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^a-zA-Z0-9]/.test(password)) strength++;
-            
-            if (strength === 0) {
-                strengthLevel = 'Very Weak';
-                strengthBar.style.width = '20%';
-                strengthBar.className = 'h-full w-0 bg-emergency rounded-full transition-all';
-                strengthBar.style.width = '20%';
-            } else if (strength === 1) {
-                strengthLevel = 'Weak';
-                strengthBar.className = 'h-full w-0 bg-emergency rounded-full transition-all';
-                strengthBar.style.width = '40%';
-            } else if (strength === 2 || strength === 3) {
-                strengthLevel = 'Fair';
-                strengthBar.className = 'h-full w-0 bg-amber rounded-full transition-all';
-                strengthBar.style.width = '60%';
-            } else if (strength === 4) {
-                strengthLevel = 'Good';
-                strengthBar.className = 'h-full w-0 bg-flood rounded-full transition-all';
-                strengthBar.style.width = '80%';
-            } else {
-                strengthLevel = 'Strong';
-                strengthBar.className = 'h-full w-0 bg-safe rounded-full transition-all';
-                strengthBar.style.width = '100%';
-            }
-            
-            strengthText.textContent = strengthLevel;
-        });
+        // Render perks
+        perksEl.innerHTML = PERKS[role].map(p => `
+            <div class="perk-item">
+                <div class="w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:${role === 'admin' ? 'rgba(21,101,192,0.1)' : 'rgba(211,47,47,0.1)'}">
+                    <i data-lucide="${p.icon}" class="w-3 h-3" style="color:${role === 'admin' ? '#1565C0' : '#D32F2F'};"></i>
+                </div>
+                <span class="text-[12px] text-slate leading-relaxed">${p.text}</span>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
 
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const password = document.getElementById('password-register').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
-            
-            const fullname = document.getElementById('fullname').value;
-            const email = document.getElementById('email-register').value;
-            const mobile = document.getElementById('mobile').value;
-            const barangay = document.getElementById('barangay').value;
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            
-            console.log('Registration attempt:', { fullname, email, mobile, barangay });
-            
-            // Simulate network delay
-            setTimeout(() => {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
-                // Redirect to login page or home page after successful registration
-                window.location.href = 'login.html';
-            }, 1500);
-        });
-    </script>
+    applyRoleTheme();
 
+    // ── Password strength ─────────────────────────────────────────────────────
+    function checkStrength(pw) {
+        let score = 0;
+        if (pw.length >= 8) score++;
+        if (pw.length >= 12) score++;
+        if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^a-zA-Z0-9]/.test(pw)) score++;
+
+        const levels = [
+            { label: '–', color: '#E5E7EB', bars: 0 },
+            { label: 'Weak', color: '#D32F2F', bars: 1 },
+            { label: 'Fair', color: '#E65100', bars: 2 },
+            { label: 'Good', color: '#1565C0', bars: 3 },
+            { label: 'Strong', color: '#2E7D32', bars: 4 },
+        ];
+        const level = pw.length === 0 ? levels[0] : score <= 1 ? levels[1] : score <= 2 ? levels[2] : score <= 3 ? levels[3] : levels[4];
+        document.getElementById('strength-text').textContent = level.label;
+        document.getElementById('strength-text').style.color = level.color;
+        for (let i = 1; i <= 4; i++) {
+            const bar = document.getElementById('sb' + i);
+            bar.style.width = i <= level.bars ? '100%' : '0%';
+            bar.style.background = i <= level.bars ? level.color : '#E5E7EB';
+        }
+        checkMatch();
+    }
+
+    // ── Password match ────────────────────────────────────────────────────────
+    function checkMatch() {
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirm-pw').value;
+        const msg = document.getElementById('match-msg');
+        const input = document.getElementById('confirm-pw');
+        if (!cpw) { msg.classList.add('hidden'); input.classList.remove('match-ok','match-fail'); return; }
+        if (pw === cpw) {
+            msg.textContent = '✓ Passwords match'; msg.style.color = '#2E7D32';
+            msg.classList.remove('hidden'); input.classList.add('match-ok'); input.classList.remove('match-fail');
+        } else {
+            msg.textContent = '✗ Passwords do not match'; msg.style.color = '#D32F2F';
+            msg.classList.remove('hidden'); input.classList.add('match-fail'); input.classList.remove('match-ok');
+        }
+    }
+
+    // ── Toggle password visibility ────────────────────────────────────────────
+    function togglePw(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+    }
+
+    // ── Submit ────────────────────────────────────────────────────────────────
+    function handleRegister(e) {
+        e.preventDefault();
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirm-pw').value;
+        if (pw !== cpw) { checkMatch(); document.getElementById('confirm-pw').focus(); return; }
+
+        const btn = document.getElementById('reg-btn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        const savedRole = role === 'admin' ? 'field_admin' : 'normal_user';
+        const email = document.getElementById('reg-email').value;
+
+        setTimeout(() => {
+            localStorage.setItem('ligtas_role', savedRole);
+            localStorage.setItem('ligtas_registered_email', email);
+            // Redirect back to login with the correct role pre-selected
+            window.location.href = 'login.html?registered=' + role;
+        }, 1400);
+    }
+</script>
 </body>
 </html>
-

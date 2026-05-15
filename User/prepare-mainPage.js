@@ -137,7 +137,14 @@ function updateInventorySummaryCards() {
 }
 
 function showAssemblyDetails(centerId) {
-    const centers = {};
+    const centers = {
+        sports: {
+            title: 'Pasig City Sports Complex',
+            address: 'Ortigas Avenue, Brgy. San Joaquin, Pasig City',
+            description: 'Designated evacuation assembly point with medical tents, water supply, and emergency support services.',
+            mapUrl: 'https://maps.google.com/maps?f=d&hl=en&geocode=&saddr=14.5760,121.0835&daddr=14.5826,121.0735&dirflg=d&output=embed'
+        }
+    };
 
     const center = centers[centerId] || centers.sports;
     const titleEl = document.getElementById('assembly-title');
@@ -147,14 +154,126 @@ function showAssemblyDetails(centerId) {
     if (titleEl) titleEl.textContent = center.title;
     if (addressEl) addressEl.textContent = center.address;
     if (descriptionEl) descriptionEl.textContent = center.description;
-    if (mapIframe) mapIframe.src = center.mapUrl;
+    if (mapIframe && center.mapUrl) mapIframe.src = center.mapUrl;
     showScreen('screen-assembly');
 }
 
 let currentAssignmentId = null;
 
-const assignmentDetails = {};
-
+const assignmentDetails = {
+    'flood-response': {
+        title: 'Emergency Response Team Needed',
+        summary: 'Flooding in Barangay San Miguel requires immediate volunteer assistance.',
+        description: 'Flooding in Barangay San Miguel requires immediate volunteer assistance. We need experienced responders for evacuation and first aid support. Report to the barangay hall within 30 minutes.',
+        status: 'Urgent',
+        time: 'Report within 30 minutes',
+        location: 'Barangay San Miguel',
+        coordinator: 'LDRRMO Field Team',
+        tasks: [
+            'Assist families to safe zones',
+            'Provide basic first aid to affected residents',
+            'Help coordinate evacuation transports'
+        ]
+    },
+    'medical-support': {
+        title: 'Medical Assistance Team',
+        summary: 'Support medical personnel at evacuation centers. Basic first aid knowledge helpful.',
+        description: 'Support medical personnel at evacuation centers. Basic first aid knowledge is helpful but not required. Flexible scheduling available.',
+        status: 'Urgent',
+        time: 'Starts in 1 hour',
+        location: 'Pasig City Sports Complex',
+        coordinator: 'Medical Unit Lead',
+        tasks: [
+            'Assist with patient intake',
+            'Deliver medical supplies to tents',
+            'Support triage and monitoring'
+        ]
+    },
+    'supply-distribution': {
+        title: 'Supply Distribution Support',
+        summary: 'Help distribute emergency supplies to affected families. Training provided.',
+        description: 'Help distribute emergency supplies to affected families. Training will be provided. This is a 4-hour shift tomorrow morning.',
+        status: 'Urgent',
+        time: 'Tomorrow morning',
+        location: 'City Hall',
+        coordinator: 'Logistics Coordinator',
+        tasks: [
+            'Load and sort supply packages',
+            'Distribute packages to families',
+            'Track inventory and report shortages'
+        ]
+    },
+    'communication-hotline': {
+        title: 'Hotline Support Volunteer',
+        summary: 'Answer emergency calls and assist with family reunification.',
+        description: 'Answer emergency calls and assist with family reunification. Training is provided. You can work from the command center or remotely.',
+        status: 'Urgent',
+        time: 'Available now',
+        location: 'Emergency Operations Center',
+        coordinator: 'Communications Supervisor',
+        tasks: [
+            'Receive emergency hotline calls',
+            'Log calls and relay information to responders',
+            'Provide reassurance to callers'
+        ]
+    },
+    'shelter-logistics': {
+        title: 'Shelter Logistics & Setup',
+        summary: 'Help set up and organize emergency shelter facilities.',
+        description: 'Help set up and organize emergency shelter facilities. This task involves physical setup and coordination. Starts this evening.',
+        status: 'Urgent',
+        time: 'This evening',
+        location: 'Barangay San Antonio',
+        coordinator: 'Shelter Manager',
+        tasks: [
+            'Arrange sleeping areas and supplies',
+            'Set up registration desks',
+            'Ensure shelter signage and safety checks are in place'
+        ]
+    },
+    'road-safety-patrol': {
+        title: 'Road Safety Patrol',
+        summary: 'Help manage traffic flow and ensure safe passage for emergency vehicles.',
+        description: 'Help manage traffic flow and ensure safe passage for emergency vehicles near the evacuation route. High visibility gear is provided.',
+        status: 'Urgent',
+        time: 'Starting now',
+        location: 'C-5 Road Section',
+        coordinator: 'Traffic Control Lead',
+        tasks: [
+            'Direct traffic around the evacuation corridor',
+            'Coordinate with emergency responders',
+            'Monitor for hazards and report issues'
+        ]
+    },
+    'community-outreach': {
+        title: 'Community Outreach Support',
+        summary: 'Coordinate neighborhood safety checks and share preparedness information.',
+        description: 'Coordinate neighborhood safety checks and share preparedness information with local residents.',
+        status: 'Accepted',
+        time: 'Ongoing',
+        location: 'Brgy. Kapitolyo',
+        coordinator: 'Outreach Lead',
+        tasks: [
+            'Visit households with safety information',
+            'Check on vulnerable residents',
+            'Collect and submit community feedback'
+        ]
+    },
+    'shelter-checkin': {
+        title: 'Shelter Check-in Team',
+        summary: 'Confirm shelter readiness, log arrivals, and ensure emergency supplies are in place.',
+        description: 'Confirm shelter readiness, log arrivals, and ensure emergency supplies are in place.',
+        status: 'Completed',
+        time: 'Completed yesterday',
+        location: 'Brgy. San Joaquin',
+        coordinator: 'Shelter Operations Supervisor',
+        tasks: [
+            'Verify shelter check-in process',
+            'Confirm supply inventory',
+            'Report completed shelter status'
+        ]
+    }
+};
 
 function openAssignmentModal(assignmentId) {
     currentAssignmentId = assignmentId;

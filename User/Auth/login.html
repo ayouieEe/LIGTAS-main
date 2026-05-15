@@ -4,230 +4,452 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIGTAS - Login</title>
-
-    <!-- Tailwind CSS & Custom Config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        emergency: '#D32F2F',
-                        alert: '#E53935',
-                        tint: '#FFEBEE',
-                        deep: '#B71C1C',
-                        safe: '#2E7D32',
-                        amber: '#E65100',
-                        flood: '#1565C0',
-                        quake: '#6A1B9A',
-                        medical: '#00695C',
-                        navy: '#1C1C1E',
-                        slate: '#6B7280',
+                        emergency: '#D32F2F', alert: '#E53935', tint: '#FFEBEE',
+                        deep: '#B71C1C', safe: '#2E7D32', amber: '#E65100',
+                        flood: '#1565C0', quake: '#6A1B9A', medical: '#00695C',
+                        navy: '#1C1C1E', slate: '#6B7280',
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] }
                 }
             }
         }
     </script>
-
-    <!-- Global Stylesheet -->
-    <link rel="stylesheet" href="../style.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .btn.loading {
-            position: relative;
-            color: transparent;
+        * { box-sizing: border-box; }
+
+        body { font-family: 'Inter', sans-serif; }
+
+        /* ── Animated gradient hero ── */
+        .hero-bg {
+            background: linear-gradient(145deg, #1C1C1E 0%, #2D1B1B 50%, #1C1C1E 100%);
+            transition: background 0.5s ease;
         }
-        .btn.loading::after {
-            content: '';
-            position: absolute;
-            width: 16px;
-            height: 16px;
-            top: 50%;
-            left: 50%;
-            margin-left: -8px;
-            margin-top: -8px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
+        .hero-bg.admin {
+            background: linear-gradient(145deg, #0D1B2A 0%, #1A2A3A 50%, #0D1B2A 100%);
+        }
+
+        /* ── Role pill toggle ── */
+        .role-pill {
+            display: flex;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 4px;
+            gap: 4px;
+        }
+        .role-pill button {
+            flex: 1;
+            padding: 9px 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.5);
+            background: transparent;
+        }
+        .role-pill button.active-resident {
+            background: #D32F2F;
+            color: white;
+            box-shadow: 0 4px 14px rgba(211,47,47,0.45);
+        }
+        .role-pill button.active-admin {
+            background: #1565C0;
+            color: white;
+            box-shadow: 0 4px 14px rgba(21,101,192,0.45);
+        }
+
+        /* ── Form inputs ── */
+        .form-input {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            background: #F8FAFC;
+            color: #1C1C1E;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus { border-color: #D32F2F; box-shadow: 0 0 0 3px rgba(211,47,47,0.1); }
+        .form-input.admin-focus:focus { border-color: #1565C0; box-shadow: 0 0 0 3px rgba(21,101,192,0.1); }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9CA3AF; pointer-events: none; }
+
+        /* ── Buttons ── */
+        .btn-login {
+            width: 100%; padding: 14px; border-radius: 14px; border: none;
+            font-size: 15px; font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s ease; position: relative; overflow: hidden;
+        }
+        .btn-login:active { transform: scale(0.98); }
+        .btn-login.resident { background: linear-gradient(135deg, #D32F2F, #E53935); color: white; box-shadow: 0 6px 20px rgba(211,47,47,0.35); }
+        .btn-login.admin { background: linear-gradient(135deg, #1565C0, #1976D2); color: white; box-shadow: 0 6px 20px rgba(21,101,192,0.35); }
+        .btn-login.loading { color: transparent; }
+        .btn-login.loading::after {
+            content: ''; position: absolute;
+            width: 18px; height: 18px; top: 50%; left: 50%;
+            margin: -9px 0 0 -9px;
+            border: 2px solid rgba(255,255,255,0.3);
             border-top-color: white;
-            animation: spin 0.8s linear infinite;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Demo card ── */
+        .demo-card {
+            border-radius: 14px;
+            padding: 13px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1.5px solid transparent;
         }
+        .demo-card:hover { transform: translateY(-1px); }
+        .demo-card.resident-card { background: #FFF5F5; border-color: rgba(211,47,47,0.2); }
+        .demo-card.admin-card { background: #EFF6FF; border-color: rgba(21,101,192,0.2); }
+
+        /* ── Panel transitions ── */
+        .role-panel { transition: opacity 0.25s ease, transform 0.25s ease; }
+        .role-panel.hidden { opacity: 0; pointer-events: none; position: absolute; transform: translateY(6px); }
+
+        /* ── Misc ── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Welcome badge ── */
+        .role-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        .role-badge.resident { background: rgba(211,47,47,0.15); color: #D32F2F; }
+        .role-badge.admin { background: rgba(21,101,192,0.2); color: #90CAF9; }
     </style>
 </head>
-<body class="bg-gray-900 flex justify-center items-center min-h-screen text-navy antialiased">
+<body class="bg-gray-900 flex justify-center items-center min-h-screen antialiased">
 
-    <div class="w-full max-w-[390px] h-[100vh] max-h-[844px] bg-gray-50 relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800">
+<div class="w-full max-w-[390px] h-[100vh] max-h-[844px] relative overflow-hidden shadow-2xl sm:rounded-[40px] flex flex-col sm:border-[8px] sm:border-gray-800 bg-white">
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-y-auto bg-gray-50 px-4 py-6 flex flex-col">
+    <!-- ── HERO HEADER ── -->
+    <div id="hero" class="hero-bg shrink-0 px-5 pt-[52px] pb-6">
 
-            <!-- Logo and Header -->
-            <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <i data-lucide="shield-check" class="w-12 h-12 text-emergency"></i>
+        <!-- Logo row -->
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-white"></i>
                 </div>
-                <h1 class="text-[24px] font-bold text-navy mb-1">Welcome Back</h1>
-                <p class="text-[13px] text-slate">Stay Safe. Stay Prepared.</p>
+                <span class="text-white font-bold text-[20px] tracking-tight">LIGTAS</span>
             </div>
+            <span id="hero-badge" class="role-badge resident">
+                <span id="badge-dot" class="w-1.5 h-1.5 rounded-full bg-emergency animate-pulse"></span>
+                <span id="badge-text">RESIDENT</span>
+            </span>
+        </div>
 
-            <!-- Login Form -->
-            <form class="space-y-4 flex-1" id="loginForm">
-                <!-- Email Input -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-2 uppercase tracking-wide">Email Address</label>
-                    <div class="relative">
-                        <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Enter your email"
-                            value="juan@example.com"
-                            required
-                        >
-                    </div>
-                </div>
+        <!-- Hero text -->
+        <h1 id="hero-title" class="text-white text-[26px] font-bold leading-tight mb-1">Welcome back,<br>Resident.</h1>
+        <p id="hero-sub" class="text-white/60 text-[13px]">Stay safe. Stay prepared.</p>
 
-                <!-- Password Input -->
-                <div>
-                    <label class="block text-[12px] font-semibold text-navy mb-2 uppercase tracking-wide">Password</label>
-                    <div class="relative">
-                        <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate"></i>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            class="w-full pl-10 pr-12 py-2.5 border border-gray-200 rounded-lg bg-white text-navy placeholder-gray-400 focus:border-emergency focus:outline-none focus:ring-1 focus:ring-emergency transition-all"
-                            placeholder="Enter your password"
-                            value="password123"
-                            required
-                        >
-                        <button 
-                            type="button" 
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-emergency transition-colors"
-                            onclick="togglePasswordVisibility()"
-                        >
-                            <i data-lucide="eye" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Forgot Password Link -->
-                <div class="flex justify-end">
-                    <a href="#" class="text-[12px] font-semibold text-emergency hover:text-deep transition-colors">Forgot Password?</a>
-                </div>
-
-                <!-- Login Button -->
-                <button type="submit" class="btn w-full bg-gradient-to-r from-emergency to-alert hover:shadow-lg py-3 rounded-lg font-bold text-white transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
-                    <span>Login</span>
-                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                </button>
-
-                <!-- Register Link -->
-                <p class="text-center text-[13px] text-slate">
-                    Don't have an account? <a href="register.html" class="font-bold text-emergency hover:text-deep transition-colors">Register</a>
-                </p>
-
-            </form>
-
-            <!-- Divider -->
-            <div class="flex items-center gap-3 my-5">
-                <div class="flex-1 h-[1px] bg-gray-200"></div>
-                <span class="text-[12px] text-slate font-medium">Or continue with</span>
-                <div class="flex-1 h-[1px] bg-gray-200"></div>
-            </div>
-
-            <!-- Social Login Buttons -->
-            <div class="flex gap-3 justify-center">
-                <button class="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-emergency hover:bg-tint transition-all" title="Login with Google">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#1F2937"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                </button>
-                <button class="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center hover:border-emergency hover:bg-tint transition-all" title="Login with Facebook">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="#1877F2">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Guest Login Option -->
-            <button type="button" class="w-full mt-5 py-2.5 rounded-lg border-2 border-gray-200 font-semibold text-navy hover:border-emergency hover:bg-tint transition-all" onclick="loginAsGuest()">
-                Continue as Guest
+        <!-- Role Switcher -->
+        <div class="role-pill mt-5">
+            <button id="btn-resident" class="active-resident" onclick="switchRole('resident')">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i> Resident
             </button>
-
-        </main>
-
+            <button id="btn-admin" onclick="switchRole('admin')">
+                <i data-lucide="shield" class="w-3.5 h-3.5"></i> Field Admin
+            </button>
+        </div>
     </div>
 
-    <script>
+    <!-- ── FORM BODY ── -->
+    <main class="flex-1 overflow-y-auto no-scrollbar bg-gray-50 px-4 pt-5 pb-6 flex flex-col gap-4">
+
+        <!-- Demo quick-fill cards -->
+        <div id="demo-resident" class="demo-card resident-card" onclick="quickFill('resident')" title="Click to auto-fill demo credentials">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-emergency/10 flex items-center justify-center">
+                        <i data-lucide="user" class="w-4 h-4 text-emergency"></i>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-bold text-navy">Demo: Resident</p>
+                        <p class="text-[11px] text-slate">juan@example.com · password123</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1 text-emergency text-[11px] font-semibold">
+                    Quick fill <i data-lucide="zap" class="w-3 h-3"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="demo-admin" class="demo-card admin-card hidden" onclick="quickFill('admin')" title="Click to auto-fill demo credentials">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-flood/10 flex items-center justify-center">
+                        <i data-lucide="shield" class="w-4 h-4 text-flood"></i>
+                    </div>
+                    <div>
+                        <p class="text-[13px] font-bold text-navy">Demo: Field Admin</p>
+                        <p class="text-[11px] text-slate">admin@ligtas.gov.ph · admin2024</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1 text-flood text-[11px] font-semibold">
+                    Quick fill <i data-lucide="zap" class="w-3 h-3"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="loginForm" class="space-y-3" onsubmit="handleLogin(event)">
+
+            <!-- Email -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Email Address</label>
+                <div class="relative">
+                    <i data-lucide="mail" class="input-icon w-4.5 h-4.5"></i>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label class="block text-[11px] font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">Password</label>
+                <div class="relative">
+                    <i data-lucide="lock" class="input-icon w-4.5 h-4.5"></i>
+                    <input type="password" id="password" class="form-input pr-12" placeholder="Enter your password" required>
+                    <button type="button" onclick="togglePw()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-navy transition-colors">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Forgot -->
+            <div class="flex justify-end">
+                <a href="#" class="text-[12px] font-semibold text-emergency hover:text-deep transition-colors">Forgot Password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" id="loginBtn" class="btn-login resident">
+                <i data-lucide="log-in" class="w-4.5 h-4.5"></i>
+                <span id="loginBtnText">Login</span>
+            </button>
+
+            <!-- Register link -->
+            <p class="text-center text-[13px] text-slate pt-1">
+                No account? <a id="register-link" href="register.html?role=resident" class="font-bold text-emergency hover:text-deep transition-colors">Register here</a>
+            </p>
+        </form>
+
+
+        <!-- Access info panel -->
+        <div id="access-info" class="rounded-2xl border border-gray-100 bg-white p-4 space-y-2.5">
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wide">Access Level</p>
+            <div id="access-list" class="space-y-2">
+                <!-- filled by JS -->
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    let currentRole = 'resident';
+
+    const ACCESS = {
+        resident: [
+            { icon: 'bell', label: 'Emergency Alerts', ok: true },
+            { icon: 'map', label: 'Evacuation Routes', ok: true },
+            { icon: 'shield', label: 'Safety Guides', ok: true },
+            { icon: 'database', label: 'Admin Dashboard', ok: false },
+            { icon: 'package', label: 'Relief Requests', ok: false },
+        ],
+        admin: [
+            { icon: 'bell', label: 'Emergency Alerts', ok: true },
+            { icon: 'layout-dashboard', label: 'Admin Dashboard', ok: true },
+            { icon: 'package', label: 'Relief Requests', ok: true },
+            { icon: 'users', label: 'Evacuee Profiling', ok: true },
+            { icon: 'alert-triangle', label: 'Incident Reports', ok: true },
+        ]
+    };
+
+    function renderAccess(role) {
+        const list = document.getElementById('access-list');
+        list.innerHTML = ACCESS[role].map(a => `
+            <div class="flex items-center gap-2.5">
+                <div class="w-6 h-6 rounded-lg flex items-center justify-center ${a.ok ? (role === 'admin' ? 'bg-flood/10' : 'bg-emergency/10') : 'bg-gray-100'}">
+                    <i data-lucide="${a.icon}" class="w-3.5 h-3.5 ${a.ok ? (role === 'admin' ? 'text-flood' : 'text-emergency') : 'text-gray-300'}"></i>
+                </div>
+                <span class="text-[12px] ${a.ok ? 'text-navy font-medium' : 'text-gray-300 line-through'}">${a.label}</span>
+                ${a.ok ? `<i data-lucide="check" class="w-3 h-3 ml-auto ${role === 'admin' ? 'text-flood' : 'text-safe'}"></i>` : `<i data-lucide="x" class="w-3 h-3 ml-auto text-gray-200"></i>`}
+            </div>
+        `).join('');
         lucide.createIcons();
+    }
 
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const isPassword = passwordInput.type === 'password';
-            passwordInput.type = isPassword ? 'text' : 'password';
+    function switchRole(role) {
+        currentRole = role;
+        const hero = document.getElementById('hero');
+        const btn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('loginBtnText');
+        const badge = document.getElementById('hero-badge');
+        const badgeDot = document.getElementById('badge-dot');
+        const badgeText = document.getElementById('badge-text');
+        const title = document.getElementById('hero-title');
+        const sub = document.getElementById('hero-sub');
+        const emailInput = document.getElementById('email');
+        const pwInput = document.getElementById('password');
+        const demoResident = document.getElementById('demo-resident');
+        const demoAdmin = document.getElementById('demo-admin');
+
+        document.getElementById('btn-resident').className = role === 'resident' ? 'active-resident' : '';
+        document.getElementById('btn-admin').className = role === 'admin' ? 'active-admin' : '';
+
+        if (role === 'admin') {
+            hero.classList.add('admin');
+            btn.className = 'btn-login admin';
+            btnText.textContent = 'Login';
+            badge.className = 'role-badge admin';
+            badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse';
+            badgeText.textContent = 'FIELD ADMIN';
+            title.textContent = 'Welcome back,\nField Admin.';
+            title.innerHTML = 'Welcome back,<br>Field Admin.';
+            sub.textContent = 'Manage your center. Stay operational.';
+            emailInput.className = 'form-input admin-focus';
+            pwInput.className = 'form-input pr-12 admin-focus';
+            demoResident.classList.add('hidden');
+            demoAdmin.classList.remove('hidden');
+        } else {
+            hero.classList.remove('admin');
+            btn.className = 'btn-login resident';
+            btnText.textContent = 'Login';
+            badge.className = 'role-badge resident';
+            badgeDot.className = 'w-1.5 h-1.5 rounded-full bg-emergency animate-pulse';
+            badgeText.textContent = 'RESIDENT';
+            title.innerHTML = 'Welcome back,<br>Resident.';
+            sub.textContent = 'Stay safe. Stay prepared.';
+            emailInput.className = 'form-input';
+            pwInput.className = 'form-input pr-12';
+            demoAdmin.classList.add('hidden');
+            demoResident.classList.remove('hidden');
         }
 
-        function loginAsGuest() {
-            alert('Guest login feature will be implemented');
+        renderAccess(role);
+        // Update register link to pre-set the correct role
+        const regLink = document.getElementById('register-link');
+        if (regLink) regLink.href = 'register.html?role=' + role;
+        // Clear fields on role switch for clarity
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+    }
+
+    function quickFill(role) {
+        if (role === 'resident') {
+            document.getElementById('email').value = 'juan@example.com';
+            document.getElementById('password').value = 'password123';
+        } else {
+            document.getElementById('email').value = 'admin@ligtas.gov.ph';
+            document.getElementById('password').value = 'admin2024';
         }
+        // Pulse the button
+        const btn = document.getElementById('loginBtn');
+        btn.style.transform = 'scale(1.02)';
+        setTimeout(() => btn.style.transform = '', 200);
+    }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.classList.add('loading');
-            submitBtn.disabled = true;
-            
-            console.log('Login attempt:', { email, password });
-            
-            // Simulate network delay
-            setTimeout(() => {
-                submitBtn.classList.remove('loading');
-                submitBtn.disabled = false;
-                
-                // Set comprehensive user session for connectivity demo
-                const userData = {
-                    name: 'Juan Dela Cruz',
-                    phone: '0917-555-1234',
-                    address: '45 Calle Uno St., Brgy. Kapitolyo, Pasig City',
-                    barangay: 'Kapitolyo',
-                    id: 'PCC-2024-78921',
-                    medical: {
-                        bloodType: 'O+',
-                        allergies: 'Penicillin, Shellfish',
-                        conditions: 'Hypertension, Type 2 Diabetes',
-                        medications: 'Metformin 500mg, Amlodipine 5mg',
-                        physician: 'Dr. Ana Reyes — The Medical City'
-                    },
-                    emergencyContact: {
-                        name: 'Maria Santos (Mother)',
-                        phone: '0917-555-9876'
-                    }
-                };
-                localStorage.setItem('ligtas_user_session', JSON.stringify(userData));
+    function togglePw() {
+        const pw = document.getElementById('password');
+        pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
 
-                // Redirect to the alert page after successful login
+    function handleLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        btn.classList.add('loading');
+        btn.disabled = true;
+
+        const role = currentRole === 'admin' ? 'field_admin' : 'normal_user';
+
+        const userData = currentRole === 'admin' ? {
+            name: 'Maria R. Santos',
+            phone: '0917-888-2345',
+            address: 'Pasig City Sports Complex, Brgy. Kapasigan',
+            barangay: 'Kapasigan',
+            id: 'ADMIN-2024-00142',
+            center: 'Kapasigan Evacuation Center'
+        } : {
+            name: 'Juan Dela Cruz',
+            phone: '0917-555-1234',
+            address: '45 Calle Uno St., Brgy. Kapitolyo, Pasig City',
+            barangay: 'Kapitolyo',
+            id: 'PCC-2024-78921',
+            medical: {
+                bloodType: 'O+',
+                allergies: 'Penicillin, Shellfish',
+                conditions: 'Hypertension, Type 2 Diabetes',
+                medications: 'Metformin 500mg, Amlodipine 5mg',
+                physician: 'Dr. Ana Reyes — The Medical City'
+            },
+            emergencyContact: { name: 'Maria Santos (Mother)', phone: '0917-555-9876' }
+        };
+
+        setTimeout(() => {
+            localStorage.setItem('ligtas_user_session', JSON.stringify(userData));
+            localStorage.setItem('ligtas_role', role);
+
+            if (role === 'field_admin') {
+                window.location.href = '../admin-dashboard.html';
+            } else {
                 window.location.href = '../alert-mainPage.html';
-            }, 1500);
-        });
-    </script>
+            }
+        }, 1400);
+    }
 
+
+
+    // ── Init: handle ?registered= param from register.html ──────────────────
+    (function() {
+        const p = new URLSearchParams(window.location.search);
+        const registered = p.get('registered'); // 'resident' or 'admin'
+        if (registered === 'admin') {
+            switchRole('admin');
+        } else {
+            renderAccess('resident');
+        }
+
+        // Pre-fill email if they just registered
+        const savedEmail = localStorage.getItem('ligtas_registered_email');
+        if (savedEmail && p.has('registered')) {
+            document.getElementById('email').value = savedEmail;
+            // Show a subtle success banner
+            const banner = document.createElement('div');
+            banner.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-2.5 rounded-2xl shadow-lg text-[13px] font-semibold text-white';
+            banner.style.background = registered === 'admin' ? '#1565C0' : '#2E7D32';
+            banner.style.whiteSpace = 'nowrap';
+            banner.innerHTML = '✓ Account created! Please log in.';
+            document.body.appendChild(banner);
+            setTimeout(() => banner.style.opacity = '0', 2500);
+            setTimeout(() => banner.remove(), 3000);
+            banner.style.transition = 'opacity 0.5s ease';
+        }
+    })();
+</script>
 </body>
 </html>
-
