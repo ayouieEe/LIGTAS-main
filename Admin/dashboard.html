@@ -2863,7 +2863,7 @@
             <div class="m-card c-blue" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Avg. Center Load</div>
               <div class="m-card-value blue" id="dash-center-load" style="font-size: 22px;">0%</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">City-wide capacity</div>
+              <div class="m-card-sub" id="dash-center-sub" style="font-size: 10px; margin-top: 4px;">City-wide capacity</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='centers.html'">View Capacity</span>
@@ -2873,7 +2873,7 @@
             <div class="m-card c-green" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Units Deployed</div>
               <div class="m-card-value green" id="dash-units-deployed" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Active response units</div>
+              <div class="m-card-sub" id="dash-units-sub" style="font-size: 10px; margin-top: 4px;">Active response units</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Manage Units</span>
@@ -2883,7 +2883,7 @@
             <div class="m-card c-yellow" style="padding: 12px 16px 28px;">
               <div class="m-card-label" style="font-size: 10px; margin-bottom: 4px;">Supply Alerts</div>
               <div class="m-card-value orange" id="dash-supply-alerts" style="font-size: 22px;">0</div>
-              <div class="m-card-sub" style="font-size: 10px; margin-top: 4px;">Critical stock items</div>
+              <div class="m-card-sub" id="dash-supply-sub" style="font-size: 10px; margin-top: 4px;">Critical stock items</div>
               <div class="m-card-details">
                 <span>---</span>
                 <span class="card-action-link" onclick="window.location.href='relief-ops.html'">Restock</span>
@@ -4360,25 +4360,39 @@
       const units = JSON.parse(localStorage.getItem('ligtas_units') || '[]');
       const inventory = JSON.parse(localStorage.getItem('ligtas_inventory') || '{}');
       const requests = JSON.parse(localStorage.getItem('ligtas_relief_requests') || '[]');
-      const pendingRequests = requests.filter(r => firstValue(r.status, 'Pending') === 'Pending');
+      const pendingRequests = requests.filter(r => firstValue(r.status, 'Pending').toLowerCase() === 'pending');
 
       // 1. Update Metrics
-      const activeIncidents = incidents.filter(i => i.status !== 'Resolved');
-      const criticalCount = activeIncidents.filter(i => i.severity === 'Critical').length;
+      const activeIncidents = incidents.filter(i => isActiveStatus(firstValue(i.status, 'Reported')));
+      const criticalCount = activeIncidents.filter(i => firstValue(i.severity, '').toLowerCase() === 'critical').length;
+      const acknowledgedCount = activeIncidents.filter(i => firstValue(i.status, '').toLowerCase() === 'acknowledged').length;
 
       setText('dash-active-emergencies', activeIncidents.length);
       const subText = criticalCount > 0 ? `${criticalCount} Critical Threats` : (activeIncidents.length > 0 ? 'Monitoring active events' : 'No active threats');
       setText('dash-active-sub', subText);
+      setMetricDetail('dash-active-emergencies', `${acknowledgedCount} acknowledged`);
 
-      // Center Load Simulation
-      const avgLoad = 42; // Realistic fixed percentage
+      const centers = getCenterLoadData(requests);
+      const centerTotals = centers.reduce((totals, center) => ({
+        occupants: totals.occupants + center.occupants,
+        capacity: totals.capacity + center.capacity
+      }), { occupants: 0, capacity: 0 });
+      const avgLoad = centerTotals.capacity ? Math.round((centerTotals.occupants / centerTotals.capacity) * 100) : 0;
+      const criticalCenters = centers.filter(center => center.capacity && (center.occupants / center.capacity) >= 0.9).length;
       setText('dash-center-load', avgLoad + '%');
+      setText('dash-center-sub', centerTotals.capacity ? `${centerTotals.occupants.toLocaleString()} / ${centerTotals.capacity.toLocaleString()} occupied` : 'No capacity data');
+      setMetricDetail('dash-center-load', `${criticalCenters} near capacity`);
 
-      const deployedCount = units.filter(u => u.status !== 'Available').length;
+      const deployedStatuses = ['en route', 'deployed', 'on scene', 'on-scene', 'busy', 'assigned', 'responding'];
+      const deployedCount = units.filter(u => deployedStatuses.includes(firstValue(u.status, '').toLowerCase())).length;
       setText('dash-units-deployed', deployedCount);
+      setText('dash-units-sub', `${units.length} response units tracked`);
+      setMetricDetail('dash-units-deployed', `${Math.max(units.length - deployedCount, 0)} available`);
 
-      const supplyAlerts = Object.values(inventory).filter(v => v < 2000).length;
-      setText('dash-supply-alerts', supplyAlerts);
+      const supplyAlerts = getSupplyAlerts(inventory, pendingRequests);
+      setText('dash-supply-alerts', supplyAlerts.length);
+      setText('dash-supply-sub', supplyAlerts.length ? supplyAlerts.slice(0, 2).join(', ') : 'Stock levels nominal');
+      setMetricDetail('dash-supply-alerts', `${pendingRequests.length} pending requests`);
 
       // 2. Weather & Flood
       const temp = 31;
@@ -4479,6 +4493,67 @@
       return String(value ?? '').replace(/[&<>"']/g, ch => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
       }[ch]));
+    }
+
+    function isActiveStatus(status) {
+      return !['resolved', 'request done', 'completed', 'cancelled', 'closed'].includes(String(status || '').toLowerCase());
+    }
+
+    function asNumber(value) {
+      const number = Number(String(value ?? '').replace(/[^\d.]/g, ''));
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function getStoredArray(...keys) {
+      for (const key of keys) {
+        try {
+          const value = JSON.parse(localStorage.getItem(key) || '[]');
+          if (Array.isArray(value) && value.length) return value;
+        } catch (e) { }
+      }
+      return [];
+    }
+
+    function getCenterLoadData(requests = []) {
+      const storedCenters = getStoredArray('ligtas_evacuation_centers', 'ligtas_centers');
+      const centers = storedCenters.length ? storedCenters : [
+        { name: 'Rizal High School Evacuation Center', occupants: 1176, capacity: 1200 },
+        { name: 'Pasig Elementary School Complex', occupants: 2100, capacity: 5000 },
+        { name: 'Rainforest Park (RAVE)', occupants: 375, capacity: 2500 }
+      ];
+
+      return centers.map(center => {
+        const fallbackFamilies = requests
+          .filter(req => firstValue(req.center, '').toLowerCase().includes(firstValue(center.name, center.center, '').split(' ')[0].toLowerCase()))
+          .reduce((sum, req) => sum + asNumber(req.families), 0);
+        return {
+          name: firstValue(center.name, center.center, 'Evacuation Center'),
+          occupants: asNumber(firstValue(center.occupants, center.currentOccupants, center.current, center.evacuees, fallbackFamilies)),
+          capacity: asNumber(firstValue(center.capacity, center.maxCapacity, center.totalCapacity))
+        };
+      }).filter(center => center.capacity > 0);
+    }
+
+    function getSupplyAlerts(inventory, pendingRequests = []) {
+      const thresholds = {
+        'Food Packs': 2500,
+        'Medical Supplies': 1000,
+        'Water Supply': 3000,
+        'Hygiene Kits': 1500
+      };
+      const lowStock = Object.entries(inventory)
+        .filter(([item, qty]) => asNumber(qty) <= (thresholds[item] || 1000))
+        .map(([item]) => item);
+      const pendingCritical = pendingRequests
+        .filter(req => ['critical', 'high'].includes(firstValue(req.urgency, '').toLowerCase()))
+        .map(req => firstValue(req.type, 'Supply Request'));
+      return [...new Set([...lowStock, ...pendingCritical])];
+    }
+
+    function setMetricDetail(metricId, text) {
+      const valueEl = document.getElementById(metricId);
+      const detailEl = valueEl?.closest('.m-card')?.querySelector('.m-card-details span:first-child');
+      if (detailEl) detailEl.textContent = text || '---';
     }
 
     function firstValue(...values) {
